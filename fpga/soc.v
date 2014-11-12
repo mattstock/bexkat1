@@ -55,6 +55,10 @@ output lcd_i2c_sclk;
 
 wire rst_n;
 wire [5:0] val;
+wire [23:0] rgb_matrix;
+wire [3:0] rgb_row;
+wire [4:0] rgb_col;
+wire rgb_write;
 
 assign rst_n = KEY[0];
 assign LEDG = { rgb_clk, rgb_stb, 5'b0, pb};
@@ -75,8 +79,12 @@ assign sram_databus = 16'hzzzz;
 assign sram_addrbus = 18'h000000;
 assign rgb_oe_n = SW[9];
 
+// Generate demo screenbuffer data
+screendemo demo0(.clk(clock_50), .rst_n(rst_n), .write(rgb_write), .pixel(rgb_matrix), .row(rgb_row), .col(rgb_col));
+
 // LED display driver
-lcd_matrix lcd0(.clk(clock_50), .rst_n(rst_n), .rgb_a(rgb_a), .rgb_b(rgb_b), .rgb_c(rgb_c), .rgb0(rgb0), .rgb1(rgb1), .rgb_clk(rgb_clk), .rgb_stb(rgb_stb), .control(SW[8:0]));
+led_matrix lcd0(.clk(clock_50), .rst_n(rst_n), .rgb_a(rgb_a), .rgb_b(rgb_b), .rgb_c(rgb_c), .rgb0(rgb0), .rgb1(rgb1), .rgb_clk(rgb_clk), .rgb_stb(rgb_stb), .pixel(rgb_matrix),
+  .write(rgb_write), .row(rgb_row), .col(rgb_col));
 
 // visualization stuff
 hexdisp d0(.out(HEX3), .in(4'b0));
