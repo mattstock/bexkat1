@@ -98,7 +98,7 @@ begin
   endcase
 end
 
-always @(negedge rgb_clk or negedge rst_n)
+always @(posedge rgb_clk or negedge rst_n)
 begin
   if (!rst_n) begin
     tick <= 1'b0;

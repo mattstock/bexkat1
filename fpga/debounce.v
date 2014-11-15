@@ -8,15 +8,15 @@ reg out;
 reg sync_0;
 reg sync_1;
 
-always @(negedge clk) sync_0 <= ~in;
-always @(negedge clk) sync_1 <= sync_0;
+always @(posedge clk) sync_0 <= ~in;
+always @(posedge clk) sync_1 <= sync_0;
 
 reg [15:0] delay_cnt;
 
 wire idle = (out == sync_1);
 wire delay_cnt_max = &delay_cnt;
 
-always @(negedge clk)
+always @(posedge clk)
 begin
   if (idle)
     delay_cnt <= 16'b0;

@@ -11,7 +11,7 @@ reg quadA_last, quadB_last;
 
 wire quadA_sync, quadB_sync;
 
-always @(negedge clk) begin
+always @(posedge clk) begin
   if (!rst_n) begin
     count <= 6'b0;
   end else begin
