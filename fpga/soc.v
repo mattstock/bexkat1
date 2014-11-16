@@ -89,14 +89,13 @@ assign sram_we_n = 1'b1;
 assign sram_oe_n = ~sram_we_n;
 assign sram_databus = 16'hzzzz;
 assign sram_addrbus = 18'h000000;
-assign rgb_oe_n = SW[9];
 
 // Generate demo screenbuffer data
 screendemo demo0(.clk(clock_50), .rst_n(rst_n), .write(rgb_write), .pixel(rgb_matrix), .row(rgb_row), .col(rgb_col));
 
 // LED display driver
-led_matrix led0(.clk(clock_50), .rst_n(rst_n), .rgb_a(rgb_a), .rgb_b(rgb_b), .rgb_c(rgb_c), .rgb0(rgb0), .rgb1(rgb1), .rgb_clk(rgb_clk), .rgb_stb(rgb_stb), .pixel(rgb_matrix),
-  .write(rgb_write), .row(rgb_row), .col(rgb_col));
+led_matrix led0(.clk(clock_50), .rst_n(rst_n), .rgb_a(rgb_a), .rgb_b(rgb_b), .rgb_c(rgb_c), .rgb0(rgb0), .rgb1(rgb1), .rgb_clk(rgb_clk), .rgb_stb(rgb_stb), .oe_n(rgb_oe_n),
+  .pixel(rgb_matrix), .write(rgb_write), .row(rgb_row), .col(rgb_col));
 
 // visualization stuff
 hexdisp d0(.out(HEX3), .in(4'hc));

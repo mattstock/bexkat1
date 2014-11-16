@@ -7,44 +7,98 @@ output [23:0] pixel;
 output [3:0] row;
 output [4:0] col;
 
-reg [8:0] count;
-reg [23:0] pixel;
-reg spin;
+reg [9:0] count, count_next;
+reg [23:0] pixel, pixel_next;
+reg [1:0] state, state_next;
+reg [23:0] delay, delay_next;
+reg [4:0] highcol, highcol_next;
+reg pingpong, pingpong_next;
 
-assign write = spin;
+assign write = (state == STATE_WRITE);
 assign col = count[4:0];
 assign row = count[8:5];
+
+parameter [5:0] COLS = 32;
+parameter [5:0] ROWS = 16;
+localparam [1:0] STATE_LOAD = 2'b00, STATE_WRITE = 2'b01, STATE_DONE = 2'b10;
 
 always @(posedge clk or negedge rst_n)
 begin
   if (!rst_n) begin
     count <= 1'b0;
-    spin <= 1'b0;
+    pixel <= 24'hffffff;
+    state <= STATE_LOAD;
+    delay <= 24'h000000;
+    highcol <= 5'b10000;
+    pingpong <= 1'b0;
   end else begin
-    spin <= ~spin;
-    if (spin) begin
-    case (row)
-      4'h0: pixel <= { count[8:1], 16'h0000 };
-      4'h1: pixel <= { count[8:1], count[8:1], 8'h00 };
-      4'h2: pixel <= { 8'h00, count[8:1], 8'h00 };
-      4'h3: pixel <= { 8'h00, count[8:1], count[8:1] };
-      4'h4: pixel <= { 16'h0000, count[8:1] };
-      4'h5: pixel <= { count[8:1], 8'h00, count[8:1] };
-      4'h6: pixel <= { count[8:1], count[8:1], count[8:1] };
-      4'h7: pixel <= { count[3:0], count[3:0], count[8:5], count[7:4], count[7:0] };
-      4'h8: pixel <= { count[7:0], 16'h0000 };
-      4'h9: pixel <= { count[7:0], count[7:0], 8'h00 };
-      4'ha: pixel <= { 8'h00, count[7:0], 8'h00 };
-      4'hb: pixel <= { 8'h00, count[7:0], count[8:1] };
-      4'hc: pixel <= { 16'h0000, count[7:0] };
-      4'hd: pixel <= { count[7:0], 8'h00, count[8:1] };
-      4'he: pixel <= { count[7:0], count[7:0], count[7:0] };
-      4'hf: pixel <= { count[7:4], count[4:1], count[8:5], count[5:2], count[8:1] };
-    endcase
-    count <= count + 1'b1;
-    end
+    state <= state_next;
+    pixel <= pixel_next;
+    count <= count_next;
+    delay <= delay_next;
+    highcol <= highcol_next;
+    pingpong <= pingpong_next;
   end
 end
 
+reg [7:0] suba, subb;
+
+function [7:0] gradient;
+input [4:0] a, b;
+case (a < b ? b-a : a-b)
+  'h00: gradient = 'hff;
+  'h01: gradient = 'hdf;
+  'h02: gradient = 'haf;
+  'h03: gradient = 'h8f;
+  'h04: gradient = 'h6f;
+  'h05: gradient = 'h4f;
+  'h06: gradient = 'h2f;
+  'h07: gradient = 'h1f;
+  'h08: gradient = 'h0f;
+  'h09: gradient = 'h0e;
+  'h0a: gradient = 'h0c;
+  'h0b: gradient = 'h08;
+  'h0c: gradient = 'h04;
+  default: gradient = 'h00;
+endcase
+endfunction
+
+always @*
+begin
+  state_next = state;
+  count_next = count;
+  pixel_next = pixel;
+  delay_next = delay;
+  highcol_next = highcol;
+  pingpong_next = pingpong;
+  case (state)
+    STATE_LOAD: begin
+      suba = gradient((highcol < row ? row-highcol : highcol-row), col);
+      pixel_next = { 16'h0000, suba };
+      if (count < 512)
+        state_next = STATE_WRITE;
+      else begin
+        state_next = STATE_DONE;
+        delay_next = 'h1fffff;
+      end
+    end
+    STATE_WRITE: begin
+      state_next = STATE_LOAD;
+      count_next = count + 1'b1;
+    end
+    STATE_DONE: begin
+      if (delay == 24'h00000) begin
+        state_next = STATE_LOAD;
+        count_next = 1'b0;
+        if (highcol == 5'h00 || highcol == 5'h1f) begin
+          pingpong_next = ~pingpong;
+          highcol_next = (pingpong ? highcol + 1'b1 : highcol - 1'b1);
+        end else
+          highcol_next = (pingpong ? highcol - 1'b1 : highcol + 1'b1);
+      end else
+        delay_next = delay - 1'b1;  
+    end
+  endcase
+end
 
 endmodule
