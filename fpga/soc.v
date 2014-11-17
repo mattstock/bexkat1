@@ -3,7 +3,9 @@ module soc(SW, KEY, HEX0, HEX1, HEX2, HEX3, LEDR, LEDG, clock_50, clock_27,
   quad, rgb, pb,
   sram_addrbus, sram_databus, sram_we_n, sram_oe_n, sram_ub_n, sram_lb_n, sram_ce_n,
   lcd_i2c_sclk, lcd_i2c_sdat, ps2_dat, ps2_clk, lcd_e, lcd_rs, lcd_data,
-  rgb0, rgb1, rgb_a, rgb_b, rgb_c, rgb_stb, rgb_clk, rgb_oe_n);
+  rgb0, rgb1, rgb_a, rgb_b, rgb_c, rgb_stb, rgb_clk, rgb_oe_n,
+  fl_addrbus, fl_databus, fl_oe_n, fl_ce_n, fl_we_n, fl_rst_n,
+  dram_dq, dram_addr, dram_ba, dram_ldqm, dram_udqm, dram_ras_n, dram_cas_n, dram_cke, dram_clk, dram_we_n, dram_ce_n);
 
 // SRAM
 output [17:0] sram_addrbus;
@@ -13,6 +15,27 @@ output sram_oe_n;
 output sram_ub_n;
 output sram_lb_n;
 output sram_ce_n;
+
+// Flash
+inout [7:0] fl_databus;
+output [21:0] fl_addrbus;
+output fl_oe_n;
+output fl_ce_n;
+output fl_we_n;
+output fl_rst_n;
+
+// SDRAM
+inout [15:0] dram_dq;
+output [11:0] dram_addr;
+output [1:0] dram_ba;
+output dram_ldqm;
+output dram_udqm;
+output dram_ras_n;
+output dram_cas_n;
+output dram_cke;
+output dram_clk;
+output dram_we_n;
+output dram_ce_n;
 
 // FPGA board stuff
 input clock_50;
@@ -72,9 +95,20 @@ wire rgb_write;
 wire kbd_event;
 wire [7:0] kbd_data;
 
+wire mem_flash, mem_monitor, mem_dram, mem_sram;
+wire [15:0] mem_monitor_data;
+wire [31:0] cpu_addrbus;
+wire [15:0] cpu_data_out;
+
+wire [15:0] cpu_data_in0 = (mem_monitor ? mem_monitor_data : 16'h0000);
+wire [15:0] cpu_data_in1 = (mem_flash ? { 8'h00, fl_databus } : 16'h0000);
+wire [15:0] cpu_data_in2 = (mem_dram ? dram_dq : 16'h0000);
+wire [15:0] cpu_data_in3 = (mem_sram ? sram_databus : 16'h0000);
+wire [15:0] cpu_data_in = cpu_data_in0 | cpu_data_in1 | cpu_data_in2 | cpu_data_in3;
+
 assign rst_n = KEY[0];
 assign LEDG = { rgb_clk, rgb_stb, 4'b0, kbd_event, pb};
-assign LEDR = { 3'b000, val };
+assign LEDR = 10'b0;
 assign aud_adclrck = aud_daclrck;
 assign aud_daclrck = 1'b0;
 assign aud_dacdat = 1'bz;
@@ -82,26 +116,43 @@ assign aud_xck = 1'bz;
 assign aud_bclk = 1'bz;
 assign i2c_sclk = 1'bz;
 assign lcd_i2c_sclk = 1'bz;
-assign sram_ce_n = 1'b0;
 assign sram_lb_n = 1'b0;
 assign sram_ub_n = 1'b0;
 assign sram_we_n = 1'b1;
+assign sram_ce_n = 1'b0;
 assign sram_oe_n = ~sram_we_n;
 assign sram_databus = 16'hzzzz;
 assign sram_addrbus = 18'h000000;
+assign dram_addr = 12'h00000;
+assign dram_ba = 2'h0;
+assign dram_ldqm = 1'b0;
+assign dram_udqm = 1'b0;
+assign dram_ras_n = 1'b1;
+assign dram_cas_n = 1'b1;
+assign dram_cke = 1'b0;
+assign dram_clk = clock_50;
+assign dram_we_n = 1'b1;
+assign dram_ce_n = 1'b1;
+assign dram_dq = 16'hzzzz;
+assign fl_addrbus = 22'h000000;
+assign fl_oe_n = 1'b1;
+assign fl_we_n = 1'b1;
+assign fl_ce_n = 1'b1;
+assign fl_rst_n = rst_n;
 
 // Generate demo screenbuffer data
-screendemo demo0(.clk(clock_50), .rst_n(rst_n), .write(rgb_write), .pixel(rgb_matrix), .row(rgb_row), .col(rgb_col));
+//screendemo demo0(.clk(clock_50), .rst_n(rst_n), .write(rgb_write), .pixel(rgb_matrix), .row(rgb_row), .col(rgb_col));
+assign rgb_write = 1'b0;
 
 // LED display driver
 led_matrix led0(.clk(clock_50), .rst_n(rst_n), .rgb_a(rgb_a), .rgb_b(rgb_b), .rgb_c(rgb_c), .rgb0(rgb0), .rgb1(rgb1), .rgb_clk(rgb_clk), .rgb_stb(rgb_stb), .oe_n(rgb_oe_n),
   .pixel(rgb_matrix), .write(rgb_write), .row(rgb_row), .col(rgb_col));
 
 // visualization stuff
-hexdisp d0(.out(HEX3), .in(4'hc));
-hexdisp d1(.out(HEX2), .in(4'h1));
-hexdisp d2(.out(HEX1), .in(kbd_data[7:4]));
-hexdisp d3(.out(HEX0), .in(kbd_data[3:0]));
+hexdisp d0(.out(HEX3), .in(cpu_data_out[15:12]));
+hexdisp d1(.out(HEX2), .in(cpu_data_out[11:8]));
+hexdisp d2(.out(HEX1), .in(cpu_data_out[7:4]));
+hexdisp d3(.out(HEX0), .in(cpu_data_out[3:0]));
 
 // quadrature encoder outputs 0-23
 quadenc q0(.clk(clock_50), .rst_n(rst_n), .quadA(quad[0]), .quadB(quad[1]), .count(val));
@@ -111,6 +162,14 @@ lcd_module lcd0(.clk(clock_50), .rst_n(rst_n), .e(lcd_e), .data_out(lcd_data), .
 
 // Keyboard
 user_input kbd0(.clk(clock_50), .rst_n(rst_n), .ps2_clock(ps2_clk), .ps2_data(ps2_dat), .data_read(pb), .data_ready(kbd_event), .data_out(kbd_data));
+
+mycpu cpu0(.clk(clock_50), .rst_n(rst_n), .addrbus(cpu_addrbus), .data_in(cpu_data_in), .data_out(cpu_data_out));
+
+// Chip select logic
+mem_select memmap0(.address(cpu_addrbus), .flash(mem_flash), .dram(mem_dram), .sram(mem_sram), .monitor(mem_monitor));
+
+// ROM monitor code
+monitor rom0(.address(cpu_addrbus[11:0]), .q(mem_monitor_data));
 
 assign rgb = val[2:0];
  

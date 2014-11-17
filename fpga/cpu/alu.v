@@ -3,7 +3,7 @@
 module alu(
   input wire [WIDTH-1:0] in1,
   input wire [WIDTH-1:0] in2,
-  input wire [2:0] func,
+  input wire [3:0] func,
   input wire c_in,
   input wire z_in,
   input wire n_in,
@@ -16,14 +16,15 @@ module alu(
 
 parameter WIDTH = 16;
 
-localparam ALU_NOP =     'b000;
-localparam ALU_AND =     'b001;
-localparam ALU_OR =      'b010;
-localparam ALU_ADD =     'b011;
-localparam ALU_SUB =     'b100;
-localparam ALU_LSHIFT =  'b101;
-localparam ALU_RSHIFTA = 'b110;
-localparam ALU_RSHIFTL = 'b111;
+localparam ALU_NOP =     'h0;
+localparam ALU_AND =     'h1;
+localparam ALU_OR =      'h2;
+localparam ALU_ADD =     'h3;
+localparam ALU_SUB =     'h4;
+localparam ALU_LSHIFT =  'h5;
+localparam ALU_RSHIFTA = 'h6;
+localparam ALU_RSHIFTL = 'h7;
+localparam ALU_XOR =     'h8;
 
 assign n_out = out[WIDTH-1];
 assign z_out = |{out,z_in};
@@ -40,7 +41,12 @@ begin
       out = in1 | in2;
       v_out = 1'b0;
       c_out = c_in;
-    end  
+    end
+    ALU_XOR: begin
+      out = in1 ^ in2;
+      v_out = 1'b0;
+      c_out = c_in;
+    end
     ALU_ADD: begin
       out = in1 + in2 + c_in;
       v_out = in1[WIDTH-1] & in2[WIDTH-1] & ~out[WIDTH-1] | ~in1[WIDTH-1] + ~in2[WIDTH-1] & out[WIDTH-1];
