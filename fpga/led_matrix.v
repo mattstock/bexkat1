@@ -1,4 +1,4 @@
-module led_matrix(clk, rst_n, rgb_a, rgb_b, rgb_c, rgb0, rgb1, rgb_stb, rgb_clk, oe_n, pixel, row, col, write);
+module led_matrix(clk, rst_n, rgb_a, rgb_b, rgb_c, rgb0, rgb1, rgb_stb, rgb_clk, oe_n, pixel, address, write);
 
 input clk;
 input rst_n;
@@ -8,8 +8,7 @@ output rgb_stb;
 output rgb_clk;
 output oe_n;
 input [23:0] pixel;
-input [3:0] row;
-input [4:0] col;
+input [8:0] address;
 input write;
 
 wire [2:0] lp = phase[2:0]-1'b1;
@@ -106,6 +105,5 @@ begin
   endcase
 end
 
-
-matrixmem m0(.clock(clk), .data({ 8'h00, pixel}), .q(buffer), .wren(write), .wraddress({row,col}), .rdaddress({ab, phase[2:0], colpos}));
+matrixmem m0(.clock(clk), .data({ 8'h00, pixel}), .q(buffer), .wren(write), .wraddress(address), .rdaddress({ab, phase[2:0], colpos}));
 endmodule
