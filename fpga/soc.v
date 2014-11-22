@@ -95,23 +95,22 @@ wire rgb_write;
 wire kbd_event;
 wire [7:0] kbd_data;
 
-wire mem_flash, mem_monitor, mem_dram, mem_sram, mem_led_matrix;
-wire [15:0] mem_monitor_data;
+wire mem_flash, mem_monitor, mem_dram, mem_sram, mem_led_matrix, mem_kbd;
+wire [15:0] mem_monitor_data, led_matrix_data_out;
 wire [31:0] cpu_addrbus;
 wire [15:0] cpu_data_out;
-wire cpu_write;
+wire cpu_write, ccr;
 
 wire [15:0] cpu_data_in0 = (mem_monitor ? mem_monitor_data : 16'h0000);
 wire [15:0] cpu_data_in1 = (mem_flash ? { 8'h00, fl_databus } : 16'h0000);
 wire [15:0] cpu_data_in2 = (mem_dram ? dram_dq : 16'h0000);
 wire [15:0] cpu_data_in3 = (mem_sram ? sram_databus : 16'h0000);
-wire [15:0] cpu_data_in = cpu_data_in0 | cpu_data_in1 | cpu_data_in2 | cpu_data_in3;
+wire [15:0] cpu_data_in4 = (mem_led_matrix ? led_matrix_data_out : 16'h0000);
+wire [15:0] cpu_data_in5 = (mem_kbd ? { 8'h00, kbd_data}  : 16'h0000);
+wire [15:0] cpu_data_in = cpu_data_in0 | cpu_data_in1 | cpu_data_in2 | cpu_data_in3 | cpu_data_in4 | cpu_data_in5;
 
 assign rst_n = KEY[0];
 
-// Blinknlights
-assign LEDG = { cpu_write, mem_sram, mem_led_matrix, mem_flash, mem_dram, mem_monitor, kbd_event, pb};
-assign LEDR = 10'b0;
 
 // No audio for now
 assign aud_adclrck = aud_daclrck;
@@ -146,7 +145,7 @@ assign sram_databus = (cpu_write ? cpu_data_out : 16'hzzzz);
 assign sram_addrbus = cpu_addrbus[17:0];
 
 // Flash wiring
-assign fl_addrbus = cpu_addrbus[22:0];
+assign fl_addrbus = cpu_addrbus[21:0];
 assign fl_oe_n = ~fl_we_n;
 assign fl_we_n = ~cpu_write;
 assign fl_ce_n = ~mem_flash;
@@ -161,13 +160,16 @@ assign rgb_write = cpu_write & mem_led_matrix;
 
 // LED display driver
 led_matrix led0(.clk(clock_50), .rst_n(rst_n), .rgb_a(rgb_a), .rgb_b(rgb_b), .rgb_c(rgb_c), .rgb0(rgb0), .rgb1(rgb1), .rgb_clk(rgb_clk), .rgb_stb(rgb_stb), .oe_n(rgb_oe_n),
-  .pixel(rgb_matrix), .write(rgb_write), .address(cpu_addrbus[8:0]));
+  .data_in(cpu_data_out), .data_out(led_matrix_data_out), .write(rgb_write), .address(cpu_addrbus[9:0]));
 
 // visualization stuff
 hexdisp d0(.out(HEX3), .in(cpu_data_out[15:12]));
 hexdisp d1(.out(HEX2), .in(cpu_data_out[11:8]));
 hexdisp d2(.out(HEX1), .in(cpu_data_out[7:4]));
 hexdisp d3(.out(HEX0), .in(cpu_data_out[3:0]));
+// Blinknlights
+assign LEDG = { cpu_write, mem_sram, mem_led_matrix, mem_flash, mem_dram, mem_monitor, kbd_event, pb};
+assign LEDR = {6'b0, ccr};
 
 // quadrature encoder outputs 0-23
 quadenc q0(.clk(clock_50), .rst_n(rst_n), .quadA(quad[0]), .quadB(quad[1]), .count(val));
@@ -178,10 +180,10 @@ lcd_module lcd0(.clk(clock_50), .rst_n(rst_n), .e(lcd_e), .data_out(lcd_data), .
 // Keyboard
 user_input kbd0(.clk(clock_50), .rst_n(rst_n), .ps2_clock(ps2_clk), .ps2_data(ps2_dat), .data_read(pb), .data_ready(kbd_event), .data_out(kbd_data));
 
-mycpu cpu0(.clk(clock_50), .rst_n(rst_n), .addrbus(cpu_addrbus), .data_in(cpu_data_in), .data_out(cpu_data_out), .write_out(cpu_write));
+mycpu cpu0(.clk(clock_50), .rst_n(rst_n), .addrbus(cpu_addrbus), .data_in(cpu_data_in), .data_out(cpu_data_out), .write_out(cpu_write), .ccr(ccr));
 
 // Chip select logic
-mem_select memmap0(.address(cpu_addrbus), .flash(mem_flash), .dram(mem_dram), .sram(mem_sram), .monitor(mem_monitor), .led_matrix(mem_led_matrix));
+mem_select memmap0(.address(cpu_addrbus), .flash(mem_flash), .dram(mem_dram), .sram(mem_sram), .monitor(mem_monitor), .led_matrix(mem_led_matrix), .kbd(mem_kbd));
 
 // ROM monitor code
 monitor rom0(.clock(clock_50), .address(cpu_addrbus[11:0]), .q(mem_monitor_data));
