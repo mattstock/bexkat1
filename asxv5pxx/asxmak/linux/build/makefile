@@ -29,6 +29,7 @@ all:	as1802		\
 	as8085		\
 	as8xcxxx	\
 	asavr		\
+	asbexkat1	\
 	asez80		\
 	asf2mc8		\
 	asf8		\
@@ -109,6 +110,7 @@ clean:
 	rm -f as8085
 	rm -f as8xcxxx
 	rm -f asavr
+	rm -f asbexkat1
 	rm -f asez80
 	rm -f asf2mc8
 	rm -f asf8
@@ -189,6 +191,7 @@ prep:
 	rm -f as8051
 	rm -f as8085
 	rm -f as8xcxxx
+	rm -f asbexkat1
 	rm -f asavr
 	rm -f asez80
 	rm -f asf2mc8
@@ -248,6 +251,7 @@ SRC8051=	$(ASXBAS)as8051/
 SRC8085=	$(ASXBAS)as8085/
 SRC8XCXXX=	$(ASXBAS)as8xcxxx/
 SRCAVR=		$(ASXBAS)asavr/
+SRCBEXKAT1=	$(ASXBAS)asbexkat1/
 SRCCHECK=	$(ASXBAS)ascheck/
 SRCEZ80=	$(ASXBAS)asez80/
 SRCF2MC8=	$(ASXBAS)asf2mc8/
@@ -616,6 +620,23 @@ asavr:	$(ASXXSRC) $(ASAVRSRC)
 	cp asavr $(DSTEXE)asavr
 	strip $(DSTEXE)asavr
 	chmod 755 $(DSTEXE)asavr
+
+
+####################################################################
+# ASBEXKAT1
+####################################################################
+
+ASBEXKAT1 =		bexkat1adr.o bexkat1mch.o bexkat1pst.o
+
+ASBEXKAT1SRC =	$(addprefix $(SRCBEXKAT1),$(ASBEXKAT1))
+
+$(ASBEXKAT1SRC):	$(SRCMISC)alloc.h $(SRCASX)asxxxx.h $(SRCBEXKAT1)bexkat1.h
+
+asbexkat1:	$(ASXXSRC) $(ASBEXKAT1SRC)
+	$(LD) $(LDFLAGS) $(ASXXSRC) $(ASBEXKAT1SRC) -o asbexkat1
+	cp asbexkat1 $(DSTEXE)asbexkat1
+	strip $(DSTEXE)asbexkat1
+	chmod 755 $(DSTEXE)asbexkat1
 
 
 ####################################################################
