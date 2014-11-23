@@ -6,7 +6,7 @@ output baudclk;
 input [31:0] control;
 
 parameter clkfreq = 50000000; // 50Mhz
-parameter baud = 115200; // hardcode for now
+parameter baud = 9600; // hardcode for now
 
 reg [15:0] counter;
 

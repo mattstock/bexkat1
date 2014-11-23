@@ -5,7 +5,7 @@ module soc(SW, KEY, HEX0, HEX1, HEX2, HEX3, LEDR, LEDG, clock_50, clock_27,
   lcd_i2c_sclk, lcd_i2c_sdat, ps2_dat, ps2_clk, lcd_e, lcd_rs, lcd_data,
   rgb0, rgb1, rgb_a, rgb_b, rgb_c, rgb_stb, rgb_clk, rgb_oe_n,
   fl_addrbus, fl_databus, fl_oe_n, fl_ce_n, fl_we_n, fl_rst_n,
-  serial0_tx, serial0_rx, serial1_tx, serial1_rx, baudclk,
+  serial0_tx, serial0_rx, serial1_tx, serial1_rx,
   dram_dq, dram_addr, dram_ba, dram_ldqm, dram_udqm, dram_ras_n, dram_cas_n, dram_cke, dram_clk, dram_we_n, dram_ce_n);
 
 // SRAM
@@ -80,7 +80,6 @@ output lcd_i2c_sclk;
 // serial
 input serial0_rx, serial1_rx;
 output serial0_tx, serial1_tx;
-output baudclk;
 
 // ps2
 input ps2_dat;
@@ -170,7 +169,7 @@ hexdisp d2(.out(HEX1), .in(cpu_data_out[7:4]));
 hexdisp d3(.out(HEX0), .in(cpu_data_out[3:0]));
 // Blinknlights
 assign LEDG = { cpu_write, mem_sram, mem_led_matrix, mem_flash, mem_dram, mem_monitor, kbd_event, pb};
-assign LEDR = { baudclk, 5'b0, ccr};
+assign LEDR = { 6'h00, ccr};
 
 // quadrature encoder outputs 0-23
 rgb_enc io0(.clk(clock_50), .rst_n(rst_n), .quad(quad), .button(pb), .rgb_out(rgb),
@@ -187,7 +186,7 @@ uart uart0(.clk(clock_50), .rst_n(rst_n), .rx(serial0_rx), .tx(serial0_tx), .dat
   .write(cpu_write & mem_serial0), .address(cpu_addrbus[3:0]));
 // UART for speach generator
 uart uart1(.clk(clock_50), .rst_n(rst_n), .rx(serial1_rx), .tx(serial1_tx), .data_in(cpu_data_out), .data_out(serial1_data),
-  .write(cpu_write & mem_serial1), .address(cpu_addrbus[3:0]), .baudclk(baudclk));
+  .write(cpu_write & mem_serial1), .address(cpu_addrbus[3:0]));
 
 mycpu cpu0(.clk(clock_50), .rst_n(rst_n), .addrbus(cpu_addrbus), .data_in(cpu_data_in), .data_out(cpu_data_out), .write_out(cpu_write), .ccr(ccr));
 
