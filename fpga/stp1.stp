@@ -4,12 +4,13 @@
   </display_tree>
   <instance entity_name="sld_signaltap" is_auto_node="yes" is_expanded="true" name="auto_signaltap_0" source_file="sld_signaltap.vhd">
     <node_ip_info instance_id="0" mfg_id="110" node_id="0" version="6"/>
-    <signal_set global_temp="1" is_expanded="true" name="signal_set: 2014/11/21 19:10:13  #0">
-      <clock name="mycpu:cpu0|clk" polarity="posedge" tap_mode="classic"/>
-      <config ram_type="M4K" reserved_data_nodes="0" reserved_storage_qualifier_nodes="0" reserved_trigger_nodes="0" sample_depth="64" trigger_in_enable="no" trigger_out_enable="no"/>
+    <signal_set global_temp="1" is_expanded="true" name="signal_set: 2014/11/22 20:07:04  #0">
+      <clock name="uart:uart1|clk" polarity="posedge" tap_mode="classic"/>
+      <config ram_type="M4K" reserved_data_nodes="0" reserved_storage_qualifier_nodes="0" reserved_trigger_nodes="0" sample_depth="256" trigger_in_enable="no" trigger_out_enable="no"/>
       <top_entity/>
       <signal_vec>
         <trigger_input_vec>
+          <wire name="mem_select:memmap0|serial1" tap_mode="classic" type="combinatorial"/>
           <wire name="mycpu:cpu0|addrbus[0]" tap_mode="classic" type="combinatorial"/>
           <wire name="mycpu:cpu0|addrbus[10]" tap_mode="classic" type="combinatorial"/>
           <wire name="mycpu:cpu0|addrbus[11]" tap_mode="classic" type="combinatorial"/>
@@ -42,61 +43,6 @@
           <wire name="mycpu:cpu0|addrbus[7]" tap_mode="classic" type="combinatorial"/>
           <wire name="mycpu:cpu0|addrbus[8]" tap_mode="classic" type="combinatorial"/>
           <wire name="mycpu:cpu0|addrbus[9]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[0]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[10]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[11]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[12]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[13]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[14]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[15]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[1]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[2]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[3]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[4]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[5]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[6]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[7]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[8]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[9]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[0]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[10]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[11]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[12]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[13]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[14]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[15]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[1]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[2]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[3]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[4]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[5]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[6]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[7]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[8]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[9]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[10]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[11]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[12]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[13]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[14]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[15]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[1]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[2]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[3]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[4]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[5]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[6]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[7]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[8]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[9]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu_func[0]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu_func[1]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu_func[2]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu_func[3]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|ccr[0]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|ccr[1]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|ccr[2]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|ccr[3]" tap_mode="classic" type="combinatorial"/>
           <wire name="mycpu:cpu0|data_in[0]" tap_mode="classic" type="combinatorial"/>
           <wire name="mycpu:cpu0|data_in[10]" tap_mode="classic" type="combinatorial"/>
           <wire name="mycpu:cpu0|data_in[11]" tap_mode="classic" type="combinatorial"/>
@@ -129,38 +75,6 @@
           <wire name="mycpu:cpu0|data_out[7]" tap_mode="classic" type="combinatorial"/>
           <wire name="mycpu:cpu0|data_out[8]" tap_mode="classic" type="combinatorial"/>
           <wire name="mycpu:cpu0|data_out[9]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|mar[0]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[10]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[11]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[12]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[13]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[14]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[15]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[16]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[17]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[18]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[19]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[1]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[20]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[21]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[22]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[23]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[24]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[25]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[26]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[27]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[28]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[29]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[2]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[30]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[31]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[3]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[4]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[5]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[6]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[7]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[8]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[9]" tap_mode="classic" type="register"/>
           <wire name="mycpu:cpu0|opcode[0]" tap_mode="classic" type="register"/>
           <wire name="mycpu:cpu0|opcode[10]" tap_mode="classic" type="register"/>
           <wire name="mycpu:cpu0|opcode[11]" tap_mode="classic" type="register"/>
@@ -209,113 +123,41 @@
           <wire name="mycpu:cpu0|pc[7]" tap_mode="classic" type="register"/>
           <wire name="mycpu:cpu0|pc[8]" tap_mode="classic" type="register"/>
           <wire name="mycpu:cpu0|pc[9]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|reg_data_in[0]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[10]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[11]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[12]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[13]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[14]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[15]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[1]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[2]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[3]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[4]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[5]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[6]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[7]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[8]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[9]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_read_addr2[0]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_read_addr2[1]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_read_addr2[2]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_read_addr2[3]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_read_addr2[4]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|read1[0]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|read1[1]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|read1[2]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|read1[3]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|read1[4]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|read2[0]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|read2[1]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|read2[2]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|read2[3]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|read2[4]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][0]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][10]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][11]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][12]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][13]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][14]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][15]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][1]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][2]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][3]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][4]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][5]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][6]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][7]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][8]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][9]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][0]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][10]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][11]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][12]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][13]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][14]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][15]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][1]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][2]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][3]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][4]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][5]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][6]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][7]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][8]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][9]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][0]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][10]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][11]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][12]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][13]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][14]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][15]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][1]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][2]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][3]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][4]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][5]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][6]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][7]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][8]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][9]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[0]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[10]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[11]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[12]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[13]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[14]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[15]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[1]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[2]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[3]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[4]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[5]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[6]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[7]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[8]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[9]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_en" tap_mode="classic" type="combinatorial"/>
           <wire name="mycpu:cpu0|rst_n" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|state.STATE_ERR" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|state.STATE_FETCH1" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|state.STATE_FETCH2" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|state.STATE_LOAD" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|state.STATE_MEMOP1" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|state.STATE_MEMOP2" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|state.STATE_STORE" tap_mode="classic" type="combinatorial"/>
           <wire name="mycpu:cpu0|write_out" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|address[0]" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|address[1]" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|address[2]" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|address[3]" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|baudclk" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|tx" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|tx_byte[0]" tap_mode="classic" type="register"/>
+          <wire name="uart:uart1|tx_byte[1]" tap_mode="classic" type="register"/>
+          <wire name="uart:uart1|tx_byte[2]" tap_mode="classic" type="register"/>
+          <wire name="uart:uart1|tx_byte[3]" tap_mode="classic" type="register"/>
+          <wire name="uart:uart1|tx_byte[4]" tap_mode="classic" type="register"/>
+          <wire name="uart:uart1|tx_byte[5]" tap_mode="classic" type="register"/>
+          <wire name="uart:uart1|tx_byte[6]" tap_mode="classic" type="register"/>
+          <wire name="uart:uart1|tx_byte[7]" tap_mode="classic" type="register"/>
+          <wire name="uart:uart1|tx_queue" tap_mode="classic" type="register"/>
+          <wire name="uart:uart1|tx_start" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|uart_tx:tx0|busy" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|uart_tx:tx0|data[0]" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|uart_tx:tx0|data[1]" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|uart_tx:tx0|data[2]" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|uart_tx:tx0|data[3]" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|uart_tx:tx0|data[4]" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|uart_tx:tx0|data[5]" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|uart_tx:tx0|data[6]" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|uart_tx:tx0|data[7]" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|uart_tx:tx0|start" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|uart_tx:tx0|state[0]" tap_mode="classic" type="register"/>
+          <wire name="uart:uart1|uart_tx:tx0|state[1]" tap_mode="classic" type="register"/>
+          <wire name="uart:uart1|uart_tx:tx0|state[2]" tap_mode="classic" type="register"/>
+          <wire name="uart:uart1|uart_tx:tx0|state[3]" tap_mode="classic" type="register"/>
         </trigger_input_vec>
         <data_input_vec>
+          <wire name="mem_select:memmap0|serial1" tap_mode="classic" type="combinatorial"/>
           <wire name="mycpu:cpu0|addrbus[0]" tap_mode="classic" type="combinatorial"/>
           <wire name="mycpu:cpu0|addrbus[10]" tap_mode="classic" type="combinatorial"/>
           <wire name="mycpu:cpu0|addrbus[11]" tap_mode="classic" type="combinatorial"/>
@@ -348,61 +190,6 @@
           <wire name="mycpu:cpu0|addrbus[7]" tap_mode="classic" type="combinatorial"/>
           <wire name="mycpu:cpu0|addrbus[8]" tap_mode="classic" type="combinatorial"/>
           <wire name="mycpu:cpu0|addrbus[9]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[0]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[10]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[11]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[12]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[13]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[14]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[15]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[1]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[2]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[3]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[4]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[5]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[6]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[7]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[8]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[9]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[0]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[10]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[11]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[12]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[13]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[14]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[15]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[1]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[2]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[3]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[4]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[5]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[6]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[7]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[8]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[9]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[10]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[11]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[12]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[13]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[14]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[15]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[1]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[2]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[3]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[4]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[5]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[6]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[7]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[8]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[9]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu_func[0]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu_func[1]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu_func[2]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu_func[3]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|ccr[0]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|ccr[1]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|ccr[2]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|ccr[3]" tap_mode="classic" type="combinatorial"/>
           <wire name="mycpu:cpu0|data_in[0]" tap_mode="classic" type="combinatorial"/>
           <wire name="mycpu:cpu0|data_in[10]" tap_mode="classic" type="combinatorial"/>
           <wire name="mycpu:cpu0|data_in[11]" tap_mode="classic" type="combinatorial"/>
@@ -435,38 +222,6 @@
           <wire name="mycpu:cpu0|data_out[7]" tap_mode="classic" type="combinatorial"/>
           <wire name="mycpu:cpu0|data_out[8]" tap_mode="classic" type="combinatorial"/>
           <wire name="mycpu:cpu0|data_out[9]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|mar[0]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[10]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[11]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[12]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[13]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[14]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[15]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[16]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[17]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[18]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[19]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[1]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[20]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[21]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[22]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[23]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[24]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[25]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[26]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[27]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[28]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[29]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[2]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[30]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[31]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[3]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[4]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[5]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[6]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[7]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[8]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[9]" tap_mode="classic" type="register"/>
           <wire name="mycpu:cpu0|opcode[0]" tap_mode="classic" type="register"/>
           <wire name="mycpu:cpu0|opcode[10]" tap_mode="classic" type="register"/>
           <wire name="mycpu:cpu0|opcode[11]" tap_mode="classic" type="register"/>
@@ -515,113 +270,41 @@
           <wire name="mycpu:cpu0|pc[7]" tap_mode="classic" type="register"/>
           <wire name="mycpu:cpu0|pc[8]" tap_mode="classic" type="register"/>
           <wire name="mycpu:cpu0|pc[9]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|reg_data_in[0]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[10]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[11]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[12]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[13]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[14]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[15]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[1]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[2]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[3]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[4]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[5]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[6]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[7]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[8]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[9]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_read_addr2[0]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_read_addr2[1]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_read_addr2[2]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_read_addr2[3]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_read_addr2[4]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|read1[0]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|read1[1]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|read1[2]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|read1[3]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|read1[4]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|read2[0]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|read2[1]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|read2[2]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|read2[3]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|read2[4]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][0]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][10]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][11]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][12]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][13]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][14]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][15]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][1]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][2]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][3]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][4]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][5]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][6]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][7]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][8]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][9]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][0]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][10]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][11]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][12]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][13]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][14]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][15]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][1]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][2]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][3]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][4]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][5]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][6]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][7]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][8]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][9]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][0]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][10]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][11]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][12]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][13]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][14]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][15]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][1]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][2]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][3]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][4]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][5]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][6]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][7]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][8]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][9]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[0]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[10]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[11]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[12]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[13]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[14]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[15]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[1]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[2]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[3]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[4]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[5]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[6]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[7]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[8]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[9]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_en" tap_mode="classic" type="combinatorial"/>
           <wire name="mycpu:cpu0|rst_n" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|state.STATE_ERR" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|state.STATE_FETCH1" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|state.STATE_FETCH2" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|state.STATE_LOAD" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|state.STATE_MEMOP1" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|state.STATE_MEMOP2" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|state.STATE_STORE" tap_mode="classic" type="combinatorial"/>
           <wire name="mycpu:cpu0|write_out" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|address[0]" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|address[1]" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|address[2]" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|address[3]" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|baudclk" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|tx" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|tx_byte[0]" tap_mode="classic" type="register"/>
+          <wire name="uart:uart1|tx_byte[1]" tap_mode="classic" type="register"/>
+          <wire name="uart:uart1|tx_byte[2]" tap_mode="classic" type="register"/>
+          <wire name="uart:uart1|tx_byte[3]" tap_mode="classic" type="register"/>
+          <wire name="uart:uart1|tx_byte[4]" tap_mode="classic" type="register"/>
+          <wire name="uart:uart1|tx_byte[5]" tap_mode="classic" type="register"/>
+          <wire name="uart:uart1|tx_byte[6]" tap_mode="classic" type="register"/>
+          <wire name="uart:uart1|tx_byte[7]" tap_mode="classic" type="register"/>
+          <wire name="uart:uart1|tx_queue" tap_mode="classic" type="register"/>
+          <wire name="uart:uart1|tx_start" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|uart_tx:tx0|busy" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|uart_tx:tx0|data[0]" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|uart_tx:tx0|data[1]" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|uart_tx:tx0|data[2]" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|uart_tx:tx0|data[3]" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|uart_tx:tx0|data[4]" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|uart_tx:tx0|data[5]" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|uart_tx:tx0|data[6]" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|uart_tx:tx0|data[7]" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|uart_tx:tx0|start" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|uart_tx:tx0|state[0]" tap_mode="classic" type="register"/>
+          <wire name="uart:uart1|uart_tx:tx0|state[1]" tap_mode="classic" type="register"/>
+          <wire name="uart:uart1|uart_tx:tx0|state[2]" tap_mode="classic" type="register"/>
+          <wire name="uart:uart1|uart_tx:tx0|state[3]" tap_mode="classic" type="register"/>
         </data_input_vec>
         <storage_qualifier_input_vec>
+          <wire name="mem_select:memmap0|serial1" tap_mode="classic" type="combinatorial"/>
           <wire name="mycpu:cpu0|addrbus[0]" tap_mode="classic" type="combinatorial"/>
           <wire name="mycpu:cpu0|addrbus[10]" tap_mode="classic" type="combinatorial"/>
           <wire name="mycpu:cpu0|addrbus[11]" tap_mode="classic" type="combinatorial"/>
@@ -654,61 +337,6 @@
           <wire name="mycpu:cpu0|addrbus[7]" tap_mode="classic" type="combinatorial"/>
           <wire name="mycpu:cpu0|addrbus[8]" tap_mode="classic" type="combinatorial"/>
           <wire name="mycpu:cpu0|addrbus[9]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[0]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[10]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[11]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[12]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[13]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[14]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[15]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[1]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[2]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[3]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[4]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[5]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[6]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[7]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[8]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in1[9]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[0]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[10]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[11]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[12]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[13]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[14]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[15]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[1]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[2]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[3]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[4]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[5]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[6]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[7]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[8]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|in2[9]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[10]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[11]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[12]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[13]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[14]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[15]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[1]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[2]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[3]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[4]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[5]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[6]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[7]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[8]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu:alu0|out[9]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu_func[0]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu_func[1]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu_func[2]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|alu_func[3]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|ccr[0]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|ccr[1]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|ccr[2]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|ccr[3]" tap_mode="classic" type="combinatorial"/>
           <wire name="mycpu:cpu0|data_in[0]" tap_mode="classic" type="combinatorial"/>
           <wire name="mycpu:cpu0|data_in[10]" tap_mode="classic" type="combinatorial"/>
           <wire name="mycpu:cpu0|data_in[11]" tap_mode="classic" type="combinatorial"/>
@@ -741,38 +369,6 @@
           <wire name="mycpu:cpu0|data_out[7]" tap_mode="classic" type="combinatorial"/>
           <wire name="mycpu:cpu0|data_out[8]" tap_mode="classic" type="combinatorial"/>
           <wire name="mycpu:cpu0|data_out[9]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|mar[0]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[10]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[11]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[12]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[13]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[14]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[15]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[16]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[17]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[18]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[19]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[1]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[20]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[21]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[22]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[23]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[24]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[25]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[26]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[27]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[28]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[29]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[2]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[30]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[31]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[3]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[4]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[5]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[6]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[7]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[8]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|mar[9]" tap_mode="classic" type="register"/>
           <wire name="mycpu:cpu0|opcode[0]" tap_mode="classic" type="register"/>
           <wire name="mycpu:cpu0|opcode[10]" tap_mode="classic" type="register"/>
           <wire name="mycpu:cpu0|opcode[11]" tap_mode="classic" type="register"/>
@@ -821,111 +417,38 @@
           <wire name="mycpu:cpu0|pc[7]" tap_mode="classic" type="register"/>
           <wire name="mycpu:cpu0|pc[8]" tap_mode="classic" type="register"/>
           <wire name="mycpu:cpu0|pc[9]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|reg_data_in[0]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[10]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[11]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[12]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[13]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[14]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[15]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[1]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[2]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[3]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[4]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[5]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[6]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[7]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[8]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_data_in[9]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_read_addr2[0]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_read_addr2[1]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_read_addr2[2]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_read_addr2[3]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|reg_read_addr2[4]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|read1[0]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|read1[1]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|read1[2]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|read1[3]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|read1[4]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|read2[0]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|read2[1]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|read2[2]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|read2[3]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|read2[4]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][0]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][10]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][11]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][12]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][13]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][14]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][15]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][1]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][2]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][3]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][4]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][5]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][6]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][7]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][8]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[0][9]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][0]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][10]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][11]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][12]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][13]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][14]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][15]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][1]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][2]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][3]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][4]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][5]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][6]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][7]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][8]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[1][9]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][0]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][10]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][11]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][12]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][13]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][14]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][15]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][1]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][2]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][3]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][4]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][5]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][6]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][7]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][8]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|regfile[2][9]" tap_mode="classic" type="register"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[0]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[10]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[11]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[12]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[13]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[14]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[15]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[1]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[2]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[3]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[4]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[5]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[6]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[7]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[8]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_data[9]" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|registerfile:reg0|write_en" tap_mode="classic" type="combinatorial"/>
           <wire name="mycpu:cpu0|rst_n" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|state.STATE_ERR" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|state.STATE_FETCH1" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|state.STATE_FETCH2" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|state.STATE_LOAD" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|state.STATE_MEMOP1" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|state.STATE_MEMOP2" tap_mode="classic" type="combinatorial"/>
-          <wire name="mycpu:cpu0|state.STATE_STORE" tap_mode="classic" type="combinatorial"/>
           <wire name="mycpu:cpu0|write_out" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|address[0]" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|address[1]" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|address[2]" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|address[3]" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|baudclk" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|tx" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|tx_byte[0]" tap_mode="classic" type="register"/>
+          <wire name="uart:uart1|tx_byte[1]" tap_mode="classic" type="register"/>
+          <wire name="uart:uart1|tx_byte[2]" tap_mode="classic" type="register"/>
+          <wire name="uart:uart1|tx_byte[3]" tap_mode="classic" type="register"/>
+          <wire name="uart:uart1|tx_byte[4]" tap_mode="classic" type="register"/>
+          <wire name="uart:uart1|tx_byte[5]" tap_mode="classic" type="register"/>
+          <wire name="uart:uart1|tx_byte[6]" tap_mode="classic" type="register"/>
+          <wire name="uart:uart1|tx_byte[7]" tap_mode="classic" type="register"/>
+          <wire name="uart:uart1|tx_queue" tap_mode="classic" type="register"/>
+          <wire name="uart:uart1|tx_start" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|uart_tx:tx0|busy" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|uart_tx:tx0|data[0]" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|uart_tx:tx0|data[1]" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|uart_tx:tx0|data[2]" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|uart_tx:tx0|data[3]" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|uart_tx:tx0|data[4]" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|uart_tx:tx0|data[5]" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|uart_tx:tx0|data[6]" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|uart_tx:tx0|data[7]" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|uart_tx:tx0|start" tap_mode="classic" type="combinatorial"/>
+          <wire name="uart:uart1|uart_tx:tx0|state[0]" tap_mode="classic" type="register"/>
+          <wire name="uart:uart1|uart_tx:tx0|state[1]" tap_mode="classic" type="register"/>
+          <wire name="uart:uart1|uart_tx:tx0|state[2]" tap_mode="classic" type="register"/>
+          <wire name="uart:uart1|uart_tx:tx0|state[3]" tap_mode="classic" type="register"/>
         </storage_qualifier_input_vec>
       </signal_vec>
       <presentation>
@@ -964,12 +487,6 @@
             <net is_signal_inverted="no" name="mycpu:cpu0|addrbus[1]"/>
             <net is_signal_inverted="no" name="mycpu:cpu0|addrbus[0]"/>
           </bus>
-          <bus is_signal_inverted="no" link="all" name="mycpu:cpu0|alu_func" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu_func[3]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu_func[2]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu_func[1]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu_func[0]"/>
-          </bus>
           <bus is_signal_inverted="no" link="all" name="mycpu:cpu0|data_in" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
             <net is_signal_inverted="no" name="mycpu:cpu0|data_in[15]"/>
             <net is_signal_inverted="no" name="mycpu:cpu0|data_in[14]"/>
@@ -1005,40 +522,6 @@
             <net is_signal_inverted="no" name="mycpu:cpu0|data_out[2]"/>
             <net is_signal_inverted="no" name="mycpu:cpu0|data_out[1]"/>
             <net is_signal_inverted="no" name="mycpu:cpu0|data_out[0]"/>
-          </bus>
-          <bus is_signal_inverted="no" link="all" name="mycpu:cpu0|mar" order="msb_to_lsb" radix="hex" state="collapse" type="register">
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[31]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[30]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[29]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[28]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[27]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[26]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[25]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[24]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[23]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[22]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[21]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[20]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[19]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[18]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[17]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[16]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[15]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[14]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[13]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[12]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[11]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[10]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[9]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[8]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[7]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[6]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[5]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[4]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[3]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[2]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[1]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[0]"/>
           </bus>
           <bus is_signal_inverted="no" link="all" name="mycpu:cpu0|opcode" order="msb_to_lsb" radix="hex" state="collapse" type="register">
             <net is_signal_inverted="no" name="mycpu:cpu0|opcode[15]"/>
@@ -1092,186 +575,47 @@
             <net is_signal_inverted="no" name="mycpu:cpu0|pc[1]"/>
             <net is_signal_inverted="no" name="mycpu:cpu0|pc[0]"/>
           </bus>
-          <bus is_signal_inverted="no" link="all" name="mycpu:cpu0|reg_read_addr2" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_read_addr2[4]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_read_addr2[3]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_read_addr2[2]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_read_addr2[1]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_read_addr2[0]"/>
-          </bus>
           <net is_signal_inverted="no" name="mycpu:cpu0|rst_n"/>
-          <net is_signal_inverted="no" name="mycpu:cpu0|state.STATE_FETCH1"/>
-          <net is_signal_inverted="no" name="mycpu:cpu0|state.STATE_FETCH2"/>
-          <net is_signal_inverted="no" name="mycpu:cpu0|state.STATE_LOAD"/>
-          <net is_signal_inverted="no" name="mycpu:cpu0|state.STATE_MEMOP1"/>
-          <net is_signal_inverted="no" name="mycpu:cpu0|state.STATE_MEMOP2"/>
-          <net is_signal_inverted="no" name="mycpu:cpu0|state.STATE_STORE"/>
-          <net is_signal_inverted="no" name="mycpu:cpu0|state.STATE_ERR"/>
           <net is_signal_inverted="no" name="mycpu:cpu0|write_out"/>
-          <bus is_signal_inverted="no" link="all" name="mycpu:cpu0|registerfile:reg0|regfile[0]" order="msb_to_lsb" radix="hex" state="collapse" type="register">
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[0][15]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[0][14]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[0][13]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[0][12]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[0][11]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[0][10]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[0][9]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[0][8]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[0][7]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[0][6]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[0][5]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[0][4]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[0][3]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[0][2]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[0][1]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[0][0]"/>
+          <net is_signal_inverted="no" name="mem_select:memmap0|serial1"/>
+          <bus is_signal_inverted="no" link="all" name="uart:uart1|address" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
+            <net is_signal_inverted="no" name="uart:uart1|address[3]"/>
+            <net is_signal_inverted="no" name="uart:uart1|address[2]"/>
+            <net is_signal_inverted="no" name="uart:uart1|address[1]"/>
+            <net is_signal_inverted="no" name="uart:uart1|address[0]"/>
           </bus>
-          <bus is_signal_inverted="no" link="all" name="mycpu:cpu0|registerfile:reg0|regfile[1]" order="msb_to_lsb" radix="hex" state="collapse" type="register">
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[1][15]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[1][14]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[1][13]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[1][12]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[1][11]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[1][10]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[1][9]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[1][8]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[1][7]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[1][6]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[1][5]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[1][4]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[1][3]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[1][2]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[1][1]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[1][0]"/>
+          <bus is_signal_inverted="no" link="all" name="uart:uart1|tx_byte" order="msb_to_lsb" radix="hex" state="collapse" type="register">
+            <net is_signal_inverted="no" name="uart:uart1|tx_byte[7]"/>
+            <net is_signal_inverted="no" name="uart:uart1|tx_byte[6]"/>
+            <net is_signal_inverted="no" name="uart:uart1|tx_byte[5]"/>
+            <net is_signal_inverted="no" name="uart:uart1|tx_byte[4]"/>
+            <net is_signal_inverted="no" name="uart:uart1|tx_byte[3]"/>
+            <net is_signal_inverted="no" name="uart:uart1|tx_byte[2]"/>
+            <net is_signal_inverted="no" name="uart:uart1|tx_byte[1]"/>
+            <net is_signal_inverted="no" name="uart:uart1|tx_byte[0]"/>
           </bus>
-          <bus is_signal_inverted="no" link="all" name="mycpu:cpu0|registerfile:reg0|regfile[2]" order="msb_to_lsb" radix="hex" state="collapse" type="register">
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[2][15]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[2][14]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[2][13]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[2][12]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[2][11]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[2][10]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[2][9]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[2][8]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[2][7]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[2][6]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[2][5]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[2][4]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[2][3]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[2][2]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[2][1]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[2][0]"/>
+          <net is_signal_inverted="no" name="uart:uart1|tx_queue"/>
+          <net is_signal_inverted="no" name="uart:uart1|uart_tx:tx0|busy"/>
+          <net is_signal_inverted="no" name="uart:uart1|uart_tx:tx0|start"/>
+          <bus is_signal_inverted="no" link="all" name="uart:uart1|uart_tx:tx0|state" order="msb_to_lsb" radix="hex" state="collapse" type="register">
+            <net is_signal_inverted="no" name="uart:uart1|uart_tx:tx0|state[3]"/>
+            <net is_signal_inverted="no" name="uart:uart1|uart_tx:tx0|state[2]"/>
+            <net is_signal_inverted="no" name="uart:uart1|uart_tx:tx0|state[1]"/>
+            <net is_signal_inverted="no" name="uart:uart1|uart_tx:tx0|state[0]"/>
           </bus>
-          <bus is_signal_inverted="no" link="all" name="mycpu:cpu0|registerfile:reg0|write_data" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|write_data[15]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|write_data[14]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|write_data[13]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|write_data[12]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|write_data[11]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|write_data[10]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|write_data[9]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|write_data[8]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|write_data[7]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|write_data[6]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|write_data[5]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|write_data[4]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|write_data[3]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|write_data[2]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|write_data[1]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|write_data[0]"/>
+          <net is_signal_inverted="no" name="uart:uart1|tx"/>
+          <bus is_signal_inverted="no" link="all" name="uart:uart1|uart_tx:tx0|data" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
+            <net is_signal_inverted="no" name="uart:uart1|uart_tx:tx0|data[7]"/>
+            <net is_signal_inverted="no" name="uart:uart1|uart_tx:tx0|data[6]"/>
+            <net is_signal_inverted="no" name="uart:uart1|uart_tx:tx0|data[5]"/>
+            <net is_signal_inverted="no" name="uart:uart1|uart_tx:tx0|data[4]"/>
+            <net is_signal_inverted="no" name="uart:uart1|uart_tx:tx0|data[3]"/>
+            <net is_signal_inverted="no" name="uart:uart1|uart_tx:tx0|data[2]"/>
+            <net is_signal_inverted="no" name="uart:uart1|uart_tx:tx0|data[1]"/>
+            <net is_signal_inverted="no" name="uart:uart1|uart_tx:tx0|data[0]"/>
           </bus>
-          <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|write_en"/>
-          <bus is_signal_inverted="no" link="all" name="mycpu:cpu0|registerfile:reg0|read1" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|read1[4]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|read1[3]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|read1[2]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|read1[1]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|read1[0]"/>
-          </bus>
-          <bus is_signal_inverted="no" link="all" name="mycpu:cpu0|registerfile:reg0|read2" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|read2[4]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|read2[3]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|read2[2]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|read2[1]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|read2[0]"/>
-          </bus>
-          <bus is_signal_inverted="no" link="all" name="mycpu:cpu0|alu:alu0|in1" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in1[15]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in1[14]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in1[13]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in1[12]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in1[11]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in1[10]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in1[9]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in1[8]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in1[7]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in1[6]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in1[5]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in1[4]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in1[3]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in1[2]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in1[1]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in1[0]"/>
-          </bus>
-          <bus is_signal_inverted="no" link="all" name="mycpu:cpu0|alu:alu0|in2" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in2[15]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in2[14]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in2[13]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in2[12]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in2[11]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in2[10]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in2[9]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in2[8]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in2[7]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in2[6]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in2[5]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in2[4]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in2[3]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in2[2]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in2[1]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in2[0]"/>
-          </bus>
-          <bus is_signal_inverted="no" link="all" name="mycpu:cpu0|alu:alu0|out" order="msb_to_lsb" radix="hex" state="expand" type="combinatorial">
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|out[15]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|out[14]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|out[13]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|out[12]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|out[11]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|out[10]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|out[9]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|out[8]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|out[7]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|out[6]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|out[5]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|out[4]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|out[3]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|out[2]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|out[1]"/>
-          </bus>
-          <bus is_signal_inverted="no" link="all" name="mycpu:cpu0|reg_data_in" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_data_in[15]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_data_in[14]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_data_in[13]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_data_in[12]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_data_in[11]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_data_in[10]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_data_in[9]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_data_in[8]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_data_in[7]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_data_in[6]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_data_in[5]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_data_in[4]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_data_in[3]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_data_in[2]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_data_in[1]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_data_in[0]"/>
-          </bus>
-          <bus is_signal_inverted="no" link="all" name="mycpu:cpu0|ccr" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
-            <net is_signal_inverted="no" name="mycpu:cpu0|ccr[3]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|ccr[2]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|ccr[1]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|ccr[0]"/>
-          </bus>
+          <net is_signal_inverted="no" name="uart:uart1|baudclk"/>
+          <net is_signal_inverted="no" name="uart:uart1|tx_start"/>
         </data_view>
         <setup_view>
           <bus is_signal_inverted="no" link="all" name="mycpu:cpu0|addrbus" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
@@ -1308,12 +652,6 @@
             <net is_signal_inverted="no" name="mycpu:cpu0|addrbus[1]"/>
             <net is_signal_inverted="no" name="mycpu:cpu0|addrbus[0]"/>
           </bus>
-          <bus is_signal_inverted="no" link="all" name="mycpu:cpu0|alu_func" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu_func[3]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu_func[2]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu_func[1]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu_func[0]"/>
-          </bus>
           <bus is_signal_inverted="no" link="all" name="mycpu:cpu0|data_in" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
             <net is_signal_inverted="no" name="mycpu:cpu0|data_in[15]"/>
             <net is_signal_inverted="no" name="mycpu:cpu0|data_in[14]"/>
@@ -1349,40 +687,6 @@
             <net is_signal_inverted="no" name="mycpu:cpu0|data_out[2]"/>
             <net is_signal_inverted="no" name="mycpu:cpu0|data_out[1]"/>
             <net is_signal_inverted="no" name="mycpu:cpu0|data_out[0]"/>
-          </bus>
-          <bus is_signal_inverted="no" link="all" name="mycpu:cpu0|mar" order="msb_to_lsb" radix="hex" state="collapse" type="register">
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[31]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[30]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[29]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[28]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[27]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[26]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[25]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[24]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[23]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[22]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[21]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[20]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[19]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[18]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[17]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[16]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[15]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[14]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[13]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[12]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[11]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[10]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[9]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[8]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[7]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[6]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[5]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[4]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[3]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[2]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[1]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|mar[0]"/>
           </bus>
           <bus is_signal_inverted="no" link="all" name="mycpu:cpu0|opcode" order="msb_to_lsb" radix="hex" state="collapse" type="register">
             <net is_signal_inverted="no" name="mycpu:cpu0|opcode[15]"/>
@@ -1436,189 +740,50 @@
             <net is_signal_inverted="no" name="mycpu:cpu0|pc[1]"/>
             <net is_signal_inverted="no" name="mycpu:cpu0|pc[0]"/>
           </bus>
-          <bus is_signal_inverted="no" link="all" name="mycpu:cpu0|reg_read_addr2" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_read_addr2[4]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_read_addr2[3]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_read_addr2[2]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_read_addr2[1]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_read_addr2[0]"/>
-          </bus>
           <net is_signal_inverted="no" name="mycpu:cpu0|rst_n"/>
-          <net is_signal_inverted="no" name="mycpu:cpu0|state.STATE_FETCH1"/>
-          <net is_signal_inverted="no" name="mycpu:cpu0|state.STATE_FETCH2"/>
-          <net is_signal_inverted="no" name="mycpu:cpu0|state.STATE_LOAD"/>
-          <net is_signal_inverted="no" name="mycpu:cpu0|state.STATE_MEMOP1"/>
-          <net is_signal_inverted="no" name="mycpu:cpu0|state.STATE_MEMOP2"/>
-          <net is_signal_inverted="no" name="mycpu:cpu0|state.STATE_STORE"/>
-          <net is_signal_inverted="no" name="mycpu:cpu0|state.STATE_ERR"/>
           <net is_signal_inverted="no" name="mycpu:cpu0|write_out"/>
-          <bus is_signal_inverted="no" link="all" name="mycpu:cpu0|reg_data_in" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_data_in[15]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_data_in[14]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_data_in[13]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_data_in[12]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_data_in[11]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_data_in[10]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_data_in[9]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_data_in[8]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_data_in[7]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_data_in[6]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_data_in[5]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_data_in[4]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_data_in[3]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_data_in[2]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_data_in[1]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|reg_data_in[0]"/>
+          <net is_signal_inverted="no" name="mem_select:memmap0|serial1"/>
+          <bus is_signal_inverted="no" link="all" name="uart:uart1|address" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
+            <net is_signal_inverted="no" name="uart:uart1|address[3]"/>
+            <net is_signal_inverted="no" name="uart:uart1|address[2]"/>
+            <net is_signal_inverted="no" name="uart:uart1|address[1]"/>
+            <net is_signal_inverted="no" name="uart:uart1|address[0]"/>
           </bus>
-          <bus is_signal_inverted="no" link="all" name="mycpu:cpu0|registerfile:reg0|regfile[0]" order="msb_to_lsb" radix="hex" state="collapse" type="register">
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[0][15]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[0][14]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[0][13]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[0][12]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[0][11]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[0][10]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[0][9]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[0][8]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[0][7]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[0][6]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[0][5]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[0][4]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[0][3]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[0][2]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[0][1]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[0][0]"/>
+          <bus is_signal_inverted="no" link="all" name="uart:uart1|tx_byte" order="msb_to_lsb" radix="hex" state="collapse" type="register">
+            <net is_signal_inverted="no" name="uart:uart1|tx_byte[7]"/>
+            <net is_signal_inverted="no" name="uart:uart1|tx_byte[6]"/>
+            <net is_signal_inverted="no" name="uart:uart1|tx_byte[5]"/>
+            <net is_signal_inverted="no" name="uart:uart1|tx_byte[4]"/>
+            <net is_signal_inverted="no" name="uart:uart1|tx_byte[3]"/>
+            <net is_signal_inverted="no" name="uart:uart1|tx_byte[2]"/>
+            <net is_signal_inverted="no" name="uart:uart1|tx_byte[1]"/>
+            <net is_signal_inverted="no" name="uart:uart1|tx_byte[0]"/>
           </bus>
-          <bus is_signal_inverted="no" link="all" name="mycpu:cpu0|registerfile:reg0|regfile[1]" order="msb_to_lsb" radix="hex" state="collapse" type="register">
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[1][15]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[1][14]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[1][13]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[1][12]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[1][11]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[1][10]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[1][9]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[1][8]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[1][7]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[1][6]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[1][5]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[1][4]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[1][3]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[1][2]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[1][1]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[1][0]"/>
+          <net is_signal_inverted="no" name="uart:uart1|baudclk"/>
+          <net is_signal_inverted="no" name="uart:uart1|tx_queue"/>
+          <net is_signal_inverted="no" name="uart:uart1|tx_start"/>
+          <net is_signal_inverted="no" name="uart:uart1|uart_tx:tx0|busy"/>
+          <net is_signal_inverted="no" name="uart:uart1|uart_tx:tx0|start"/>
+          <bus is_signal_inverted="no" link="all" name="uart:uart1|uart_tx:tx0|state" order="msb_to_lsb" radix="hex" state="collapse" type="register">
+            <net is_signal_inverted="no" name="uart:uart1|uart_tx:tx0|state[3]"/>
+            <net is_signal_inverted="no" name="uart:uart1|uart_tx:tx0|state[2]"/>
+            <net is_signal_inverted="no" name="uart:uart1|uart_tx:tx0|state[1]"/>
+            <net is_signal_inverted="no" name="uart:uart1|uart_tx:tx0|state[0]"/>
           </bus>
-          <bus is_signal_inverted="no" link="all" name="mycpu:cpu0|registerfile:reg0|regfile[2]" order="msb_to_lsb" radix="hex" state="collapse" type="register">
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[2][15]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[2][14]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[2][13]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[2][12]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[2][11]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[2][10]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[2][9]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[2][8]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[2][7]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[2][6]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[2][5]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[2][4]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[2][3]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[2][2]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[2][1]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|regfile[2][0]"/>
-          </bus>
-          <bus is_signal_inverted="no" link="all" name="mycpu:cpu0|registerfile:reg0|write_data" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|write_data[15]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|write_data[14]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|write_data[13]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|write_data[12]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|write_data[11]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|write_data[10]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|write_data[9]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|write_data[8]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|write_data[7]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|write_data[6]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|write_data[5]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|write_data[4]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|write_data[3]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|write_data[2]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|write_data[1]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|write_data[0]"/>
-          </bus>
-          <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|write_en"/>
-          <bus is_signal_inverted="no" link="all" name="mycpu:cpu0|registerfile:reg0|read1" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|read1[4]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|read1[3]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|read1[2]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|read1[1]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|read1[0]"/>
-          </bus>
-          <bus is_signal_inverted="no" link="all" name="mycpu:cpu0|registerfile:reg0|read2" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|read2[4]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|read2[3]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|read2[2]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|read2[1]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|registerfile:reg0|read2[0]"/>
-          </bus>
-          <bus is_signal_inverted="no" link="all" name="mycpu:cpu0|alu:alu0|in1" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in1[15]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in1[14]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in1[13]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in1[12]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in1[11]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in1[10]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in1[9]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in1[8]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in1[7]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in1[6]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in1[5]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in1[4]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in1[3]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in1[2]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in1[1]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in1[0]"/>
-          </bus>
-          <bus is_signal_inverted="no" link="all" name="mycpu:cpu0|alu:alu0|in2" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in2[15]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in2[14]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in2[13]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in2[12]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in2[11]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in2[10]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in2[9]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in2[8]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in2[7]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in2[6]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in2[5]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in2[4]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in2[3]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in2[2]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in2[1]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|in2[0]"/>
-          </bus>
-          <bus is_signal_inverted="no" link="all" name="mycpu:cpu0|alu:alu0|out" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|out[15]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|out[14]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|out[13]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|out[12]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|out[11]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|out[10]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|out[9]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|out[8]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|out[7]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|out[6]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|out[5]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|out[4]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|out[3]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|out[2]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|alu:alu0|out[1]"/>
-          </bus>
-          <bus is_signal_inverted="no" link="all" name="mycpu:cpu0|ccr" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
-            <net is_signal_inverted="no" name="mycpu:cpu0|ccr[3]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|ccr[2]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|ccr[1]"/>
-            <net is_signal_inverted="no" name="mycpu:cpu0|ccr[0]"/>
+          <net is_signal_inverted="no" name="uart:uart1|tx"/>
+          <bus is_signal_inverted="no" link="all" name="uart:uart1|uart_tx:tx0|data" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
+            <net is_signal_inverted="no" name="uart:uart1|uart_tx:tx0|data[7]"/>
+            <net is_signal_inverted="no" name="uart:uart1|uart_tx:tx0|data[6]"/>
+            <net is_signal_inverted="no" name="uart:uart1|uart_tx:tx0|data[5]"/>
+            <net is_signal_inverted="no" name="uart:uart1|uart_tx:tx0|data[4]"/>
+            <net is_signal_inverted="no" name="uart:uart1|uart_tx:tx0|data[3]"/>
+            <net is_signal_inverted="no" name="uart:uart1|uart_tx:tx0|data[2]"/>
+            <net is_signal_inverted="no" name="uart:uart1|uart_tx:tx0|data[1]"/>
+            <net is_signal_inverted="no" name="uart:uart1|uart_tx:tx0|data[0]"/>
           </bus>
         </setup_view>
       </presentation>
-      <trigger CRC="329FDB68" attribute_mem_mode="false" gap_record="true" global_temp="1" is_expanded="true" name="trigger: 2014/11/21 19:10:13  #1" position="pre" power_up_trigger_mode="false" record_data_gap="true" segment_size="64" storage_mode="off" storage_qualifier_disabled="no" storage_qualifier_port_is_pin="false" storage_qualifier_port_name="auto_stp_external_storage_qualifier" storage_qualifier_port_tap_mode="classic" trigger_in="dont_care" trigger_out="active high" trigger_type="circular">
+      <trigger CRC="BA153EEC" attribute_mem_mode="false" gap_record="true" global_temp="1" is_expanded="true" name="trigger: 2014/11/22 20:29:07  #0" position="pre" power_up_trigger_mode="false" record_data_gap="true" segment_size="256" storage_mode="transitional" storage_qualifier_disabled="no" storage_qualifier_port_is_pin="true" storage_qualifier_port_name="auto_stp_external_storage_qualifier" storage_qualifier_port_tap_mode="classic" trigger_in="dont_care" trigger_out="active high" trigger_type="circular">
         <power_up_trigger position="pre" storage_qualifier_disabled="no" trigger_in="dont_care" trigger_out="active high"/>
         <events use_custom_flow_control="no">
           <level enabled="yes" name="condition1" type="basic">'mycpu:cpu0|rst_n' == rising edge
@@ -1627,8 +792,8 @@
           </level>
         </events>
         <storage_qualifier_events>
-          <transitional>0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
-            <pwr_up_transitional>0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000</pwr_up_transitional>
+          <transitional>0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011000000001111111111111111
+            <pwr_up_transitional>0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000</pwr_up_transitional>
           </transitional>
           <storage_qualifier_level type="basic">
             <power_up>
@@ -1647,15 +812,28 @@
           </storage_qualifier_level>
         </storage_qualifier_events>
         <log>
-          <data global_temp="1" name="log: 2014/11/21 19:15:06  #0" power_up_mode="false" sample_depth="64" trigger_position="8">0000000000000000111111011000000000000000000000000000000000000000000000000000000000000000000101000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000011111101100000000000000000000000000000000000000000000000000000000000000000010100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000111111011000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000001111110110000000000000000000000000000000000000000000000000000000000000000001010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011111101100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000111111011000000000000000000000000000000000000000000000000000000000000000000101000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000011111101100000000000000000000000000000000000000000000000000000000000000000010100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000111111011000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000001111110110000000000000000000000000000000000000000000000000000000000000000001010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011111101100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000111111011000000000000000000000000000000000000000000000000000000000000000000101000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001111110110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000011111101100000000000000000000000000000000000000000000000000000000000000000010100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000111111011000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000000000000001111110110000000000000000000000000000000000000000000000000000000000000000001010000000000000000000000000000000000000000000000000000000000000000000000000000000000000000011111101100000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000001010000001000000000000000111111011000000000000000000000000000000000000000000000000000000000000000000101000000000000000000000000000000000000000000000000000000000000010000000000010000000000000001111110110000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000100000000000000011111101100000000000000000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000001000000000001000000000000000111111011000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000100000110010000000000000000100001111110110000000000000000000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000100000000000000000000001000011111101100000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000001000000000000000000010000111111011000000000000000000000000000000000000000000000000000000000000001000101000000000000000000000000000000000000000000000000000000000000010000000000000000000000100001111110110000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000101000000100000000001000011111101100000000000000000000000000000000000000000000000000000000000000100010100000000000000000000000000000000000000000000000000000000010001000000000001000000000010000111111011000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000010000000010000000000100001111110110000000000000000000000000000000000000000000000000000000000000010000001100000000000000000000000000000000000000000000000000000001000100000000000100000000001000011111101100000000000000000000000000000000000000000000000010000000000000000000000000000000000000100000011000000011001000000000000000000000111111111000000000000000000000000000000000000000000000000000000000000001000000110000000000000000000000000000000000000000000000000000000100010000000000000000000000000001111111110000000000000000000000000000000000000000000000001000001000000110000000000000000000000000000000000000000100000000000000000000000011111111100000000000000000000000000000000000000000000000000000000000000000000100000010000000000000000000000000000000000000000000000000010001000000000000000000000000000111111111000000000000000000000000000000000000000000000000100000100000011000000000000000000000000000000000000000010100000010000000000000001111111110000000000000000000000000000000000000000000000000000000000000000000010000001000000000000000000000000000000000000000000000000000000000000000100100000000000000011111111100000000000000000000000000000000000000000000000010000010000001100000000000000000000000000000000000000001000000001000000000000000111111111000000000000000001000001000000110000000000000001000000001000001000000000000000000000000000000000000000000000000000000000000000000000000000010010000000000000001111111110000000000000000000000010000000001000000000000001000001000000110000000000000000000000000000000000000000100100000000000000001000011111111100000000000000000000000000000000000000000000000000000000001000100000000000000000000000000000000000000000000000000000000000000000000000000001000000000000010000111111111000000000000000000000000000000000000000000000000100000100000011000000000000000000000000000000000000000010000000000000000000100001111111110000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000100000000000001000011111111100000000000000000000000000000000000000000000000010000010000001100000000000000000000000000000000000000001010000001000000000010000111111111000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000100001111111110000000000000000000000000000000000000000000000001000001000000110000000000000000000000000000000000000000110000000100000000001000011111111100000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000010000111111111000000000000000000000000000000000000000000000000100000100000011000000000000000000000000000000000000000011000000010000000000100001111111110000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000001000011111111100000000000000000000000000000000000000000000000010000010000001100000000000000000000000000000000000000001100000001000000000010000111111111000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000100001111111110000000000000000000000000000000000000000000000001000001000000110000000000000000000000000000000000000000110000000100000000001000011111111100000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000010000111111111000000000000000000000000000000000000000000000000100000100000011000000000000000000000000000000000000000011000000010000000000100001111111110000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000001000011111111100000000000000000000000000000000000000000000000010000010000001100000000000000000000000000000000000000001100000001000000000010000111111111000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000100001111111110000000000000000000000000000000000000000000000001000001000000110000000000000000000000000000000000000000110000000100000000001000011111111100000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000010000111111111000000000000000000000000000000000000000000000000100000100000011000000000000000000000000000000000000000011000000010000000000100001111111110000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000001000011111111100000000000000000000000000000000000000000000000010000010000001100000000000000000000000000000000000000001100000001000000000010000111111111000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000100001111111110000000000000000000000000000000000000000000000001000001000000110000000000000000000000000000000000000000110000000100000000001000011111111100000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000010000111111111000000000000000000000000000000000000000000000000100000100000011000000000000000000000000000000000000000011000000010000000000100001111111110000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000001000011111111100000000000000000000000000000000000000000000000010000010000001100000000000000000000000000000000000000001100000001000000000010000111111111000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000100001111111110000000000000000000000000000000000000000000000001000001000000110000000000000000000000000000000000000000110000000100000000001000011111111100000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000010000111111111000000000000000000000000000000000000000000000000100000100000011000000000000000000000000000000000000000011000000010000000000100001111111110000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000001000011111111100000000000000000000000000000000000000000000000010000010000001100000000000000000000000000000000000000001100000001000000000010000111111111000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000100001111111110000000000000000000000000000000000000000000000001000001000000110000000000000000000000000000000000000000110000000100000000001000011111111100000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000010000111111111000000000000000000000000000000000000000000000000100000100000011000000000000000000000000000000000000000011000000010000000000100001111111110000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000001000011111111100000000000000000000000000000000000000000000000010000010000001100000000000000000000000000000000000000001100000001000000000010000111111111000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000100001111111110000000000000000000000000000000000000000000000001000001000000110000000000000000000000000000000000000000110000000100000000001000011111111100000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000010000111111111000000000000000000000000000000000000000000000000100000100000011000000000000000000000000000000000000000011000000010000000000100001111111110000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000001000011111111100000000000000000000000000000000000000000000000010000010000001100000000000000000000000000000000000000001100000001000000000010000111111111000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000100001111111110000000000000000000000000000000000000000000000001000001000000110000000000000000000000000000000000000000110000000100000000001000011111111100000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000010000111111111000000000000000000000000000000000000000000000000100000100000011000000000000000000000000000000000000000011000000010000000000100001111111110000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000001000011111111100000000000000000000000000000000000000000000000010000010000001100000000000000000000000000000000000000001100000001000000000010000111111111000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000100001111111110000000000000000000000000000000000000000000000001000001000000110000000000000000000000000000000000000000110000000100000000001000011111111100000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000010000111111111000000000000000000000000000000000000000000000000100000100000011000000000000000000000000000000000000000011000000010000000000100001111111110000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000001000011111111100000000000000000000000000000000000000000000000010000010000001100000000000000000000000000000000000000001100000001000000000010000111111111000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000100001111111110000000000000000000000000000000000000000000000001000001000000110000000000000000000000000000000000000000110000000100000000001000011111111100000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000010000111111111000000000000000000000000000000000000000000000000100000100000011000000000000000000000000000000000000000011000000010000000000100001111111110000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000001000011111111100000000000000000000000000000000000000000000000010000010000001100000000000000000000000000000000000000001100000001000000000010000111111111000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000100001111111110000000000000000000000000000000000000000000000001000001000000110000000000000000000000000000000000000000110000000100000000001000011111111100000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000010000111111111000000000000000000000000000000000000000000000000100000100000011000000000000000000000000000000000000000011000000010000000000100001111111110000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000001000011111111100000000000000000000000000000000000000000000000010000010000001100000000000000000000000000000000000000001100000001000000000010000111111111000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000100001111111110000000000000000000000000000000000000000000000001000001000000110000000000000000000000000000000000000000110000000100000000001000011111111100000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000010000111111111000000000000000000000000000000000000000000000000100000100000011000000000000000000000000000000000000000011000000010000000000100001111111110000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000001000011111111100000000000000000000000000000000000000000000000010000010000001100000000000000000000000000000000000000001100000001000000000010000111111111000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000100001111111110000000000000000000000000000000000000000000000001000001000000110000000000000000000000000000000000000000110000000100000000001000011111111100000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000010000111111111000000000000000000000000000000000000000000000000100000100000011000000000000000000000000000000000000000011000000010000000000100001111111110000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000001000011111111100000000000000000000000000000000000000000000000010000010000001100000000000000000000000000000000000000001100000001000000000010000111111111000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000100001111111110000000000000000000000000000000000000000000000001000001000000110000000000000000000000000000000000000000110000000100000000001000011111111100000000000000000000000000000000000000000000000000000000001000000000000000000000000000000000000000000000000000000000000000000000000000000000001000000000010000111111111000000000000000000000000000000000000000000000000100000100000011000000000000000000000000000000000000000011000000010000000000100001111111110000000000000000000000000000000000000000000000000000000000100000000000000000000000000000000000000000000000000000000000000000000000000000000000100000000001000011111111100000000000000000000000000000000000000000000000010000010000001100000000000000000000000000000000000000001100000001000000000010000111111111000000000000000000000000000000000000000000000000000000000010000000000000000000000000000000000000000000000000000000000000000000000000000000000010000000000100001111111110000000000000000000000000000000000000000000000001000001000000110000000000000000000000000000000000000000110000000</data>
-          <extradata>11111111T1111111111111111111111111111111111111111111111111111111</extradata>
+          <data global_temp="1" name="log: 2014/11/22 20:31:03  #0" power_up_mode="false" sample_depth="256" trigger_position="32">0000000000001000011111111100000000000000000000000100000000001010000010000000000000000000000010000111111111000000010011011100001010011000010101000010000000000100001111111110000000000000000000000010000000000101000001000000000000100000000001000011111111100000001011101110000101000100001010000001000000000010000111111111000000001111110000000111000000000010100000100000000000010000000000100001111111110000000101110011000010100010000101000000100000000000000011111111100000000000000000000000100000000001010000001000000000001000000000000000111111111000000010101001100001011101000010110000010000000000000001111111110000000000101100000000010000000000101000000100000000000100000000000000011111111100000001010100010000101001100001010001000000000000010000111111011000000000001110000000001000000000010100000010000000000000000000000100001111110110000000100100101000010100110000101000100100000000001000011111101100000000000111000000000100000000001010000001000000000001000000000010000111111011000000010110011100001010011000010100001010000000000100001111110110000000000000000001000010000000000101000000100000000000100000000001000011111101100000001011001010000101001100001010100100000000000000000111111111000000000000000000100001000000000010100000010000000000000000000000000001111111110000000100010101000010100110000101001010000000000000000011111111100000000111111100000010100000000001010000001000000000000000000000000000111111111000000010001010100001010011000010101101100000000100000001011110110010000000000000000000010000000000101000000100000000000100000000000000011111111100000001100001010000101001100001010001101000000000000000111111111000000000000000000000001000000000010100000010000000000010000000000000001111111110000000101010111000010100110000101010110100000000000000011111111100000000001011000000000100000000001010000001000000000001000000000000000111111111000000010101010100001010011000010100111000000000000100001111111110000000000101100000000010000000000101000001000000000000000000000001000011111111100000001001101110000101001100001010111100000000000010000111111111000000000000000000000001000000000010100000100000000000000000000000100001111111110000000100110111000010100110000101010000100000000001000011111111100000000000000000000000100000000001010000010000000000001000000000010000111111111000000010111011100001010001000010100000010000000000100001111111110000000011111100000001110000000000101000001000000000000100000000001000011111111100000001011100110000101000100001010000001000000000000000111111111000000000000000000000001000000000010100000010000000000010000000000000001111111110000000101010011000010111010000101100000100000000000000011111111100000000001011000000000100000000001010000001000000000001000000000000000111111111000000010101000100001010011000010100010000000000000000001111110110000000000000000000000000000000000000000000000000000000000000000000000011111101100000000000000000000000001000000000001000000000000000000111111011000000000001010000000000000000000000000000000000000000000000000000000001111110110000000000000100000000000100000000000100000000000000000011111101100000000000101000000000000000000000000000000000000000000000000000000000111111011000000000000010000000000010000000000001000000000000000001111110110000000000010100000000000000000000000000000000000000000000000000000000011111101100000000000001000000000001000000000100100000000000000000111111011000000000001010000000000000000000000000000000000000000000000000000000001111110110000000000000100000000000100000000001010000000000000000011111101100000000000101000000000000000000000000000000000000000000000000000000000111111011000000000000010000000000010000000001101000000000000000001111110110000000000010100000000000000000000000000000000000000000000000000000000011111101100000000000001000000000001000000000001100000000000000000111111011000000000001010000000000000000000000000000000000000000000000000000000001111110110000000000000100000000000100000000010110000000000000000011111101100000000000101000000000000000000000000000000000000000000000000000000000111111011000000000000010000000000010000000000111000000000000000001111110110000000000010100000000000000000000000000000000000000000000000000000000011111101100000000000001000000000001000000000111100000000000000000111111011000000000001010000000000000000000000000000000000000000000000000000000001111110110000000000000110000000000100000000010000000000000000000011111101100000000000101000000000000000000000000000000000000000000000000000000000111111011000000000000011000000000000000000000000000000000000000001111110110000000000010100000000000000000000000000000000000000000000000000000000011111101100000000000000100000000000000000000000001000000000000000111111111000000000000000000000001000000000010100000010000000000010000000000000001111111110000000101010011000010111010000101100000100000000000000011111111100000000001011000000000100000000001010000001000000000001000000000000000111111111000000010101000100001010011000010100010000000000000100001111110110000000000011100000000010000000000101000000100000000000000000000001000011111101100000001001001010000101001100001010001001000000000010000111111011000000000001110000000001000000000010100000010000000000010000000000100001111110110000000101100111000010100110000101000010100000000001000011111101100000000000000000010000100000000001010000001000000000001000000000010000111111011000000010110010100001010011000010101001000000000000000001111111110000000000000000001000010000000000101000000100000000000000000000000000011111111100000001000101010000101001100001010010100000000000000000111111111000000001111111000000101000000000010100000010000000000000000000000000001111111110000000100010101000010100110000101011011000000001000000010111101100100000000000000000000100000000001010000001000000000001000000000000000111111111000000011000010100001010011000010100011010000000000000001111111110000000000000000000000010000000000101000000100000000000100000000000000011111111100000001010101110000101001100001010101101000000000000000111111111000000000010110000000001000000000010100000010000000000010000000000000001111111110000000101010101000010100110000101001110000000000001000011111111100000000001011000000000100000000001010000010000000000000000000000010000111111111000000010011011100001010011000010101111000000000000100001111111110000000000000000000000010000000000101000001000000000000000000000001000011111111100000001001101110000101001100001010100001000000000010000111111111000000000000000000000001000000000010100000100000000000010000000000100001111111110000000101110111000010100010000101000000100000000001000011111111100000000111111000000011100000000001010000010000000000001000000000010000111111111000000010111001100001010001000010100000010000000000000001111111110000000000000000000000010000000000101000000100000000000100000000000000011111111100000001010100110000101110100001011000001000000000000000111111111000000000010110000000001000000000010100000010000000000010000000000000001111111110000000101010001000010100110000101000100000000000001000011111101100000000000111000000000100000000001010000001000000000000000000000010000111111011000000010010010100001010011000010100010010000000000100001111110110000000000011100000000010000000000101000000100000000000100000000001000011111101100000001011001110000101001100001010000101000000000010000111111011000000000000000000100001000000000010100000010000000000010000000000100001111110110000000101100101000010100110000101010010000000000000000011111111100000000000000000010000100000000001010000001000000000000000000000000000111111111000000010001010100001010011000010100101000000000000000001111111110000000011111110000001010000000000101000000100000000000000000000000000011111111100000001000101010000101001100001010110110000000010000000101111011001000000000000000000001000000000010100000010000000000010000000000000001111111110000000110000101000010100110000101000110100000000000000011111111100000000000000000000000100000000001010000001000000000001000000000000000111111111000000010101011100001010011000010101011010000000000000001111111110000000000101100000000010000000000101000000100000000000100000000000000011111111100000001010101010000101001100001010011100000000000010000111111111000000000010110000000001000000000010100000100000000000000000000000100001111111110000000100110111000010100110000101011110000000000001000011111111100000000000000000000000100000000001010000010000000000000000000000010000111111111000000010011011100001010011000010101000010000000000100001111111110000000000000000000000010000000000101000001000000000000100000000001000011111111100000001011101110000101000100001010000001000000000010000111111111000000001111110000000111000000000010100000100000000000010000000000100001111111110000000101110011000010100010000101000000100000000000000011111111100000000000000000000000100000000001010000001000000000001000000000000000111111111000000010101001100001011101000010110000010000000000000001111111110000000000101100000000010000000000101000000100000000000100000000000000011111111100000001010100010000101001100001010001000000000000010000111111011000000000001110000000001000000000010100000010000000000000000000000100001111110110000000100100101000010100110000101000100100000000001000011111101100000000000111000000000100000000001010000001000000000001000000000010000111111011000000010110011100001010011000010100001010000000000100001111110110000000000000000001000010000000000101000000100000000000100000000001000011111101100000001011001010000101001100001010100100000000000000000111111111000000000000000000100001000000000010100000010000000000000000000000000001111111110000000100010101000010100110000101001010000000000000000011111111100000000111111100000010100000000001010000001000000000000000000000000000111111111000000010001010100001010011000010101101100000000100000001011110110010000000000000000000010000000000101000000100000000000100000000000000011111111100000001100001010000101001100001010001101000000000000000111111111000000000000000000000001000000000010100000010000000000010000000000000001111111110000000101010111000010100110000101010110100000000000000011111111100000000001011000000000100000000001010000001000000000001000000000000000111111111000000010101010100001010011000010100111000000000000100001111111110000000000101100000000010000000000101000001000000000000000000000001000011111111100000001001101110000101001100001010111100000000000010000111111111000000000000000000000001000000000010100000100000000000000000000000100001111111110000000100110111000010100110000101010000100000000001000011111111100000000000000000000000100000000001010000010000000000001000000000010000111111111000000010111011100001010001000010100000010000000000100001111111110000000011111100000001110000000000101000001000000000000100000000001000011111111100000001011100110000101000100001010000001000000000000000111111111000000000000000000000001000000000010100000010000000000010000000000000001111111110000000101010011000010111010000101100000100000000000000011111111100000000001011000000000100000000001010000001000000000001000000000000000111111111000000010101000100001010011000010100010000000000000100001111110110000000000011100000000010000000000101000000100000000000000000000001000011111101100000001001001010000101001100001010001001000000000010000111111011000000000001110000000001000000000010100000010000000000010000000000100001111110110000000101100111000010100110000101000010100000000001000011111101100000000000000000010000100000000001010000001000000000001000000000010000111111011000000010110010100001010011000010101001000000000000000001111111110000000000000000001000010000000000101000000100000000000000000000000000011111111100000001000101010000101001100001010010100000000000000000111111111000000001111111000000101000000000010100000010000000000000000000000000001111111110000000100010101000010100110000101011011000000001000000010111101100100000000000000000000100000000001010000001000000000001000000000000000111111111000000011000010100001010011000010100011010000000000000001111111110000000000000000000000010000000000101000000100000000000100000000000000011111111100000001010101110000101001100001010101101000000000000000111111111000000000010110000000001000000000010100000010000000000010000000000000001111111110000000101010101000010100110000101001110000000000001000011111111100000000001011000000000100000000001010000010000000000000000000000010000111111111000000010011011100001010011000010101111000000000000100001111111110000000000000000000000010000000000101000001000000000000000000000001000011111111100000001001101110000101001100001010100001000000000010000111111111000000000000000000000001000000000010100000100000000000010000000000100001111111110000000101110111000010100010000101000000100000000001000011111111100000000111111000000011100000000001010000010000000000001000000000010000111111111000000010111001100001010001000010100000010000000000000001111111110000000000000000000000010000000000101000000100000000000100000000000000011111111100000001010100110000101110100001011000001000000000000000111111111000000000010110000000001000000000010100000010000000000010000000000000001111111110000000101010001000010100110000101000100000000000001000011111101100000000000111000000000100000000001010000001000000000000000000000010000111111011000000010010010100001010011000010100010010000000000100001111110110000000000011100000000010000000000101000000100000000000100000000001000011111101100000001011001110000101001100001010000101000000000010000111111011000000000000000000100001000000000010100000010000000000010000000000100001111110110000000101100101000010100110000101010010000000000000000011111111100000000000000000010000100000000001010000001000000000000000000000000000111111111000000010001010100001010011000010100101000000000000000001111111110000000011111110000001010000000000101000000100000000000000000000000000011111111100000001000101010000101001100001010110110000000010000000101111011001000000000000000000001000000000010100000010000000000010000000000000001111111110000000110000101000010100110000101000110100000000000000011111111100000000000000000000000100000000001010000001000000000001000000000000000111111111000000010101011100001010011000010101011010000000000000001111111110000000000101100000000010000000000101000000100000000000100000000000000011111111100000001010101010000101001100001010011100000000000010000111111111000000000010110000000001000000000010100000100000000000000000000000100001111111110000000100110111000010100110000101011110000000000001000011111111100000000000000000000000100000000001010000010000000000000000000000010000111111111000000010011011100001010011000010101000010000000000100001111111110000000000000000000000010000000000101000001000000000000100000000001000011111111100000001011101110000101000100001010000001000000000010000111111111000000001111110000000111000000000010100000100000000000010000000000100001111111110000000101110011000010100010000101000000100000000000000011111111100000000000000000000000100000000001010000001000000000001000000000000000111111111000000010101001100001011101000010110000010000000000000001111111110000000000101100000000010000000000101000000100000000000100000000000000011111111100000001010100010000101001100001010001000000000000010000111111011000000000001110000000001000000000010100000010000000000000000000000100001111110110000000100100101000010100110000101000100100000000001000011111101100000000000111000000000100000000001010000001000000000001000000000010000111111011000000010110011100001010011000010100001010000000000100001111110110000000000000000001000010000000000101000000100000000000100000000001000011111101100000001011001010000101001100001010100100000000000000000111111111000000000000000000100001000000000010100000010000000000000000000000000001111111110000000100010101000010100110000101001010000000000000000011111111100000000111111100000010100000000001010000001000000000000000000000000000111111111000000010001010100001010011000010101101100000000100000001011110110010000000000000000000010000000000101000000100000000000100000000000000011111111100000001100001010000101001100001010001101000000000000000111111111000000000000000000000001000000000010100000010000000000010000000000000001111111110000000101010111000010100110000101010110100000000000000011111111100000000001011000000000100000000001010000001000000000001000000000000000111111111000000010101010100001010011000010100111000000000000100001111111110000000000101100000000010000000000101000001000000000000000000000001000011111111100000001001101110000101001100001010111100000000000010000111111111000000000000000000000001000000000010100000100000000000000000000000100001111111110000000100110111000010100110000101010000100000000001000011111111100000000000000000000000100000000001010000010000000000001000000000010000111111111000000010111011100001010001000010100000010000000000100001111111110000000011111100000001110000000000101000001000000000000100000000001000011111111100000001011100110000101000100001010000001000000000000000111111111000000000000000000000001000000000010100000010000000000010000000000000001111111110000000101010011000010111010000101100000100000000000000011111111100000000001011000000000100000000001010000001000000000001000000000000000111111111000000010101000100001010011000010100010000000000000100001111110110000000000011100000000010000000000101000000100000000000000000000001000011111101100000001001001010000101001100001010001001000000000010000111111011000000000001110000000001000000000010100000010000000000010000000000100001111110110000000101100111000010100110000101000010100000000001000011111101100000000000000000010000100000000001010000001000000000001000000000010000111111011000000010110010100001010011000010101001000000000000000001111111110000000000000000001000010000000000101000000100000000000000000000000000011111111100000001000101010000101001100001010010100000000000000000111111111000000001111111000000101000000000010100000010000000000000000000000000001111111110000000100010101000010100110000101011011000000001000000010111101100100000000000000000000100000000001010000001000000000001000000000000000111111111000000011000010100001010011000010100011010000000000000001111111110000000000000000000000010000000000101000000100000000000100000000000000011111111100000001010101110000101001100001010101101000000000000000111111111000000000010110000000001000000000010100000010000000000010000000000000001111111110000000101010101000010100110000101001110000000000001000011111111100000000001011000000000100000000001010000010000000000000000000000010000111111111000000010011011100001010011000010101111000000000000100001111111110000000000000000000000010000000000101000001000000000000000000000001000011111111100000001001101110000101001100001010100001000000000010000111111111000000000000000000000001000000000010100000100000000000010000000000100001111111110000000101110111000010100010000101000000100000000001000011111111100000000111111000000011100000000001010000010000000000001000000000010000111111111000000010111001100001010001000010100000010000000000000001111111110000000000000000000000010000000000101000000100000000000100000000000000011111111100000001010100110000101110100001011000001000000000000000111111111000000000010110000000001000000000010100000010000000000010000000000000001111111110000000101010001000010100110000101000100000000000001000011111101100000000000111000000000100000000001010000001000000000000000000000010000111111011000000010010010100001010011000010100010010000000000100001111110110000000000011100000000010000000000101000000100000000000100000000001000011111101100000001011001110000101001100001010000101000000000010000111111011000000000000000000100001000000000010100000010000000000010000000000100001111110110000000101100101000010100110000101010010000000000000000011111111100000000000000000010000100000000001010000001000000000000000000000000000111111111000000010001010100001010011000010100101000000000000000001111111110000000011111110000001010000000000101000000100000000000000000000000000011111111100000001000101010000101001100001010110110000000010000000101111011001000000000000000000001000000000010100000010000000000010000000000000001111111110000000110000101000010100110000101000110100000000000000011111111100000000000000000000000100000000001010000001000000000001000000000000000111111111000000010101011100001010011000010101011010000000000000001111111110000000000101100000000010000000000101000000100000000000100000000000000011111111100000001010101010000101001100001010011100000000000010000111111111000000000010110000000001000000000010100000100000000000000000000000100001111111110000000100110111000010100110000101011110000000000001000011111111100000000000000000000000100000000001010000010000000000000000000000010000111111111000000010011011100001010011000010101000010000000000100001111111110000000000000000000000010000000000101000001000000000000100000000001000011111111100000001011101110000101000100001010000001000000000010000111111111000000001111110000000111000000000010100000100000000000010000000000100001111111110000000101110011000010100010000101000000100000000000000011111111100000000000000000000000100000000001010000001000000000001000000000000000111111111000000010101001100001011101000010110000010000000000000001111111110000000000101100000000010000000000101000000100000000000100000000000000011111111100000001010100010000101001100001010001000000000000010000111111011000000000001110000000001000000000010100000010000000000000000000000100001111110110000000100100101000010100110000101000100100000000001000011111101100000000000111000000000100000000001010000001000000000001000000000010000111111011000000010110011100001010011000010100001010000000000100001111110110000000000000000001000010000000000101000000100000000000100000000001000011111101100000001011001010000101001100001010100100000000000000000111111111000000000000000000100001000000000010100000010000000000000000000000000001111111110000000100010101000010100110000101001010000000000000000011111111100000000111111100000010100000000001010000001000000000000000000000000000111111111000000010001010100001010011000010101101100000000100000001011110110010000000000000000000010000000000101000000100000000000100000000000000011111111100000001100001010000101001100001010001101000000000000000111111111000000000000000000000001000000000010100000010000000000010000000000000001111111110000000101010111000010100110000101010110100000000000000011111111100000000001011000000000100000000001010000001000000000001000000000000000111111111000000010101010100001010011000010100111000000000000100001111111110000000000101100000000010000000000101000001000000000000000000000001000011111111100000001001101110000101001100001010111100000000000010000111111111000000000000000000000001000000000010100000100000000000000000000000100001111111110000000100110111000010100110000101010000100000000001000011111111100000000000000000000000100000000001010000010000000000001000000000010000111111111000000010111011100001010001000010100000010000000000100001111111110000000011111100000001110000000000101000001000000000000100000000001000011111111100000001011100110000101000100001010000001000000000000000111111111000000000000000000000001000000000010100000010000000000010000000000000001111111110000000101010011000010111010000101100000100000000000000011111111100000000001011000000000100000000001010000001000000000001000000000000000111111111000000010101000100001010011000010100010000000000000100001111110110000000000011100000000010000000000101000000100000000000000000000001000011111101100000001001001010000101001100001010001001000000000010000111111011000000000001110000000001000000000010100000010000000000010000000000100001111110110000000101100111000010100110000101000010100000000001000011111101100000000000000000010000100000000001010000001000000000001000000000010000111111011000000010110010100001010011000010101001000000000000000001111111110000000000000000001000010000000000101000000100000000000000000000000000011111111100000001000101010000101001100001010010100000000000000000111111111000000001111111000000101000000000010100000010000000000000000000000000001111111110000000100010101000010100110000101011011000000001000000010111101100100000000000000000000100000000001010000001000000000001000000000000000111111111000000011000010100001010011000010100011010000000000000001111111110000000000000000000000010000000000101000000100000000000100000000000000011111111100000001010101110000101001100001010101101000000000000000111111111000000000010110000000001000000000010100000010000000000010000000000000001111111110000000101010101000010100110000101001110000000000001000011111111100000000001011000000000100000000001010000010000000000000000000000010000111111111000000010011011100001010011000010101111000000000000100001111111110000000000000000000000010000000000101000001000000000000000000000001000011111111100000001001101110000101001100001010100001000000000010000111111111000000000000000000000001000000000010100000100000000000010000000000100001111111110000000101110111000010100010000101000000100000000001000011111111100000000111111000000011100000000001010000010000000000001000000000010000111111111000000010111001100001010001000010100000010000000000000001111111110000000000000000000000010000000000101000000100000000000100000000000000011111111100000001010100110000101110100001011000001000000000000000111111111000000000010110000000001000000000010100000010000000000010000000000000001111111110000000101010001000010100110000101000100000000000001000011111101100000000000111000000000100000000001010000001000000000000000000000010000111111011000000010010010100001010011000010100010010000000000100001111110110000000000011100000000010000000000101000000100000000000100000000001000011111101100000001011001110000101001100001010000101000000000010000111111011000000000000000000100001000000000010100000010000000000010000000000100001111110110000000101100101000010100110000101010010000000000000000011111111100000000000000000010000100000000001010000001000000000000000000000000000111111111000000010001010100001010011000010100101000000000000000001111111110000000011111110000001010000000000101000000100000000000000000000000000011111111100000001000101010000101001100001010110110000000010000000101111011001000000000000000000001000000000010100000010000000000010000000000000001111111110000000110000101000010100110000101000110100000000000000011111111100000000000000000000000100000000001010000001000000000001000000000000000111111111000000010101011100001010011000010101011010000000000000001111111110000000000101100000000010000000000101000000100000000000100000000000000011111111100000001010101010000101001100001010011100000000000010000111111111000000000010110000000001000000000010100000100000000000000000000000100001111111110000000100110111000010100110000101011110000000000001000011111111100000000000000000000000100000000001010000010000000000000000000000010000111111111000000010011011100001010011000010101000010000000000100001111111110000000000000000000000010000000000101000001000000000000100000000001000011111111100000001011101110000101000100001010000001000000000010000111111111000000001111110000000111000000000010100000100000000000010000000000100001111111110000000101110011000010100010000101000000100000000000000011111111100000000000000000000000100000000001010000001000000000001000000000000000111111111000000010101001100001011101000010110000010000000000000001111111110000000000101100000000010000000000101000000100000000000100000000000000011111111100000001010100010000101001100001010001000000000000010000111111011000000000001110000000001000000000010100000010000000000000000000000100001111110110000000100100101000010100110000101000100100000000001000011111101100000000000111000000000100000000001010000001000000000001000000000010000111111011000000010110011100001010011000010100001010000000000100001111110110000000000000000001000010000000000101000000100000000000100000000001000011111101100000001011001010000101001100001010100100000000000000000111111111000000000000000000100001000000000010100000010000000000000000000000000001111111110000000100010101000010100110000101001010000000000000000011111111100000000111111100000010100000000001010000001000000000000000000000000000111111111000000010001010100001010011000010101101100000000100000001011110110010000000000000000000010000000000101000000100000000000100000000000000011111111100000001100001010000101001100001010001101000000000000000111111111000000000000000000000001000000000010100000010000000000010000000000000001111111110000000101010111000010100110000101010110100000000000000011111111100000000001011000000000100000000001010000001000000000001000000000000000111111111000000010101010100001010011000010100111000000000000100001111111110000000000101100000000010000000000101000001000000000000000000000001000011111111100000001001101110000101001100001010111100000000000010000111111111000000000000000000000001000000000010100000100000000000000000000000100001111111110000000100110111000010100110000101010000100000000001000011111111100000000000000000000000100000000001010000010000000000001000000000010000111111111000000010111011100001010001000010100000010000000000100001111111110000000011111100000001110000000000101000001000000000000100000000001000011111111100000001011100110000101000100001010000001000000000000000111111111000000000000000000000001000000000010100000010000000000010000000000000001111111110000000101010011000010111010000101100000100000000000000011111111100000000001011000000000100000000001010000001000000000001000000000000000111111111000000010101000100001010011000010100010000000000000100001111110110000000000011100000000010000000000101000000100000000000000000000001000011111101100000001001001010000101001100001010001001000000000010000111111011000000000001110000000001000000000010100000010000000000010000000000100001111110110000000101100111000010100110000101000010100000000001000011111101100000000000000000010000100000000001010000001000000000001000000000010000111111011000000010110010100001010011000010101001000000000000000001111111110000000000000000001000010000000000101000000100000000000000000000000000011111111100000001000101010000101001100001010010100000000000000000111111111000000001111111000000101000000000010100000010000000000000000000000000001111111110000000100010101000010100110000101011011000000001000000010111101100100000000000000000000100000000001010000001000000000001000000000000000111111111000000011000010100001010011000010100011010000000000000001111111110000000000000000000000010000000000101000000100000000000100000000000000011111111100000001010101110000101001100001010101101000000000000000111111111000000000010110000000001000000000010100000010000000000010000000000000001111111110000000101010101000010100110000101001110000000000001000011111111100000000001011000000000100000000001010000010000000000000000000000010000111111111000000010011011100001010011000010101111000000000000100001111111110000000000000000000000010000000000101000001000000000000000000000001000011111111100000001001101110000101001100001010100001000000000010000111111111000000000000000000000001000000000010100000100000000000010000000000100001111111110000000101110111000010100010000101000000100000000001000011111111100000000111111000000011100000000001010000010000000000001000000000010000111111111000000010111001100001010001000010100000010000000000000001111111110000000000000000000000010000000000101000000100000000000100000000000000011111111100000001010100110000101110100001011000001000000000000000111111111000000000010110000000001000000000010100000010000000000010000000000000001111111110000000101010001000010100110000101000100000000000001000011111101100000000000111000000000100000000001010000001000000000000000000000010000111111011000000010010010100001010011000010100010010000000000100001111110110000000000011100000000010000000000101000000100000000000100000000001000011111101100000001011001110000101001100001010000101000000000010000111111011000000000000000000100001000000000010100000010000000000010000000000100001111110110000000101100101000010100110000101010010000000000000000011111111100000000000000000010000100000000001010000001000000000000000000000000000111111111000000010001010100001010011000010100101000000000000000001111111110000000011111110000001010000000000101000000100000000000000000000000000011111111100000001000101010000101001100001010110110000000010000000101111011001000000000000000000001000000000010100000010000000000010000000000000001111111110000000110000101000010100110000101000110100000000000000011111111100000000000000000000000100000000001010000001000000000001000000000000000111111111000000010101011100001010011000010101011010000000000000001111111110000000000101100000000010000000000101000000100000000000100000000000000011111111100000001010101010000101001100001010011100000000000010000111111111000000000010110000000001000000000010100000100000000000000000000000100001111111110000000100110111000010100110000101011110000000000001000011111111100000000000000000000000100000000001010000010000000000000000000000010000111111111000000010011011100001010011000010101000010000000000100001111111110000000000000000000000010000000000101000001000000000000100000000001000011111111100000001011101110000101000100001010000001000000000010000111111111000000001111110000000111000000000010100000100000000000010000000000100001111111110000000101110011000010100010000101000000100000000000000011111111100000000000000000000000100000000001010000001000000000001000000000000000111111111000000010101001100001011101000010110000010000000000000001111111110000000000101100000000010000000000101000000100000000000100000000000000011111111100000001010100010000101001100001010001000000000000010000111111011000000000001110000000001000000000010100000010000000000000000000000100001111110110000000100100101000010100110000101000100100000000001000011111101100000000000111000000000100000000001010000001000000000001000000000010000111111011000000010110011100001010011000010100001010000000000100001111110110000000000000000001000010000000000101000000100000000000100000000001000011111101100000001011001010000101001100001010100100000000000000000111111111000000000000000000100001000000000010100000010000000000000000000000000001111111110000000100010101000010100110000101001010000000000000000011111111100000000111111100000010100000000001010000001000000000000000000000000000111111111000000010001010100001010011000010101101100000000100000001011110110010000000000000000000010000000000101000000100000000000100000000000000011111111100000001100001010000101001100001010001101000000000000000111111111000000000000000000000001000000000010100000010000000000010000000000000001111111110000000101010111000010100110000101010110100000000000000011111111100000000001011000000000100000000001010000001000000000001000000000000000111111111000000010101010100001010011000010100111000000000000100001111111110000000000101100000000010000000000101000001000000000000000000000001000011111111100000001001101110000101001100001010111100000000000010000111111111000000000000000000000001000000000010100000100000000000000000000000100001111111110000000100110111000010100110000101010000100000000001000011111111100000000000000000000000100000000001010000010000000000001000000000010000111111111000000010111011100001010001000010100000010000000000100001111111110000000011111100000001110000000000101000001000000000000100000000001000011111111100000001011100110000101000100001010000001000000000000000111111111000000000000000000000001000000000010100000010000000000010000000000000001111111110000000101010011000010111010000101100000100000000000000011111111100000000001011000000000100000000001010000001000000000001000000000000000111111111000000010101000100001010011000010100010000000000000100001111110110000000000011100000000010000000000101000000100000000000000000000001000011111101100000001001001010000101001100001010001001000000000010000111111011000000000001110000000001000000000010100000010000000000010000000000100001111110110000000101100111000010100110000101000010100000000001000011111101100000000000000000010000100000000001010000001000000000001000000000010000111111011000000010110010100001010011000010101001000000000000000001111111110000000000000000001000010000000000101000000100000000000000000000000000011111111100000001000101010000101001100001010010100000000000000000111111111000000001111111000000101000000000010100000010000000000000000000000000001111111110000000100010101000010100110000101011011000000001000000010111101100100000000000000000000100000000001010000001000000000001000000000000000111111111000000011000010100001010011000010100011010000000000000001111111110000000000000000000000010000000000101000000100000000000100000000000000011111111100000001010101110000101001100001010101101000000000000000111111111000000000010110000000001000000000010100000010000000000010000000000000001111111110000000101010101000010100110000101001110000000000001000011111111100000000001011000000000100000000001010000010000000000000000000000010000111111111000000010011011100001010011000010101111000000000000100001111111110000000000000000000000010000000000101000001000000000000000000000001000011111111100000001001101110000101001100001010100001000000000010000111111111000000000000000000000001000000000010100000100000000000010000000000100001111111110000000101110111000010100010000101000000100000000001000011111111100000000111111000000011100000000001010000010000000000001000000000010000111111111000000010111001100001010001000010100000</data>
+          <extradata>111B1B11111111111B1BB11111111111U1B11111111111B1B11111111111B1B11111111111B1B11111111111B1B11111111111B1B11111111111B1B11111111111B1B11111111111B1B11111111111B1B11111111111B1B11111111111B1B11111111111B1B11111111111B1B11111111111B1B11111111111B1B11111111111</extradata>
         </log>
       </trigger>
     </signal_set>
     <position_info>
       <single attribute="active tab" value="0"/>
-      <single attribute="data horizontal scroll position" value="10"/>
-      <single attribute="data vertical scroll position" value="10"/>
+      <single attribute="data hierarchy mem_select:memmap0" value="2"/>
+      <single attribute="data hierarchy mycpu:cpu0" value="2"/>
+      <single attribute="data hierarchy registerfile:reg0" value="2"/>
+      <single attribute="data hierarchy soc" value="3"/>
+      <single attribute="data hierarchy uart:uart1" value="3"/>
+      <single attribute="data hierarchy uart_tx:tx0" value="3"/>
+      <single attribute="data horizontal scroll position" value="26"/>
+      <single attribute="data vertical scroll position" value="0"/>
+      <single attribute="setup hierarchy baudgen:baud0" value="3"/>
+      <single attribute="setup hierarchy mem_select:memmap0" value="3"/>
+      <single attribute="setup hierarchy mycpu:cpu0" value="3"/>
+      <single attribute="setup hierarchy registerfile:reg0" value="3"/>
+      <single attribute="setup hierarchy soc" value="3"/>
+      <single attribute="setup hierarchy uart:uart1" value="3"/>
+      <single attribute="setup hierarchy uart_tx:tx0" value="3"/>
       <single attribute="setup horizontal scroll position" value="0"/>
       <single attribute="setup vertical scroll position" value="0"/>
       <single attribute="zoom level denominator" value="1"/>
@@ -1674,7 +852,7 @@
     <single attribute="hierarchy widget visible" value="1"/>
     <single attribute="instance widget visible" value="1"/>
     <single attribute="jtag widget visible" value="1"/>
-    <multi attribute="column width" size="23" value="34,34,114,74,68,70,88,88,98,98,88,88,110,101,101,101,101,101,101,101,101,107,78"/>
+    <multi attribute="column width" size="23" value="34,34,354,74,68,70,88,88,98,98,88,88,110,101,101,101,101,101,101,101,101,107,78"/>
     <multi attribute="frame size" size="2" value="1328,966"/>
     <multi attribute="jtag widget size" size="2" value="433,145"/>
   </global_info>

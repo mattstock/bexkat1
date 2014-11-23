@@ -5,6 +5,7 @@ module soc(SW, KEY, HEX0, HEX1, HEX2, HEX3, LEDR, LEDG, clock_50, clock_27,
   lcd_i2c_sclk, lcd_i2c_sdat, ps2_dat, ps2_clk, lcd_e, lcd_rs, lcd_data,
   rgb0, rgb1, rgb_a, rgb_b, rgb_c, rgb_stb, rgb_clk, rgb_oe_n,
   fl_addrbus, fl_databus, fl_oe_n, fl_ce_n, fl_we_n, fl_rst_n,
+  serial0_tx, serial0_rx, serial1_tx, serial1_rx, baudclk,
   dram_dq, dram_addr, dram_ba, dram_ldqm, dram_udqm, dram_ras_n, dram_cas_n, dram_cke, dram_clk, dram_we_n, dram_ce_n);
 
 // SRAM
@@ -76,6 +77,11 @@ input aud_adcdat;
 inout lcd_i2c_sdat;
 output lcd_i2c_sclk;
 
+// serial
+input serial0_rx, serial1_rx;
+output serial0_tx, serial1_tx;
+output baudclk;
+
 // ps2
 input ps2_dat;
 input ps2_clk;
@@ -86,17 +92,12 @@ output lcd_rs;
 output [7:0] lcd_data;
 
 wire rst_n;
-wire [5:0] val;
-wire [23:0] rgb_matrix;
-wire [3:0] rgb_row;
-wire [4:0] rgb_col;
-wire rgb_write;
-
+wire [5:0] encoder_val;
 wire kbd_event;
 wire [7:0] kbd_data;
 
-wire mem_flash, mem_monitor, mem_dram, mem_sram, mem_led_matrix, mem_kbd;
-wire [15:0] mem_monitor_data, led_matrix_data_out;
+wire mem_flash, mem_monitor, mem_dram, mem_sram, mem_led_matrix, mem_kbd, mem_encoder, mem_serial0, mem_serial1;
+wire [15:0] mem_monitor_data, led_matrix_data_out, encoder_data, serial0_data, serial1_data;
 wire [31:0] cpu_addrbus;
 wire [15:0] cpu_data_out;
 wire cpu_write, ccr;
@@ -107,10 +108,13 @@ wire [15:0] cpu_data_in2 = (mem_dram ? dram_dq : 16'h0000);
 wire [15:0] cpu_data_in3 = (mem_sram ? sram_databus : 16'h0000);
 wire [15:0] cpu_data_in4 = (mem_led_matrix ? led_matrix_data_out : 16'h0000);
 wire [15:0] cpu_data_in5 = (mem_kbd ? { 8'h00, kbd_data}  : 16'h0000);
-wire [15:0] cpu_data_in = cpu_data_in0 | cpu_data_in1 | cpu_data_in2 | cpu_data_in3 | cpu_data_in4 | cpu_data_in5;
+wire [15:0] cpu_data_in6 = (mem_encoder ? encoder_data : 16'h0000);
+wire [15:0] cpu_data_in7 = (mem_serial0 ? serial0_data : 16'h0000);
+wire [15:0] cpu_data_in8 = (mem_serial1 ? serial1_data : 16'h0000);
+wire [15:0] cpu_data_in = cpu_data_in0 | cpu_data_in1 | cpu_data_in2 | cpu_data_in3 | cpu_data_in4 | cpu_data_in5 | cpu_data_in6 |
+  cpu_data_in7 | cpu_data_in8;
 
 assign rst_n = KEY[0];
-
 
 // No audio for now
 assign aud_adclrck = aud_daclrck;
@@ -152,15 +156,12 @@ assign fl_ce_n = ~mem_flash;
 assign fl_rst_n = rst_n;
 assign fl_databus = (cpu_write ? cpu_data_out[7:0] : 8'hzz);
 
-// RGB matrix memory mapped
-assign rgb_write = cpu_write & mem_led_matrix;
-
 // Generate demo screenbuffer data
 //screendemo demo0(.clk(clock_50), .rst_n(rst_n), .write(rgb_write), .pixel(rgb_matrix), .row(rgb_row), .col(rgb_col));
 
 // LED display driver
 led_matrix led0(.clk(clock_50), .rst_n(rst_n), .rgb_a(rgb_a), .rgb_b(rgb_b), .rgb_c(rgb_c), .rgb0(rgb0), .rgb1(rgb1), .rgb_clk(rgb_clk), .rgb_stb(rgb_stb), .oe_n(rgb_oe_n),
-  .data_in(cpu_data_out), .data_out(led_matrix_data_out), .write(rgb_write), .address(cpu_addrbus[9:0]));
+  .data_in(cpu_data_out), .data_out(led_matrix_data_out), .write(cpu_write & mem_led_matrix), .address(cpu_addrbus[9:0]));
 
 // visualization stuff
 hexdisp d0(.out(HEX3), .in(cpu_data_out[15:12]));
@@ -169,10 +170,11 @@ hexdisp d2(.out(HEX1), .in(cpu_data_out[7:4]));
 hexdisp d3(.out(HEX0), .in(cpu_data_out[3:0]));
 // Blinknlights
 assign LEDG = { cpu_write, mem_sram, mem_led_matrix, mem_flash, mem_dram, mem_monitor, kbd_event, pb};
-assign LEDR = {6'b0, ccr};
+assign LEDR = { baudclk, 5'b0, ccr};
 
 // quadrature encoder outputs 0-23
-quadenc q0(.clk(clock_50), .rst_n(rst_n), .quadA(quad[0]), .quadB(quad[1]), .count(val));
+rgb_enc io0(.clk(clock_50), .rst_n(rst_n), .quad(quad), .button(pb), .rgb_out(rgb),
+  .write(cpu_write & mem_encoder), .address(cpu_addrbus[1:0]), .data_in(cpu_data_out), .data_out(encoder_data));
 
 // LCD module
 lcd_module lcd0(.clk(clock_50), .rst_n(rst_n), .e(lcd_e), .data_out(lcd_data), .rs(lcd_rs));
@@ -180,14 +182,20 @@ lcd_module lcd0(.clk(clock_50), .rst_n(rst_n), .e(lcd_e), .data_out(lcd_data), .
 // Keyboard
 user_input kbd0(.clk(clock_50), .rst_n(rst_n), .ps2_clock(ps2_clk), .ps2_data(ps2_dat), .data_read(pb), .data_ready(kbd_event), .data_out(kbd_data));
 
+// UART for RS232
+uart uart0(.clk(clock_50), .rst_n(rst_n), .rx(serial0_rx), .tx(serial0_tx), .data_in(cpu_data_out), .data_out(serial0_data),
+  .write(cpu_write & mem_serial0), .address(cpu_addrbus[3:0]));
+// UART for speach generator
+uart uart1(.clk(clock_50), .rst_n(rst_n), .rx(serial1_rx), .tx(serial1_tx), .data_in(cpu_data_out), .data_out(serial1_data),
+  .write(cpu_write & mem_serial1), .address(cpu_addrbus[3:0]), .baudclk(baudclk));
+
 mycpu cpu0(.clk(clock_50), .rst_n(rst_n), .addrbus(cpu_addrbus), .data_in(cpu_data_in), .data_out(cpu_data_out), .write_out(cpu_write), .ccr(ccr));
 
 // Chip select logic
-mem_select memmap0(.address(cpu_addrbus), .flash(mem_flash), .dram(mem_dram), .sram(mem_sram), .monitor(mem_monitor), .led_matrix(mem_led_matrix), .kbd(mem_kbd));
+mem_select memmap0(.address(cpu_addrbus), .flash(mem_flash), .dram(mem_dram), .sram(mem_sram), .monitor(mem_monitor), .led_matrix(mem_led_matrix),
+  .kbd(mem_kbd), .encoder(mem_encoder), .serial0(mem_serial0), .serial1(mem_serial1));
 
 // ROM monitor code
 monitor rom0(.clock(clock_50), .address(cpu_addrbus[11:0]), .q(mem_monitor_data));
-
-assign rgb = val[2:0];
  
 endmodule
