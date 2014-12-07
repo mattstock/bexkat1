@@ -2,7 +2,7 @@ module soc(SW, KEY, HEX0, HEX1, HEX2, HEX3, LEDR, LEDG, clock_50, clock_27,
   aud_adclrck, aud_adcdat, aud_daclrck, aud_dacdat, aud_xck, aud_bclk, i2c_sclk, i2c_sdat,
   quad, rgb, pb,
   sram_addrbus, sram_databus, sram_we_n, sram_oe_n, sram_ub_n, sram_lb_n, sram_ce_n,
-  lcd_i2c_sclk, lcd_i2c_sdat, ps2_dat, ps2_clk, lcd_e, lcd_rs, lcd_data,
+  ps2_dat, ps2_clk, lcd_e, lcd_rs, lcd_data,
   rgb0, rgb1, rgb_a, rgb_b, rgb_c, rgb_stb, rgb_clk, rgb_oe_n,
   fl_addrbus, fl_databus, fl_oe_n, fl_ce_n, fl_we_n, fl_rst_n,
   serial0_tx, serial0_rx, serial1_tx, serial1_rx,
@@ -73,10 +73,6 @@ output aud_daclrck;
 output aud_adclrck;
 input aud_adcdat;
 
-// i2c pair for lcd
-inout lcd_i2c_sdat;
-output lcd_i2c_sclk;
-
 // serial
 input serial0_rx, serial1_rx;
 output serial0_tx, serial1_tx;
@@ -108,10 +104,11 @@ wire [15:0] cpu_data_in3 = (mem_sram ? sram_databus : 16'h0000);
 wire [15:0] cpu_data_in4 = (mem_led_matrix ? led_matrix_data_out : 16'h0000);
 wire [15:0] cpu_data_in5 = (mem_kbd ? { 8'h00, kbd_data}  : 16'h0000);
 wire [15:0] cpu_data_in6 = (mem_encoder ? encoder_data : 16'h0000);
-//wire [15:0] cpu_data_in7 = (mem_serial0 ? serial0_data : 16'h0000);
-//wire [15:0] cpu_data_in8 = (mem_serial1 ? serial1_data : 16'h0000);
-wire [15:0] cpu_data_in = cpu_data_in0 | cpu_data_in1 | cpu_data_in2 | cpu_data_in3 |
-                          cpu_data_in4 | cpu_data_in5 | cpu_data_in6;
+wire [15:0] cpu_data_in7 = (mem_serial0 ? serial0_data : 16'h0000);
+wire [15:0] cpu_data_in8 = (mem_serial1 ? serial1_data : 16'h0000);
+wire [15:0] cpu_data_in = cpu_data_in0 |
+  cpu_data_in1 | cpu_data_in2 | cpu_data_in3 | cpu_data_in4 |
+  cpu_data_in5 | cpu_data_in6 | cpu_data_in7 | cpu_data_in8;
 
 assign rst_n = KEY[0];
 
@@ -128,24 +125,24 @@ assign lcd_i2c_sclk = 1'bz;
 // No SDRAM for now, need a refresh module
 assign dram_addr = 12'h00000;
 assign dram_ba = 2'h0;
-assign dram_ldqm = 1'b0;
-assign dram_udqm = 1'b0;
+assign dram_ldqm = 1'b0; // use these for byte writes?
+assign dram_udqm = 1'b0; // use there for byte writes?
 assign dram_ras_n = 1'b1;
 assign dram_cas_n = 1'b1;
 assign dram_cke = 1'b0;
 assign dram_clk = clock_50;
-assign dram_we_n = 1'b1;
-assign dram_ce_n = 1'b1;
-assign dram_dq = 16'hzzzz;
+assign dram_we_n = ~cpu_write;
+assign dram_ce_n = ~mem_dram;
+assign dram_dq = (cpu_write ? cpu_data_out : 16'hzzzz);
 
 // Wiring for external SRAM
-assign sram_lb_n = 1'b0;
-assign sram_ub_n = 1'b0;
+assign sram_lb_n = 1'b0;  // use these for byte writes?
+assign sram_ub_n = 1'b0;  // use these for byte writes?
 assign sram_we_n = ~cpu_write;
 assign sram_ce_n = ~mem_sram;
 assign sram_oe_n = ~sram_we_n;
 assign sram_databus = (cpu_write ? cpu_data_out : 16'hzzzz);
-assign sram_addrbus = cpu_addrbus[17:0];
+assign sram_addrbus = cpu_addrbus[18:1]; // Byte addressable, but word memory
 
 // Flash wiring
 assign fl_addrbus = cpu_addrbus[21:0];
@@ -182,11 +179,11 @@ lcd_module lcd0(.clk(clock_50), .rst_n(rst_n), .e(lcd_e), .data_out(lcd_data), .
 user_input kbd0(.clk(clock_50), .rst_n(rst_n), .ps2_clock(ps2_clk), .ps2_data(ps2_dat), .data_read(pb), .data_ready(kbd_event), .data_out(kbd_data));
 
 // UART for RS232
-//uart uart0(.clk(clock_50), .rst_n(rst_n), .rx(serial0_rx), .tx(serial0_tx), .data_in(cpu_data_out), .data_out(serial0_data),
-//  .write(cpu_write & mem_serial0), .address(cpu_addrbus[3:0]));
+uart uart0(.clk(clock_50), .rst_n(rst_n), .rx(serial0_rx), .tx(serial0_tx), .data_in(cpu_data_out), .data_out(serial0_data),
+  .write(cpu_write & mem_serial0), .address(cpu_addrbus[3:0]));
 // UART for speach generator
-//uart uart1(.clk(clock_50), .rst_n(rst_n), .rx(serial1_rx), .tx(serial1_tx), .data_in(cpu_data_out), .data_out(serial1_data),
-//  .write(cpu_write & mem_serial1), .address(cpu_addrbus[3:0]));
+uart uart1(.clk(clock_50), .rst_n(rst_n), .rx(serial1_rx), .tx(serial1_tx), .data_in(cpu_data_out), .data_out(serial1_data),
+  .write(cpu_write & mem_serial1), .address(cpu_addrbus[3:0]));
 
 mycpu cpu0(.clk(clock_50), .rst_n(rst_n), .addrbus(cpu_addrbus), .data_in(cpu_data_in), .data_out(cpu_data_out), .write_out(cpu_write), .ccr(ccr));
 

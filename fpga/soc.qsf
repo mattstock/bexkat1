@@ -285,6 +285,14 @@ set_location_assignment PIN_G17 -to lcd_data[5]
 set_location_assignment PIN_H17 -to lcd_data[4]
 set_instance_assignment -name CURRENT_STRENGTH_NEW "MAXIMUM CURRENT" -to rgb_stb
 set_instance_assignment -name CURRENT_STRENGTH_NEW "MAXIMUM CURRENT" -to rgb_oe_n
+set_global_assignment -name TIMEQUEST_MULTICORNER_ANALYSIS OFF
+set_global_assignment -name VERILOG_INPUT_VERSION SYSTEMVERILOG_2005
+set_global_assignment -name VERILOG_SHOW_LMF_MAPPING_MESSAGES OFF
+set_location_assignment PIN_F14 -to serial0_rx
+set_location_assignment PIN_G12 -to serial0_tx
+set_location_assignment PIN_C20 -to serial1_rx
+set_location_assignment PIN_C19 -to serial1_tx
+set_location_assignment PIN_B13 -to baudclk
 set_global_assignment -name VERILOG_FILE mem_select.v
 set_global_assignment -name VERILOG_FILE cpu/alu.v
 set_global_assignment -name VERILOG_FILE soc.v
@@ -301,18 +309,10 @@ set_global_assignment -name MIF_FILE scancodes.mif
 set_global_assignment -name HEX_FILE cpu/monitor.hex
 set_global_assignment -name VERILOG_FILE cpu/mycpu.v
 set_global_assignment -name VERILOG_FILE registerfile.v
-set_global_assignment -name TIMEQUEST_MULTICORNER_ANALYSIS OFF
-set_global_assignment -name VERILOG_INPUT_VERSION SYSTEMVERILOG_2005
-set_global_assignment -name VERILOG_SHOW_LMF_MAPPING_MESSAGES OFF
 set_global_assignment -name VERILOG_FILE rgb_enc.v
 set_global_assignment -name VERILOG_FILE uart.v
 set_global_assignment -name VERILOG_FILE baudgen.v
 set_global_assignment -name VERILOG_FILE uart_tx.v
-set_location_assignment PIN_F14 -to serial0_rx
-set_location_assignment PIN_G12 -to serial0_tx
-set_location_assignment PIN_C20 -to serial1_rx
-set_location_assignment PIN_C19 -to serial1_tx
-set_location_assignment PIN_B13 -to baudclk
 set_global_assignment -name VERILOG_FILE doublealu.v
 set_global_assignment -name QIP_FILE matrixmem.qip
 set_global_assignment -name QIP_FILE scancodes.qip
@@ -320,4 +320,215 @@ set_global_assignment -name QIP_FILE keyfifo.qip
 set_global_assignment -name QIP_FILE cpu/monitor.qip
 set_global_assignment -name QIP_FILE registers.qip
 set_global_assignment -name QIP_FILE uart_fifo.qip
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to HEX0
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to HEX0[0]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to HEX0[1]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to HEX0[2]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to HEX0[3]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to HEX0[4]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to HEX0[5]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to HEX0[6]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to HEX1
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to HEX1[0]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to HEX1[1]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to HEX1[2]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to HEX1[3]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to HEX1[4]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to HEX1[5]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to HEX1[6]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to HEX2
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to HEX2[0]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to HEX2[1]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to HEX2[2]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to HEX2[3]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to HEX2[4]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to HEX2[5]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to HEX2[6]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to HEX3
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to HEX3[0]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to HEX3[1]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to HEX3[2]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to HEX3[3]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to HEX3[4]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to HEX3[5]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to HEX3[6]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to LEDG
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to LEDG[0]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to LEDG[1]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to LEDG[2]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to LEDG[3]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to LEDG[4]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to LEDG[5]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to LEDG[6]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to LEDG[7]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to LEDR
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to LEDR[0]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to LEDR[1]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to LEDR[2]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to LEDR[3]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to LEDR[4]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to LEDR[5]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to LEDR[6]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to LEDR[7]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to LEDR[8]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to LEDR[9]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to aud_adclrck
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to aud_bclk
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to aud_dacdat
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to aud_daclrck
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to aud_xck
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_addr
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_addr[0]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_addr[1]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_addr[2]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_addr[3]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_addr[4]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_addr[5]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_addr[6]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_addr[7]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_addr[8]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_addr[9]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_addr[10]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_addr[11]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_ba
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_ba[0]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_ba[1]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_cas_n
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_ce_n
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_cke
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_clk
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_ldqm
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_ras_n
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_udqm
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_we_n
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to fl_addrbus
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to fl_addrbus[0]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to fl_addrbus[1]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to fl_addrbus[2]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to fl_addrbus[3]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to fl_addrbus[4]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to fl_addrbus[5]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to fl_addrbus[6]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to fl_addrbus[7]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to fl_addrbus[8]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to fl_addrbus[9]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to fl_addrbus[10]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to fl_addrbus[11]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to fl_addrbus[12]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to fl_addrbus[13]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to fl_addrbus[14]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to fl_addrbus[15]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to fl_addrbus[16]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to fl_addrbus[17]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to fl_addrbus[18]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to fl_addrbus[19]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to fl_addrbus[20]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to fl_addrbus[21]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to fl_ce_n
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to fl_oe_n
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to fl_rst_n
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to fl_we_n
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to i2c_sclk
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to lcd_data
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to lcd_data[0]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to lcd_data[1]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to lcd_data[2]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to lcd_data[3]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to lcd_data[4]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to lcd_data[5]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to lcd_data[6]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to lcd_data[7]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to lcd_e
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to lcd_i2c_sclk
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to lcd_rs
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to rgb
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to rgb0
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to rgb0[0]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to rgb0[1]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to rgb0[2]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to rgb1
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to rgb1[0]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to rgb1[1]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to rgb1[2]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to rgb[0]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to rgb[1]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to rgb[2]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to rgb_a
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to rgb_b
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to rgb_c
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to rgb_clk
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to rgb_oe_n
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to rgb_stb
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to serial0_tx
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to serial1_tx
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_addrbus
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_addrbus[0]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_addrbus[1]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_addrbus[2]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_addrbus[3]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_addrbus[4]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_addrbus[5]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_addrbus[6]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_addrbus[7]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_addrbus[8]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_addrbus[9]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_addrbus[10]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_addrbus[11]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_addrbus[12]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_addrbus[13]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_addrbus[14]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_addrbus[15]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_addrbus[16]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_addrbus[17]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_ce_n
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_lb_n
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_oe_n
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_ub_n
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_we_n
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_dq
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_dq[0]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_dq[1]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_dq[2]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_dq[3]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_dq[4]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_dq[5]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_dq[6]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_dq[7]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_dq[8]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_dq[9]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_dq[10]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_dq[11]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_dq[12]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_dq[13]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_dq[14]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to dram_dq[15]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to fl_databus
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to fl_databus[0]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to fl_databus[1]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to fl_databus[2]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to fl_databus[3]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to fl_databus[4]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to fl_databus[5]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to fl_databus[6]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to fl_databus[7]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to i2c_sdat
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to lcd_i2c_sdat
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_databus
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_databus[0]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_databus[1]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_databus[2]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_databus[3]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_databus[4]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_databus[5]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_databus[6]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_databus[7]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_databus[8]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_databus[9]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_databus[10]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_databus[11]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_databus[12]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_databus[13]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_databus[14]
+set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_databus[15]
+set_global_assignment -name VERILOG_FILE uart_rx.v
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

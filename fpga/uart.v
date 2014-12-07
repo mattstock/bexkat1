@@ -23,9 +23,11 @@ begin
   if (!rst_n) begin
     tx_byte <= 8'h00;
     rx_queue <= 1'b0;
+    rx_byte <= 8'h00;
     tx_queue <= 1'b0;
   end else begin
     tx_byte <= tx_byte_next;
+    rx_byte <= rx_byte_next;
     tx_queue <= tx_queue_next;
     rx_queue <= rx_queue_next;
   end
@@ -35,6 +37,7 @@ always @*
 begin
   tx_byte_next = tx_byte;
   tx_queue_next = tx_queue;
+  rx_byte_next = rx_byte;
   rx_queue_next = rx_queue;
   tx_start = 1'b0;
   if (!tx_busy) begin
@@ -55,6 +58,7 @@ begin
           tx_byte_next = data_in[7:0];
         end
       end
+      default: begin end
     endcase
   end
   case (address)
@@ -67,7 +71,7 @@ begin
 end
 
 uart_tx tx0(.clk(clk), .baudclk(baudclk), .data(tx_byte), .start(tx_start), .busy(tx_busy), .serial_out(tx));
-//uart_rx rx0(.clk(clk), .baudclk(baudclk), .data(rx_in), .ready(rx_ready), .serial_in(rx));
+uart_rx rx0(.clk(clk), .baudclk(baudclk), .data(rx_in), .ready(rx_ready), .serial_in(rx));
 baudgen baud0(.clk(clk), .baudclk(baudclk), .enable(tx_busy));
 
 //uart_fifo tx_fifo0(.q(tx_byte), .rdempty(), .wrfull(tx_full), .data(data_in[7:0]), .wrclk(clk), .rdclk(), .aclr(~rst_n), .wrreq(), .rdreq());
