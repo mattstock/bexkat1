@@ -314,12 +314,6 @@ set_global_assignment -name VERILOG_FILE uart.v
 set_global_assignment -name VERILOG_FILE baudgen.v
 set_global_assignment -name VERILOG_FILE uart_tx.v
 set_global_assignment -name VERILOG_FILE doublealu.v
-set_global_assignment -name QIP_FILE matrixmem.qip
-set_global_assignment -name QIP_FILE scancodes.qip
-set_global_assignment -name QIP_FILE keyfifo.qip
-set_global_assignment -name QIP_FILE cpu/monitor.qip
-set_global_assignment -name QIP_FILE registers.qip
-set_global_assignment -name QIP_FILE uart_fifo.qip
 set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to HEX0
 set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to HEX0[0]
 set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to HEX0[1]
@@ -532,3 +526,9 @@ set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_databus[14]
 set_instance_assignment -name OUTPUT_PIN_LOAD 2 -to sram_databus[15]
 set_global_assignment -name VERILOG_FILE uart_rx.v
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
+set_global_assignment -name QIP_FILE matrixmem.qip
+set_global_assignment -name QIP_FILE scancodes.qip
+set_global_assignment -name QIP_FILE keyfifo.qip
+set_global_assignment -name QIP_FILE cpu/monitor.qip
+set_global_assignment -name QIP_FILE registers.qip
+set_global_assignment -name QIP_FILE uart_fifo.qip

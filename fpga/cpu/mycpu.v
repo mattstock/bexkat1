@@ -243,28 +243,28 @@ begin
       pc_next = pc + 'h2;
       mar_next[31:16] = data_in;
       casex (opcode[12:5])
-        'h10: state_next = STATE_LOAD;  // ld
-        'h11: begin  // st
+        'h11: state_next = STATE_LOAD;  // ld
+        'h14: begin  // st
           state_next = STATE_STORE;
           reg_read_addr1 = opcode[4:0];
           data_out_next = reg_data_out1[15:0];
         end
-        'h12: begin // ld.l
-          state_next = STATE_FETCH1W;
-          reg_write_addr = opcode[4:0];
-          reg_data_in = mar;
-          reg_write = 1'b1;        
-        end
-        'h13: begin // jmp
+        'h16: begin // jmp
           state_next = STATE_FETCH1W;
           pc_next = {data_in, mar[15:0]};
         end
-       'h14: begin // call
+       'h17: begin // jsr
           state_next = STATE_CALL1W;
           addrbus = sp;
           sp_next = sp - 'h2;
           data_out_next = pc_next[15:0];
           write_out = 1'b1;
+        end
+        'h20: begin // ld.l
+          state_next = STATE_FETCH1W;
+          reg_write_addr = opcode[4:0];
+          reg_data_in = mar;
+          reg_write = 1'b1;        
         end
         default: begin // should trigger an invalid opcode exception
           state_next = STATE_ERR;  
