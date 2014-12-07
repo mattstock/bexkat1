@@ -1,1 +1,0 @@
-ascheck -gloasxwf areabank.asm
