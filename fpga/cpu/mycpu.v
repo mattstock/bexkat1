@@ -8,8 +8,10 @@ output [15:0] data_out;
 output write_out;
 output [3:0] ccr;
 
-reg [31:0] pc, pc_next;
-reg [31:0] mar, mar_next;
+reg [31:0] pc;
+reg [32:0] pc_next;
+reg [31:0] mar;
+reg [32:0] mar_next;
 reg [31:0] sp, sp_next;
 reg [7:0] state, state_next;
 reg [15:0] opcode, opcode_next;
@@ -18,15 +20,16 @@ reg [3:0] ccr, ccr_next;
 reg [31:0] scratch, scratch_next;
 
 reg [3:0] alu_func;
+reg [1:0] alu_in_width;
 reg [4:0] reg_read_addr1, reg_read_addr2, reg_write_addr;
-reg [15:0] alu_in1, alu_in2;
+reg [31:0] alu_in1, alu_in2;
 reg reg_write;
 reg [31:0] addrbus;
 reg write_out;
 
-wire [15:0] reg_data_out1, reg_data_out2, reg_data_in;
+wire [31:0] reg_data_out1, reg_data_out2, reg_data_in;
 wire carry, negative, overflow, zero;
-wire [15:0] alu_out;
+wire [31:0] alu_out;
 
 localparam STATE_FETCH1 = 8'h00, STATE_FETCH2 = 8'h01, STATE_MEMOP1 = 8'h02, STATE_MEMOP2 = 8'h03, STATE_STORE = 8'h04, STATE_LOAD = 8'h05, STATE_ERR = 8'h06;
 // For now, my monitor memory is internal to the FPGA, and so synchronous.  We need wait states.
@@ -45,11 +48,11 @@ begin
     sp <= 'h0003ffff; // top of SRAM
     scratch <= 'h00000000;
   end else begin
-    pc <= pc_next;
+    pc <= pc_next[31:0];
     state <= state_next;
     opcode <= opcode_next;
     data_out <= data_out_next;
-    mar <= mar_next;
+    mar <= mar_next[31:0];
     ccr <= ccr_next;
     sp <= sp_next;
     scratch <= scratch_next;
@@ -67,13 +70,14 @@ begin
   sp_next = sp;
   scratch_next = scratch;
   alu_func = 4'h0;
+  alu_in_width = 2'b00;
   reg_read_addr1 = 5'h00;
   reg_read_addr2 = 5'h00;
   reg_write_addr = 5'h00;
-  reg_data_in = 16'h0000;
+  reg_data_in = 32'h00000000;
   reg_write = 1'b0;
-  alu_in1 = 16'h0000;
-  alu_in2 = 16'h0000;
+  alu_in1 = 32'h00000000;
+  alu_in2 = 32'h00000000;
   addrbus = pc;
   write_out = 1'b0;
   case (state)
@@ -202,7 +206,7 @@ begin
         'b10: begin
           state_next = STATE_STORE;
           reg_read_addr1 = opcode[4:0];
-          data_out_next = reg_data_out1;
+          data_out_next = reg_data_out1[15:0];
         end
         'b01: begin // jmp
           state_next = STATE_FETCH1W;
@@ -239,14 +243,16 @@ begin
       state_next = STATE_FETCH1W;
       addrbus = mar;
       reg_write_addr = opcode[4:0];
-      reg_data_in = data_in;
+      // TODO allow different opcodes to  
+      reg_data_in = {16'h0000, data_in};
       reg_write = 1'b1;
     end
     STATE_ERR: state_next = STATE_ERR;
   endcase
 end
 
-alu alu0(.in1(alu_in1), .in2(alu_in2), .func(alu_func), .out(alu_out), .c_in(1'b0), .z_in(1'b0), .c_out(carry), .n_out(negative), .v_out(overflow), .z_out(zero));
+doublealu alu0(.in1(alu_in1), .in2(alu_in2), .func(alu_func), .path_width(alu_in_width), .out(alu_out),
+  .c_in(1'b0), .z_in(1'b0), .c_out(carry), .n_out(negative), .v_out(overflow), .z_out(zero));
 registerfile reg0(.clk(clk), .rst_n(rst_n), .read1(reg_read_addr1), .read2(reg_read_addr2), .write_addr(reg_write_addr),
   .write_data(reg_data_in), .write_en(reg_write), .data1(reg_data_out1), .data2(reg_data_out2));
 

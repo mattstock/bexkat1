@@ -1,4 +1,4 @@
-// A simple 32-bit ALU design
+// A simple 16-bit ALU design
 // Matt Stock 11/16/14
 module alu(
   input wire [WIDTH-1:0] in1,

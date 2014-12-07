@@ -11,6 +11,7 @@ input [3:0] address;
 
 wire tx_busy, rx_ready, tx_start;
 wire [7:0] rx_in;
+wire baudclk;
 
 reg [7:0] tx_byte, tx_byte_next;
 reg [7:0] rx_byte, rx_byte_next;

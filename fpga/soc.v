@@ -108,10 +108,10 @@ wire [15:0] cpu_data_in3 = (mem_sram ? sram_databus : 16'h0000);
 wire [15:0] cpu_data_in4 = (mem_led_matrix ? led_matrix_data_out : 16'h0000);
 wire [15:0] cpu_data_in5 = (mem_kbd ? { 8'h00, kbd_data}  : 16'h0000);
 wire [15:0] cpu_data_in6 = (mem_encoder ? encoder_data : 16'h0000);
-wire [15:0] cpu_data_in7 = (mem_serial0 ? serial0_data : 16'h0000);
-wire [15:0] cpu_data_in8 = (mem_serial1 ? serial1_data : 16'h0000);
-wire [15:0] cpu_data_in = cpu_data_in0 | cpu_data_in1 | cpu_data_in2 | cpu_data_in3 | cpu_data_in4 | cpu_data_in5 | cpu_data_in6 |
-  cpu_data_in7 | cpu_data_in8;
+//wire [15:0] cpu_data_in7 = (mem_serial0 ? serial0_data : 16'h0000);
+//wire [15:0] cpu_data_in8 = (mem_serial1 ? serial1_data : 16'h0000);
+wire [15:0] cpu_data_in = cpu_data_in0 | cpu_data_in1 | cpu_data_in2 | cpu_data_in3 |
+                          cpu_data_in4 | cpu_data_in5 | cpu_data_in6;
 
 assign rst_n = KEY[0];
 
@@ -182,11 +182,11 @@ lcd_module lcd0(.clk(clock_50), .rst_n(rst_n), .e(lcd_e), .data_out(lcd_data), .
 user_input kbd0(.clk(clock_50), .rst_n(rst_n), .ps2_clock(ps2_clk), .ps2_data(ps2_dat), .data_read(pb), .data_ready(kbd_event), .data_out(kbd_data));
 
 // UART for RS232
-uart uart0(.clk(clock_50), .rst_n(rst_n), .rx(serial0_rx), .tx(serial0_tx), .data_in(cpu_data_out), .data_out(serial0_data),
-  .write(cpu_write & mem_serial0), .address(cpu_addrbus[3:0]));
+//uart uart0(.clk(clock_50), .rst_n(rst_n), .rx(serial0_rx), .tx(serial0_tx), .data_in(cpu_data_out), .data_out(serial0_data),
+//  .write(cpu_write & mem_serial0), .address(cpu_addrbus[3:0]));
 // UART for speach generator
-uart uart1(.clk(clock_50), .rst_n(rst_n), .rx(serial1_rx), .tx(serial1_tx), .data_in(cpu_data_out), .data_out(serial1_data),
-  .write(cpu_write & mem_serial1), .address(cpu_addrbus[3:0]));
+//uart uart1(.clk(clock_50), .rst_n(rst_n), .rx(serial1_rx), .tx(serial1_tx), .data_in(cpu_data_out), .data_out(serial1_data),
+//  .write(cpu_write & mem_serial1), .address(cpu_addrbus[3:0]));
 
 mycpu cpu0(.clk(clock_50), .rst_n(rst_n), .addrbus(cpu_addrbus), .data_in(cpu_data_in), .data_out(cpu_data_out), .write_out(cpu_write), .ccr(ccr));
 
