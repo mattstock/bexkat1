@@ -15,18 +15,21 @@ reg [32:0] mar_next;
 reg [31:0] sp, sp_next;
 reg [7:0] state, state_next;
 reg [15:0] opcode, opcode_next;
+reg write_out, write_out_next;
 reg [15:0] data_out, data_out_next;
 reg [3:0] ccr, ccr_next;
 reg [31:0] scratch, scratch_next;
+reg mar_access, mar_access_next;
 
 reg [2:0] alu_func;
 reg [1:0] alu_in_width;
 reg [4:0] reg_read_addr1, reg_read_addr2, reg_write_addr;
 reg [31:0] alu_in1, alu_in2;
 reg [3:0] reg_write;
-reg [31:0] addrbus;
-reg write_out;
 
+assign addrbus = (mar_access ? mar : pc);
+
+wire data_access;
 wire [31:0] reg_data_out1, reg_data_out2, reg_data_in;
 wire carry, negative, overflow, zero;
 wire [31:0] alu_out;
@@ -35,7 +38,8 @@ localparam STATE_FETCH1 = 8'h00, STATE_FETCH2 = 8'h01, STATE_MEMOP1 = 8'h02, STA
 // For now, my monitor memory is internal to the FPGA, and so synchronous.  We need wait states.
 localparam STATE_FETCH1W = 8'h07, STATE_FETCH2W = 8'h08, STATE_MEMOP1W = 8'h09, STATE_MEMOP2W = 8'h0a, STATE_CALL1W = 8'h0b, STATE_CALL1 = 8'h0c;
 localparam STATE_CALL2W = 8'h0d, STATE_CALL2 = 8'h0e, STATE_RTN1W = 8'h0f, STATE_RTN1 = 8'h10, STATE_RTN2W = 8'h11, STATE_RTN2 = 8'h12;
-localparam STATE_LOAD2 = 8'h13, STATE_LOAD3 = 8'h14, STATE_STORE2 = 8'h15, STATE_STORE3 = 8'h16, STATE_STORE2W = 8'h17;
+localparam STATE_LOAD2 = 8'h13, STATE_LOAD3 = 8'h14, STATE_STORE2 = 8'h15, STATE_STORE3 = 8'h16, STATE_STORE4 = 8'h17, STATE_STORE5 = 8'h18, STATE_STORE6 = 8'h19;
+localparam STATE_LOAD4 = 8'h1a, STATE_LOAD5 = 8'h1b;
 
 localparam REG_WRITE_NONE = 4'b0000, REG_WRITE_B0 = 4'b0001, REG_WRITE_B1 = 4'b0010, REG_WRITE_B2 = 4'b0100, REG_WRITE_B3 = 4'b1000, REG_WRITE_W0 = 4'b0011, REG_WRITE_W1 = 4'b1100;
 localparam REG_WRITE_DW = 4'b1111;
@@ -51,14 +55,18 @@ begin
     ccr <= 'h0;
     sp <= 'h0007ffff; // top of SRAM
     scratch <= 'h00000000;
+    write_out <= 1'b0;
+    mar_access <= 1'b0;
   end else begin
     pc <= pc_next[31:0];
     state <= state_next;
     opcode <= opcode_next;
     data_out <= data_out_next;
+    mar_access <= mar_access_next;
     mar <= mar_next[31:0];
     ccr <= ccr_next;
     sp <= sp_next;
+    write_out <= write_out_next;
     scratch <= scratch_next;
   end
 end
@@ -69,6 +77,8 @@ begin
   state_next = state;
   opcode_next = opcode;
   data_out_next = data_out;
+  write_out_next = write_out;
+  mar_access_next = mar_access;
   mar_next = mar;
   ccr_next = ccr;
   sp_next = sp;
@@ -82,8 +92,6 @@ begin
   reg_write = REG_WRITE_NONE;
   alu_in1 = 32'h00000000;
   alu_in2 = 32'h00000000;
-  addrbus = pc;
-  write_out = 1'b0;
   case (state)
     STATE_FETCH1W: state_next = STATE_FETCH1;
     STATE_FETCH1: begin
@@ -129,7 +137,6 @@ begin
     end
     STATE_RTN1W: begin
       state_next = STATE_RTN1;
-      addrbus = sp;
     end
     STATE_RTN1: begin
       state_next = STATE_RTN2W;
@@ -138,7 +145,6 @@ begin
     end
     STATE_RTN2W: begin
       state_next = STATE_RTN2;
-      addrbus = sp;
     end
     STATE_RTN2: begin
       state_next = STATE_FETCH1W;
@@ -273,31 +279,38 @@ begin
         'h20: begin // st.l
           state_next = STATE_STORE;
           reg_read_addr1 = opcode[4:0];
-          data_out_next = reg_data_out1[31:16];        
+          data_out_next = reg_data_out1[31:16];
+          mar_access_next = 1'b1;
+          write_out_next = 1'b1;
         end
-        'h21: state_next = STATE_LOAD; // ld.l
+        'h21: begin // ld.l
+          state_next = STATE_LOAD;
+          mar_access_next = 1'b1;
+        end
         'h30: begin  // st
           state_next = STATE_STORE;
           reg_read_addr1 = opcode[4:0];
           data_out_next = reg_data_out1[15:0];
         end
-        'h31: state_next = STATE_LOAD; // ld
+        'h31: begin // ld
+          state_next = STATE_LOAD;
+          mar_access_next = 1'b1;
+        end
         'h40: begin // st.b
           state_next = STATE_STORE;
           reg_read_addr1 = opcode[4:0];
           data_out_next = reg_data_out1[15:0];
         end        
-        'h41: state_next = STATE_LOAD; // ld.s
+        'h41: begin // ld.b
+          state_next = STATE_LOAD;
+          mar_access_next = 1'b1;
+        end
         'h50: begin // jmp
           state_next = STATE_FETCH1W;
           pc_next = { mar[31:16], data_in};
         end
         'h51: begin // jsr
           state_next = STATE_CALL1W;
-          addrbus = sp;
-          sp_next = sp - 'h2;
-          data_out_next = pc_next[31:16];
-          write_out = 1'b1;
         end
         'h10: begin // ldi  // 
           state_next = STATE_FETCH1W;
@@ -313,10 +326,6 @@ begin
     STATE_CALL1W: state_next = STATE_CALL1;
     STATE_CALL1: begin
       state_next = STATE_CALL2W;
-      addrbus = sp;
-      sp_next = sp - 'h2;
-      data_out_next = pc[15:0];
-      write_out = 1'b1;
     end
     STATE_CALL2W: state_next = STATE_CALL2;
     STATE_CALL2: begin
@@ -324,68 +333,66 @@ begin
       pc_next = mar;
     end
     STATE_STORE: begin
-      state_next = STATE_FETCH1W;
-      addrbus = mar;
+      write_out_next = 1'b0;
       casex (opcode[12:5])
         'h20: begin
-          state_next = STATE_STORE2W;
+          state_next = STATE_STORE2;
         end
-        'h30: state_next = STATE_FETCH1W;
+        'h30: begin
+          state_next = STATE_FETCH1W;
+          mar_access_next = 1'b0;
+        end
         'h40: begin
           state_next = STATE_FETCH1W;
+          mar_access_next = 1'b0;
           // for now we ignore, but we should use the low order bit for mar to
           // select which byte is actually written - high/low indicator if we do this at all
         end
-        default: state_next = STATE_FETCH1W;
+        default: state_next = STATE_ERR;
       endcase
-      write_out = 1'b1;
-    end
-    STATE_STORE2W: begin
-      state_next = STATE_STORE2;
-      addrbus = mar;
     end
     STATE_STORE2: begin
       state_next = STATE_STORE3;
-      addrbus = mar + 'h2;
+      mar_next = mar + 'h2;
       reg_read_addr1 = opcode[4:0];
-      data_out_next = reg_data_out1[15:0];        
+      data_out_next = reg_data_out1[15:0];
+      write_out_next = 1'b1;
     end
     STATE_STORE3: begin
       state_next = STATE_FETCH1W;
-      addrbus = mar + 'h2;
-      write_out = 1'b1;
-    end      
-    STATE_LOAD: begin
-      state_next = STATE_LOAD2;
-      addrbus = mar;
+      mar_access_next = 1'b0;
+      write_out_next = 1'b0;
     end
+    STATE_LOAD: state_next = STATE_LOAD2;
     STATE_LOAD2: begin
       reg_write_addr = opcode[4:0];
-      addrbus = mar;
       case (opcode[12:5])
         'h21: begin
           state_next = STATE_LOAD3;
           reg_data_in = { data_in, 16'h0000 };
           reg_write = REG_WRITE_W1;
-          addrbus = mar + 'h2;
+          mar_next = mar + 'h2;
         end
         'h31: begin
           state_next = STATE_FETCH1W;
+          mar_access_next = 1'b0;
           reg_data_in = {16'h0000, data_in};
           reg_write = REG_WRITE_W0;
         end
         'h41: begin
           state_next = STATE_FETCH1W;
+          mar_access_next = 1'b0;
           reg_data_in = {24'h000000, data_in[7:0] };
           reg_write = REG_WRITE_B0;
         end 
-        default: state_next = STATE_FETCH1W;
+        default: state_next = STATE_ERR;
       endcase
     end
-    STATE_LOAD3: begin
+    STATE_LOAD3: state_next = STATE_LOAD4;
+    STATE_LOAD4: begin
       state_next = STATE_FETCH1W;
+      mar_access_next = 1'b0;
       reg_write_addr = opcode[4:0];
-      addrbus = mar + 'h2;
       reg_data_in = { 16'h0000, data_in };
       reg_write = REG_WRITE_W0;
     end

@@ -168,7 +168,7 @@ assign LEDR = { 6'h00, ccr};
 
 // quadrature encoder outputs 0-23
 rgb_enc io0(.clk(clock_50), .rst_n(rst_n), .quad(quad), .button(pb), .rgb_out(rgb),
-  .write(cpu_write & mem_encoder), .address(cpu_addrbus[1:0]), .data_in(cpu_data_out), .data_out(encoder_data));
+  .write(cpu_write & mem_encoder), .address(cpu_addrbus[2:1]), .data_in(cpu_data_out), .data_out(encoder_data));
 
 // LCD module
 lcd_module lcd0(.clk(clock_50), .rst_n(rst_n), .e(lcd_e), .data_out(lcd_data), .rs(lcd_rs));
