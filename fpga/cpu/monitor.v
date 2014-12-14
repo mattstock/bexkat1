@@ -89,7 +89,7 @@ module monitor (
 `endif
 ,
 		altsyncram_component.intended_device_family = "Cyclone II",
-		altsyncram_component.lpm_hint = "ENABLE_RUNTIME_MOD=NO",
+		altsyncram_component.lpm_hint = "ENABLE_RUNTIME_MOD=YES,INSTANCE_NAME=mon",
 		altsyncram_component.lpm_type = "altsyncram",
 		altsyncram_component.numwords_a = 4096,
 		altsyncram_component.operation_mode = "ROM",
@@ -119,8 +119,8 @@ endmodule
 // Retrieval info: PRIVATE: INIT_FILE_LAYOUT STRING "PORT_A"
 // Retrieval info: PRIVATE: INIT_TO_SIM_X NUMERIC "0"
 // Retrieval info: PRIVATE: INTENDED_DEVICE_FAMILY STRING "Cyclone II"
-// Retrieval info: PRIVATE: JTAG_ENABLED NUMERIC "0"
-// Retrieval info: PRIVATE: JTAG_ID STRING "NONE"
+// Retrieval info: PRIVATE: JTAG_ENABLED NUMERIC "1"
+// Retrieval info: PRIVATE: JTAG_ID STRING "mon"
 // Retrieval info: PRIVATE: MAXIMUM_DEPTH NUMERIC "0"
 // Retrieval info: PRIVATE: MIFfilename STRING "../cpu/monitor.hex"
 // Retrieval info: PRIVATE: NUMWORDS_A NUMERIC "4096"
@@ -138,7 +138,7 @@ endmodule
 // Retrieval info: CONSTANT: CLOCK_ENABLE_OUTPUT_A STRING "BYPASS"
 // Retrieval info: CONSTANT: INIT_FILE STRING "../cpu/monitor.hex"
 // Retrieval info: CONSTANT: INTENDED_DEVICE_FAMILY STRING "Cyclone II"
-// Retrieval info: CONSTANT: LPM_HINT STRING "ENABLE_RUNTIME_MOD=NO"
+// Retrieval info: CONSTANT: LPM_HINT STRING "ENABLE_RUNTIME_MOD=YES,INSTANCE_NAME=mon"
 // Retrieval info: CONSTANT: LPM_TYPE STRING "altsyncram"
 // Retrieval info: CONSTANT: NUMWORDS_A NUMERIC "4096"
 // Retrieval info: CONSTANT: OPERATION_MODE STRING "ROM"

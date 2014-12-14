@@ -9,10 +9,13 @@ LD_SCRIPT = profile.ld
 
 .PHONY: all clean
 
-all: monitor.srec
+all: monitor.srec monitor.hex monitor-symbolic.s
 
 clean:
-	rm monitor.s monitor.o monitor monitor.srec
+	rm monitor.s monitor.o monitor monitor.srec monitor.hex
+
+monitor-symbolic.s: monitor.c
+	$(CC) -S -Wf-target=symbolic -o $@ $^ 
 
 monitor.s: monitor.c
 	$(CC) -S -Wf-target=$(CCTARGET) -o $@ $^ 
@@ -22,6 +25,9 @@ monitor.o: monitor.s
 
 monitor.srec: monitor
 	$(OBJCOPY) -O srec $< $@
+
+monitor.hex: monitor
+	$(OBJCOPY) -O ihex $< $@
 
 monitor: monitor.o
 	$(LD) -o $@ $^ # -T $(LD_SCRIPT)

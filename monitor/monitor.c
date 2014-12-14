@@ -1,24 +1,11 @@
-short ss;
-const char mystr[] = "hello this is a longer string than usual.";
+static const char hello[] = "hello world";
 int si;
-long sl;
-unsigned short us;
-unsigned int ui;
-unsigned long ul;
-char c;
-static int ssi = 4578;
 
-void foo(void);
+unsigned short *ioptr = (void *)0xff40100;
 
 void foo(void) {
-  ui = 4056;
-  if (si != 45) {
-    c++;
-    si = ssi;
+  for (si=0; si < 200; si++) {
+    *ioptr = 0xff0f;
+    ioptr++;
   }
-  for (si=0; si < 20; si++)
-    ui += si;
-
-fail:;
-
 }

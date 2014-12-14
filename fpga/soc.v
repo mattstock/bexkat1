@@ -120,8 +120,6 @@ assign aud_xck = 1'bz;
 assign aud_bclk = 1'bz;
 assign i2c_sclk = 1'bz;
 
-assign lcd_i2c_sclk = 1'bz;
-
 // No SDRAM for now, need a refresh module
 assign dram_addr = 12'h00000;
 assign dram_ba = 2'h0;
@@ -192,6 +190,6 @@ mem_select memmap0(.address(cpu_addrbus), .flash(mem_flash), .dram(mem_dram), .s
   .kbd(mem_kbd), .encoder(mem_encoder), .serial0(mem_serial0), .serial1(mem_serial1));
 
 // ROM monitor code
-monitor rom0(.clock(clock_50), .address(cpu_addrbus[11:0]), .q(mem_monitor_data));
+monitor rom0(.clock(clock_50), .address(cpu_addrbus[12:1]), .q(mem_monitor_data));
  
 endmodule
