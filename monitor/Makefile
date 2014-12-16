@@ -30,10 +30,10 @@ monitor.hex: monitor
 	$(OBJCOPY) -O ihex $< $@
 
 monitor: monitor.o
-	$(LD) -o $@ $^ # -T $(LD_SCRIPT)
+	$(LD) -o $@ $^ -T $(LD_SCRIPT)
 
 test.o: test.s
 	$(AS) -o $@ $^
 
 test: test.o
-	$(LD) -o $@ $^ # -T $(LD_SCRIPT)
+	$(LD) -o $@ $^ -T $(LD_SCRIPT)
