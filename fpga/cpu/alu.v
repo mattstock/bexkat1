@@ -1,4 +1,4 @@
-// A simple 16-bit ALU design
+// A simple ALU design
 // Matt Stock 11/16/14
 module alu(
   input wire [WIDTH-1:0] in1,
@@ -13,7 +13,7 @@ module alu(
   output reg v_out
 );
 
-parameter WIDTH = 16;
+parameter WIDTH = 32;
 
 localparam ALU_AND =     'h0;
 localparam ALU_OR =      'h1;

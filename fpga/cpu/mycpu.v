@@ -22,7 +22,6 @@ reg [31:0] scratch, scratch_next;
 reg mar_access, mar_access_next;
 
 reg [2:0] alu_func;
-reg [1:0] alu_in_width;
 reg [4:0] reg_read_addr1, reg_read_addr2, reg_write_addr;
 reg [31:0] alu_in1, alu_in2;
 reg [3:0] reg_write;
@@ -84,7 +83,6 @@ begin
   sp_next = sp;
   scratch_next = scratch;
   alu_func = 3'h0;
-  alu_in_width = 2'b00;
   reg_read_addr1 = 5'h00;
   reg_read_addr2 = 5'h00;
   reg_write_addr = 5'h00;
@@ -189,6 +187,8 @@ begin
             mar_next = reg_data_out1;
             reg_read_addr2 = opcode[4:0];
             data_out_next = reg_data_out2[31:16];
+            mar_access_next = 1'b1;
+            write_out_next = 1'b1;
           end
           'h21: begin // ld.l indirect
             state_next = STATE_LOAD;
@@ -201,6 +201,8 @@ begin
             mar_next = reg_data_out1;
             reg_read_addr2 = opcode[4:0];
             data_out_next = reg_data_out2[15:0];
+            mar_access_next = 1'b1;
+            write_out_next = 1'b1;
           end
           'h31: begin // ld indirect
             state_next = STATE_LOAD;
@@ -213,6 +215,8 @@ begin
             mar_next = reg_data_out1;
             reg_read_addr2 = opcode[4:0];
             data_out_next = reg_data_out2[15:0];
+            mar_access_next = 1'b1;
+            write_out_next = 1'b1;
           end
           'h41: begin // ld.b indirect
             state_next = STATE_LOAD;
@@ -227,37 +231,37 @@ begin
         casex (opcode[12:5])
           'h20: begin // bra
             state_next = STATE_FETCH1W;
-            pc_next = { 1'b0, pc + 'h2} + {{16{data_in[15]}},data_in};
+            pc_next = { 1'b0, pc + 'h2} + ({{16{data_in[15]}},data_in} << 1);
           end
           'h21: begin // beq
             state_next = STATE_FETCH1W;
             if (ccr[0])
-              pc_next = { 1'b0, pc + 'h2} + {{16{data_in[15]}},data_in};
+              pc_next = { 1'b0, pc + 'h2} + ({{16{data_in[15]}},data_in} << 1);
           end
           'h22: begin // bne
             state_next = STATE_FETCH1W;
             if (~ccr[0])
-              pc_next = { 1'b0, pc + 'h2} + {{16{data_in[15]}},data_in};        
+              pc_next = { 1'b0, pc + 'h2} + ({{16{data_in[15]}},data_in} << 1);        
           end
           'h24: begin // bgt
             state_next = STATE_FETCH1W;
             if (~(ccr[0] | (ccr[2] ^ ccr[1])))
-              pc_next = { 1'b0, pc + 'h2} + {{16{data_in[15]}},data_in};
+              pc_next = { 1'b0, pc + 'h2} + ({{16{data_in[15]}},data_in} << 1);
           end
           'h25: begin // bge
             state_next = STATE_FETCH1W;
             if (~(ccr[2] ^ ccr[1]))
-              pc_next = { 1'b0, pc + 'h2} + {{16{data_in[15]}},data_in};
+              pc_next = { 1'b0, pc + 'h2} + ({{16{data_in[15]}},data_in} << 1);
           end
           'h26: begin // ble
             state_next = STATE_FETCH1W;
             if (ccr[0] | (ccr[2] ^ ccr[1]))
-              pc_next = { 1'b0, pc + 'h2} + {{16{data_in[15]}},data_in};
+              pc_next = { 1'b0, pc + 'h2} + ({{16{data_in[15]}},data_in} << 1);
           end
           'h27: begin // blt
             state_next = STATE_FETCH1W;
             if (ccr[2] ^ ccr[1])
-              pc_next = { 1'b0, pc + 'h2} + {{16{data_in[15]}},data_in};
+              pc_next = { 1'b0, pc + 'h2} + ({{16{data_in[15]}},data_in} << 1);
           end
           default: begin // should trigger an invalid opcode exception
             state_next = STATE_ERR;  
@@ -400,7 +404,7 @@ begin
   endcase
 end
 
-doublealu alu0(.in1(alu_in1), .in2(alu_in2), .func(alu_func), .path_width(alu_in_width), .out(alu_out),
+alu alu0(.in1(alu_in1), .in2(alu_in2), .func(alu_func), .out(alu_out),
   .c_in(1'b0), .z_in(1'b0), .c_out(carry), .n_out(negative), .v_out(overflow), .z_out(zero));
 registerfile reg0(.clk(clk), .rst_n(rst_n), .read1(reg_read_addr1), .read2(reg_read_addr2), .write_addr(reg_write_addr),
   .write_data(reg_data_in), .write_en(reg_write), .data1(reg_data_out1), .data2(reg_data_out2));
