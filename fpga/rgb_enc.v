@@ -21,7 +21,7 @@ begin
   case (address)
     'b00: data_out = { red, green };
     'b01: data_out = { blue, 8'h00 };
-    'h10: data_out = { 15'h0000, button };
+    'b10: data_out = { 15'h0000, button };
     'b11: data_out = { 10'h0000, value };
     default: data_out = 16'h0000;
   endcase
