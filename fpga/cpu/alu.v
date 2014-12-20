@@ -56,15 +56,15 @@ begin
       c_out = ~in1[WIDTH-1] & in2[WIDTH-1] | in2[WIDTH-1] & out[WIDTH-1] | out[WIDTH-1] & ~in1[WIDTH-1];
     end  
     ALU_LSHIFT: begin
-      {c_out, out} = {in1, c_in}; // carry_in should be zero, unless this is for 16 bit shift
+      {c_out, out} = in1 << in2;
       v_out = n_out ^ c_out;
     end
     ALU_RSHIFTA: begin
-      {out, c_out} = {in1[WIDTH-1], in1};
+      {out, c_out} = in1 >>> in2;
       v_out = n_out ^ c_out;
     end
     ALU_RSHIFTL: begin
-      {out, c_out} = {c_in, in1};
+      {out, c_out} = in1 >> in2;
       v_out = n_out ^ c_out;
     end
     default: begin
