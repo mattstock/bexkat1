@@ -194,6 +194,7 @@ begin
             state_next = STATE_LOAD;
             reg_read_addr1 = data_in[12:8];
             mar_next = reg_data_out1;
+            mar_access_next = 1'b1;
           end
           'h30: begin // st indirect
             state_next = STATE_STORE;
@@ -208,6 +209,7 @@ begin
             state_next = STATE_LOAD;
             reg_read_addr1 = data_in[12:8];
             mar_next = reg_data_out1;
+            mar_access_next = 1'b1;
           end
           'h40: begin // st.b indirect
             state_next = STATE_STORE;
@@ -222,6 +224,7 @@ begin
             state_next = STATE_LOAD;
             reg_read_addr1 = data_in[12:8];
             mar_next = reg_data_out1;
+            mar_access_next = 1'b1;
           end
           default: begin // should trigger an invalid opcode exception
             state_next = STATE_ERR;  

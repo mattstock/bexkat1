@@ -542,12 +542,6 @@ set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_LEVEL_PIP
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ENABLE_ADVANCED_TRIGGER=0" -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STORAGE_QUALIFIER_INVERSION_MASK_LENGTH=0" -section_id auto_signaltap_0
 set_global_assignment -name MIF_FILE monitor.mif
-set_global_assignment -name QIP_FILE matrixmem.qip
-set_global_assignment -name QIP_FILE scancodes.qip
-set_global_assignment -name QIP_FILE keyfifo.qip
-set_global_assignment -name QIP_FILE registers.qip
-set_global_assignment -name QIP_FILE uart_fifo.qip
-set_global_assignment -name QIP_FILE monitor.qip
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[0] -to "led_matrix:led0|ab" -section_id auto_signaltap_0
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[1] -to "led_matrix:led0|address[0]" -section_id auto_signaltap_0
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[2] -to "led_matrix:led0|address[1]" -section_id auto_signaltap_0
@@ -1122,4 +1116,10 @@ set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[96] -t
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[97] -to "led_matrix:led0|matrixmem:m0|q_a[8]" -section_id auto_signaltap_0
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[98] -to "led_matrix:led0|matrixmem:m0|q_a[9]" -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_NODE_CRC_LOWORD=42052" -section_id auto_signaltap_0
+set_global_assignment -name QIP_FILE matrixmem.qip
+set_global_assignment -name QIP_FILE scancodes.qip
+set_global_assignment -name QIP_FILE keyfifo.qip
+set_global_assignment -name QIP_FILE registers.qip
+set_global_assignment -name QIP_FILE uart_fifo.qip
+set_global_assignment -name QIP_FILE monitor.qip
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
