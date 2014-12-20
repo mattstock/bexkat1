@@ -17,9 +17,9 @@ wire r,g,b;
 wire [31:0] buffer;
 wire ab;
 
-assign r = (phase[9:2] < buffer[23:16]);
-assign g = (phase[9:2] < buffer[15:8]);
-assign b = (phase[9:2] < buffer[7:0]);
+assign r = (phase[9:2] < buffer[15:8]);
+assign g = (phase[9:2] < buffer[7:0]);
+assign b = (phase[9:2] < buffer[31:24]);
 assign ab = (state == STATE_READ1);
 
 assign rgb_a = lp[0];

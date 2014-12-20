@@ -1,10 +1,12 @@
 int si;
-
-unsigned short *ioptr = (void *)0xff400100;
+unsigned *ioptr;
 
 void foo(void) {
-  for (si=0; si < 200; si++) {
-    *ioptr = 0xff0f;
+  ioptr = (void *)0xff410000;
+  for (si=0; si < 512; si++) {
+    *ioptr = 0x40106000;
     ioptr++;
   }
+  ioptr = (void *)0xff400000;
+  *ioptr = 0x40106000;
 }

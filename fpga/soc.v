@@ -97,6 +97,8 @@ wire [31:0] cpu_addrbus;
 wire [15:0] cpu_data_out;
 wire cpu_write, ccr;
 
+wire mem_monitor_wren = (SW[0] ? 1'b0 : cpu_write);
+
 wire [15:0] cpu_data_in0 = (mem_monitor ? mem_monitor_data : 16'h0000);
 wire [15:0] cpu_data_in1 = (mem_flash ? { 8'h00, fl_databus } : 16'h0000);
 wire [15:0] cpu_data_in2 = (mem_dram ? dram_dq : 16'h0000);
@@ -155,7 +157,7 @@ assign fl_databus = (cpu_write ? cpu_data_out[7:0] : 8'hzz);
 
 // LED display driver
 led_matrix led0(.clk(clock_50), .rst_n(rst_n), .rgb_a(rgb_a), .rgb_b(rgb_b), .rgb_c(rgb_c), .rgb0(rgb0), .rgb1(rgb1), .rgb_clk(rgb_clk), .rgb_stb(rgb_stb), .oe_n(rgb_oe_n),
-  .data_in(cpu_data_out), .data_out(led_matrix_data_out), .write(cpu_write & mem_led_matrix), .address(cpu_addrbus[9:0]));
+  .data_in(cpu_data_out), .data_out(led_matrix_data_out), .write(cpu_write & mem_led_matrix), .address(cpu_addrbus[10:1]));
 
 // visualization stuff
 hexdisp d0(.out(HEX3), .in(cpu_data_out[15:12]));
@@ -190,6 +192,6 @@ mem_select memmap0(.address(cpu_addrbus), .flash(mem_flash), .dram(mem_dram), .s
   .kbd(mem_kbd), .encoder(mem_encoder), .serial0(mem_serial0), .serial1(mem_serial1));
 
 // ROM monitor code
-monitor rom0(.clock(clock_50), .address(cpu_addrbus[12:1]), .q(mem_monitor_data));
+monitor ram0(.clock(clock_50), .wren(mem_monitor_wren), .data(cpu_data_in), .address(cpu_addrbus[12:1]), .q(mem_monitor_data));
  
 endmodule

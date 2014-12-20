@@ -19,8 +19,8 @@ reg [15:0] counter;
 always @*
 begin
   case (address)
-    'b00: data_out = { 8'h00, red };
-    'b01: data_out = { green, blue };
+    'b00: data_out = { red, green };
+    'b01: data_out = { blue, 8'h00 };
     'b10: data_out = { button, 9'h00, value};
     default: data_out = 16'h0000;
   endcase
@@ -51,10 +51,10 @@ begin
   blue_next = blue;
   if (write)
     case (address)
-      'b00: red_next = data_in[7:0];
-      'b01: begin
-        green_next = data_in[15:8];
-        blue_next = data_in[7:0];
+      'b01: blue_next = data_in[15:8];
+      'b00: begin
+        red_next = data_in[15:8];
+        green_next = data_in[7:0];
       end
       default: red_next = red; // just to shut the compiler up
     endcase

@@ -14,7 +14,7 @@ output invalid;
 
 // Simple memory map for now
 assign monitor =     (address >= 'hffc00000);
-assign led_matrix =  (address >= 'hff400100 && address <= 'hff4013ff);
+assign led_matrix =  (address >= 'hff410000 && address <= 'hff4113ff);
 assign kbd =         (address >= 'hff400030 && address <= 'hff40003f);
 assign serial1 =     (address >= 'hff400020 && address <= 'hff40002f);
 assign serial0 =     (address >= 'hff400010 && address <= 'hff40001f);
