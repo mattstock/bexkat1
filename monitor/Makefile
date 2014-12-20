@@ -1,4 +1,5 @@
 CC = ~/lcc/lcc
+CFLAGS = -Wf-d
 OBJCOPY = bexkat1-elf-objcopy
 OBJDUMP = bexkat1-elf-objdump
 AS = bexkat1-elf-as
@@ -10,16 +11,16 @@ TEMP := $(shell mktemp)
 
 .PHONY: all clean
 
-all: monitor.srec monitor.hex monitor-symbolic.s test memtest.s
+all: monitor.srec monitor.hex 
 
 clean:
 	rm monitor.o monitor monitor.srec monitor.hex test.o test memtest memtest.o memtest.s monitor.s monitor-symbolic.s
 
 %.s: %.c
-	$(CC) -S -d9 -Wf-target=$(CCTARGET) -o $@ $^
+	$(CC) -S $(CFLAGS) -Wf-target=$(CCTARGET) -o $@ $^
 
 monitor-symbolic.s: monitor.c
-	$(CC) -S -Wf-target=symbolic -o $@ $^
+	$(CC) -S $(CFLAGS) -Wf-target=symbolic -o $@ $^
 
 %.o: %.s
 	$(AS) -o $@ $^
