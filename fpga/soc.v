@@ -92,6 +92,7 @@ wire kbd_event;
 wire [7:0] kbd_data;
 
 wire mem_flash, mem_monitor, mem_dram, mem_sram, mem_led_matrix, mem_kbd, mem_encoder, mem_serial0, mem_serial1;
+wire mem_switch;
 wire [15:0] mem_monitor_data, led_matrix_data_out, encoder_data, serial0_data, serial1_data;
 wire [31:0] cpu_addrbus;
 wire [15:0] cpu_data_out;
@@ -108,9 +109,11 @@ wire [15:0] cpu_data_in5 = (mem_kbd ? { 8'h00, kbd_data}  : 16'h0000);
 wire [15:0] cpu_data_in6 = (mem_encoder ? encoder_data : 16'h0000);
 wire [15:0] cpu_data_in7 = (mem_serial0 ? serial0_data : 16'h0000);
 wire [15:0] cpu_data_in8 = (mem_serial1 ? serial1_data : 16'h0000);
+wire [15:0] cpu_data_in9 = (mem_switch && cpu_addrbus[1] ? { 8'h00, SW[9:2] } : 16'h0000);
 wire [15:0] cpu_data_in = cpu_data_in0 |
   cpu_data_in1 | cpu_data_in2 | cpu_data_in3 | cpu_data_in4 |
-  cpu_data_in5 | cpu_data_in6 | cpu_data_in7 | cpu_data_in8;
+  cpu_data_in5 | cpu_data_in6 | cpu_data_in7 | cpu_data_in8 |
+  cpu_data_in9;
 
 assign rst_n = KEY[0];
 
@@ -189,7 +192,7 @@ mycpu cpu0(.clk(clock_50), .rst_n(rst_n), .addrbus(cpu_addrbus), .data_in(cpu_da
 
 // Chip select logic
 mem_select memmap0(.address(cpu_addrbus), .flash(mem_flash), .dram(mem_dram), .sram(mem_sram), .monitor(mem_monitor), .led_matrix(mem_led_matrix),
-  .kbd(mem_kbd), .encoder(mem_encoder), .serial0(mem_serial0), .serial1(mem_serial1));
+  .kbd(mem_kbd), .encoder(mem_encoder), .serial0(mem_serial0), .serial1(mem_serial1), .switch(mem_switch));
 
 // ROM monitor code
 monitor ram0(.clock(clock_50), .wren(mem_monitor_wren), .data(cpu_data_in), .address(cpu_addrbus[12:1]), .q(mem_monitor_data));
