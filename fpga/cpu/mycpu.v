@@ -12,33 +12,40 @@ reg [31:0] pc;
 reg [32:0] pc_next;
 reg [31:0] mar;
 reg [32:0] mar_next;
-reg [31:0] sp, sp_next;
 reg [7:0] state, state_next;
-reg [15:0] opcode, opcode_next;
+reg [15:0] ir, ir_next;
 reg write_out, write_out_next;
-reg [15:0] data_out, data_out_next;
+reg [31:0] mdr, mdr_next;
 reg [3:0] ccr, ccr_next;
-reg [31:0] scratch, scratch_next;
-reg mar_access, mar_access_next;
+reg [2:0] delay, delay_next;
+reg addrsel, addrsel_next;
 
 reg [2:0] alu_func;
 reg [4:0] reg_read_addr1, reg_read_addr2, reg_write_addr;
 reg [31:0] alu_in1, alu_in2;
 reg [3:0] reg_write;
 
-assign addrbus = (mar_access ? mar : pc);
+assign data_out = mdr[15:0];
+assign addrbus = (addrsel ? mar : pc);
 
 wire data_access;
 wire [31:0] reg_data_out1, reg_data_out2, reg_data_in;
 wire carry, negative, overflow, zero;
 wire [31:0] alu_out;
 
-localparam STATE_FETCH1 = 8'h00, STATE_FETCH2 = 8'h01, STATE_MEMOP1 = 8'h02, STATE_MEMOP2 = 8'h03, STATE_STORE = 8'h04, STATE_LOAD = 8'h05, STATE_ERR = 8'h06;
-// For now, my monitor memory is internal to the FPGA, and so synchronous.  We need wait states.
-localparam STATE_FETCH1W = 8'h07, STATE_FETCH2W = 8'h08, STATE_MEMOP1W = 8'h09, STATE_MEMOP2W = 8'h0a, STATE_CALL1W = 8'h0b, STATE_CALL1 = 8'h0c;
-localparam STATE_CALL2W = 8'h0d, STATE_CALL2 = 8'h0e, STATE_RTN1W = 8'h0f, STATE_RTN1 = 8'h10, STATE_RTN2W = 8'h11, STATE_RTN2 = 8'h12;
-localparam STATE_LOAD2 = 8'h13, STATE_LOAD3 = 8'h14, STATE_STORE2 = 8'h15, STATE_STORE3 = 8'h16, STATE_STORE4 = 8'h17, STATE_STORE5 = 8'h18, STATE_STORE6 = 8'h19;
-localparam STATE_LOAD4 = 8'h1a, STATE_LOAD5 = 8'h1b;
+localparam STATE_FETCHIR1 = 8'h00, STATE_FETCHIR2 = 8'h01, STATE_FETCHIR3 = 8'h02, STATE_EVALIR1 = 8'h03, STATE_EVALIR2 = 8'h04, STATE_EVALIR3 = 8'h05;
+localparam STATE_STORE = 8'h06, STATE_STORE2 = 8'h07, STATE_STORE3 = 8'h08;
+localparam STATE_LOAD = 8'h09, STATE_LOAD2 = 8'h0a, STATE_LOAD3 = 8'h0b, STATE_LOAD4 = 8'h0c, STATE_FAULT = 8'h0d, STATE_PCWAIT = 8'h0e;
+
+localparam REG_SP = 5'b11111, REG_FP = 5'b11110;
+localparam ADDR_PC = 1'b0, ADDR_MAR = 1'b1;
+
+localparam AM_INH = 3'h0, AM_IMM = 3'h1, AM_REGIND = 3'h2, AM_REG = 3'h3, AM_DIR = 3'h4, AM_PCIND = 3'h5;
+
+// opcode format
+wire [2:0] ir_mode = ir[15:13];
+wire [7:0] ir_op   = ir[12:5];
+wire [4:0] ir_ra   = ir[4:0];
 
 localparam REG_WRITE_NONE = 4'b0000, REG_WRITE_B0 = 4'b0001, REG_WRITE_B1 = 4'b0010, REG_WRITE_B2 = 4'b0100, REG_WRITE_B3 = 4'b1000, REG_WRITE_W0 = 4'b0011, REG_WRITE_W1 = 4'b1100;
 localparam REG_WRITE_DW = 4'b1111;
@@ -47,26 +54,24 @@ always @(posedge clk or negedge rst_n)
 begin
   if (!rst_n) begin
     pc <= 'hffc00000; // start boot at base of monitor for now
-    state <= STATE_FETCH1;
-    opcode <= 'h0000;
-    data_out <= 'h0000;
+    state <= STATE_FETCHIR1;
+    ir <= 'h0000;
+    mdr <= 'h00000000;
     mar <= 'h00000000;
+    addrsel <= ADDR_PC;
     ccr <= 'h0;
-    sp <= 'h0007ffff; // top of SRAM
-    scratch <= 'h00000000;
+    delay <= 'h0;
     write_out <= 1'b0;
-    mar_access <= 1'b0;
   end else begin
     pc <= pc_next[31:0];
     state <= state_next;
-    opcode <= opcode_next;
-    data_out <= data_out_next;
-    mar_access <= mar_access_next;
+    delay <= delay_next;
+    ir <= ir_next;
+    mdr <= mdr_next;
     mar <= mar_next[31:0];
+    addrsel <= addrsel_next;
     ccr <= ccr_next;
-    sp <= sp_next;
     write_out <= write_out_next;
-    scratch <= scratch_next;
   end
 end
 
@@ -74,14 +79,13 @@ always @*
 begin
   pc_next = pc;
   state_next = state;
-  opcode_next = opcode;
-  data_out_next = data_out;
+  delay_next = delay;
+  ir_next = ir;
+  mdr_next = mdr;
   write_out_next = write_out;
-  mar_access_next = mar_access;
   mar_next = mar;
+  addrsel_next = addrsel;
   ccr_next = ccr;
-  sp_next = sp;
-  scratch_next = scratch;
   alu_func = 3'h0;
   reg_read_addr1 = 5'h00;
   reg_read_addr2 = 5'h00;
@@ -91,289 +95,286 @@ begin
   alu_in1 = 32'h00000000;
   alu_in2 = 32'h00000000;
   case (state)
-    STATE_FETCH1W: state_next = STATE_FETCH1;
-    STATE_FETCH1: begin
-      pc_next = pc + 'h2;
-      opcode_next = data_in;
-      case (data_in[15:14])
-        'b11: state_next = STATE_MEMOP1W; // F3 opcodes (3 word load)
-        'b10: state_next = STATE_FETCH2W; // F2 opcodes (2 word load)
-        'b01: state_next = STATE_FETCH2W; // F1 opcodes (2 word load)
-        'b00: begin                       // F0 opcodes (1 word load)
-          case (data_in[12:5])
-            'h00: state_next = STATE_FETCH1W; // nop
-            'h01: begin // rts
-              state_next = STATE_RTN1W;
-              sp_next = sp + 'h2;
-            end
-            'h02: begin // rti
-            end
-            'h03: begin // inc R
-              state_next = STATE_FETCH1W;
-              reg_write_addr = data_in[4:0];
-              alu_func = 'h2; // add
-              reg_read_addr1 = data_in[4:0];
-              alu_in1 = reg_data_out1;
-              alu_in2 = 'h1;
-              reg_data_in = alu_out;
-              reg_write = REG_WRITE_DW;
-            end
-            'h04: begin //dec R
-              state_next = STATE_FETCH1W;
-              reg_write_addr = data_in[4:0];
-              alu_func = 'h3; // sub
-              reg_read_addr1 = data_in[4:0];
-              alu_in1 = reg_data_out1;
-              alu_in2 = 'h1;
-              reg_data_in = alu_out;
-              reg_write = REG_WRITE_DW;
-            end
-            default: state_next = STATE_ERR;
-          endcase
+    STATE_FETCHIR1: begin
+      if (delay == 'h0) begin
+        addrsel_next = ADDR_PC;
+        write_out_next = 1'b0;
+        delay_next = 'h3;
+      end else begin
+        delay_next = delay - 3'b1;
+        if (delay == 'h1) begin
+          ir_next = data_in;
+          pc_next = pc + 'h2;
+          state_next = STATE_EVALIR1;
         end
+      end      
+    end
+    STATE_EVALIR1: begin
+      case ({ir_mode, ir_op})
+        {AM_INH, 8'h00}: state_next = STATE_FETCHIR1; // nop
+        {AM_INH, 8'h01}: state_next = STATE_FETCHIR1; // rts
+        {AM_INH, 8'h02}: state_next = STATE_FETCHIR1; // rti
+        {AM_REG, 8'h13}: begin // inc rA
+          reg_write_addr = ir_ra;
+          alu_func = 'h2; // add
+          reg_read_addr1 = ir_ra;
+          alu_in1 = reg_data_out1;
+          alu_in2 = 'h1;
+          reg_data_in = alu_out;
+          reg_write = REG_WRITE_DW;
+          state_next = STATE_FETCHIR1;
+        end
+        {AM_REG, 8'h14}: begin // dec rA
+          reg_write_addr = ir_ra;
+          alu_func = 'h3; // sub
+          reg_read_addr1 = ir_ra;
+          alu_in1 = reg_data_out1;
+          alu_in2 = 'h1;
+          reg_data_in = alu_out;
+          reg_write = REG_WRITE_DW;
+          state_next = STATE_FETCHIR1;
+        end
+        {AM_REG, 8'h15}: begin // push rA
+          state_next = STATE_FETCHIR1;
+        end
+        {AM_REG, 8'h16}: begin // pop rA
+          state_next = STATE_FETCHIR1;
+        end
+        default: state_next = STATE_FETCHIR2;
       endcase
     end
-    STATE_RTN1W: begin
-      state_next = STATE_RTN1;
+    STATE_FETCHIR2: begin
+      if (delay == 'h0) begin
+        addrsel_next = ADDR_PC;
+        write_out_next = 1'b0;
+        delay_next = 'h3;
+      end else begin
+        delay_next = delay - 3'b1;
+        if (delay == 'h1) begin
+          case (ir_mode)
+            AM_PCIND : mar_next = { {16{data_in[15]}},data_in };
+            AM_IMM   : mdr_next = { {16{data_in[15]}}, data_in }; // FIX only do this for signed ops
+            AM_REG   : mdr_next = { 16'h0000, data_in };
+            AM_REGIND: begin
+              mar_next = { {21{data_in[10]}}, data_in[10:0] };
+              mdr_next = { 16'h0000, data_in };
+            end
+            AM_DIR   : mar_next[31:16] = data_in;
+            default  : mdr_next = { 16'h0000, data_in };
+          endcase
+          pc_next = pc + 'h2;
+          state_next = STATE_EVALIR2;
+        end
+      end      
     end
-    STATE_RTN1: begin
-      state_next = STATE_RTN2W;
-      pc_next[31:16] = data_in;
-      sp_next = sp + 'h2;
-    end
-    STATE_RTN2W: begin
-      state_next = STATE_RTN2;
-    end
-    STATE_RTN2: begin
-      state_next = STATE_FETCH1W;
-      pc_next[15:0] = data_in;
-      // check for address fault = non-0 bit 0
-      sp_next = sp + 'h2;
-    end
-    STATE_FETCH2W: state_next = STATE_FETCH2;
-    STATE_FETCH2: begin
-      pc_next = pc + 'h2;
-      if (opcode[15:14] == 2'b01) begin // F1 opcodes
-        casex (opcode[12:5])
-          'h0x: begin // rA <= rB and rC
-            state_next = STATE_FETCH1W;
-            {alu_func, reg_write_addr} = opcode[7:0];
-            reg_read_addr1 = data_in[12:8];
-            reg_read_addr2 = data_in[4:0];
+    STATE_EVALIR2: begin
+      casex ({ir_mode, ir_op})
+        {AM_IMM, 8'h1x}: begin // alu rA <= rA + 0xabcd
+          alu_func = ir[7:5];
+          reg_write_addr = ir_ra;
+          reg_read_addr1 = ir_ra;
+          alu_in1 = reg_data_out1;
+          alu_in2 = mdr;
+          reg_data_in = alu_out;
+          reg_write = REG_WRITE_DW;
+          state_next = STATE_FETCHIR1;
+        end
+        {AM_REG, 8'h0x}: begin // alu rA <= rB + rC
+          alu_func = ir[7:5];
+          reg_write_addr = ir_ra;
+          reg_read_addr1 = mdr[12:8];
+          reg_read_addr2 = mdr[4:0];
+          alu_in1 = reg_data_out1;
+          alu_in2 = reg_data_out2;
+          reg_data_in = alu_out;
+          reg_write = REG_WRITE_DW;
+          state_next = STATE_FETCHIR1;
+        end
+        {AM_REG, 8'h10}: begin // mov
+          state_next = STATE_FETCHIR1;
+          reg_write_addr = ir_ra;
+          reg_read_addr1 = mdr[12:8];
+          reg_data_in = reg_data_out1;
+          reg_write = REG_WRITE_DW;
+        end
+        {AM_REG, 8'h11}: begin // cmp
+          state_next = STATE_FETCHIR1;
+          alu_func = 'h3; // sub
+          reg_read_addr1 = ir_ra;
+          reg_read_addr2 = mdr[12:8];
+          alu_in1 = reg_data_out1;
+          alu_in2 = reg_data_out2;
+          ccr_next = {carry, negative, overflow, zero};
+        end
+        {AM_PCIND, 8'h20}: begin // bra
+          state_next = STATE_PCWAIT;
+          pc_next = { 1'b0, pc } + mar;
+        end
+        {AM_PCIND, 8'h21}: begin // beq
+          state_next = STATE_PCWAIT;
+          if (ccr[0])
+            pc_next = { 1'b0, pc } + mar;
+        end
+        {AM_PCIND, 8'h22}: begin // bne
+          state_next = STATE_PCWAIT;
+          if (~ccr[0])
+            pc_next = { 1'b0, pc } + mar;        
+        end
+        {AM_PCIND, 8'h24}: begin // bgt
+          state_next = STATE_PCWAIT;
+          if (~(ccr[0] | (ccr[2] ^ ccr[1])))
+            pc_next = { 1'b0, pc } + mar;
+        end
+        {AM_PCIND, 8'h25}: begin // bge
+          state_next = STATE_PCWAIT;
+          if (~(ccr[2] ^ ccr[1]))
+            pc_next = { 1'b0, pc } + mar;
+        end
+        {AM_PCIND, 8'h26}: begin // ble
+          state_next = STATE_PCWAIT;
+          if (ccr[0] | (ccr[2] ^ ccr[1]))
+            pc_next = { 1'b0, pc } + mar;
+        end
+        {AM_PCIND, 8'h27}: begin // blt
+          state_next = STATE_PCWAIT;
+          if (ccr[2] ^ ccr[1])
+            pc_next = { 1'b0, pc } + mar;
+        end
+        {AM_PCIND, 8'h2c}: begin // brn
+          state_next = STATE_PCWAIT;
+        end
+        {AM_REGIND, 8'h20}: begin // st.l
+            state_next = STATE_STORE;
+            reg_read_addr1 = mdr[15:11]; // rB
             alu_in1 = reg_data_out1;
-            alu_in2 = reg_data_out2;
-            reg_data_in = alu_out;
-            reg_write = REG_WRITE_DW;
-          end
-          'h10: begin // mov rA, rB
-            state_next = STATE_FETCH1W;
-            reg_write_addr = opcode[4:0];
-            reg_read_addr1 = data_in[12:8];
-            reg_data_in = reg_data_out1;
-            reg_write = REG_WRITE_DW;
-          end
-          'h11: begin // cmp rA, rB
-            state_next = STATE_FETCH1W;
-            alu_func = 'h3; // sub
-            reg_read_addr1 = opcode[4:0];
-            reg_read_addr2 = data_in[12:8];
+            alu_in2 = { {21{mdr[10]}}, mdr[10:0] };
+            alu_func = 'h2;      
+            mar_next = alu_out;
+            addrsel_next = ADDR_MAR;
+            reg_read_addr2 = ir_ra;
+            mdr_next[15:0] = reg_data_out2[31:16];
+            write_out_next = 1'b1;
+        end
+        {AM_REGIND, 8'h21}: begin // ld.l
+            state_next = STATE_LOAD;
+            reg_read_addr1 = mdr[15:11]; // rB
             alu_in1 = reg_data_out1;
-            alu_in2 = reg_data_out2;
-            ccr_next = {carry, negative, overflow, zero};
-          end
-          'h20: begin // st.l indirect
+            alu_in2 = { {21{mdr[10]}}, mdr[10:0] };
+            alu_func = 'h2;      
+            mar_next = alu_out;
+            addrsel_next = ADDR_MAR;
+        end
+        {AM_REGIND, 8'h30}: begin // st
             state_next = STATE_STORE;
-            reg_read_addr1 = data_in[12:8];
-            mar_next = reg_data_out1;
-            reg_read_addr2 = opcode[4:0];
-            data_out_next = reg_data_out2[31:16];
-            mar_access_next = 1'b1;
-            write_out_next = 1'b1;
-          end
-          'h21: begin // ld.l indirect
+        end
+        {AM_REGIND, 8'h31}: begin // ld
             state_next = STATE_LOAD;
-            reg_read_addr1 = data_in[12:8];
-            mar_next = reg_data_out1;
-            mar_access_next = 1'b1;
-          end
-          'h30: begin // st indirect
+        end
+        {AM_REGIND, 8'h40}: begin // st.b
             state_next = STATE_STORE;
-            reg_read_addr1 = data_in[12:8];
-            mar_next = reg_data_out1;
-            reg_read_addr2 = opcode[4:0];
-            data_out_next = reg_data_out2[15:0];
-            mar_access_next = 1'b1;
-            write_out_next = 1'b1;
-          end
-          'h31: begin // ld indirect
+        end
+        {AM_REGIND, 8'h41}: begin // ld.b
             state_next = STATE_LOAD;
-            reg_read_addr1 = data_in[12:8];
-            mar_next = reg_data_out1;
-            mar_access_next = 1'b1;
-          end
-          'h40: begin // st.b indirect
-            state_next = STATE_STORE;
-            reg_read_addr1 = data_in[12:8];
-            mar_next = reg_data_out1;
-            reg_read_addr2 = opcode[4:0];
-            data_out_next = reg_data_out2[15:0];
-            mar_access_next = 1'b1;
-            write_out_next = 1'b1;
-          end
-          'h41: begin // ld.b indirect
-            state_next = STATE_LOAD;
-            reg_read_addr1 = data_in[12:8];
-            mar_next = reg_data_out1;
-            mar_access_next = 1'b1;
-          end
-          default: begin // should trigger an invalid opcode exception
-            state_next = STATE_ERR;  
-          end
-        endcase
-      end else begin // F2 opcodes
-        casex (opcode[12:5])
-          'h20: begin // bra
-            state_next = STATE_FETCH1W;
-            pc_next = { 1'b0, pc + 'h2} + ({{16{data_in[15]}},data_in} << 1);
-          end
-          'h21: begin // beq
-            state_next = STATE_FETCH1W;
-            if (ccr[0])
-              pc_next = { 1'b0, pc + 'h2} + ({{16{data_in[15]}},data_in} << 1);
-          end
-          'h22: begin // bne
-            state_next = STATE_FETCH1W;
-            if (~ccr[0])
-              pc_next = { 1'b0, pc + 'h2} + ({{16{data_in[15]}},data_in} << 1);        
-          end
-          'h24: begin // bgt
-            state_next = STATE_FETCH1W;
-            if (~(ccr[0] | (ccr[2] ^ ccr[1])))
-              pc_next = { 1'b0, pc + 'h2} + ({{16{data_in[15]}},data_in} << 1);
-          end
-          'h25: begin // bge
-            state_next = STATE_FETCH1W;
-            if (~(ccr[2] ^ ccr[1]))
-              pc_next = { 1'b0, pc + 'h2} + ({{16{data_in[15]}},data_in} << 1);
-          end
-          'h26: begin // ble
-            state_next = STATE_FETCH1W;
-            if (ccr[0] | (ccr[2] ^ ccr[1]))
-              pc_next = { 1'b0, pc + 'h2} + ({{16{data_in[15]}},data_in} << 1);
-          end
-          'h27: begin // blt
-            state_next = STATE_FETCH1W;
-            if (ccr[2] ^ ccr[1])
-              pc_next = { 1'b0, pc + 'h2} + ({{16{data_in[15]}},data_in} << 1);
-          end
-          default: begin // should trigger an invalid opcode exception
-            state_next = STATE_ERR;  
-          end
-        endcase
-      end
+        end
+        default: state_next = STATE_FETCHIR3;
+      endcase
     end
-    STATE_MEMOP1W: state_next = STATE_MEMOP1;
-    STATE_MEMOP1: begin // Read high address word from mem
-      state_next = STATE_MEMOP2W;
-      pc_next = pc + 'h2;
-      mar_next[31:16] = data_in;
+    STATE_FETCHIR3: begin
+      if (delay == 'h0) begin
+        addrsel_next = ADDR_PC;
+        write_out_next = 1'b0;
+        delay_next = 'h3;
+      end else begin
+        delay_next = delay - 3'b1;
+        if (delay == 'h1) begin
+          case (ir_mode)
+            AM_IMM : mdr_next = { mdr[15:0], data_in };
+            AM_DIR : mar_next[15:0] = data_in;
+            default: mdr_next = { mdr[15:0], data_in }; 
+          endcase
+          pc_next = pc + 'h2;
+         state_next = STATE_EVALIR3;
+        end
+      end      
     end
-    STATE_MEMOP2W: state_next = STATE_MEMOP2;
-    STATE_MEMOP2: begin // Read low address word from mem
-      pc_next = pc + 'h2;
-      mar_next[15:0] = data_in;
-      casex (opcode[12:5])
-        'h20: begin // st.l
-          state_next = STATE_STORE;
-          reg_read_addr1 = opcode[4:0];
-          data_out_next = reg_data_out1[31:16];
-          mar_access_next = 1'b1;
-          write_out_next = 1'b1;
+    STATE_EVALIR3: begin
+      casex ({ir_mode, ir_op})
+        {AM_IMM, 8'h0x}: begin // alu rA <= rB + 0xabcd
+          alu_func = ir[7:5];
+          reg_write_addr = ir_ra;
+          reg_read_addr1 = mdr[28:24]; // rB
+          alu_in1 = reg_data_out1;
+          alu_in2 = { {16{mdr[15]}}, mdr[15:0] }; // FIX for signed only
+          reg_data_in = alu_out;
+          reg_write = REG_WRITE_DW;
+          state_next = STATE_FETCHIR1;
         end
-        'h21: begin // ld.l
-          state_next = STATE_LOAD;
-          mar_access_next = 1'b1;
-        end
-        'h30: begin  // st
-          state_next = STATE_STORE;
-          reg_read_addr1 = opcode[4:0];
-          data_out_next = reg_data_out1[15:0];
-        end
-        'h31: begin // ld
-          state_next = STATE_LOAD;
-          mar_access_next = 1'b1;
-        end
-        'h40: begin // st.b
-          state_next = STATE_STORE;
-          reg_read_addr1 = opcode[4:0];
-          data_out_next = reg_data_out1[15:0];
-        end        
-        'h41: begin // ld.b
-          state_next = STATE_LOAD;
-          mar_access_next = 1'b1;
-        end
-        'h50: begin // jmp
-          state_next = STATE_FETCH1W;
-          pc_next = { mar[31:16], data_in};
-        end
-        'h51: begin // jsr
-          state_next = STATE_CALL1W;
-        end
-        'h10: begin // ldi  // 
-          state_next = STATE_FETCH1W;
-          reg_write_addr = opcode[4:0];
-          reg_data_in = { mar[31:16], data_in };
+        {AM_IMM, 8'h20}: begin // ldi
+          state_next = STATE_FETCHIR1;
+          reg_write_addr = ir_ra;
+          reg_data_in = mdr;
           reg_write = REG_WRITE_DW;        
         end
-        default: begin // should trigger an invalid opcode exception
-          state_next = STATE_ERR;  
+        {AM_DIR, 8'h20}: begin // st.l
+          state_next = STATE_STORE;
+          reg_read_addr1 = ir_ra;
+          mdr_next[15:0] = reg_data_out1[31:16];
+          addrsel_next = ADDR_MAR;
+          write_out_next = 1'b1;
         end
-      endcase
-    end
-    STATE_CALL1W: state_next = STATE_CALL1;
-    STATE_CALL1: begin
-      state_next = STATE_CALL2W;
-    end
-    STATE_CALL2W: state_next = STATE_CALL2;
-    STATE_CALL2: begin
-      state_next = STATE_FETCH1W;
-      pc_next = mar;
+        {AM_DIR, 8'h21}: begin // ld.l
+          state_next = STATE_LOAD;
+          addrsel_next = ADDR_MAR;
+        end
+        {AM_DIR, 8'h30}: begin // st
+          state_next = STATE_STORE;
+          write_out_next = 1'b1;
+        end
+        {AM_DIR, 8'h31}: begin // ld
+          state_next = STATE_LOAD;
+        end
+        {AM_DIR, 8'h40}: begin // st.b
+          state_next = STATE_STORE;
+        end
+        {AM_DIR, 8'h41}: begin // ld.b
+          state_next = STATE_LOAD;
+        end
+        {AM_DIR, 8'h50}: begin // jmp
+          state_next = STATE_FETCHIR1;
+          pc_next = { 1'b0, mar};
+        end
+        {AM_DIR, 8'h51}: begin // jsr
+        end
+        default: state_next = STATE_FAULT;
+      endcase 
     end
     STATE_STORE: begin
       write_out_next = 1'b0;
-      casex (opcode[12:5])
+      case (ir_op)
         'h20: begin
           state_next = STATE_STORE2;
         end
-        'h30: begin
-          state_next = STATE_FETCH1W;
-          mar_access_next = 1'b0;
-        end
-        'h40: begin
-          state_next = STATE_FETCH1W;
-          mar_access_next = 1'b0;
-          // for now we ignore, but we should use the low order bit for mar to
-          // select which byte is actually written - high/low indicator if we do this at all
-        end
-        default: state_next = STATE_ERR;
+        'h30: state_next = STATE_FETCHIR1;
+        'h40: state_next = STATE_FETCHIR1;
+        default: state_next = STATE_FAULT;
       endcase
     end
     STATE_STORE2: begin
       state_next = STATE_STORE3;
       mar_next = mar + 'h2;
-      reg_read_addr1 = opcode[4:0];
-      data_out_next = reg_data_out1[15:0];
+      reg_read_addr1 = ir_ra;
+      mdr_next[15:0] = reg_data_out1[15:0];
       write_out_next = 1'b1;
     end
     STATE_STORE3: begin
-      state_next = STATE_FETCH1W;
-      mar_access_next = 1'b0;
+      state_next = STATE_FETCHIR1;
+      addrsel_next = ADDR_PC;
       write_out_next = 1'b0;
     end
     STATE_LOAD: state_next = STATE_LOAD2;
     STATE_LOAD2: begin
-      reg_write_addr = opcode[4:0];
-      case (opcode[12:5])
+      reg_write_addr = ir_ra;
+      case (ir_op)
         'h21: begin
           state_next = STATE_LOAD3;
           reg_data_in = { data_in, 16'h0000 };
@@ -381,29 +382,30 @@ begin
           mar_next = mar + 'h2;
         end
         'h31: begin
-          state_next = STATE_FETCH1W;
-          mar_access_next = 1'b0;
+          state_next = STATE_FETCHIR1;
+          addrsel_next = ADDR_PC;
           reg_data_in = {16'h0000, data_in};
           reg_write = REG_WRITE_W0;
         end
         'h41: begin
-          state_next = STATE_FETCH1W;
-          mar_access_next = 1'b0;
+          state_next = STATE_FETCHIR1;
+          addrsel_next = ADDR_PC;
           reg_data_in = {24'h000000, data_in[7:0] };
           reg_write = REG_WRITE_B0;
         end 
-        default: state_next = STATE_ERR;
+        default: state_next = STATE_FAULT;
       endcase
     end
     STATE_LOAD3: state_next = STATE_LOAD4;
     STATE_LOAD4: begin
-      state_next = STATE_FETCH1W;
-      mar_access_next = 1'b0;
-      reg_write_addr = opcode[4:0];
+      state_next = STATE_FETCHIR1;
+      addrsel_next = ADDR_PC;
+      reg_write_addr = ir_ra;
       reg_data_in = { 16'h0000, data_in };
       reg_write = REG_WRITE_W0;
     end
-    STATE_ERR: state_next = STATE_ERR;
+    STATE_PCWAIT: state_next = STATE_FETCHIR1;
+    STATE_FAULT: state_next = STATE_FAULT;
   endcase
 end
 
