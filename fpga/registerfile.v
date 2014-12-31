@@ -20,8 +20,9 @@ assign data2 = regfile[read2];
 always @(posedge clk or negedge rst_n)
 begin
   if (!rst_n) begin
-    for (int i=0; i < COUNT; i = i + 1)
+    for (int i=0; i < COUNT-1; i = i + 1)
       regfile[i] <= 'h00000000;
+    regfile[COUNT-1] <= 'h0007fffe;  // such a hack
   end else begin
     for (int i=0; i < COUNT; i = i + 1)
       regfile[i] <= regfile_next[i];
