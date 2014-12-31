@@ -98,8 +98,6 @@ wire [31:0] cpu_addrbus;
 wire [15:0] cpu_data_out;
 wire cpu_write, ccr;
 
-wire mem_monitor_wren = (SW[0] ? 1'b0 : cpu_write);
-
 wire [15:0] cpu_data_in0 = (mem_monitor ? mem_monitor_data : 16'h0000);
 wire [15:0] cpu_data_in1 = (mem_flash ? { 8'h00, fl_databus } : 16'h0000);
 wire [15:0] cpu_data_in2 = (mem_dram ? dram_dq : 16'h0000);
@@ -195,6 +193,6 @@ mem_select memmap0(.address(cpu_addrbus), .flash(mem_flash), .dram(mem_dram), .s
   .kbd(mem_kbd), .encoder(mem_encoder), .serial0(mem_serial0), .serial1(mem_serial1), .switch(mem_switch));
 
 // ROM monitor code
-monitor ram0(.clock(clock_50), .wren(mem_monitor_wren), .data(cpu_data_in), .address(cpu_addrbus[12:1]), .q(mem_monitor_data));
+monitor rom0(.clock(clock_50), .address(cpu_addrbus[12:1]), .q(mem_monitor_data));
  
 endmodule
