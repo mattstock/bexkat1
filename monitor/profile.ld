@@ -15,10 +15,14 @@ SECTIONS
     } > monitor
   .data : AT ( LOADADDR(.text) + SIZEOF(.text))
     { 
+      _data = . ;
       *(.data)
-    } > monitor
+      _edata = . ;
+    } > ram
   .bss :
     { 
+      _bstart = . ;
       *(.bss)
+      _bend = . ;
     } > ram
 }
