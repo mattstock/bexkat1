@@ -118,7 +118,18 @@ begin
     STATE_EVALIR1: begin
       case ({ir_mode, ir_op})
         {AM_INH, 8'h00}: state_next = STATE_FETCHIR1; // nop
-        {AM_INH, 8'h01}: state_next = STATE_FETCHIR1; // rts
+        {AM_INH, 8'h01}: begin // rts
+          state_next = STATE_POP;
+          reg_read_addr1 = REG_SP;
+          alu_func = 'h2; // add
+          alu_in1 = reg_data_out1;
+          alu_in2 = 'h2;
+          reg_data_in = alu_out;
+          reg_write = REG_WRITE_DW;
+          reg_write_addr = REG_SP;
+          addrsel_next = ADDR_MAR;
+          mar_next = alu_out;
+        end
         {AM_INH, 8'h02}: state_next = STATE_FETCHIR1; // rti
         {AM_REG, 8'h13}: begin // inc rA
           reg_write_addr = ir_ra;
@@ -341,7 +352,8 @@ begin
         {AM_DIR, 8'h20}: begin // st.l
           state_next = STATE_STORE;
           reg_read_addr1 = ir_ra;
-          mdr_next[15:0] = reg_data_out1[31:16];
+          mdr_next = reg_data_out1;
+          mdrsel_next = MDR_HIGH;
           addrsel_next = ADDR_MAR;
           write_out_next = 1'b1;
         end
@@ -367,6 +379,14 @@ begin
           pc_next = { 1'b0, mar};
         end
         {AM_DIR, 8'h51}: begin // jsr
+          state_next = STATE_PUSH;
+          reg_read_addr2 = REG_SP;
+          mdr_next = pc;
+          pc_next = mar;
+          mar_next = reg_data_out2;
+          mdrsel_next = MDR_HIGH;
+          addrsel_next = ADDR_MAR;          
+          write_out_next = 1'b1;        
         end
         default: state_next = STATE_FAULT;
       endcase 
@@ -438,18 +458,28 @@ begin
     end
     STATE_POP2: begin
       state_next = STATE_POP3;
-      reg_write_addr = ir_ra;
-      reg_data_in = { 16'h0000, data_in };
-      reg_write = REG_WRITE_W0;
       reg_read_addr1 = REG_SP;
       mar_next = reg_data_out1;
+      case ({ir_mode, ir_op})
+        {AM_REG, 8'h16}: begin
+          reg_write_addr = ir_ra;
+          reg_data_in = { 16'h0000, data_in };
+          reg_write = REG_WRITE_W0;
+        end
+        default: pc_next[15:0] = data_in;
+      endcase
     end
     STATE_POP3: state_next = STATE_POP4;
      STATE_POP4: begin
       state_next = STATE_FETCHIR1;
-      reg_write_addr = ir_ra;
-      reg_data_in = { data_in, 16'h0000 };
-      reg_write = REG_WRITE_W1;
+      case ({ir_mode, ir_op})
+        {AM_REG, 8'h16}: begin
+          reg_write_addr = ir_ra;
+          reg_data_in = { data_in, 16'h0000 };
+          reg_write = REG_WRITE_W1;
+        end
+        default: pc_next[31:16] = data_in;
+      endcase
       addrsel_next = ADDR_PC;      
     end
     STATE_PUSH: begin
