@@ -11,10 +11,10 @@ TEMP := $(shell mktemp)
 
 .PHONY: all clean
 
-all: monitor.hex frametests.s frametests.hex memtests.s memtests.hex stacktests.hex
+all: monitor.hex frametests.s frametests.hex memtests.s memtests.hex stacktests.hex conditionals.hex conditionals.s conditionals-simple.hex
 
 clean:
-	rm -f *.o *.srec *.hex memtests stacktests monitor frametests frametests.s memtests.s
+	rm -f *.o *.srec *.hex memtests stacktests monitor frametests frametests.s memtests.s conditionals conditionals.s conditionals-simple
 
 %.s: %.c
 	$(CC) -S $(CFLAGS) -Wf-target=$(CCTARGET) -o $@ $^
@@ -36,4 +36,8 @@ monitor: monitor.o
 stacktests: stacktests.o
 	$(LD) -o $@ $^ -T $(LD_SCRIPT)
 frametests: frametests.o
+	$(LD) -o $@ $^ -T $(LD_SCRIPT)
+conditionals: conditionals.o
+	$(LD) -o $@ $^ -T $(LD_SCRIPT)
+conditionals-simple: conditionals-simple.o
 	$(LD) -o $@ $^ -T $(LD_SCRIPT)
