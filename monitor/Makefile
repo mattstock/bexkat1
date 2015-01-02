@@ -11,16 +11,13 @@ TEMP := $(shell mktemp)
 
 .PHONY: all clean
 
-all: monitor.srec monitor.hex 
+all: monitor.hex frametests.s frametests.hex memtests.s memtests.hex stacktests.hex
 
 clean:
-	rm monitor.o monitor monitor.srec monitor.hex test.o test memtest memtest.o memtest.s monitor.s monitor-symbolic.s
+	rm -f *.o *.srec *.hex memtests stacktests monitor frametests frametests.s memtests.s
 
 %.s: %.c
 	$(CC) -S $(CFLAGS) -Wf-target=$(CCTARGET) -o $@ $^
-
-monitor-symbolic.s: monitor.c
-	$(CC) -S $(CFLAGS) -Wf-target=symbolic -o $@ $^
 
 %.o: %.s
 	$(AS) -o $@ $^
@@ -32,9 +29,11 @@ monitor-symbolic.s: monitor.c
 	$(OBJCOPY) -O ihex $< $(TEMP)
 	egrep -v "^:02000004" $(TEMP) | egrep -v "^:04000005" > $@	
 
-memtest: memtest.o
+memtests: memtests.o
 	$(LD) -o $@ $^ -T $(LD_SCRIPT)
 monitor: monitor.o
 	$(LD) -o $@ $^ -T $(LD_SCRIPT)
-test: test.o
+stacktests: stacktests.o
+	$(LD) -o $@ $^ -T $(LD_SCRIPT)
+frametests: frametests.o
 	$(LD) -o $@ $^ -T $(LD_SCRIPT)
