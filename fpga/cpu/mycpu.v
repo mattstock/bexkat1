@@ -32,12 +32,13 @@ assign addrbus = (addrsel ? mar : pc);
 wire data_access;
 wire [31:0] reg_data_out1, reg_data_out2, reg_data_in;
 wire carry, negative, overflow, zero;
+wire alu_carry, alu_negative, alu_overflow, alu_zero;
 wire [31:0] alu_out;
 
 localparam STATE_FETCHIR1 = 8'h00, STATE_FETCHIR2 = 8'h01, STATE_FETCHIR3 = 8'h02, STATE_EVALIR1 = 8'h03, STATE_EVALIR2 = 8'h04, STATE_EVALIR3 = 8'h05;
 localparam STATE_STORE = 8'h06, STATE_STORE2 = 8'h07, STATE_STORE3 = 8'h08;
-localparam STATE_LOAD = 8'h09, STATE_LOAD2 = 8'h0a, STATE_LOAD3 = 8'h0b, STATE_LOAD4 = 8'h0c, STATE_FAULT = 8'h0d, STATE_PCWAIT = 8'h0e;
-localparam STATE_PUSH = 8'h0f, STATE_PUSH2 = 8'h10, STATE_PUSH3 = 8'h11, STATE_POP = 8'h12, STATE_POP2 = 8'h13, STATE_POP3 = 8'h14, STATE_POP4 = 8'h15, STATE_POP5 = 8'h16;
+localparam STATE_LOAD = 8'h09, STATE_LOAD2 = 8'h0a, STATE_LOAD3 = 8'h0b, STATE_LOAD4 = 8'h0c, STATE_FAULT = 8'h0d;
+localparam STATE_PUSH = 8'h0f, STATE_PUSH2 = 8'h10, STATE_PUSH3 = 8'h11, STATE_POP = 8'h12, STATE_POP2 = 8'h13, STATE_POP3 = 8'h14, STATE_POP4 = 8'h15;
 
 localparam REG_SP = 5'b11111, REG_FP = 5'b11110;
 localparam MDR_HIGH = 1'b0, MDR_LOW = 1'b1;
@@ -49,6 +50,8 @@ localparam AM_INH = 3'h0, AM_IMM = 3'h1, AM_REGIND = 3'h2, AM_REG = 3'h3, AM_DIR
 wire [2:0] ir_mode = ir[15:13];
 wire [7:0] ir_op   = ir[12:5];
 wire [4:0] ir_ra   = ir[4:0];
+
+assign {carry, negative, overflow, zero} = ccr;
 
 localparam REG_WRITE_NONE = 4'b0000, REG_WRITE_B0 = 4'b0001, REG_WRITE_B1 = 4'b0010, REG_WRITE_B2 = 4'b0100, REG_WRITE_B3 = 4'b1000, REG_WRITE_W0 = 4'b0011, REG_WRITE_W1 = 4'b1100;
 localparam REG_WRITE_DW = 4'b1111;
@@ -243,44 +246,73 @@ begin
           reg_read_addr2 = mdr[12:8];
           alu_in1 = reg_data_out1;
           alu_in2 = reg_data_out2;
-          ccr_next = {carry, negative, overflow, zero};
+          ccr_next = {alu_carry, alu_negative, alu_overflow, alu_zero};
+        end
+        {AM_REG, 8'h12}: begin // neg
+          state_next = STATE_FETCHIR1;
+          alu_func = 'h3; // sub
+          reg_write_addr = ir_ra;
+          reg_read_addr1 = mdr[12:8];
+          alu_in1 = 'h0;
+          alu_in2 = reg_data_out1;
+          reg_write = REG_WRITE_DW;
         end
         {AM_PCIND, 8'h20}: begin // bra
-          state_next = STATE_PCWAIT;
+          state_next = STATE_FETCHIR1;
           pc_next = { 1'b0, pc } + mar;
         end
         {AM_PCIND, 8'h21}: begin // beq
-          state_next = STATE_PCWAIT;
-          if (ccr[0])
+          state_next = STATE_FETCHIR1;
+          if (zero)
             pc_next = { 1'b0, pc } + mar;
         end
         {AM_PCIND, 8'h22}: begin // bne
-          state_next = STATE_PCWAIT;
-          if (~ccr[0])
+          state_next = STATE_FETCHIR1;
+          if (~zero)
             pc_next = { 1'b0, pc } + mar;        
         end
+        {AM_PCIND, 8'h23}: begin // bgtu
+          state_next = STATE_FETCHIR1;
+          if (~(zero | carry))
+            pc_next = { 1'b0, pc } + mar;
+        end
         {AM_PCIND, 8'h24}: begin // bgt
-          state_next = STATE_PCWAIT;
-          if (~(ccr[0] | (ccr[2] ^ ccr[1])))
+          state_next = STATE_FETCHIR1;
+          if (~(zero | (negative ^ overflow)))
             pc_next = { 1'b0, pc } + mar;
         end
         {AM_PCIND, 8'h25}: begin // bge
-          state_next = STATE_PCWAIT;
-          if (~(ccr[2] ^ ccr[1]))
+          state_next = STATE_FETCHIR1;
+          if (~(negative ^ overflow))
             pc_next = { 1'b0, pc } + mar;
         end
         {AM_PCIND, 8'h26}: begin // ble
-          state_next = STATE_PCWAIT;
-          if (ccr[0] | (ccr[2] ^ ccr[1]))
+          state_next = STATE_FETCHIR1;
+          if (zero | (negative ^ overflow))
             pc_next = { 1'b0, pc } + mar;
         end
         {AM_PCIND, 8'h27}: begin // blt
-          state_next = STATE_PCWAIT;
-          if (ccr[2] ^ ccr[1])
+          state_next = STATE_FETCHIR1;
+          if (negative ^ overflow)
+            pc_next = { 1'b0, pc } + mar;
+        end
+        {AM_PCIND, 8'h28}: begin // bgeu
+          state_next = STATE_FETCHIR1;
+          if (~carry)
+            pc_next = { 1'b0, pc } + mar;
+        end
+        {AM_PCIND, 8'h29}: begin // bltu
+          state_next = STATE_FETCHIR1;
+          if (carry)
+            pc_next = { 1'b0, pc } + mar;
+        end
+        {AM_PCIND, 8'h2a}: begin // bleu
+          state_next = STATE_FETCHIR1;
+          if (carry | zero)
             pc_next = { 1'b0, pc } + mar;
         end
         {AM_PCIND, 8'h2c}: begin // brn
-          state_next = STATE_PCWAIT;
+          state_next = STATE_FETCHIR1;
         end
         {AM_REGIND, 8'h20}: begin // st.l
             state_next = STATE_STORE;
@@ -516,13 +548,12 @@ begin
       write_out_next = 1'b0;
       addrsel_next = ADDR_PC;
     end
-    STATE_PCWAIT: state_next = STATE_FETCHIR1;
     STATE_FAULT: state_next = STATE_FAULT;
   endcase
 end
 
 alu alu0(.in1(alu_in1), .in2(alu_in2), .func(alu_func), .out(alu_out),
-  .c_in(1'b0), .z_in(1'b0), .c_out(carry), .n_out(negative), .v_out(overflow), .z_out(zero));
+  .c_in(1'b0), .z_in(1'b0), .c_out(alu_carry), .n_out(alu_negative), .v_out(alu_overflow), .z_out(alu_zero));
 registerfile reg0(.clk(clk), .rst_n(rst_n), .read1(reg_read_addr1), .read2(reg_read_addr2), .write_addr(reg_write_addr),
   .write_data(reg_data_in), .write_en(reg_write), .data1(reg_data_out1), .data2(reg_data_out2));
 
