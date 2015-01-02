@@ -195,7 +195,7 @@ begin
         if (delay == 'h1) begin
           case (ir_mode)
             AM_PCIND : mar_next = { {16{data_in[15]}},data_in };
-            AM_IMM   : mdr_next = { {16{data_in[15]}}, data_in }; // FIX only do this for signed ops
+            AM_IMM   : mdr_next = { {16{data_in[15]}}, data_in };
             AM_REG   : mdr_next = { 16'h0000, data_in };
             AM_REGIND: begin
               mar_next = { {21{data_in[10]}}, data_in[10:0] };
@@ -218,6 +218,18 @@ begin
           alu_in1 = reg_data_out1;
           alu_in2 = mdr;
           reg_data_in = alu_out;
+          reg_write = REG_WRITE_DW;
+          state_next = STATE_FETCHIR1;
+        end
+        {AM_IMM, 8'h21}: begin // lds
+          reg_write_addr = ir_ra;
+          reg_data_in = mdr;
+          reg_write = REG_WRITE_DW;
+          state_next = STATE_FETCHIR1;
+        end
+        {AM_IMM, 8'h22}: begin // ldu
+          reg_write_addr = ir_ra;
+          reg_data_in = mdr & 16'hffff;
           reg_write = REG_WRITE_DW;
           state_next = STATE_FETCHIR1;
         end
