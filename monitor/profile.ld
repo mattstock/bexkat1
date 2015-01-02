@@ -1,6 +1,6 @@
 MEMORY
 {
-  monitor  : ORIGIN = 0xffc00000, LENGTH = 4K
+  rom  : ORIGIN = 0xffc00000, LENGTH = 4K
   flash : ORIGIN = 0xfe000000, LENGTH = 4M
   ram : ORIGIN = 0x00000000, LENGTH = 512K
 }
@@ -12,7 +12,7 @@ SECTIONS
     { 
       *(.text)
       _etext = . ;
-    } > monitor
+    } > rom
   .data : AT ( LOADADDR(.text) + SIZEOF(.text))
     { 
       _data = . ;
