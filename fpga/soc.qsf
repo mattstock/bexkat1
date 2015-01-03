@@ -1394,10 +1394,14 @@ set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK=00
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK_LENGTH=1291" -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_NODE_CRC_LOWORD=28942" -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_NODE_CRC_HIWORD=10433" -section_id auto_signaltap_0
+set_global_assignment -name NUM_PARALLEL_PROCESSORS 1
+set_global_assignment -name ENABLE_DRC_SETTINGS ON
 set_global_assignment -name QIP_FILE matrixmem.qip
 set_global_assignment -name QIP_FILE scancodes.qip
 set_global_assignment -name QIP_FILE keyfifo.qip
 set_global_assignment -name QIP_FILE registers.qip
 set_global_assignment -name QIP_FILE uart_fifo.qip
 set_global_assignment -name QIP_FILE monitor.qip
+set_global_assignment -name QIP_FILE cpu/intumult.qip
+set_global_assignment -name QIP_FILE cpu/intsmult.qip
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top

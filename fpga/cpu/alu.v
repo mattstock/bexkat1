@@ -3,7 +3,7 @@
 module alu(
   input wire [WIDTH-1:0] in1,
   input wire [WIDTH-1:0] in2,
-  input wire [2:0] func,
+  input wire [3:0] func,
   input wire c_in,
   input wire z_in,
   output reg [WIDTH-1:0] out,
@@ -23,9 +23,13 @@ localparam ALU_LSHIFT =  'h4;
 localparam ALU_RSHIFTA = 'h5;
 localparam ALU_RSHIFTL = 'h6;
 localparam ALU_XOR =     'h7;
+localparam ALU_MUL =     'h8;
+localparam ALU_MULU =    'h9;
 
 assign n_out = out[WIDTH-1];
 assign z_out = ~|{out,z_in};
+
+wire [31:0] mul_out, mulu_out;
 
 always @*
 begin
@@ -67,6 +71,16 @@ begin
       {out, c_out} = in1 >> in2;
       v_out = n_out ^ c_out;
     end
+    ALU_MUL: begin
+      out = mul_out;
+      c_out = 1'b0;
+      v_out = 1'b0;
+    end
+    ALU_MULU: begin
+      out = mulu_out;
+      c_out = 1'b0;
+      v_out = 1'b0;
+    end
     default: begin
       out = in1;
       v_out = 1'b0;
@@ -74,5 +88,8 @@ begin
     end
   endcase
 end
+
+intumult m0(.dataa(in1), .datab(in2), .result(mulu_out));
+intsmult m1(.dataa(in1), .datab(in2), .result(mul_out));
 
 endmodule

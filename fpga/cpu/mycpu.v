@@ -21,7 +21,7 @@ reg [2:0] delay, delay_next;
 reg addrsel, addrsel_next;
 reg mdrsel, mdrsel_next;
 
-reg [2:0] alu_func;
+reg [3:0] alu_func;
 reg [4:0] reg_read_addr1, reg_read_addr2, reg_write_addr;
 reg [31:0] alu_in1, alu_in2;
 reg [3:0] reg_write;
@@ -39,6 +39,7 @@ localparam STATE_FETCHIR1 = 8'h00, STATE_FETCHIR2 = 8'h01, STATE_FETCHIR3 = 8'h0
 localparam STATE_STORE = 8'h06, STATE_STORE2 = 8'h07, STATE_STORE3 = 8'h08;
 localparam STATE_LOAD = 8'h09, STATE_LOAD2 = 8'h0a, STATE_LOAD3 = 8'h0b, STATE_LOAD4 = 8'h0c, STATE_FAULT = 8'h0d;
 localparam STATE_PUSH = 8'h0f, STATE_PUSH2 = 8'h10, STATE_PUSH3 = 8'h11, STATE_POP = 8'h12, STATE_POP2 = 8'h13, STATE_POP3 = 8'h14, STATE_POP4 = 8'h15;
+localparam STATE_MULU = 8'h16, STATE_MUL = 8'h17;
 
 localparam REG_SP = 5'b11111, REG_FP = 5'b11110;
 localparam MDR_HIGH = 1'b0, MDR_LOW = 1'b1;
@@ -95,7 +96,7 @@ begin
   addrsel_next = addrsel;
   mdrsel_next = mdrsel;
   ccr_next = ccr;
-  alu_func = 3'h0;
+  alu_func = 4'h0;
   reg_read_addr1 = 5'h00;
   reg_read_addr2 = 5'h00;
   reg_write_addr = 5'h00;
@@ -212,7 +213,7 @@ begin
     STATE_EVALIR2: begin
       casex ({ir_mode, ir_op})
         {AM_IMM, 8'h1x}: begin // alu rA <= rA + 0xabcd
-          alu_func = ir[7:5];
+          alu_func = ir[8:5];
           reg_write_addr = ir_ra;
           reg_read_addr1 = ir_ra;
           alu_in1 = reg_data_out1;
@@ -234,7 +235,7 @@ begin
           state_next = STATE_FETCHIR1;
         end
         {AM_REG, 8'h0x}: begin // alu rA <= rB + rC
-          alu_func = ir[7:5];
+          alu_func = ir[8:5];
           reg_write_addr = ir_ra;
           reg_read_addr1 = mdr[12:8];
           reg_read_addr2 = mdr[4:0];
@@ -384,11 +385,11 @@ begin
     STATE_EVALIR3: begin
       casex ({ir_mode, ir_op})
         {AM_IMM, 8'h0x}: begin // alu rA <= rB + 0xabcd
-          alu_func = ir[7:5];
+          alu_func = ir[8:5];
           reg_write_addr = ir_ra;
           reg_read_addr1 = mdr[28:24]; // rB
           alu_in1 = reg_data_out1;
-          alu_in2 = { {16{mdr[15]}}, mdr[15:0] }; // FIX for signed only
+          alu_in2 = { {16{mdr[15]}}, mdr[15:0] };
           reg_data_in = alu_out;
           reg_write = REG_WRITE_DW;
           state_next = STATE_FETCHIR1;
@@ -568,5 +569,4 @@ alu alu0(.in1(alu_in1), .in2(alu_in2), .func(alu_func), .out(alu_out),
   .c_in(1'b0), .z_in(1'b0), .c_out(alu_carry), .n_out(alu_negative), .v_out(alu_overflow), .z_out(alu_zero));
 registerfile reg0(.clk(clk), .rst_n(rst_n), .read1(reg_read_addr1), .read2(reg_read_addr2), .write_addr(reg_write_addr),
   .write_data(reg_data_in), .write_en(reg_write), .data1(reg_data_out1), .data2(reg_data_out2));
-
 endmodule
