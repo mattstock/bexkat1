@@ -511,7 +511,7 @@ begin
         {AM_REG, 8'h16}: begin
           reg_write_addr = ir_ra;
           reg_data_in = { data_in, 16'h0000 };
-          reg_write = REG_WRITE_W0;
+          reg_write = REG_WRITE_W1;
         end
         default: pc_next[31:16] = data_in;
       endcase
@@ -532,7 +532,7 @@ begin
         {AM_REG, 8'h16}: begin
           reg_write_addr = ir_ra;
           reg_data_in = { 16'h0000, data_in };
-          reg_write = REG_WRITE_W1;
+          reg_write = REG_WRITE_W0;
         end
         default: pc_next[15:0] = data_in;
       endcase

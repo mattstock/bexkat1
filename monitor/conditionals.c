@@ -28,8 +28,15 @@ void main(void) {
   unsigned v1,v2, a1, a2, a3;
   int s1, s2;
 
-  draw(0,0,1,1);
   while (1) {
+    v1 = 3;
+    v2 = 3;
+    s1 = -4;
+    s2 = -4;
+    a1 = 1;
+    a2 = 0;
+    a3 = 0;
+    if (swptr[0] == 1) { // <
       v1 = 13;
       v2 = 15;
       s1 = -5;
@@ -37,7 +44,8 @@ void main(void) {
       a1 = 0;
       a2 = 1;
       a3 = 0;
-/*    if (swptr[0] == 2) { // < pos
+    }
+    if (swptr[0] == 2) { // < pos
       v1 = 0;
       v2 = 15;
       s1 = 5;
@@ -72,18 +80,18 @@ void main(void) {
       a1 = 0;
       a2 = 0;
       a3 = 1;
-    } */
-    draw(15,0,v1 <= v2, 1);
-    draw(16,0,v1 == v2, 0);
-    draw(17,0,v1 >= v2, 0);
-    draw(15,1,v1 <  v2, 1);
-    draw(16,1,v1 != v2, 1);
-    draw(17,1,v1 >  v2, 0);
-/*    draw(15,2,s1 <= s2, a2||a1);
+    }
+    draw(15,0,v1 <= v2, a2 || a1);
+    draw(16,0,v1 == v2, a1);
+    draw(17,0,v1 >= v2, a3|| a1);
+    draw(15,1,v1 <  v2, a2);
+    draw(16,1,v1 != v2, !a1);
+    draw(17,1,v1 >  v2, a3);
+    draw(15,2,s1 <= s2, a2||a1);
     draw(16,2,s1 == s2, a1);
     draw(17,2,s1 >= s2, a3||a1);
     draw(15,3,s1 <  s2, a2);
     draw(16,3,s1 != s2, !a1);
-    draw(17,3,s1 > s2, a3); */
+    draw(17,3,s1 > s2, a3); 
   } 
 }
