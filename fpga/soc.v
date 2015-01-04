@@ -96,7 +96,8 @@ wire mem_switch;
 wire [15:0] mem_monitor_data, led_matrix_data_out, encoder_data, serial0_data, serial1_data;
 wire [31:0] cpu_addrbus;
 wire [15:0] cpu_data_out;
-wire cpu_write, ccr;
+wire cpu_write, cpu_bytectl;
+wire [3:0] ccr;
 
 wire [15:0] cpu_data_in0 = (mem_monitor ? mem_monitor_data : 16'h0000);
 wire [15:0] cpu_data_in1 = (mem_flash ? { 8'h00, fl_databus } : 16'h0000);
@@ -113,7 +114,10 @@ wire [15:0] cpu_data_in = cpu_data_in0 |
   cpu_data_in5 | cpu_data_in6 | cpu_data_in7 | cpu_data_in8 |
   cpu_data_in9;
 
-assign rst_n = KEY[0];
+// Reset button
+reg [2:0] rst_sync;
+assign rst_n = rst_sync[2];
+always @(posedge clock_50) rst_sync <= { rst_sync[1:0], KEY[0] };
 
 // No audio for now
 assign aud_adclrck = aud_daclrck;
@@ -126,8 +130,8 @@ assign i2c_sclk = 1'bz;
 // No SDRAM for now, need a refresh module
 assign dram_addr = 12'h00000;
 assign dram_ba = 2'h0;
-assign dram_ldqm = 1'b0; // use these for byte writes?
-assign dram_udqm = 1'b0; // use there for byte writes?
+assign dram_ldqm = cpu_bytectl & ~cpu_addrbus[0];
+assign dram_udqm = cpu_bytectl & cpu_addrbus[0];
 assign dram_ras_n = 1'b1;
 assign dram_cas_n = 1'b1;
 assign dram_cke = 1'b0;
@@ -137,8 +141,8 @@ assign dram_ce_n = ~mem_dram;
 assign dram_dq = (cpu_write ? cpu_data_out : 16'hzzzz);
 
 // Wiring for external SRAM
-assign sram_lb_n = 1'b0;  // use these for byte writes?
-assign sram_ub_n = 1'b0;  // use these for byte writes?
+assign sram_lb_n = cpu_bytectl & ~cpu_addrbus[0];
+assign sram_ub_n = cpu_bytectl & cpu_addrbus[0];
 assign sram_we_n = ~cpu_write;
 assign sram_ce_n = ~mem_sram;
 assign sram_oe_n = ~sram_we_n;
@@ -166,7 +170,7 @@ hexdisp d1(.out(HEX2), .in(cpu_data_out[11:8]));
 hexdisp d2(.out(HEX1), .in(cpu_data_out[7:4]));
 hexdisp d3(.out(HEX0), .in(cpu_data_out[3:0]));
 // Blinknlights
-assign LEDG = { cpu_write, mem_sram, mem_led_matrix, mem_flash, mem_dram, mem_monitor, kbd_event, pb};
+assign LEDG = { cpu_write, mem_sram, mem_led_matrix, mem_flash, mem_dram, mem_monitor, kbd_event};
 assign LEDR = { 6'h00, ccr};
 
 // quadrature encoder outputs 0-23
@@ -186,7 +190,7 @@ uart uart0(.clk(clock_50), .rst_n(rst_n), .rx(serial0_rx), .tx(serial0_tx), .dat
 uart uart1(.clk(clock_50), .rst_n(rst_n), .rx(serial1_rx), .tx(serial1_tx), .data_in(cpu_data_out), .data_out(serial1_data),
   .write(cpu_write & mem_serial1), .address(cpu_addrbus[3:0]));
 
-mycpu cpu0(.clk(clock_50), .rst_n(rst_n), .addrbus(cpu_addrbus), .data_in(cpu_data_in), .data_out(cpu_data_out), .write_out(cpu_write), .ccr(ccr));
+mycpu cpu0(.clk(clock_50), .rst_n(rst_n), .addrbus(cpu_addrbus), .data_in(cpu_data_in), .data_out(cpu_data_out), .write_out(cpu_write), .bytectl(cpu_bytectl), .ccr(ccr));
 
 // Chip select logic
 mem_select memmap0(.address(cpu_addrbus), .flash(mem_flash), .dram(mem_dram), .sram(mem_sram), .monitor(mem_monitor), .led_matrix(mem_led_matrix),
