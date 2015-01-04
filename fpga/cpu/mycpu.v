@@ -363,7 +363,7 @@ begin
             alu_func = 'h2;      
             mar_next = alu_out;
             addrsel_next = ADDR_MAR;
-            mdrsel_next = MDR_HIGH;
+            mdrsel_next = MDR_LOW;
             reg_read_addr2 = ir_ra;
             mdr_next = reg_data_out2;
             write_out_next = 1'b1;
@@ -390,7 +390,7 @@ begin
               mdr_next[7:0] = reg_data_out2[7:0];
             else
               mdr_next[15:8] = reg_data_out2[7:0];
-            mdrsel_next = MDR_HIGH;
+            mdrsel_next = MDR_LOW;
             write_out_next = 1'b1;
             bytectl_next = 1'b1;
         end
@@ -459,7 +459,7 @@ begin
           state_next = STATE_STORE;
           reg_read_addr1 = ir_ra;
           mdr_next = reg_data_out1;
-          mdrsel_next = MDR_HIGH;
+          mdrsel_next = MDR_LOW;
           addrsel_next = ADDR_MAR;
           write_out_next = 1'b1;
         end
@@ -474,7 +474,7 @@ begin
             mdr_next[7:0] = reg_data_out1[7:0];
           else
             mdr_next[15:8] = reg_data_out1[7:0];
-          mdrsel_next = MDR_HIGH;
+          mdrsel_next = MDR_LOW;
           addrsel_next = ADDR_MAR;
           write_out_next = 1'b1;
           bytectl_next = 1'b1;
