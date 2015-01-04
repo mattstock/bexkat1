@@ -63,7 +63,7 @@ begin
   end
   case (address)
     'h0: begin
-      data_out = {rx_queue, tx_queue, 6'h00, rx_byte};
+      data_out = {rx_ready, tx_busy, 6'h00, rx_byte};
       rx_queue_next = 1'b0;
     end
     default: data_out = 16'h0000;

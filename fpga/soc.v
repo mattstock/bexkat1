@@ -5,7 +5,7 @@ module soc(SW, KEY, HEX0, HEX1, HEX2, HEX3, LEDR, LEDG, clock_50, clock_27,
   ps2_dat, ps2_clk, lcd_e, lcd_rs, lcd_data,
   rgb0, rgb1, rgb_a, rgb_b, rgb_c, rgb_stb, rgb_clk, rgb_oe_n,
   fl_addrbus, fl_databus, fl_oe_n, fl_ce_n, fl_we_n, fl_rst_n,
-  serial0_tx, serial0_rx, serial1_tx, serial1_rx,
+  serial0_tx, serial0_rx, serial1_tx, serial1_rx, serial2_tx, serial2_rx,
   dram_dq, dram_addr, dram_ba, dram_ldqm, dram_udqm, dram_ras_n, dram_cas_n, dram_cke, dram_clk, dram_we_n, dram_ce_n);
 
 // SRAM
@@ -74,8 +74,8 @@ output aud_adclrck;
 input aud_adcdat;
 
 // serial
-input serial0_rx, serial1_rx;
-output serial0_tx, serial1_tx;
+input serial0_rx, serial1_rx, serial2_rx;
+output serial0_tx, serial1_tx, serial2_tx;
 
 // ps2
 input ps2_dat;
@@ -92,8 +92,8 @@ wire kbd_event;
 wire [7:0] kbd_data;
 
 wire mem_flash, mem_monitor, mem_dram, mem_sram, mem_led_matrix, mem_kbd, mem_encoder, mem_serial0, mem_serial1;
-wire mem_switch;
-wire [15:0] mem_monitor_data, led_matrix_data_out, encoder_data, serial0_data, serial1_data;
+wire mem_switch, mem_serial2;
+wire [15:0] mem_monitor_data, led_matrix_data_out, encoder_data, serial0_data, serial1_data, serial2_data;
 wire [31:0] cpu_addrbus;
 wire [15:0] cpu_data_out;
 wire cpu_write, cpu_bytectl;
@@ -108,11 +108,12 @@ wire [15:0] cpu_data_in5 = (mem_kbd ? { 8'h00, kbd_data}  : 16'h0000);
 wire [15:0] cpu_data_in6 = (mem_encoder ? encoder_data : 16'h0000);
 wire [15:0] cpu_data_in7 = (mem_serial0 ? serial0_data : 16'h0000);
 wire [15:0] cpu_data_in8 = (mem_serial1 ? serial1_data : 16'h0000);
-wire [15:0] cpu_data_in9 = (mem_switch && cpu_addrbus[1] ? { 8'h00, SW[9:2] } : 16'h0000);
+wire [15:0] cpu_data_in9 = (mem_serial2 ? serial2_data : 16'h0000);
+wire [15:0] cpu_data_in10 = (mem_switch && cpu_addrbus[1] ? { 8'h00, SW[9:2] } : 16'h0000);
 wire [15:0] cpu_data_in = cpu_data_in0 |
   cpu_data_in1 | cpu_data_in2 | cpu_data_in3 | cpu_data_in4 |
   cpu_data_in5 | cpu_data_in6 | cpu_data_in7 | cpu_data_in8 |
-  cpu_data_in9;
+  cpu_data_in9 | cpu_data_in10;
 
 // Reset button
 reg [2:0] rst_sync;
@@ -189,12 +190,15 @@ uart uart0(.clk(clock_50), .rst_n(rst_n), .rx(serial0_rx), .tx(serial0_tx), .dat
 // UART for speach generator
 uart uart1(.clk(clock_50), .rst_n(rst_n), .rx(serial1_rx), .tx(serial1_tx), .data_in(cpu_data_out), .data_out(serial1_data),
   .write(cpu_write & mem_serial1), .address(cpu_addrbus[3:0]));
+// UART for logic level testing
+uart uart2(.clk(clock_50), .rst_n(rst_n), .rx(serial2_rx), .tx(serial2_tx), .data_in(cpu_data_out), .data_out(serial2_data),
+  .write(cpu_write & mem_serial2), .address(cpu_addrbus[3:0]));
 
 mycpu cpu0(.clk(clock_50), .rst_n(rst_n), .addrbus(cpu_addrbus), .data_in(cpu_data_in), .data_out(cpu_data_out), .write_out(cpu_write), .bytectl(cpu_bytectl), .ccr(ccr));
 
 // Chip select logic
 mem_select memmap0(.address(cpu_addrbus), .flash(mem_flash), .dram(mem_dram), .sram(mem_sram), .monitor(mem_monitor), .led_matrix(mem_led_matrix),
-  .kbd(mem_kbd), .encoder(mem_encoder), .serial0(mem_serial0), .serial1(mem_serial1), .switch(mem_switch));
+  .kbd(mem_kbd), .encoder(mem_encoder), .serial0(mem_serial0), .serial1(mem_serial1), .serial2(mem_serial2), .switch(mem_switch));
 
 // ROM monitor code
 monitor rom0(.clock(clock_50), .address(cpu_addrbus[12:1]), .q(mem_monitor_data));
