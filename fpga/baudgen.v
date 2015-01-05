@@ -1,9 +1,8 @@
-module baudgen(clk, enable, baudclk, control);
+module baudgen(clk, enable, baudclk);
 
 input clk;
 input enable;
 output baudclk;
-input [31:0] control;
 
 parameter clkfreq = 50000000; // 50Mhz
 parameter baud = 9600; // hardcode for now
@@ -11,7 +10,7 @@ parameter baud = 9600; // hardcode for now
 reg [15:0] counter;
 
 reg baudclk;
-
+  
 always @(posedge clk)
 begin
   baudclk = 1'b0;
