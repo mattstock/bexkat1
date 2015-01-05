@@ -5,7 +5,7 @@ MEMORY
   ram : ORIGIN = 0x00000000, LENGTH = 512K
 }
 
-
+ENTRY(_start)
 SECTIONS
 {
   .text : AT (0x0000)
