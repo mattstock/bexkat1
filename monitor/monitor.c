@@ -1,15 +1,15 @@
+#include "monitor.h"
+
 extern unsigned _etext;
 extern unsigned _data;
 extern unsigned _edata;
-unsigned *matrix = (unsigned *)0xff410000;
-volatile unsigned *encoder = (unsigned *)0xff400000;
-volatile unsigned short *serial0 = (unsigned short *)0xff400010;
-volatile unsigned short *serial1 = (unsigned short *)0xff400020;
-volatile unsigned short *kbd = (unsigned short *)0xff400030;
-volatile unsigned short *sw = (unsigned short *)0xff400040;
-volatile unsigned short *serial2 = (unsigned short *)0xff400050;
 
-char rxchar(void);
+void serial_putchar(unsigned short, char);
+char serial_getchar(unsigned short);
+void serial_print(unsigned short, char *);
+void matrix_init(void);
+void matrix_put(unsigned, unsigned, unsigned);
+
 void delay(void);
 void main(void);
 
@@ -31,45 +31,101 @@ void delay() {
   for (i=0; i < 0x10000; i++);
 }
 
-char rxchar(void) {
-  unsigned foo;
+char serial_getchar(unsigned short port) {
+  unsigned short result;
+  volatile unsigned short *p;
 
-  foo  = serial0[0];
-  while (!(foo & 0x8000)) {
-    foo = serial0[0];
-    matrix[4] = 0xff000000;
+  switch (port) {
+  case 0:
+    p = serial0;
+    break;
+  case 1:
+    p = serial1;
+    break;
+  case 2:
+    p = serial2;
+    break;
+  default:
+    p = serial0;
   }
-  matrix[5] = 0x00ff0000;
-  return (char)(foo & 0xff); 
+
+  result  = p[0];
+  while ((result & 0x8000) == 0) {
+    matrix[64] = 0xff000000;
+    result = p[0];
+  }
+  matrix[65] = 0x00ff0000;
+  return (char)(result & 0xff); 
 }
   
-void txchar(char c) {
-  serial0[0] = (unsigned short)c;
-  matrix[1] = 0x0000ff00;
-  while (!(serial0[0] & 0x4000)) {
-    matrix[2] = 0x0000ff00;
-  };
-  matrix[3] = 0x0000ff00;
+void serial_putchar(unsigned short port, char c) {
+  volatile unsigned short *p;
+
+  switch (port) {
+  case 0:
+    p = serial0;
+    break;
+  case 1:
+    p = serial1;
+    break;
+  case 2:
+    p = serial2;
+    break;
+  default:
+    p = serial0;
+  }
+
+  while (!(p[0] & 0x4000));
+  p[0] = (unsigned short)c;
+}
+
+void serial_print(unsigned short port, char *str) {
+  char *c = str;
+
+  while (*c != '\0') {
+    serial_putchar(port, *c);
+    c++;
+  }
+}
+
+void matrix_put(unsigned x, unsigned y, unsigned val) {
+  if (y > 15 || x > 31)
+    return;
+  matrix[y*32+x] = val;
+}
+
+void matrix_init(void) {
+  unsigned short i;
+  for (i=0; i < 16*32; i++) {
+    if (i < 32 || i >= 15*32)
+      matrix[i] = 0xff000000;
+    else
+      matrix[i] = 0x00000000;
+  }
 }
 
 void main(void) {
   unsigned i;
   char c;
+  unsigned short x, y;
 
-  for (i=0; i < 10; i++)
-    matrix[i] = 0x00000000;
-  matrix[0] = 0x0000ff00;
-  txchar('b');
-  txchar('e');
-  txchar('x');
-  txchar('k');
-  txchar('a');
-  txchar('t');
-  txchar('\n');
-  txchar('\r');
+  serial_print(0, "\r\nbexkat> ");
+  matrix_init();
+  x = 16;
+  y = 8;
+
   while (1) {
-    c = rxchar();
-    txchar(':');
-    txchar(c);
+    matrix_put(x,y, 0x0000ff00);
+    c = serial_getchar(0);
+    serial_putchar(0,c);
+    matrix_put(x,y, 0x00ff0000);
+    if (c == 'a')
+      x--;
+    if (c == 'w')
+      y--;
+    if (c == 'd')
+      x++;
+    if (c == 's')
+      y++;
   }
 }
