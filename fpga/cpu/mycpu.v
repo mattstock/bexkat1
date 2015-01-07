@@ -203,12 +203,11 @@ begin
           case (ir_mode)
             AM_PCIND : mar_next = { {16{data_in[15]}},data_in };
             AM_IMM   : mdr_next = { {16{data_in[15]}}, data_in };
-            AM_REG   : mdr_next = { 16'h0000, data_in };
             AM_REGIND: begin
               mar_next = { {21{data_in[10]}}, data_in[10:0] };
               mdr_next = { 16'h0000, data_in };
             end
-            AM_DIR   : mar_next[31:16] = data_in;
+            AM_DIR   : mar_next = { 16'h0000, data_in };
             default  : mdr_next = { 16'h0000, data_in };
           endcase
           pc_next = pc + 'h2;
@@ -416,8 +415,7 @@ begin
         delay_next = delay - 3'b1;
         if (delay == 'h1) begin
           case (ir_mode)
-            AM_IMM : mdr_next = { mdr[15:0], data_in };
-            AM_DIR : mar_next[15:0] = data_in;
+            AM_DIR: mar_next = { mar[15:0], data_in };
             default: mdr_next = { mdr[15:0], data_in }; 
           endcase
           pc_next = pc + 'h2;
