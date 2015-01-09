@@ -50,11 +50,8 @@ char serial_getchar(unsigned short port) {
   }
 
   result  = p[0];
-  while ((result & 0x8000) == 0) {
-    matrix[64] = 0xff000000;
+  while ((result & 0x8000) == 0)
     result = p[0];
-  }
-  matrix[65] = 0x00ff0000;
   return (char)(result & 0xff); 
 }
   
@@ -107,18 +104,18 @@ void matrix_init(void) {
 void main(void) {
   unsigned i;
   char c;
+  unsigned val;
   unsigned short x, y;
 
   serial_print(0, "\r\nbexkat> ");
   matrix_init();
   x = 16;
   y = 8;
+  val = 0x00000ff0;
 
   while (1) {
-    matrix_put(x,y, 0x0000ff00);
     c = serial_getchar(0);
     serial_putchar(0,c);
-    matrix_put(x,y, 0x00ff0000);
     if (c == 'a')
       x--;
     if (c == 'w')
@@ -127,5 +124,11 @@ void main(void) {
       x++;
     if (c == 's')
       y++;
+    if (c == ' ')
+      if (val == 0)
+        val = 0x0000f0f0;
+      else
+        val = val << 4;
+    matrix_put(x,y, val);
   }
 }

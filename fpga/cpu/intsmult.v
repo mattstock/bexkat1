@@ -41,12 +41,12 @@ module intsmult (
 	datab,
 	result);
 
-	input	[15:0]  dataa;
-	input	[15:0]  datab;
-	output	[31:0]  result;
+	input	[31:0]  dataa;
+	input	[31:0]  datab;
+	output	[63:0]  result;
 
-	wire [31:0] sub_wire0;
-	wire [31:0] result = sub_wire0[31:0];
+	wire [63:0] sub_wire0;
+	wire [63:0] result = sub_wire0[63:0];
 
 	lpm_mult	lpm_mult_component (
 				.dataa (dataa),
@@ -60,9 +60,9 @@ module intsmult (
 		lpm_mult_component.lpm_hint = "MAXIMIZE_SPEED=5",
 		lpm_mult_component.lpm_representation = "SIGNED",
 		lpm_mult_component.lpm_type = "LPM_MULT",
-		lpm_mult_component.lpm_widtha = 16,
-		lpm_mult_component.lpm_widthb = 16,
-		lpm_mult_component.lpm_widthp = 32;
+		lpm_mult_component.lpm_widtha = 32,
+		lpm_mult_component.lpm_widthb = 32,
+		lpm_mult_component.lpm_widthp = 64;
 
 
 endmodule
@@ -80,9 +80,9 @@ endmodule
 // Retrieval info: PRIVATE: SignedMult NUMERIC "1"
 // Retrieval info: PRIVATE: USE_MULT NUMERIC "1"
 // Retrieval info: PRIVATE: ValidConstant NUMERIC "0"
-// Retrieval info: PRIVATE: WidthA NUMERIC "16"
-// Retrieval info: PRIVATE: WidthB NUMERIC "16"
-// Retrieval info: PRIVATE: WidthP NUMERIC "32"
+// Retrieval info: PRIVATE: WidthA NUMERIC "32"
+// Retrieval info: PRIVATE: WidthB NUMERIC "32"
+// Retrieval info: PRIVATE: WidthP NUMERIC "64"
 // Retrieval info: PRIVATE: aclr NUMERIC "0"
 // Retrieval info: PRIVATE: clken NUMERIC "0"
 // Retrieval info: PRIVATE: new_diagram STRING "1"
@@ -91,15 +91,15 @@ endmodule
 // Retrieval info: CONSTANT: LPM_HINT STRING "MAXIMIZE_SPEED=5"
 // Retrieval info: CONSTANT: LPM_REPRESENTATION STRING "SIGNED"
 // Retrieval info: CONSTANT: LPM_TYPE STRING "LPM_MULT"
-// Retrieval info: CONSTANT: LPM_WIDTHA NUMERIC "16"
-// Retrieval info: CONSTANT: LPM_WIDTHB NUMERIC "16"
-// Retrieval info: CONSTANT: LPM_WIDTHP NUMERIC "32"
-// Retrieval info: USED_PORT: dataa 0 0 16 0 INPUT NODEFVAL "dataa[15..0]"
-// Retrieval info: USED_PORT: datab 0 0 16 0 INPUT NODEFVAL "datab[15..0]"
-// Retrieval info: USED_PORT: result 0 0 32 0 OUTPUT NODEFVAL "result[31..0]"
-// Retrieval info: CONNECT: @dataa 0 0 16 0 dataa 0 0 16 0
-// Retrieval info: CONNECT: @datab 0 0 16 0 datab 0 0 16 0
-// Retrieval info: CONNECT: result 0 0 32 0 @result 0 0 32 0
+// Retrieval info: CONSTANT: LPM_WIDTHA NUMERIC "32"
+// Retrieval info: CONSTANT: LPM_WIDTHB NUMERIC "32"
+// Retrieval info: CONSTANT: LPM_WIDTHP NUMERIC "64"
+// Retrieval info: USED_PORT: dataa 0 0 32 0 INPUT NODEFVAL "dataa[31..0]"
+// Retrieval info: USED_PORT: datab 0 0 32 0 INPUT NODEFVAL "datab[31..0]"
+// Retrieval info: USED_PORT: result 0 0 64 0 OUTPUT NODEFVAL "result[63..0]"
+// Retrieval info: CONNECT: @dataa 0 0 32 0 dataa 0 0 32 0
+// Retrieval info: CONNECT: @datab 0 0 32 0 datab 0 0 32 0
+// Retrieval info: CONNECT: result 0 0 64 0 @result 0 0 64 0
 // Retrieval info: GEN_FILE: TYPE_NORMAL intsmult.v TRUE
 // Retrieval info: GEN_FILE: TYPE_NORMAL intsmult.inc FALSE
 // Retrieval info: GEN_FILE: TYPE_NORMAL intsmult.cmp FALSE

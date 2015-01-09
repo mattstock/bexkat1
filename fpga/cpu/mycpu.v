@@ -19,9 +19,10 @@ reg write_out, write_out_next;
 reg bytectl, bytectl_next;
 reg [31:0] mdr, mdr_next;
 reg [3:0] ccr, ccr_next;
-reg [2:0] delay, delay_next;
+reg [7:0] delay, delay_next;
 reg addrsel, addrsel_next;
 reg mdrsel, mdrsel_next;
+reg [31:0] divn, divn_next, divd, divd_next;
 
 reg [3:0] alu_func;
 reg [4:0] reg_read_addr1, reg_read_addr2, reg_write_addr;
@@ -35,13 +36,13 @@ wire data_access;
 wire [31:0] reg_data_out1, reg_data_out2, reg_data_in;
 wire carry, negative, overflow, zero;
 wire alu_carry, alu_negative, alu_overflow, alu_zero;
-wire [31:0] alu_out;
+wire [31:0] alu_out, alu_long;
+wire [31:0] divq, divr, divuq, divur;
 
 localparam STATE_FETCHIR1 = 8'h00, STATE_FETCHIR2 = 8'h01, STATE_FETCHIR3 = 8'h02, STATE_EVALIR1 = 8'h03, STATE_EVALIR2 = 8'h04, STATE_EVALIR3 = 8'h05;
 localparam STATE_STORE = 8'h06, STATE_STORE2 = 8'h07, STATE_STORE3 = 8'h08;
 localparam STATE_LOAD = 8'h09, STATE_LOAD2 = 8'h0a, STATE_LOAD3 = 8'h0b, STATE_LOAD4 = 8'h0c, STATE_FAULT = 8'h0d;
 localparam STATE_PUSH = 8'h0f, STATE_PUSH2 = 8'h10, STATE_PUSH3 = 8'h11, STATE_POP = 8'h12, STATE_POP2 = 8'h13, STATE_POP3 = 8'h14, STATE_POP4 = 8'h15;
-localparam STATE_MULU = 8'h16, STATE_MUL = 8'h17;
 
 localparam REG_SP = 5'b11111, REG_FP = 5'b11110;
 localparam MDR_HIGH = 1'b0, MDR_LOW = 1'b1;
@@ -73,6 +74,8 @@ begin
     delay <= 'h0;
     write_out <= 1'b0;
     bytectl <= 1'b0;
+    divn <= 'h1;
+    divd <= 'h1;
   end else begin
     pc <= pc_next[31:0];
     state <= state_next;
@@ -85,6 +88,8 @@ begin
     ccr <= ccr_next;
     write_out <= write_out_next;
     bytectl <= bytectl_next;
+    divn <= divn_next;
+    divd <= divd_next;
   end
 end
 
@@ -101,6 +106,8 @@ begin
   mdrsel_next = mdrsel;
   ccr_next = ccr;
   bytectl_next = bytectl;
+  divn_next = divn;
+  divd_next = divd;
   alu_func = 4'h0;
   reg_read_addr1 = 5'h00;
   reg_read_addr2 = 5'h00;
@@ -239,6 +246,28 @@ begin
           reg_write = REG_WRITE_DW;
           state_next = STATE_FETCHIR1;
         end
+        {AM_IMM, 8'h6x}: begin // rA <= rA / % 0xabcd
+          if (delay == 'h0) begin
+            delay_next = 'h6;
+            reg_read_addr1 = ir_ra;
+            divn_next = reg_data_out1;
+            divd_next = mdr;
+          end else begin
+            delay_next = delay - 1'b1;
+            if (delay == 'h1) begin
+              reg_write_addr = ir_ra;
+              case (ir_op)
+                'h60: reg_data_in = divq;
+                'h61: reg_data_in = divr;
+                'h62: reg_data_in = divuq;
+                'h63: reg_data_in = divur;
+                default: reg_data_in = 'h0;
+              endcase
+              reg_write = REG_WRITE_DW;
+              state_next = STATE_FETCHIR1;
+            end
+          end
+        end
         {AM_REG, 8'h0x}: begin // alu rA <= rB + rC
           alu_func = ir[8:5];
           reg_write_addr = ir_ra;
@@ -249,6 +278,29 @@ begin
           reg_data_in = alu_out;
           reg_write = REG_WRITE_DW;
           state_next = STATE_FETCHIR1;
+        end
+        {AM_REG, 8'h5x}: begin // rA <= rB / % rC
+          if (delay == 'h0) begin
+            delay_next = 'h6;
+            reg_read_addr1 = mdr[12:8];
+            reg_read_addr2 = mdr[4:0];
+            divn_next = reg_data_out1;
+            divd_next = reg_data_out2;
+          end else begin
+            delay_next = delay - 1'b1;
+            if (delay == 'h1) begin
+              reg_write_addr = ir_ra;
+              case (ir_op)
+                'h50: reg_data_in = divq;
+                'h51: reg_data_in = divr;
+                'h52: reg_data_in = divuq;
+                'h53: reg_data_in = divur;
+                default: reg_data_in = 'h0;
+              endcase
+              reg_write = REG_WRITE_DW;
+              state_next = STATE_FETCHIR1;
+            end
+          end
         end
         {AM_REG, 8'h10}: begin // mov
           state_next = STATE_FETCHIR1;
@@ -434,6 +486,28 @@ begin
           reg_data_in = alu_out;
           reg_write = REG_WRITE_DW;
           state_next = STATE_FETCHIR1;
+        end
+        {AM_IMM, 8'h5x}: begin
+          if (delay == 'h0) begin
+            delay_next = 'h6;
+            reg_read_addr1 = mdr[28:24];
+            divn_next = reg_data_out1;
+            divd_next = { {16{mdr[15]}}, mdr[15:0] };
+          end else begin
+            delay_next = delay - 1'b1;
+            if (delay == 'h1) begin
+              reg_write_addr = ir_ra;
+              case (ir_op)
+                'h50: reg_data_in = divq;
+                'h51: reg_data_in = divr;
+                'h52: reg_data_in = divuq;
+                'h53: reg_data_in = divur;
+                default: reg_data_in = 'h0;
+              endcase
+              reg_write = REG_WRITE_DW;
+              state_next = STATE_FETCHIR1;
+            end
+          end
         end
         {AM_IMM, 8'h20}: begin // ldi
           state_next = STATE_FETCHIR1;
@@ -622,8 +696,10 @@ begin
   endcase
 end
 
-alu alu0(.in1(alu_in1), .in2(alu_in2), .func(alu_func), .out(alu_out),
+alu alu0(.in1(alu_in1), .in2(alu_in2), .func(alu_func), .out(alu_out), .out_long(alu_long), 
   .c_in(1'b0), .z_in(1'b0), .c_out(alu_carry), .n_out(alu_negative), .v_out(alu_overflow), .z_out(alu_zero));
+intsdiv d0(.numer(divn), .denom(divd), .quotient(divq), .remain(divr));
+intudiv d1(.numer(divn), .denom(divd), .quotient(divuq), .remain(divur));
 registerfile reg0(.clk(clk), .rst_n(rst_n), .read1(reg_read_addr1), .read2(reg_read_addr2), .write_addr(reg_write_addr),
   .write_data(reg_data_in), .write_en(reg_write), .data1(reg_data_out1), .data2(reg_data_out2));
 endmodule

@@ -1,5 +1,5 @@
 CC = ~/lcc/lcc
-#CFLAGS = -Wf-d
+CFLAGS = -Wf-d
 OBJCOPY = bexkat1-elf-objcopy
 OBJDUMP = bexkat1-elf-objdump
 AS = bexkat1-elf-as
