@@ -109,7 +109,7 @@ wire [15:0] cpu_data_in6 = (mem_encoder ? encoder_data : 16'h0000);
 wire [15:0] cpu_data_in7 = (mem_serial0 ? serial0_data : 16'h0000);
 wire [15:0] cpu_data_in8 = (mem_serial1 ? serial1_data : 16'h0000);
 wire [15:0] cpu_data_in9 = (mem_serial2 ? serial2_data : 16'h0000);
-wire [15:0] cpu_data_in10 = (mem_switch && cpu_addrbus[1] ? { 8'h00, SW[9:2] } : 16'h0000);
+wire [15:0] cpu_data_in10 = (mem_switch ? { 8'h00, SW[7:0] } : 16'h0000);
 wire [15:0] cpu_data_in = cpu_data_in0 |
   cpu_data_in1 | cpu_data_in2 | cpu_data_in3 | cpu_data_in4 |
   cpu_data_in5 | cpu_data_in6 | cpu_data_in7 | cpu_data_in8 |
@@ -171,8 +171,8 @@ hexdisp d1(.out(HEX2), .in(cpu_data_out[11:8]));
 hexdisp d2(.out(HEX1), .in(cpu_data_out[7:4]));
 hexdisp d3(.out(HEX0), .in(cpu_data_out[3:0]));
 // Blinknlights
-assign LEDG = { cpu_write, mem_sram, mem_led_matrix, mem_flash, mem_dram, mem_monitor, kbd_event};
-assign LEDR = { 6'h00, ccr};
+assign LEDG = { mem_flash, mem_monitor, mem_sram, mem_led_matrix, mem_encoder, mem_serial0, mem_serial1, mem_serial2 };
+assign LEDR = { 2'b00, cpu_bytectl, cpu_write, ccr};
 
 // quadrature encoder outputs 0-23
 rgb_enc io0(.clk(clock_50), .rst_n(rst_n), .quad(quad), .button(pb), .rgb_out(rgb),
