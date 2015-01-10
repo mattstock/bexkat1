@@ -325,6 +325,14 @@ begin
           reg_read_addr1 = mdr[12:8];
           alu_in1 = 'h0;
           alu_in2 = reg_data_out1;
+          reg_data_in = alu_out;
+          reg_write = REG_WRITE_DW;
+        end
+        {AM_REG, 8'h17}: begin // com
+          state_next = STATE_FETCHIR1;
+          reg_read_addr1 = mdr[12:8];
+          reg_write_addr = ir_ra;
+          reg_data_in = ~reg_data_out1;
           reg_write = REG_WRITE_DW;
         end
         {AM_PCIND, 8'h20}: begin // bra
