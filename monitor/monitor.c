@@ -12,6 +12,8 @@ void matrix_put(unsigned, unsigned, unsigned);
 
 void delay(void);
 void main(void);
+char *itos(unsigned int val, char *s);
+unsigned char random(unsigned int);
 
 // for now, the first function in the object is the one that gets run
 // we mark the entry point in the object code, but we need a program loader
@@ -24,6 +26,17 @@ void _start(void) {
     *dst++ = *src++;
   }
   main();
+}
+
+unsigned char random(unsigned int r_base) {
+  static unsigned char y;
+  static unsigned int r;
+
+  if (r == 0 || r == 1 || r == -1)
+    r = r_base;
+  r = (9973 * ~r) + (y % 701);
+  y = (r >> 24) % 9;
+  return y;
 }
 
 void delay() {
@@ -53,6 +66,16 @@ char serial_getchar(unsigned short port) {
   while ((result & 0x8000) == 0)
     result = p[0];
   return (char)(result & 0xff); 
+}
+char *itos(unsigned int val, char *s) {
+  unsigned int c;
+
+  c = val % 10;
+  val /= 10;
+  if (val)
+    s = itos(val, s);
+  *s++ = (c+'0');
+  return s;
 }
   
 void serial_putchar(unsigned short port, char c) {
@@ -106,13 +129,20 @@ void main(void) {
   char c;
   unsigned val;
   unsigned short x, y;
+  char foo[40];
+  char *r;
 
+  r = itos(12345, foo);
+  *r = '\0';
+  
+  serial_print(0, foo);
   serial_print(0, "\r\nbexkat> ");
   matrix_init();
   x = 16;
   y = 8;
   val = 0x00000ff0;
 
+  matrix_put(x,y, val);
   while (1) {
     c = serial_getchar(0);
     serial_putchar(0,c);
@@ -124,11 +154,16 @@ void main(void) {
       x++;
     if (c == 's')
       y++;
+    if (c == '1')
+      val += 0x0f000000;
+    if (c == '2')
+      val += 0x000f0000;
+    if (c == '3')
+      val += 0x00000f00;
     if (c == ' ')
-      if (val == 0)
-        val = 0x0000f0f0;
-      else
-        val = val << 4;
+      val = 0;
+    if (c == '4')
+      val = ~val;
     matrix_put(x,y, val);
   }
 }
