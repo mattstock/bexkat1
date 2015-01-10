@@ -71,13 +71,15 @@ begin
       v_out = n_out ^ c_out;
     end
     ALU_RSHIFTA: begin
-      {out, c_out} = in1 >>> in2;
+      out = in1 >>> in2;
       out_long = 'h0;
+      c_out = 1'b0;
       v_out = n_out ^ c_out;
     end
     ALU_RSHIFTL: begin
-      {out, c_out} = in1 >> in2;
+      out = in1 >> in2;
       out_long = 'h0;
+      c_out = 1'b0;
       v_out = n_out ^ c_out;
     end
     ALU_MUL: begin
