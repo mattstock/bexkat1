@@ -4,13 +4,14 @@ extern unsigned _etext;
 extern unsigned _data;
 extern unsigned _edata;
 
+void serial_putbin(unsigned short port, unsigned short *list, unsigned short len);
 void serial_putchar(unsigned short, char);
 char serial_getchar(unsigned short);
 void serial_print(unsigned short, char *);
 void matrix_init(void);
 void matrix_put(unsigned, unsigned, unsigned);
 
-void delay(void);
+void delay(unsigned int limit);
 void main(void);
 char *itos(unsigned int val, char *s);
 unsigned char random(unsigned int);
@@ -35,13 +36,13 @@ unsigned char random(unsigned int r_base) {
   if (r == 0 || r == 1 || r == -1)
     r = r_base;
   r = (9973 * ~r) + (y % 701);
-  y = (r >> 24) % 9;
+  y = (r >> 24);
   return y;
 }
 
-void delay() {
+void delay(unsigned int limit) {
   unsigned i;
-  for (i=0; i < 0x10000; i++);
+  for (i=0; i < limit; i++);
 }
 
 char serial_getchar(unsigned short port) {
@@ -99,6 +100,13 @@ void serial_putchar(unsigned short port, char c) {
   p[0] = (unsigned short)c;
 }
 
+void serial_putbin(unsigned short port, unsigned short *list, unsigned short len) {
+  unsigned short i;
+
+  for (i=0; i < len; i++)
+    serial_putchar(port, (char)list[i]);
+}
+
 void serial_print(unsigned short port, char *str) {
   char *c = str;
 
@@ -124,46 +132,53 @@ void matrix_init(void) {
   }
 }
 
+unsigned short katherine[] = { 194, 132, 190, 148, 129, 141 }; 
+
 void main(void) {
-  unsigned i;
   char c;
   unsigned val;
   unsigned short x, y;
-  char foo[40];
-  char *r;
 
-  r = itos(12345, foo);
-  *r = '\0';
-  
-  serial_print(0, foo);
-  serial_print(0, "\r\nbexkat> ");
-  matrix_init();
   x = 16;
   y = 8;
-  val = 0x00000ff0;
-
-  matrix_put(x,y, val);
+  val = 0x80808000;
+  serial_putbin(1, katherine, 6);
   while (1) {
-    c = serial_getchar(0);
-    serial_putchar(0,c);
-    if (c == 'a')
-      x--;
-    if (c == 'w')
-      y--;
-    if (c == 'd')
-      x++;
-    if (c == 's')
-      y++;
-    if (c == '1')
-      val += 0x0f000000;
-    if (c == '2')
-      val += 0x000f0000;
-    if (c == '3')
-      val += 0x00000f00;
-    if (c == ' ')
-      val = 0;
-    if (c == '4')
-      val = ~val;
+    c = random(2000);
+    switch (c % 4) {
+      case 0:
+        if (x > 0)
+          x--;
+        break;
+      case 1:
+        if (x < 31)
+          x++;
+        break;
+     case 2:
+       if (y > 0)
+         y--;
+       break;
+     case 3:
+       if (y < 15)
+         y++;
+       break;
+    }  
+    c = random(2000);
+    switch (c % 4) {
+      case 0:
+        val += 0x0f;
+        break;
+      case 1:
+        val += 0xf00;
+        break;
+      case 2:
+        val += 0xf0000;
+        break;
+      case 3:
+        val += 0xf000000;
+        break;
+    }  
     matrix_put(x,y, val);
+    delay(0x500);
   }
 }
