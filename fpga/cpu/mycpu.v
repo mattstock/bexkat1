@@ -463,6 +463,19 @@ begin
             mdrsel_next = MDR_LOW;
             addrsel_next = ADDR_MAR;
         end
+        {AM_REGIND, 8'h50}: begin // jmp
+          state_next = STATE_FETCHIR1;
+          reg_read_addr1 = mdr[15:11]; // rB
+          alu_in1 = reg_data_out1;
+          alu_in2 = { {21{mdr[10]}}, mdr[10:0] };
+          alu_func = 'h2;      
+          pc_next = { 1'b0, alu_out};
+        end
+        {AM_REGIND, 8'h51}: begin // jsr
+          state_next = STATE_FAULT;
+          // Can't really do two ALU ops at once, both the relative computation of the new PC
+          // and the setup for the SP and PUSH op.
+        end
         default: state_next = STATE_FETCHIR3;
       endcase
     end
