@@ -1,5 +1,8 @@
 module uart_rx(clk, data, ready, serial_in);
 
+parameter clkfreq = 500000000;
+parameter baud = 9600;
+
 input clk;
 output [7:0] data;
 output ready;
@@ -56,6 +59,6 @@ always @(posedge clk) begin
   ready <= (state == 4'b0010 && next_bit && rx_bit);
 end
 
-baudgen #(.baud(8*9600)) rxbaud(.clk(clk), .enable(1'b1), .baudclk(baud8clk));
+baudgen #(.clkfreq(clkfreq), .baud(8*baud)) rxbaud(.clk(clk), .enable(1'b1), .baudclk(baud8clk));
 
 endmodule

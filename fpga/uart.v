@@ -1,5 +1,8 @@
 module uart(clk, rst_n, rx, tx, data_in, data_out, select, write, address);
 
+parameter clkfreq = 50000000;
+parameter baud = 9600;
+
 input clk;
 input rst_n;
 input rx;
@@ -85,8 +88,8 @@ begin
   end  
 end
 
-uart_tx tx0(.clk(clk), .data(tx_byte), .start(tx_start), .ready(tx_ready), .serial_out(tx));
-uart_rx rx0(.clk(clk), .data(rx_in), .ready(rx_ready), .serial_in(rx));
+uart_tx #(.clkfreq(clkfreq), .baud(baud)) tx0(.clk(clk), .data(tx_byte), .start(tx_start), .ready(tx_ready), .serial_out(tx));
+uart_rx #(.clkfreq(clkfreq), .baud(baud)) rx0(.clk(clk), .data(rx_in), .ready(rx_ready), .serial_in(rx));
 
 //uart_fifo tx_fifo0(.q(tx_byte), .rdempty(), .wrfull(tx_full), .data(data_in[7:0]), .wrclk(clk), .rdclk(), .aclr(~rst_n), .wrreq(), .rdreq());
 //uart_fifo rx_fifo0(.q(rx_top), .rdempty(), .wrfull(), .data(rx_byte), .wrclk(clk), .rdclk(), .aclr(~rst_n), .wrreq(rx_ready), .rdreq());

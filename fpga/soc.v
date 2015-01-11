@@ -185,13 +185,13 @@ lcd_module lcd0(.clk(clock_50), .rst_n(rst_n), .e(lcd_e), .data_out(lcd_data), .
 user_input kbd0(.clk(clock_50), .rst_n(rst_n), .ps2_clock(ps2_clk), .ps2_data(ps2_dat), .data_read(pb), .data_ready(kbd_event), .data_out(kbd_data));
 
 // UART for RS232
-uart uart0(.clk(clock_50), .rst_n(rst_n), .rx(serial0_rx), .tx(serial0_tx), .data_in(cpu_data_out), .data_out(serial0_data),
+uart #(.baud(115200)) uart0(.clk(clock_50), .rst_n(rst_n), .rx(serial0_rx), .tx(serial0_tx), .data_in(cpu_data_out), .data_out(serial0_data),
   .write(cpu_write), .select(mem_serial0), .address(cpu_addrbus[3:0]));
 // UART for speach generator
-uart uart1(.clk(clock_50), .rst_n(rst_n), .rx(serial1_rx), .tx(serial1_tx), .data_in(cpu_data_out), .data_out(serial1_data),
+uart #(.baud(9600)) uart1(.clk(clock_50), .rst_n(rst_n), .rx(serial1_rx), .tx(serial1_tx), .data_in(cpu_data_out), .data_out(serial1_data),
   .write(cpu_write), .select(mem_serial1), .address(cpu_addrbus[3:0]));
 // UART for logic level testing
-uart uart2(.clk(clock_50), .rst_n(rst_n), .rx(serial2_rx), .tx(serial2_tx), .data_in(cpu_data_out), .data_out(serial2_data),
+uart #(.baud(115200)) uart2(.clk(clock_50), .rst_n(rst_n), .rx(serial2_rx), .tx(serial2_tx), .data_in(cpu_data_out), .data_out(serial2_data),
   .write(cpu_write), .select(mem_serial2), .address(cpu_addrbus[3:0]));
 
 mycpu cpu0(.clk(clock_50), .rst_n(rst_n), .addrbus(cpu_addrbus), .data_in(cpu_data_in), .data_out(cpu_data_out), .write_out(cpu_write), .bytectl(cpu_bytectl), .ccr(ccr));
