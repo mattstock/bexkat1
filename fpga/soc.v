@@ -5,6 +5,7 @@ module soc(SW, KEY, HEX0, HEX1, HEX2, HEX3, LEDR, LEDG, clock_50, clock_27,
   ps2_dat, ps2_clk, lcd_e, lcd_rs, lcd_data,
   rgb0, rgb1, rgb_a, rgb_b, rgb_c, rgb_stb, rgb_clk, rgb_oe_n,
   fl_addrbus, fl_databus, fl_oe_n, fl_ce_n, fl_we_n, fl_rst_n,
+  miso, mosi, sclk, ss,
   serial0_tx, serial0_rx, serial1_tx, serial1_rx, serial2_tx, serial2_rx,
   dram_dq, dram_addr, dram_ba, dram_ldqm, dram_udqm, dram_ras_n, dram_cas_n, dram_cke, dram_clk, dram_we_n, dram_ce_n);
 
@@ -86,14 +87,20 @@ output lcd_e;
 output lcd_rs;
 output [7:0] lcd_data;
 
+// SPI
+input miso;
+output mosi;
+output sclk;
+output ss;
+
 wire rst_n;
 wire [5:0] encoder_val;
 wire kbd_event;
 wire [7:0] kbd_data;
 
 wire mem_flash, mem_monitor, mem_dram, mem_sram, mem_led_matrix, mem_kbd, mem_encoder, mem_serial0, mem_serial1;
-wire mem_switch, mem_serial2;
-wire [15:0] mem_monitor_data, led_matrix_data_out, encoder_data, serial0_data, serial1_data, serial2_data;
+wire mem_switch, mem_serial2, mem_spi;
+wire [15:0] mem_monitor_data, led_matrix_data_out, encoder_data, serial0_data, serial1_data, serial2_data, spi_data;
 wire [31:0] cpu_addrbus;
 wire [15:0] cpu_data_out;
 wire cpu_write, cpu_bytectl;
@@ -110,10 +117,11 @@ wire [15:0] cpu_data_in7 = (mem_serial0 ? serial0_data : 16'h0000);
 wire [15:0] cpu_data_in8 = (mem_serial1 ? serial1_data : 16'h0000);
 wire [15:0] cpu_data_in9 = (mem_serial2 ? serial2_data : 16'h0000);
 wire [15:0] cpu_data_in10 = (mem_switch ? { 8'h00, SW[7:0] } : 16'h0000);
+wire [15:0] cpu_data_in11 = (mem_spi ? spi_data : 16'h0000);
 wire [15:0] cpu_data_in = cpu_data_in0 |
   cpu_data_in1 | cpu_data_in2 | cpu_data_in3 | cpu_data_in4 |
   cpu_data_in5 | cpu_data_in6 | cpu_data_in7 | cpu_data_in8 |
-  cpu_data_in9 | cpu_data_in10;
+  cpu_data_in9 | cpu_data_in10 | cpu_data_in11;
 
 // Reset button
 reg [2:0] rst_sync;
@@ -158,9 +166,6 @@ assign fl_ce_n = ~mem_flash;
 assign fl_rst_n = rst_n;
 assign fl_databus = (cpu_write ? cpu_data_out[7:0] : 8'hzz);
 
-// Generate demo screenbuffer data
-//screendemo demo0(.clk(clock_50), .rst_n(rst_n), .write(rgb_write), .pixel(rgb_matrix), .row(rgb_row), .col(rgb_col));
-
 // LED display driver
 led_matrix led0(.clk(clock_50), .rst_n(rst_n), .rgb_a(rgb_a), .rgb_b(rgb_b), .rgb_c(rgb_c), .rgb0(rgb0), .rgb1(rgb1), .rgb_clk(rgb_clk), .rgb_stb(rgb_stb), .oe_n(rgb_oe_n),
   .data_in(cpu_data_out), .data_out(led_matrix_data_out), .write(cpu_write & mem_led_matrix), .address(cpu_addrbus[10:1]));
@@ -194,11 +199,15 @@ uart #(.baud(9600)) uart1(.clk(clock_50), .rst_n(rst_n), .rx(serial1_rx), .tx(se
 uart #(.baud(115200)) uart2(.clk(clock_50), .rst_n(rst_n), .rx(serial2_rx), .tx(serial2_tx), .data_in(cpu_data_out), .data_out(serial2_data),
   .write(cpu_write), .select(mem_serial2), .address(cpu_addrbus[3:0]));
 
+// SPI module
+spi_master spi0(.clk(clock_50), .rst_n(rst_n), .miso(miso), .mosi(mosi), .sclk(sclk), .ss(ss), .data_in(cpu_data_out), .data_out(spi_data),
+  .write(cpu_write), .select(mem_spi), .address(cpu_addrbus[3:0]));
+  
 mycpu cpu0(.clk(clock_50), .rst_n(rst_n), .addrbus(cpu_addrbus), .data_in(cpu_data_in), .data_out(cpu_data_out), .write_out(cpu_write), .bytectl(cpu_bytectl), .ccr(ccr));
 
 // Chip select logic
 mem_select memmap0(.address(cpu_addrbus), .flash(mem_flash), .dram(mem_dram), .sram(mem_sram), .monitor(mem_monitor), .led_matrix(mem_led_matrix),
-  .kbd(mem_kbd), .encoder(mem_encoder), .serial0(mem_serial0), .serial1(mem_serial1), .serial2(mem_serial2), .switch(mem_switch));
+  .kbd(mem_kbd), .encoder(mem_encoder), .serial0(mem_serial0), .serial1(mem_serial1), .serial2(mem_serial2), .switch(mem_switch), .spi(mem_spi));
 
 // ROM monitor code
 monitor rom0(.clock(clock_50), .address(cpu_addrbus[12:1]), .q(mem_monitor_data));
