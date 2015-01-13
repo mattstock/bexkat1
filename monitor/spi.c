@@ -10,6 +10,7 @@ char serial_getchar(unsigned short);
 void serial_print(unsigned short, char *);
 void matrix_init(void);
 void matrix_put(unsigned, unsigned, unsigned);
+char spi_putchar(char);
 
 void delay(unsigned int limit);
 void main(void);
@@ -100,6 +101,18 @@ void serial_putchar(unsigned short port, char c) {
   p[0] = (unsigned short)c;
 }
 
+char spi_putchar(char c) {
+  unsigned short val;
+
+  val = spi[0];
+  while (val & 0xc000)
+    val = spi[0];
+  spi[0] = (unsigned short)c;
+  while (!(val & 0x8000))
+    val = spi[0];
+  return val & 0xff;
+}
+
 void serial_putbin(unsigned short port, unsigned short *list, unsigned short len) {
   unsigned short i;
 
@@ -132,56 +145,23 @@ void matrix_init(void) {
   }
 }
 
-unsigned short katherine[] = { 194, 132, 190, 148, 129, 141 }; 
-unsigned short rebecca[] = { 148, 131, 172, 131, 196, 131 };
-
 void main(void) {
   char c;
-  unsigned val;
-  unsigned short x, y;
 
-  x = 16;
-  y = 8;
-  val = 0x80808000;
-  serial_putbin(1, katherine, 6);
-  delay(0x15000);
-  serial_putbin(1, rebecca, 6);
+  matrix[0] = 0x00000000;
+  matrix[1] = 0x00000000;
+  matrix[2] = 0x00000000;
+  matrix[3] = 0x00000000;
+  spi[1] = 0xffff;
   while (1) {
-    c = random(2000);
-    switch (c % 4) {
-      case 0:
-        if (x > 0)
-          x--;
-        break;
-      case 1:
-        if (x < 31)
-          x++;
-        break;
-     case 2:
-       if (y > 0)
-         y--;
-       break;
-     case 3:
-       if (y < 15)
-         y++;
-       break;
-    }  
-    c = random(2000);
-    switch (c % 4) {
-      case 0:
-        val += 0x0f;
-        break;
-      case 1:
-        val += 0xf00;
-        break;
-      case 2:
-        val += 0xf0000;
-        break;
-      case 3:
-        val += 0xf000000;
-        break;
-    }  
-    matrix_put(x,y, val);
-    delay(0x500);
+    matrix[0] = 0x00ff0000;
+    c = serial_getchar(0);
+    matrix[1] = 0x00ff0000;
+    spi[1] = 0xfffe;
+    c = spi_putchar(c);
+    spi[1] = 0xffff;
+    matrix[2] = 0x00ff0000;
+    serial_putchar(0,c);
+    matrix[3] = 0x00ff0000;
   }
 }

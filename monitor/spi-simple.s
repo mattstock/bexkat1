@@ -1,0 +1,9 @@
+lds %0, 0xffff
+st %0, 0xff400062
+lds %0, 0xfffe
+st %0, 0xff400062
+lds %0, 0x0061
+st %0, 0xff400060
+ld %0, 0xff400060
+foo:
+jmp foo

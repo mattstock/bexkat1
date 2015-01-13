@@ -11,10 +11,10 @@ TEMP := $(shell mktemp)
 
 .PHONY: all clean
 
-all: monitor.hex frametests.s frametests.hex memtests.s memtests.hex stacktests.hex conditionals.s conditionals.hex conditionals-simple.hex types.s types.hex multiply.s multiply.hex multiply-simple.hex fib.s fib.hex
+all: monitor.hex frametests.s frametests.hex memtests.s memtests.hex stacktests.hex conditionals.s conditionals.hex conditionals-simple.hex types.s types.hex multiply.s multiply.hex multiply-simple.hex fib.s fib.hex spi.s spi.hex spi-simple.hex
 
 clean:
-	rm -f *.o *.srec *.hex memtests stacktests monitor monitor.s frametests frametests.s memtests.s conditionals conditionals.s conditionals-simple types.s types multiply.s multiply multiply-simple fib.s fib
+	rm -f *.o *.srec *.hex memtests stacktests monitor monitor.s frametests frametests.s memtests.s conditionals conditionals.s conditionals-simple types.s types multiply.s multiply multiply-simple fib.s fib spi.s spi spi-simple
 
 %.s: %.c
 	$(CC) -S $(CFLAGS) -Wf-target=$(CCTARGET) -o $@ $^
@@ -48,4 +48,8 @@ multiply: multiply.o
 multiply-simple: multiply-simple.o
 	$(LD) -o $@ $^ -T $(LD_SCRIPT)
 fib: fib.o
+	$(LD) -o $@ $^ -T $(LD_SCRIPT)
+spi: spi.o
+	$(LD) -o $@ $^ -T $(LD_SCRIPT)
+spi-simple: spi-simple.o
 	$(LD) -o $@ $^ -T $(LD_SCRIPT)

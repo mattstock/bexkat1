@@ -8,5 +8,6 @@ volatile unsigned short *serial1 = (unsigned short *)0xff400020;
 volatile unsigned short *serial2 = (unsigned short *)0xff400050;
 volatile unsigned short *kbd = (unsigned short *)0xff400030;
 volatile unsigned char *sw = (unsigned char *)0xff400040;
+volatile unsigned short *spi = (unsigned short *)0xff400060;
 
 #endif
