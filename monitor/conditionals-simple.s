@@ -43,4 +43,4 @@ nop
 nop
 nop
 foo:
-jmp foo
+jmpd foo

@@ -4,9 +4,9 @@ _start:
 ldi %30, 0x55553333
 push %30
 pop %29
-jsr foo
+jsrd foo
 .L4:
-jmp .L4
+jmpd .L4
 rts
 .Lf5:
 .size _start,.Lf5-_start
