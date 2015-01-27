@@ -159,13 +159,20 @@ begin
           mar_next = reg_data_out1;
         end
         {MODE_INH, 8'h40}: begin // cmp
-          state_next = STATE_FETCHIR1;
           alu_func = 'h3; // sub
           reg_read_addr1 = ir_ra;
           reg_read_addr2 = ir_rb;
           alu_in1 = reg_data_out1;
           alu_in2 = reg_data_out2;
-          ccr_next = {alu_carry, alu_negative, alu_overflow, alu_zero};
+          if (delay == 'h0) begin
+            delay_next = 'h2;
+          end else begin
+            delay_next = delay - 1'b1;
+            if (delay == 'h1) begin
+              ccr_next = {alu_carry, alu_negative, alu_overflow, alu_zero};
+              state_next = STATE_FETCHIR1;
+            end
+          end
         end
         {MODE_INH, 8'h60}: begin // inc rA
           reg_write_addr = ir_ra;
@@ -547,6 +554,16 @@ begin
         end
         {MODE_REGIND, 8'h07}: begin // ldd.s
           state_next = STATE_FETCHIR1;
+        end
+        {MODE_REGIND, 8'h0a}: begin // lda
+          state_next = STATE_FETCHIR1;
+          reg_read_addr1 = ir_rb;
+          reg_write_addr = ir_ra;
+          alu_in1 = reg_data_out1;
+          alu_in2 = mar;
+          alu_func = 'h2; // add
+          reg_data_in = alu_out;
+          reg_write = REG_WRITE_DW;
         end
         {MODE_REGIND, 8'ha0}: begin // jmp
           state_next = STATE_FETCHIR1;

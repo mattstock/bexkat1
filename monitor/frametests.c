@@ -1,14 +1,9 @@
-void foo(unsigned,unsigned);
-
 void main(void) {
-  foo((unsigned)0x11112222,(unsigned)0x33334444);
-}
+  char a[10];
+  char *b;
 
-void foo(unsigned a, unsigned b) {
-  unsigned c,d,e,f;
+  b=a;
 
-  c = a + b;
-  d = a - b;
-  e = a << b;
-  f = 7;
+  a[0] = 'a';
+  b[0] = 'b';
 }

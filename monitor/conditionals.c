@@ -1,9 +1,8 @@
+#include "monitor.h"
+
 extern unsigned _etext;
 extern unsigned _data;
 extern unsigned _edata;
-unsigned *swptr = (void *)0xff400040;
-unsigned *matrixptr = (void *)0xff410000;
-unsigned *rgbptr = (void *)0xff400000;
 
 void main(void);
 void draw(unsigned, unsigned, unsigned, unsigned);
@@ -21,7 +20,7 @@ void _start(void) {
 }
 
 void draw(unsigned x, unsigned y, unsigned val, unsigned exp) {
-    matrixptr[y*32+x] = (val == exp ? 0x00ff0000 : 0xff000000);
+    matrix[y*32+x] = (val == exp ? 0x00ff0000 : 0xff000000);
 }
 
 void main(void) {
@@ -36,7 +35,7 @@ void main(void) {
     a1 = 1;
     a2 = 0;
     a3 = 0;
-    if (swptr[0] == 1) { // <
+    if (sw[0] == 1) { // <
       v1 = 13;
       v2 = 15;
       s1 = -5;
@@ -45,7 +44,7 @@ void main(void) {
       a2 = 1;
       a3 = 0;
     }
-    if (swptr[0] == 2) { // < pos
+    if (sw[0] == 2) { // < pos
       v1 = 0;
       v2 = 15;
       s1 = 5;
@@ -54,7 +53,7 @@ void main(void) {
       a2 = 1;
       a3 = 0;
     }
-    if (swptr[0] == 3) { // > pos
+    if (sw[0] == 3) { // > pos
       v1 = 10;
       v2 = 1;
       s1 = 5;
@@ -63,7 +62,7 @@ void main(void) {
       a2 = 0;
       a3 = 1;
     }
-    if (swptr[0] == 4) { // > neg
+    if (sw[0] == 4) { // > neg
       v1 = 1;
       v2 = 0;
       s1 = -5;
@@ -72,7 +71,7 @@ void main(void) {
       a2 = 0;
       a3 = 1;
     }
-    if (swptr[0] == 5) { // > split
+    if (sw[0] == 5) { // > split
       v1 = 255;
       v2 = 254;
       s1 = 5;

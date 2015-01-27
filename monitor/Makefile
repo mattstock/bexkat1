@@ -1,5 +1,5 @@
 CC = ~/lcc/lcc
-CFLAGS = -Wf-d
+#CFLAGS = -Wf-d
 OBJCOPY = bexkat1-elf-objcopy
 OBJDUMP = bexkat1-elf-objdump
 AS = bexkat1-elf-as
@@ -11,10 +11,10 @@ TEMP := $(shell mktemp)
 
 .PHONY: all clean
 
-all: monitor.hex frametests.s frametests.hex memtests.s memtests.hex stacktests.hex conditionals.s conditionals.hex conditionals-simple.hex types.s types.hex multiply.s multiply.hex multiply-simple.hex fib.s fib.hex spi.s spi.hex spi-simple.hex structures.s structures.hex fp.s fp.hex
+all: monitor.hex frametests.s frametests.hex memtests.s memtests.hex stacktests.hex conditionals.s conditionals.hex conditionals-simple.hex types.s types.hex multiply.s multiply.hex multiply-simple.hex fib.s fib.hex spi.s spi.hex spi-simple.hex structures.s structures.hex fp.s fp.hex pretty.s pretty.hex
 
 clean:
-	rm -f *.o *.srec *.hex memtests stacktests monitor monitor.s frametests frametests.s memtests.s conditionals conditionals.s conditionals-simple types.s types multiply.s multiply multiply-simple fib.s fib spi.s spi spi-simple structures.s structures fp.s fp
+	rm -f *.o *.srec *.hex memtests stacktests monitor monitor.s frametests frametests.s memtests.s conditionals conditionals.s conditionals-simple types.s types multiply.s multiply multiply-simple fib.s fib spi.s spi spi-simple structures.s structures fp.s fp pretty.s pretty
 
 %.s: %.c
 	$(CC) -S $(CFLAGS) -Wf-target=$(CCTARGET) -o $@ $^
@@ -56,4 +56,6 @@ spi-simple: spi-simple.o
 structures: structures.o
 	$(LD) -o $@ $^ -T $(LD_SCRIPT)
 fp: fp.o
+	$(LD) -o $@ $^ -T $(LD_SCRIPT)
+pretty: pretty.o
 	$(LD) -o $@ $^ -T $(LD_SCRIPT)

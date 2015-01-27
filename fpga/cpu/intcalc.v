@@ -16,10 +16,10 @@ localparam MUL=3'b000, DIV=3'b001, MOD=3'b010, MULU=3'b100, DIVU=3'b101, MODU=3'
 always @*
 begin
   case (func)
-    MUL : out = mul_out[15:0];
+    MUL : out = mul_out[WIDTH-1:0];
     DIV : out = divq;
     MOD : out = divr;
-    MULU: out = mulu_out[15:0];
+    MULU: out = mulu_out[WIDTH-1:0];
     DIVU: out = divuq;
     MODU: out = divur;
     default: out = 'h0;
