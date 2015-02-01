@@ -5,8 +5,8 @@ module soc(SW, KEY, HEX0, HEX1, HEX2, HEX3, LEDR, LEDG, clock_50, clock_27,
   ps2_dat, ps2_clk, lcd_e, lcd_rs, lcd_data,
   rgb0, rgb1, rgb_a, rgb_b, rgb_c, rgb_stb, rgb_clk, rgb_oe_n,
   fl_addrbus, fl_databus, fl_oe_n, fl_ce_n, fl_we_n, fl_rst_n,
-  miso, mosi, sclk, ss,
-  serial0_tx, serial0_rx, serial1_tx, serial1_rx, serial2_tx, serial2_rx,
+  miso, mosi, sclk, ss_sdcard, ss_ethernet,
+  serial0_tx, serial0_rx, serial1_tx, serial2_tx, serial2_rx,
   dram_dq, dram_addr, dram_ba, dram_ldqm, dram_udqm, dram_ras_n, dram_cas_n, dram_cke, dram_clk, dram_we_n, dram_ce_n);
 
 // SRAM
@@ -75,7 +75,7 @@ output aud_adclrck;
 input aud_adcdat;
 
 // serial
-input serial0_rx, serial1_rx, serial2_rx;
+input serial0_rx, serial2_rx;
 output serial0_tx, serial1_tx, serial2_tx;
 
 // ps2
@@ -91,7 +91,8 @@ output [7:0] lcd_data;
 input miso;
 output mosi;
 output sclk;
-output ss;
+output ss_ethernet;
+output ss_sdcard;
 
 wire rst_n;
 wire [5:0] encoder_val;
@@ -193,14 +194,14 @@ user_input kbd0(.clk(clock_50), .rst_n(rst_n), .ps2_clock(ps2_clk), .ps2_data(ps
 uart #(.baud(115200)) uart0(.clk(clock_50), .rst_n(rst_n), .rx(serial0_rx), .tx(serial0_tx), .data_in(cpu_data_out), .data_out(serial0_data),
   .write(cpu_write), .select(mem_serial0), .address(cpu_addrbus[3:0]));
 // UART for speach generator
-uart #(.baud(9600)) uart1(.clk(clock_50), .rst_n(rst_n), .rx(serial1_rx), .tx(serial1_tx), .data_in(cpu_data_out), .data_out(serial1_data),
+uart #(.baud(9600)) uart1(.clk(clock_50), .rst_n(rst_n), .tx(serial1_tx), .data_in(cpu_data_out), .data_out(serial1_data),
   .write(cpu_write), .select(mem_serial1), .address(cpu_addrbus[3:0]));
 // UART for logic level testing
 uart #(.baud(115200)) uart2(.clk(clock_50), .rst_n(rst_n), .rx(serial2_rx), .tx(serial2_tx), .data_in(cpu_data_out), .data_out(serial2_data),
   .write(cpu_write), .select(mem_serial2), .address(cpu_addrbus[3:0]));
 
 // SPI module
-spi_master spi0(.clk(clock_50), .rst_n(rst_n), .miso(miso), .mosi(mosi), .sclk(sclk), .ss(ss), .data_in(cpu_data_out), .data_out(spi_data),
+spi_master spi0(.clk(clock_50), .rst_n(rst_n), .miso(miso), .mosi(mosi), .sclk(sclk), .ss({ss_ethernet, ss_sdcard}), .data_in(cpu_data_out), .data_out(spi_data),
   .write(cpu_write), .select(mem_spi), .address(cpu_addrbus[3:0]));
   
 mycpu cpu0(.clk(clock_50), .rst_n(rst_n), .addrbus(cpu_addrbus), .data_in(cpu_data_in), .data_out(cpu_data_out), .write_out(cpu_write), .bytectl(cpu_bytectl), .ccr(ccr));

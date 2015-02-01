@@ -8,7 +8,7 @@ input rst_n;
 input miso;
 output mosi;
 output sclk;
-output ss;
+output [1:0] ss;
 input [15:0] data_in;
 output [15:0] data_out;
 input write;
@@ -21,7 +21,7 @@ wire [7:0] rx_in;
 
 reg [7:0] tx_byte, tx_byte_next;
 reg [7:0] rx_byte, rx_byte_next;
-reg ss, ss_next;
+reg [1:0] ss, ss_next;
 reg [15:0] conf, conf_next;
 reg [1:0] state, state_next;
 
@@ -36,7 +36,7 @@ begin
   if (!rst_n) begin
     tx_byte <= 8'h00;
     rx_byte <= 8'h00;
-    ss <= 1'b1;
+    ss <= 2'b11;
     conf <= 16'h0000;
     state <= STATE_IDLE;
   end else begin
@@ -67,7 +67,7 @@ begin
             tx_byte_next = data_in[7:0];
           end
         end
-        'h2: ss_next = data_in[0];
+        'h2: ss_next = data_in[1:0];
         'h4: conf_next = data_in;
         default: begin end
       endcase
@@ -79,7 +79,7 @@ begin
           if (state == STATE_COMPLETE)
             state_next = STATE_RELEASE;
         end
-        'h2: data_out = { 15'h00000, ss };
+        'h2: data_out = { 14'h0000, ss };
         'h4: data_out = conf;
         default: data_out = 16'h0000;
       endcase
