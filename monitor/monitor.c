@@ -4,10 +4,10 @@ extern unsigned _etext;
 extern unsigned _data;
 extern unsigned _edata;
 
-unsigned short page;
-unsigned short addr;
+unsigned int addr;
 unsigned short data;
 
+// Serial IO stuff
 void serial_putbin(unsigned short port,
 		   char *list,
 		   unsigned short len);
@@ -18,14 +18,25 @@ short serial_getline(unsigned short port,
 void serial_printhex(unsigned short port, unsigned val);
 char serial_getchar(unsigned short);
 void serial_print(unsigned short, char *);
+void serial_srec(unsigned short port);
+
+// LED matrix stuff
 void matrix_init(void);
 void matrix_put(unsigned, unsigned, unsigned);
 
+// misc functions
 void delay(unsigned int limit);
-void main(void);
-int hextoi(char *s);
-char *itos(unsigned int val, char *s);
 unsigned char random(unsigned int);
+static char *int2hex(int v);
+
+// conversion stuff
+static char nibble2hex(char n);
+static char *byte2hex(char b);
+static char *short2hex(short s);
+static char *int2hex(int v);
+int hextoi(char s);
+
+void main(void);
 
 // for now, the first function in the object is the one that gets run
 // we mark the entry point in the object code, but we need a program loader
@@ -39,6 +50,8 @@ void _start(void) {
   }
   main();
 }
+
+char helpmsg[] = "\n? = help\np hhhh = set high address page\nr llll xx = read xx bytes of page hhhh llll and display\nw llll xx = write byte xx to location hhhh llll\ns = s-record upload\n\n";
 
 unsigned char random(unsigned int r_base) {
   static unsigned char y;
@@ -89,26 +102,71 @@ char *itos(unsigned int val, char *s) {
   *s++ = (c+'0');
   return s;
 }
-  
-int hextoi(char *s) {
-  int val = 0;
 
-  while (*s != '\0') {
-    if (*s >= '0' && *s <= '9') {
-      val = val << 4;
-      val += (*s-'0');
-    }
-    if (*s >= 'a' && *s <= 'f') {
-      val = val << 4;
-      val += (*s+10-'a');
-    }
-    if (*s >= 'A' && *s <= 'F') {
-      val = val << 4;
-      val += (*s+10-'A');
-    }
-    s++;
+int hextoi(char s) {
+  if (s >= '0' && s <= '9')
+    return s-'0';
+  if (s >= 'a' && s <= 'f')
+    return s+10-'a';
+  if (s >= 'A' && s <= 'F')
+    return s+10-'A';
+  return -1;
+}
+
+void serial_srec(unsigned short port) {
+  unsigned short done = 0;
+  char c;
+  unsigned char len;
+  char type;
+  unsigned char sum;
+  char *s;
+
+  while (!done && (serial_getchar(port) == 'S')) {
+    type = serial_getchar(port);
+    //    switch (type) {
+    // case '0':
+      len = hextoi(serial_getchar(port));
+      len = (len << 4) + hextoi(serial_getchar(port));
+      sum = len;
+      while (len != 0) {
+	c = hextoi(serial_getchar(port));
+	c = (c << 4) + hextoi(serial_getchar(port));
+	sum += c;
+	serial_printhex(port, sum);
+	serial_putchar(port, '\n');
+	len--;
+      }
+      if (sum != 0xff) {
+	done = 1;
+	serial_print(0, "checksum fail!?\n");
+      }
+      /* break;
+    case '1':
+      len = hextoi(serial_getchar(port));
+      len = (len << 4) + hextoi(serial_getchar(port));
+      sum = 0;
+      break;
+    case '2':
+      len = hextoi(serial_getchar(port));
+      len = (len << 4) + hextoi(serial_getchar(port));
+      sum = 0;
+      break;
+    case '3':
+      len = hextoi(serial_getchar(port));
+      len = (len << 4) + hextoi(serial_getchar(port));
+      sum = 0;
+      break;
+    case '9':
+      done = 1;
+      break;
+    case '8':
+      done = 1;
+      break;
+    case '7':
+      done = 1;
+      break;
+      }*/
   }
-  return val;
 }
 
 void serial_putchar(unsigned short port, char c) {
@@ -132,21 +190,47 @@ void serial_putchar(unsigned short port, char c) {
   p[0] = (unsigned short)c;
 }
 
-void serial_printhex(unsigned short port, unsigned val) {
-  unsigned short i;
-  unsigned char c;
-
-  for (i=0; i < 8; i++) {
-    c = (val & 0xf0000000) >> 28;
-    val = val << 4;
-    if (c > 9)
-      c += 'a'-10;
-    else
-      c += '0';
-    serial_putchar(port, c);
-  }
+static char nibble2hex(char n) {
+  char x = (n & 0xf);
+  static const char hex[] = "0123456789abcdef";
+  if (x >= 0 || x <= 15)
+    return hex[n & 0xf];
+  else
+    return 'n';
 }
 
+static char *byte2hex(char b) {
+  static char buf[3];
+  buf[0] = nibble2hex(b >> 4);
+  buf[1] = nibble2hex(b);
+  buf[2] = '\0';
+  return buf;
+}
+
+static char *short2hex(short s) {
+  static char buf[5];
+  unsigned short i;
+
+  for (i=0; i < 4; i++)
+    buf[i] = nibble2hex(s >> (12 - i*4));
+  buf[4] = '\0';
+  return buf;
+}
+
+static char *int2hex(int v) {
+  static char buf[9];
+  unsigned short i;
+  
+  for (i=0; i < 8; i++)
+    buf[i] = nibble2hex(v >> (28 - i*4));
+  buf[8] = '\0';
+  return buf;
+}  
+
+void serial_printhex(unsigned short port, unsigned val) {
+  char *x = int2hex(val);
+  serial_print(port, x);
+}
 
 void serial_print(unsigned short port, char *str) {
   char *c = str;
@@ -191,8 +275,6 @@ void matrix_put(unsigned x, unsigned y, unsigned val) {
   matrix[y*32+x] = val;
 }
 
-char helpmsg[] = "\n? = help\np hhhh = set high address page\nr llll xx = read xx bytes of page hhhh llll and display\nw llll xx = write byte xx to location hhhh llll\ns = s-record upload\n\n";
-
 void serial_dumpmem(unsigned short port,
 		    unsigned addr, 
 		    unsigned short len) {
@@ -201,7 +283,7 @@ void serial_dumpmem(unsigned short port,
   
   serial_print(port, "\n");
   for (i=0; i < len; i += 4) {
-    serial_printhex(port, addr+8*i);
+    serial_printhex(port, addr+4*i);
     serial_print(port, ": ");
     serial_printhex(port, pos[i]);
     serial_print(port, " ");
@@ -218,13 +300,13 @@ void main(void) {
   unsigned short size=20;
   char buf[20];
   char *msg;
-  short *val;
+  short val;
+  short *ref;
 
-  page = 0x0100;
-  addr = 0xa000;
+  addr = 0xff100000;
   while (1) {
     serial_print(0, "\nBexkat1 [");
-    serial_printhex(0, (page << 16) | addr);
+    serial_printhex(0, addr);
     serial_print(0, "] > ");
     msg = buf;
     serial_getline(0, msg, &size);
@@ -232,21 +314,28 @@ void main(void) {
     case '?':
       serial_print(0, helpmsg);
       break;
-    case 'p':
-      msg++;
-      page = hextoi(msg);
-      break;
     case 'a':
       msg++;
-      addr = hextoi(msg);
+      while (*msg != '\0') {
+	addr = (addr << 4) + hextoi(*msg);
+	msg++;
+      }
+      break;
+    case 's':
+      serial_print(0, "\nstart srec upload...\n");
+      serial_srec(0);
       break;
     case 'r':
-      serial_dumpmem(0, (page << 16) | addr, 32);
+      serial_dumpmem(0, addr, 32);
       break;
     case 'w':
       msg++;
-      val = (short *)((page << 16) | addr);
-      *val = hextoi(msg);
+      while (*msg != '\0') {
+	val = (val << 4) + hextoi(*msg);
+	msg++;
+      }
+      ref = (short *)addr;
+      *ref = val;
       serial_print(0, "\n");
       break;
     default:
