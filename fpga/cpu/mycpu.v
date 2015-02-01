@@ -358,7 +358,7 @@ begin
         end
         {MODE_IMM2, 8'h11}: begin // ldiu
           reg_write_addr = ir_ra;
-          reg_data_in = mdr & 16'hffff;
+          reg_data_in = mdr & 32'h0000ffff;
           reg_write = REG_WRITE_DW;
           state_next = STATE_FETCHIR1;
         end
