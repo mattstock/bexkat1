@@ -26,12 +26,9 @@ reg [31:0] divmul2, divmul2_next;
 
 reg [31:0] alu_in1, alu_in2;
 reg [3:0] alu_func;
-reg [1:0] fp_func;
 reg [2:0] int_func;
 reg [4:0] reg_read_addr1, reg_read_addr2, reg_write_addr;
 reg [3:0] reg_write;
-reg [4:0] fpreg_read_addr1, fpreg_read_addr2, fpreg_write_addr;
-reg [3:0] fpreg_write;
 
 
 assign data_out = (mdrsel ? mdr[15:0] : mdr[31:16]);
@@ -39,7 +36,6 @@ assign addrbus = (addrsel ? mar : pc);
 
 wire data_access;
 wire [31:0] reg_data_out1, reg_data_out2, reg_data_in;
-wire [31:0] fpreg_data_out1, fpreg_data_out2, fpreg_data_in;
 wire carry, negative, overflow, zero;
 wire alu_carry, alu_negative, alu_overflow, alu_zero;
 wire [31:0] alu_out, fp_out, int_out, cvt_int_out, cvt_fp_out;
@@ -112,7 +108,8 @@ begin
   ccr_next = ccr;
   bytectl_next = bytectl;
   divmul2_next = divmul2;
-  fp_func = 2'b00;
+  
+  // Control signals we need to deal with
   alu_func = 4'h0;
   int_func = 3'b000;
   reg_read_addr1 = 5'h00;
@@ -120,11 +117,6 @@ begin
   reg_write_addr = 5'h00;
   reg_data_in = 32'h00000000;
   reg_write = REG_WRITE_NONE;
-  fpreg_read_addr1 = 5'h00;
-  fpreg_read_addr2 = 5'h00;
-  fpreg_write_addr = 5'h00;
-  fpreg_data_in = 32'h00000000;
-  fpreg_write = REG_WRITE_NONE;
   alu_in1 = 32'h00000000;
   alu_in2 = 32'h00000000;
   case (state)
@@ -277,79 +269,6 @@ begin
           reg_data_in = alu_out;
           reg_write = REG_WRITE_DW;
         end
-        {MODE_INH2, 8'h43}: begin // cmp.s
-          state_next = STATE_FETCHIR1;
-        end
-        {MODE_INH2, 8'h23}: begin // neg.s
-          state_next = STATE_FETCHIR1;
-          fpreg_write_addr = ir_ra;
-          fpreg_read_addr1 = ir_ra;
-          fpreg_data_in = { ~fpreg_data_out1[31], fpreg_data_out1[30:0] };
-          fpreg_write = REG_WRITE_DW;
-        end
-        {MODE_INH2, 8'ha3}: begin // push.s
-          state_next = STATE_PUSH;
-          reg_read_addr1 = REG_SP;
-          alu_func = 'h3; // sub
-          alu_in1 = reg_data_out1;
-          alu_in2 = 'h2;
-          reg_data_in = alu_out;
-          reg_write = REG_WRITE_DW;
-          reg_write_addr = REG_SP;
-          mar_next = alu_out;
-          addrsel_next = ADDR_MAR;          
-          fpreg_read_addr2 = ir_ra;
-          mdr_next = fpreg_data_out2;
-          mdrsel_next = MDR_LOW;
-          write_out_next = 1'b1;
-        end
-        {MODE_INH2, 8'hc3}: begin // pop.s
-          state_next = STATE_POP;
-          reg_read_addr1 = REG_SP;
-          alu_func = 'h2; // add
-          alu_in1 = reg_data_out1;
-          alu_in2 = 'h2;
-          reg_data_in = alu_out;
-          reg_write = REG_WRITE_DW;
-          reg_write_addr = REG_SP;
-          addrsel_next = ADDR_MAR;
-          mar_next = reg_data_out1;
-        end
-        {MODE_INH2, 8'he3}: begin // mov.s
-          state_next = STATE_FETCHIR1;
-          fpreg_write_addr = ir_ra;
-          fpreg_read_addr1 = ir_rb;
-          fpreg_data_in = reg_data_out1;
-          fpreg_write = REG_WRITE_DW;
-        end
-        {MODE_INH2, 8'he4}: begin // cvtsi
-          fpreg_read_addr1 = ir_rb;
-          if (delay == 'h0) begin
-            delay_next = 'h7;
-          end else begin
-            delay_next = delay - 1'b1;
-            if (delay == 'h1) begin
-              reg_write_addr = ir_ra;
-              reg_data_in = cvt_int_out;
-              reg_write = REG_WRITE_DW;
-              state_next = STATE_FETCHIR1;
-            end
-          end
-        end
-        {MODE_INH2, 8'he5}: begin // cvtis
-          reg_read_addr1 = ir_rb;
-          if (delay == 'h0) begin
-            delay_next = 'h7;
-          end else begin
-            delay_next = delay - 1'b1;
-            if (delay == 'h1) begin
-              fpreg_write_addr = ir_ra;
-              fpreg_data_in = cvt_fp_out;
-              fpreg_write = REG_WRITE_DW;
-              state_next = STATE_FETCHIR1;
-            end
-          end
-        end
         {MODE_IMM2, 8'h10}: begin // ldis
           reg_write_addr = ir_ra;
           reg_data_in = mdr;
@@ -455,29 +374,6 @@ begin
             end
           end
         end
-        {MODE_REG, 8'h6x}: begin // single precision FP ops
-          case (ir_op)
-            'h62: fp_func = 'b01;
-            'h63: fp_func = 'b00;
-            'h68: fp_func = 'b10;
-            'h69: fp_func = 'b11;
-            default: fp_func = 'b00;
-          endcase
-          fpreg_read_addr1 = ir_rb;
-          fpreg_read_addr2 = ir_rc;
-          divmul2_next = reg_data_out2;
-          if (delay == 'h0) begin
-            delay_next = 'hc;
-          end else begin
-            delay_next = delay - 1'b1;
-            if (delay == 'h1) begin
-              fpreg_write_addr = ir_ra;
-              fpreg_data_in = fp_out;
-              fpreg_write = REG_WRITE_DW;
-              state_next = STATE_FETCHIR1;
-            end
-          end
-        end
         {MODE_REGIND, 8'h00}: begin // st.l
             state_next = STATE_STORE;
             reg_read_addr1 = ir_rb;
@@ -548,12 +444,6 @@ begin
             mar_next = alu_out;
             mdrsel_next = MDR_LOW;
             addrsel_next = ADDR_MAR;
-        end
-        {MODE_REGIND, 8'h06}: begin // std.s
-          state_next = STATE_FETCHIR1;
-        end
-        {MODE_REGIND, 8'h07}: begin // ldd.s
-          state_next = STATE_FETCHIR1;
         end
         {MODE_REGIND, 8'h0a}: begin // lda
           state_next = STATE_FETCHIR1;
@@ -680,12 +570,6 @@ begin
           state_next = STATE_LOAD;
           addrsel_next = ADDR_MAR;
         end
-        {MODE_DIR, 8'h06}: begin // std.s
-          state_next = STATE_FETCHIR1;
-        end
-        {MODE_DIR, 8'h07}: begin // ldd.s
-          state_next = STATE_FETCHIR1;
-        end
         {MODE_DIR, 8'h80}: begin // jmpd
           state_next = STATE_FETCHIR1;
           pc_next = { 1'b0, mar};
@@ -771,11 +655,6 @@ begin
       reg_read_addr1 = REG_SP;
       mar_next = reg_data_out1;
       case ({ir_mode, ir_op})
-        {MODE_INH2, 8'hc3}: begin // pop.s
-          fpreg_write_addr = ir_ra;
-          fpreg_data_in[31:16] = data_in;
-          fpreg_write = REG_WRITE_W1;
-        end
         {MODE_INH, 8'hc0}: begin // pop
           reg_write_addr = ir_ra;
           reg_data_in[31:16] = data_in;
@@ -797,11 +676,6 @@ begin
     STATE_POP4: begin
       state_next = STATE_FETCHIR1;
       case ({ir_mode, ir_op})
-        {MODE_INH2, 8'hc3}: begin // pop.s
-          fpreg_write_addr = ir_ra;
-          fpreg_data_in[15:0] = data_in;
-          fpreg_write = REG_WRITE_W0;
-        end
         {MODE_INH, 8'hc0}: begin // pop
           reg_write_addr = ir_ra;
           reg_data_in[15:0] = data_in;
@@ -839,13 +713,8 @@ end
 
 alu alu0(.in1(alu_in1), .in2(alu_in2), .func(alu_func), .out(alu_out), 
   .c_in(1'b0), .z_in(1'b0), .c_out(alu_carry), .n_out(alu_negative), .v_out(alu_overflow), .z_out(alu_zero));
-floatingpoint fp0(.clock(clk), .func(fp_func), .in1(reg_data_out1), .in2(divmul2), .out(fp_out));
 intcalc int0(.clock(clk), .func(int_func), .in1(reg_data_out1), .in2(divmul2), .out(int_out));
-fp_cvtsi cvt0(.clock(clk), .dataa(fpreg_data_out1), .result(cvt_int_out));
-fp_cvtis cvt1(.clock(clk), .dataa(reg_data_out1), .result(cvt_fp_out));
 registerfile intreg(.clk(clk), .rst_n(rst_n), .read1(reg_read_addr1), .read2(reg_read_addr2), .write_addr(reg_write_addr),
   .write_data(reg_data_in), .write_en(reg_write), .data1(reg_data_out1), .data2(reg_data_out2));
-registerfile fpreg(.clk(clk), .rst_n(rst_n), .read1(fpreg_read_addr1), .read2(fpreg_read_addr2), .write_addr(fpreg_write_addr),
-  .write_data(fpreg_data_in), .write_en(fpreg_write), .data1(fpreg_data_out1), .data2(fpreg_data_out2));
   
 endmodule
