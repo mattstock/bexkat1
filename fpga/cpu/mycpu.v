@@ -30,7 +30,7 @@ reg [2:0] int_func;
 reg [4:0] reg_read_addr1, reg_read_addr2, reg_write_addr;
 reg [3:0] reg_write;
 
-reg [3:0] control;
+reg [6:0] control;
 
 assign data_out = (mdrsel ? mdr[15:0] : mdr[31:16]);
 assign addrbus = (addrsel ? mar : pc);
@@ -48,6 +48,28 @@ begin
     2'b01: reg_read_addr2 = ir_rc;
     2'b10: reg_read_addr2 = ir_rb;
     2'b11: reg_read_addr2 = ir_ra;
+  endcase
+  case (control[6:4])
+    3'b100: begin
+      reg_write_addr = REG_SP;
+      reg_write = REG_WRITE_DW;
+    end
+    3'b101: begin
+      reg_write_addr = ir_ra;
+      reg_write = REG_WRITE_DW;
+    end
+    3'b110: begin
+      reg_write_addr = ir_ra;
+      reg_write = REG_WRITE_W0;
+    end
+    3'b111: begin
+      reg_write_addr = ir_ra;
+      reg_write = REG_WRITE_W1;
+    end
+    default: begin
+      reg_write_addr = ir_ra;
+      reg_write = REG_WRITE_NONE;
+    end
   endcase
 end
 
@@ -131,17 +153,13 @@ begin
           alu_in1 = 32'h00000000;
           alu_in2 = 32'h00000000;
           int_func = 3'b000;
-          reg_write_addr = 5'h00;
           reg_data_in = 32'h00000000;
-          reg_write = REG_WRITE_NONE;
   case (state)
     STATE_FETCHIR1: begin
       alu_func = 4'h0;
       int_func = 3'b000;
-      control = 4'b0000;
-      reg_write_addr = 5'h00;
+      control = 7'b0000000;
       reg_data_in = 32'h00000000;
-      reg_write = REG_WRITE_NONE;
       alu_in1 = 32'h00000000;
       alu_in2 = 32'h00000000;
       if (delay == 'h0) begin
@@ -166,10 +184,8 @@ begin
           alu_in1 = 32'h00000000;
           alu_in2 = 32'h00000000;
           int_func = 3'b000;
-          control = 4'b0000;
-          reg_write_addr = 5'h00;
+          control = 7'b0000000;
           reg_data_in = 32'h00000000;
-          reg_write = REG_WRITE_NONE;
         end
         {MODE_INH, 8'h20}: begin // rts
           state_next = STATE_POP;
@@ -177,16 +193,14 @@ begin
           alu_in1 = reg_data_out1;
           alu_in2 = 'h2;
           int_func = 3'b000;
-          control = 4'b0001;
-          reg_write_addr = REG_SP;
+          control = 7'b1000001;
           reg_data_in = alu_out;
-          reg_write = REG_WRITE_DW;
           addrsel_next = ADDR_MAR;
           mar_next = reg_data_out1;
         end
         {MODE_INH, 8'h40}: begin // cmp
           alu_func = 'h3; // sub
-          control = 4'b1000;
+          control = 7'b0001000;
           alu_in1 = reg_data_out1;
           alu_in2 = reg_data_out2;
           if (delay == 'h0) begin
@@ -200,34 +214,28 @@ begin
           end
         end
         {MODE_INH, 8'h60}: begin // inc rA
-          reg_write_addr = ir_ra;
           alu_func = 'h2; // add
-          control = 4'b0000;
+          control = 7'b1010000;
           alu_in1 = reg_data_out1;
           alu_in2 = 'h1;
           reg_data_in = alu_out;
-          reg_write = REG_WRITE_DW;
           state_next = STATE_FETCHIR1;
         end
         {MODE_INH, 8'h80}: begin // dec rA
-          reg_write_addr = ir_ra;
           alu_func = 'h3; // sub
-          control = 4'b0000;
+          control = 7'b1010000;
           alu_in1 = reg_data_out1;
           alu_in2 = 'h1;
           reg_data_in = alu_out;
-          reg_write = REG_WRITE_DW;
           state_next = STATE_FETCHIR1;
         end
         {MODE_INH, 8'ha0}: begin // push rA
           state_next = STATE_PUSH;
-          control = 4'b0001;
+          control = 7'b1000001;
           alu_func = 'h3; // sub
           alu_in1 = reg_data_out1;
           alu_in2 = 'h2;
           reg_data_in = alu_out;
-          reg_write = REG_WRITE_DW;
-          reg_write_addr = REG_SP;
           mar_next = alu_out;
           addrsel_next = ADDR_MAR;
           mdr_next = reg_data_out2;
@@ -236,28 +244,27 @@ begin
         end
         {MODE_INH, 8'hc0}: begin // pop rA
           state_next = STATE_POP;
-          control = 4'b0001;
+          control = 7'b1000001;
           alu_func = 'h2; // add
           alu_in1 = reg_data_out1;
           alu_in2 = 'h2;
           reg_data_in = alu_out;
-          reg_write = REG_WRITE_DW;
-          reg_write_addr = REG_SP;
           addrsel_next = ADDR_MAR;
           mar_next = reg_data_out1;
         end
         {MODE_INH, 8'he0}: begin // mov
           state_next = STATE_FETCHIR1;
-          reg_write_addr = ir_ra;
-          control = 4'b1000;
+          control = 7'b1011000;
           reg_data_in = reg_data_out2;
-          reg_write = REG_WRITE_DW;
         end
-        default: state_next = STATE_FETCHIR2;
+        default: begin
+          state_next = STATE_FETCHIR2;
+          control = 7'b0000000;
+        end
       endcase
     end
     STATE_FETCHIR2: begin
-      control = 4'b0000;
+      control = 7'b0000000;
       if (delay == 'h0) begin
         addrsel_next = ADDR_PC;
         write_out_next = 1'b0;
@@ -287,112 +294,102 @@ begin
       casex ({ir_mode, ir_op})
         {MODE_INH2, 8'h02}: begin // com
           state_next = STATE_FETCHIR1;
-          control = 4'b1000;
-          reg_write_addr = ir_ra;
+          control = 7'b1011000;
           reg_data_in = ~reg_data_out2;
-          reg_write = REG_WRITE_DW;
         end
         {MODE_INH2, 8'h22}: begin // neg
           state_next = STATE_FETCHIR1;
           alu_func = 'h3; // sub
-          reg_write_addr = ir_ra;
-          control = 4'b0010;
+          control = 7'b1010010;
           alu_in1 = 'h0;
           alu_in2 = reg_data_out1;
           reg_data_in = alu_out;
-          reg_write = REG_WRITE_DW;
         end
         {MODE_IMM2, 8'h10}: begin // ldis
-          control = 4'b0000;
-          reg_write_addr = ir_ra;
+          control = 7'b1010000;
           reg_data_in = mdr;
-          reg_write = REG_WRITE_DW;
           state_next = STATE_FETCHIR1;
         end
         {MODE_IMM2, 8'h11}: begin // ldiu
-          control = 4'b0000;
-          reg_write_addr = ir_ra;
+          control = 7'b1010000;
           reg_data_in = mdr & 32'h0000ffff;
-          reg_write = REG_WRITE_DW;
           state_next = STATE_FETCHIR1;
         end
         {MODE_IMM2, 8'h00}: begin // bra
           state_next = STATE_FETCHIR1;
-          control = 4'b0000;
+          control = 7'b0000000;
           pc_next = { 1'b0, pc } + mar;
         end
         {MODE_IMM2, 8'h01}: begin // beq
           state_next = STATE_FETCHIR1;
-          control = 4'b0000;
+          control = 7'b0000000;
           if (zero)
             pc_next = { 1'b0, pc } + mar;
         end
         {MODE_IMM2, 8'h02}: begin // bne
           state_next = STATE_FETCHIR1;
-          control = 4'b0000;
+          control = 7'b0000000;
           if (~zero)
             pc_next = { 1'b0, pc } + mar;        
         end
         {MODE_IMM2, 8'h03}: begin // bgtu
           state_next = STATE_FETCHIR1;
-          control = 4'b0000;
+          control = 7'b0000000;
           if (~(zero | carry))
             pc_next = { 1'b0, pc } + mar;
         end
         {MODE_IMM2, 8'h04}: begin // bgt
           state_next = STATE_FETCHIR1;
-          control = 4'b0000;
+          control = 7'b0000000;
           if (~(zero | (negative ^ overflow)))
             pc_next = { 1'b0, pc } + mar;
         end
         {MODE_IMM2, 8'h05}: begin // bge
           state_next = STATE_FETCHIR1;
-          control = 4'b0000;
+          control = 7'b0000000;
           if (~(negative ^ overflow))
             pc_next = { 1'b0, pc } + mar;
         end
         {MODE_IMM2, 8'h06}: begin // ble
           state_next = STATE_FETCHIR1;
-          control = 4'b0000;
+          control = 7'b0000000;
           if (zero | (negative ^ overflow))
             pc_next = { 1'b0, pc } + mar;
         end
         {MODE_IMM2, 8'h07}: begin // blt
           state_next = STATE_FETCHIR1;
-          control = 4'b0000;
+          control = 7'b0000000;
           if (negative ^ overflow)
             pc_next = { 1'b0, pc } + mar;
         end
         {MODE_IMM2, 8'h08}: begin // bgeu
           state_next = STATE_FETCHIR1;
-          control = 4'b0000;
+          control = 7'b0000000;
           if (~carry)
             pc_next = { 1'b0, pc } + mar;
         end
         {MODE_IMM2, 8'h09}: begin // bltu
           state_next = STATE_FETCHIR1;
-          control = 4'b0000;
+          control = 7'b0000000;
           if (carry)
             pc_next = { 1'b0, pc } + mar;
         end
         {MODE_IMM2, 8'h0a}: begin // bleu
           state_next = STATE_FETCHIR1;
-          control = 4'b0000;
+          control = 7'b0000000;
           if (carry | zero)
             pc_next = { 1'b0, pc } + mar;
         end
         {MODE_IMM2, 8'h0b}: begin // brn
           state_next = STATE_FETCHIR1;
-          control = 4'b0000;
+          control = 7'b0000000;
         end
         {MODE_REG, 8'h0x}: begin // alu rA <= rB + rC
           alu_func = ir_op[3:0];
-          reg_write_addr = ir_ra;
-          control = 4'b0110;
+          control = 7'b1010110;
           alu_in1 = reg_data_out1;
           alu_in2 = reg_data_out2;
           reg_data_in = alu_out;
-          reg_write = REG_WRITE_DW;
           state_next = STATE_FETCHIR1;
         end
         {MODE_REG, 8'h2x}: begin // [un]signed rA <= rB * / % rC
@@ -405,23 +402,23 @@ begin
             'h2d: int_func = 'b110;
             default: int_func = 'b000;
           endcase
-          control = 4'b0110;
           divmul2_next = reg_data_out2;
           if (delay == 'h0) begin
+            control = 7'b0000110;
             delay_next = 'h6;
           end else begin
+            control = 7'b0000110;
             delay_next = delay - 1'b1;
             if (delay == 'h1) begin
-              reg_write_addr = ir_ra;
+              control = 7'b1010110;
               reg_data_in = int_out;
-              reg_write = REG_WRITE_DW;
               state_next = STATE_FETCHIR1;
             end
           end
         end
         {MODE_REGIND, 8'h00}: begin // st.l
             state_next = STATE_STORE;
-            control = 4'b1000;
+            control = 7'b0001000;
             alu_in1 = reg_data_out2;
             alu_in2 = mar;
             alu_func = 'h2; // add     
@@ -433,7 +430,7 @@ begin
         end
         {MODE_REGIND, 8'h01}: begin // ld.l
             state_next = STATE_LOAD;
-            control = 4'b1000;
+            control = 7'b0001000;
             alu_in1 = reg_data_out2;
             alu_in2 = mar;
             alu_func = 'h2; // add
@@ -442,7 +439,7 @@ begin
         end
         {MODE_REGIND, 8'h02}: begin // st
             state_next = STATE_STORE;
-            control = 4'b1000;
+            control = 7'b0001000;
             alu_in1 = reg_data_out2;
             alu_in2 = mar;
             alu_func = 'h2; // add
@@ -454,7 +451,7 @@ begin
         end
         {MODE_REGIND, 8'h03}: begin // ld
             state_next = STATE_LOAD;
-            control = 4'b1000;
+            control = 7'b0001000;
             alu_in1 = reg_data_out2;
             alu_in2 = mar;
             alu_func = 'h2; // add      
@@ -463,7 +460,7 @@ begin
         end
         {MODE_REGIND, 8'h04}: begin // st.b
             state_next = STATE_STORE;
-            control = 4'b1000;
+            control = 7'b0001000;
             alu_in1 = reg_data_out2;
             alu_in2 = mar;
             alu_func = 'h2; // add      
@@ -479,7 +476,7 @@ begin
         end
         {MODE_REGIND, 8'h05}: begin // ld.b
             state_next = STATE_LOAD;
-            control = 4'b1000;
+            control = 7'b0001000;
             alu_in1 = reg_data_out2;
             alu_in2 = mar;
             alu_func = 'h2; // add      
@@ -489,17 +486,15 @@ begin
         end
         {MODE_REGIND, 8'h0a}: begin // lda
           state_next = STATE_FETCHIR1;
-          control = 4'b1000;
-          reg_write_addr = ir_ra;
+          control = 7'b1011000;
           alu_in1 = reg_data_out2;
           alu_in2 = mar;
           alu_func = 'h2; // add
           reg_data_in = alu_out;
-          reg_write = REG_WRITE_DW;
         end
         {MODE_REGIND, 8'ha0}: begin // jmp
           state_next = STATE_FETCHIR1;
-          control = 4'b1000;
+          control = 7'b0001000;
           alu_in1 = reg_data_out2;
           alu_in2 = mar;
           alu_func = 'h2; // add
@@ -507,15 +502,18 @@ begin
         end
         {MODE_REGIND, 8'ha1}: begin // jsr
           state_next = STATE_FAULT;
-          control = 4'b0000;
+          control = 7'b0000000;
           // Can't really do two ALU ops at once, both the relative computation of the new PC
           // and the setup for the SP and PUSH op.
         end
-        default: state_next = STATE_FETCHIR3;
+        default: begin
+          state_next = STATE_FETCHIR3;
+          control = 7'b0000000;
+        end
       endcase
     end
     STATE_FETCHIR3: begin
-      control = 4'b0000;
+      control = 7'b0000000;
       if (delay == 'h0) begin
         addrsel_next = ADDR_PC;
         write_out_next = 1'b0;
@@ -536,12 +534,10 @@ begin
       casex ({ir_mode, ir_op})
         {MODE_IMM3, 8'h0x}: begin // alu rA <= rB + 0xabcd
           alu_func = ir_op[3:0];
-          reg_write_addr = ir_ra;
-          control = 4'b1000;
+          control = 7'b1011000;
           alu_in1 = reg_data_out2;
           alu_in2 = { {16{mdr[15]}}, mdr[15:0] };
           reg_data_in = alu_out;
-          reg_write = REG_WRITE_DW;
           state_next = STATE_FETCHIR1;
         end
         {MODE_IMM3, 8'h2x}: begin // [un]signed rA <= rB * / % 0xabcd
@@ -554,30 +550,28 @@ begin
             'h2d: int_func = 'b110;
             default: int_func = 'b000;
           endcase
-          control = 4'b0010;
           divmul2_next = { {16{mdr[15]}}, mdr[15:0] };
           if (delay == 'h0) begin
+            control = 7'b0000010;
             delay_next = 'h6;
           end else begin
+            control = 7'b0000010;
             delay_next = delay - 1'b1;
             if (delay == 'h1) begin
-              reg_write_addr = ir_ra;
+              control = 7'b1010010;
               reg_data_in = int_out;
-              reg_write = REG_WRITE_DW;
               state_next = STATE_FETCHIR1;
             end
           end
         end
         {MODE_IMM3a, 8'h00}: begin // ldi
           state_next = STATE_FETCHIR1;
-          control = 4'b0000;
-          reg_write_addr = ir_ra;
+          control = 7'b1010000;
           reg_data_in = mdr;
-          reg_write = REG_WRITE_DW;        
         end
         {MODE_DIR, 8'h00}: begin // std.l
           state_next = STATE_STORE;
-          control = 4'b0000;
+          control = 7'b0000000;
           mdr_next = reg_data_out1;
           mdrsel_next = MDR_HIGH;
           addrsel_next = ADDR_MAR;
@@ -586,11 +580,11 @@ begin
         {MODE_DIR, 8'h01}: begin // ldd.l
           state_next = STATE_LOAD;
           addrsel_next = ADDR_MAR;
-          control = 4'b0000;
+          control = 7'b0000000;
         end
         {MODE_DIR, 8'h02}: begin // std
           state_next = STATE_STORE;
-          control = 4'b0000;
+          control = 7'b0000000;
           mdr_next = reg_data_out1;
           mdrsel_next = MDR_LOW;
           addrsel_next = ADDR_MAR;
@@ -598,12 +592,12 @@ begin
         end
         {MODE_DIR, 8'h03}: begin // ldd
           state_next = STATE_LOAD;
-          control = 4'b0000;
+          control = 7'b0000000;
           addrsel_next = ADDR_MAR;
         end
         {MODE_DIR, 8'h04}: begin // std.b
           state_next = STATE_STORE;
-          control = 4'b0000;
+          control = 7'b0000000;
           if (alu_out[0])
             mdr_next[7:0] = reg_data_out1[7:0];
           else
@@ -615,23 +609,21 @@ begin
         end
         {MODE_DIR, 8'h05}: begin // ldd.b
           state_next = STATE_LOAD;
-          control = 4'b0000;
+          control = 7'b0000000;
           addrsel_next = ADDR_MAR;
         end
         {MODE_DIR, 8'h80}: begin // jmpd
           state_next = STATE_FETCHIR1;
-          control = 4'b0000;
+          control = 7'b0000000;
           pc_next = { 1'b0, mar};
         end
         {MODE_DIR, 8'h81}: begin // jsrd
           state_next = STATE_PUSH;
-          control = 4'b0001;
+          control = 7'b1000001;
           alu_func = 'h3; // sub
           alu_in1 = reg_data_out1;
           alu_in2 = 'h2;
           reg_data_in = alu_out;
-          reg_write = REG_WRITE_DW;
-          reg_write_addr = REG_SP;
           mar_next = alu_out;
           mdr_next = pc;
           pc_next = mar;
@@ -640,13 +632,13 @@ begin
           write_out_next = 1'b1;        
         end
         default: begin
-          control = 4'b0000;
+          control = 7'b0000000;
           state_next = STATE_FAULT;
         end
       endcase 
     end
     STATE_STORE: begin
-      control = 4'b0000;
+      control = 7'b0000000;
       write_out_next = 1'b0;
       bytectl_next = 1'b0;
       mdrsel_next = MDR_LOW;
@@ -660,119 +652,116 @@ begin
       endcase
     end
     STATE_STORE2: begin
-      control = 4'b0000;
+      control = 7'b0000000;
       state_next = STATE_STORE3;
       mar_next = mar + 'h2;
       write_out_next = 1'b1;
     end
     STATE_STORE3: begin
-      control = 4'b0000;
+      control = 7'b0000000;
       state_next = STATE_FETCHIR1;
       addrsel_next = ADDR_PC;
       write_out_next = 1'b0;
     end
     STATE_LOAD: begin
       state_next = STATE_LOAD2;
-      control = 4'b0000;
+      control = 7'b0000000;
     end
     STATE_LOAD2: begin
-      control = 4'b0000;
-      reg_write_addr = ir_ra;
       case (ir_op[3:1])
         'h0: begin
           state_next = STATE_LOAD3;
+          control = 7'b1010000;
           reg_data_in = { data_in, 16'h0000 };
-          reg_write = REG_WRITE_DW;
           mar_next = mar + 'h2;
         end
         'h1: begin
           state_next = STATE_FETCHIR1;
+          control = 7'b1010000;
           addrsel_next = ADDR_PC;
           reg_data_in = {16'h0000, data_in};
-          reg_write = REG_WRITE_DW;
         end
         'h2: begin
           state_next = STATE_FETCHIR1;
+          control = 7'b1010000;
           addrsel_next = ADDR_PC;
           reg_data_in = { 24'h000000, (mar[0] ? data_in[7:0] : data_in[15:8]) };
-          reg_write = REG_WRITE_DW;
         end 
-        default: state_next = STATE_FAULT;
+        default: begin
+          state_next = STATE_FAULT;
+          control = 7'b0000000;
+        end
       endcase
     end
     STATE_LOAD3: begin
       state_next = STATE_LOAD4;
-      control = 4'b0000;
+      control = 7'b0000000;
     end
     STATE_LOAD4: begin
       state_next = STATE_FETCHIR1;
       addrsel_next = ADDR_PC;
-      control = 4'b0000;
-      reg_write_addr = ir_ra;
+      control = 7'b1100000;
       reg_data_in[15:0] = data_in;
-      reg_write = REG_WRITE_W0;
     end
     STATE_POP: begin
       state_next = STATE_POP2;
-      control = 4'b0000;
+      control = 7'b0000000;
     end
     STATE_POP2: begin
       state_next = STATE_POP3;
-      control = 4'b0001;
       mar_next = reg_data_out1;
       case ({ir_mode, ir_op})
         {MODE_INH, 8'hc0}: begin // pop
-          reg_write_addr = ir_ra;
+          control = 7'b1110001;
           reg_data_in[31:16] = data_in;
-          reg_write = REG_WRITE_W1;
         end
-        default: pc_next[31:16] = data_in;
+        default: begin
+          control = 7'b0000001;
+          pc_next[31:16] = data_in;
+        end
       endcase
     end
     STATE_POP3: begin
       state_next = STATE_POP4;
-      control = 4'b0001;
+      control = 7'b1000001;
       alu_func = 'h2; // add
       alu_in1 = reg_data_out1;
       alu_in2 = 'h2;
       reg_data_in = alu_out;
-      reg_write = REG_WRITE_DW;
-      reg_write_addr = REG_SP;
     end
     STATE_POP4: begin
       state_next = STATE_FETCHIR1;
-      control = 4'b0000;
       case ({ir_mode, ir_op})
         {MODE_INH, 8'hc0}: begin // pop
-          reg_write_addr = ir_ra;
+          control = 7'b1100000;
           reg_data_in[15:0] = data_in;
-          reg_write = REG_WRITE_W0;
         end
-        default: pc_next[15:0] = data_in;
+        default: begin
+          control = 7'b0000000; 
+          pc_next[15:0] = data_in;
+        end
       endcase
       addrsel_next = ADDR_PC;      
     end
     STATE_PUSH: begin
       state_next = STATE_PUSH2;
-      control = 4'b0000;
+      control = 7'b0000000;
       write_out_next = 1'b0;
     end
     STATE_PUSH2: begin
       state_next = STATE_PUSH3;
       write_out_next = 1'b1;
-      control = 4'b0001;
+      control = 7'b1000001;
       alu_func = 'h3; // sub
       alu_in1 = reg_data_out1;
       alu_in2 = 'h2;
       reg_data_in = alu_out;
-      reg_write = REG_WRITE_DW;
-      reg_write_addr = REG_SP;
       mar_next = alu_out;
       mdrsel_next = MDR_HIGH;
     end
     STATE_PUSH3: begin
       state_next = STATE_FETCHIR1;
-      control = 4'b0000;
+      control = 7'b0000000;
       write_out_next = 1'b0;
       addrsel_next = ADDR_PC;
     end
