@@ -261,23 +261,20 @@ begin
         end
         {MODE_INH2, 8'h22}: begin // neg
           state_next = STATE_FETCHIR1;
-          alu_func = 'h3; // sub
           reg_write_addr = ir_ra;
           reg_read_addr1 = ir_rb;
-          alu_in1 = 'h0;
-          alu_in2 = reg_data_out1;
-          reg_data_in = alu_out;
+          reg_data_in = -reg_data_out1;
           reg_write = REG_WRITE_DW;
         end
         {MODE_IMM2, 8'h10}: begin // ldis
           reg_write_addr = ir_ra;
-          reg_data_in = mdr;
+          reg_data_in = mar;
           reg_write = REG_WRITE_DW;
           state_next = STATE_FETCHIR1;
         end
         {MODE_IMM2, 8'h11}: begin // ldiu
           reg_write_addr = ir_ra;
-          reg_data_in = mdr & 32'h0000ffff;
+          reg_data_in = mdr;
           reg_write = REG_WRITE_DW;
           state_next = STATE_FETCHIR1;
         end
@@ -629,7 +626,7 @@ begin
         'h1: begin
           state_next = STATE_FETCHIR1;
           addrsel_next = ADDR_PC;
-          reg_data_in = {16'h0000, data_in};
+          reg_data_in = { 16'h0000, data_in };
           reg_write = REG_WRITE_DW;
         end
         'h2: begin
@@ -646,7 +643,7 @@ begin
       state_next = STATE_FETCHIR1;
       addrsel_next = ADDR_PC;
       reg_write_addr = ir_ra;
-      reg_data_in[15:0] = data_in;
+      reg_data_in = { 16'h0000, data_in };
       reg_write = REG_WRITE_W0;
     end
     STATE_POP: state_next = STATE_POP2;
@@ -657,7 +654,7 @@ begin
       case ({ir_mode, ir_op})
         {MODE_INH, 8'hc0}: begin // pop
           reg_write_addr = ir_ra;
-          reg_data_in[31:16] = data_in;
+          reg_data_in = { data_in, 16'h0000 };
           reg_write = REG_WRITE_W1;
         end
         default: pc_next[31:16] = data_in;
@@ -678,7 +675,7 @@ begin
       case ({ir_mode, ir_op})
         {MODE_INH, 8'hc0}: begin // pop
           reg_write_addr = ir_ra;
-          reg_data_in[15:0] = data_in;
+          reg_data_in = { 16'h0000, data_in };
           reg_write = REG_WRITE_W0;
         end
         default: pc_next[15:0] = data_in;
