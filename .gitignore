@@ -8,6 +8,7 @@
 output/
 Debug/
 output_files/
+greybox_tmp/
 *.bak
 *~
 db/

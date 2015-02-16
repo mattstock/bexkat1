@@ -1,9 +1,10 @@
-module mem_select(address, flash, dram, sram, led_matrix, monitor, kbd, encoder, serial0, serial1, serial2, switch, spi, invalid);
+module mem_select(address, flash, dram, sram0, sram1, led_matrix, monitor, kbd, encoder, serial0, serial1, serial2, switch, spi, invalid);
 
 input [31:0] address;
 output flash;
 output dram;
-output sram;
+output sram0;
+output sram1;
 output monitor;
 output led_matrix;
 output kbd;
@@ -26,7 +27,8 @@ assign serial1 =     (address >= 'hff400020 && address <= 'hff40002f);
 assign serial0 =     (address >= 'hff400010 && address <= 'hff40001f);
 assign encoder =     (address >= 'hff400000 && address <= 'hff40000f);
 assign flash =       (address >= 'hfe000000 && address <= 'hfe3fffff);
-assign dram =        (address >= 'h00800000 && address <= 'h00ffffff);
-assign sram =        (address >= 'h00000000 && address <= 'h0007ffff);
-assign invalid = ~|{monitor, led_matrix, kbd, serial0, serial1, serial2, spi, encoder, flash, dram, sram, switch};
+assign dram = 1'b0;
+assign sram1 =       (address >= 'h00080000 && address <= 'h000fffff);
+assign sram0 =       (address >= 'h00000000 && address <= 'h0007ffff);
+assign invalid = ~|{monitor, led_matrix, kbd, serial0, serial1, serial2, spi, encoder, flash, dram, sram0, sram1, switch};
 endmodule

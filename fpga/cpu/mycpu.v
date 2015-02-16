@@ -1,4 +1,4 @@
-module mycpu(clk, rst_n, addrbus, data_in, data_out, write_out, bytectl, ccr);
+module mycpu(clk, rst_n, addrbus, data_in, data_out, write_out, bytectl, ccr, fault);
 
 input clk;
 input rst_n;
@@ -8,6 +8,7 @@ output [15:0] data_out;
 output write_out;
 output bytectl;
 output [3:0] ccr;
+output fault;
 
 reg [31:0] pc;
 reg [32:0] pc_next;
@@ -30,7 +31,7 @@ reg [2:0] int_func;
 reg [4:0] reg_read_addr1, reg_read_addr2, reg_write_addr;
 reg [1:0] reg_write;
 
-
+assign fault = (state == STATE_FAULT);
 assign data_out = (mdrsel ? mdr[15:0] : mdr[31:16]);
 assign addrbus = (addrsel ? mar : pc);
 
@@ -123,7 +124,7 @@ begin
         addrsel_next = ADDR_PC;
         write_out_next = 1'b0;
         bytectl_next = 1'b0;
-        delay_next = 'h3;
+        delay_next = 'h4;
       end else begin
         delay_next = delay - 3'b1;
         if (delay == 'h1) begin
@@ -134,9 +135,9 @@ begin
       end      
     end
     STATE_EVALIR1: begin
-      case ({ir_mode, ir_op})
-        {MODE_INH, 8'h00}: state_next = STATE_FETCHIR1; // nop
-        {MODE_INH, 8'h20}: begin // rts
+      casex ({ir_mode, ir_op})
+        {MODE_INH, 8'h0x}: state_next = STATE_FETCHIR1; // nop
+        {MODE_INH, 8'h2x}: begin // rts
           state_next = STATE_POP;
           reg_read_addr1 = REG_SP;
           reg_write = REG_WRITE_DW;
@@ -144,7 +145,7 @@ begin
           addrsel_next = ADDR_MAR;
           mar_next = reg_data_out1;
         end
-        {MODE_INH, 8'h40}: begin // cmp
+        {MODE_INH, 8'h4x}: begin // cmp
           alu_func = 'h3; // sub
           alu_in2 = reg_data_out2;
           if (delay == 'h0) begin
@@ -157,18 +158,18 @@ begin
             end
           end
         end
-        {MODE_INH, 8'h60}: begin // inc rA
+        {MODE_INH, 8'h6x}: begin // inc rA
           alu_in2 = 'h1;
           reg_write = REG_WRITE_DW;
           state_next = STATE_FETCHIR1;
         end
-        {MODE_INH, 8'h80}: begin // dec rA
+        {MODE_INH, 8'h8x}: begin // dec rA
           alu_func = 'h3; // sub
           alu_in2 = 'h1;
           reg_write = REG_WRITE_DW;
           state_next = STATE_FETCHIR1;
         end
-        {MODE_INH, 8'ha0}: begin // push rA
+        {MODE_INH, 8'hax}: begin // push rA
           state_next = STATE_PUSH;
           reg_read_addr1 = REG_SP;
           alu_func = 'h3; // sub
@@ -181,7 +182,7 @@ begin
           mdrsel_next = MDR_LOW;
           write_out_next = 1'b1;
         end
-        {MODE_INH, 8'hc0}: begin // pop rA
+        {MODE_INH, 8'hcx}: begin // pop rA
           state_next = STATE_POP;
           reg_read_addr1 = REG_SP;
           reg_write = REG_WRITE_DW;
@@ -189,7 +190,7 @@ begin
           addrsel_next = ADDR_MAR;
           mar_next = reg_data_out1;
         end
-        {MODE_INH, 8'he0}: begin // mov
+        {MODE_INH, 8'hex}: begin // mov
           state_next = STATE_FETCHIR1;
           reg_read_addr1 = ir_rb;
           reg_data_in = reg_data_out1;
@@ -202,7 +203,7 @@ begin
       if (delay == 'h0) begin
         addrsel_next = ADDR_PC;
         write_out_next = 1'b0;
-        delay_next = 'h3;
+        delay_next = 'h4;
       end else begin
         delay_next = delay - 3'b1;
         if (delay == 'h1) begin
@@ -226,86 +227,86 @@ begin
     end
     STATE_EVALIR2: begin
       casex ({ir_mode, ir_op})
-        {MODE_INH2, 8'h02}: begin // com
+        {MODE_INH2, 8'bxx0xxx1x}: begin // com
           state_next = STATE_FETCHIR1;
           reg_read_addr1 = ir_rb;
           reg_data_in = ~reg_data_out1;
           reg_write = REG_WRITE_DW;
         end
-        {MODE_INH2, 8'h22}: begin // neg
+        {MODE_INH2, 8'bxx1xxx1x}: begin // neg
           state_next = STATE_FETCHIR1;
           reg_read_addr1 = ir_rb;
           reg_data_in = -reg_data_out1;
           reg_write = REG_WRITE_DW;
         end
-        {MODE_IMM2, 8'h10}: begin // ldis
+        {MODE_IMM2, 8'bxxx1xxx0}: begin // ldis
           reg_data_in = mar;
           reg_write = REG_WRITE_DW;
           state_next = STATE_FETCHIR1;
         end
-        {MODE_IMM2, 8'h11}: begin // ldiu
+        {MODE_IMM2, 8'bxxx1xxx1}: begin // ldiu
           reg_data_in = mdr;
           reg_write = REG_WRITE_DW;
           state_next = STATE_FETCHIR1;
         end
-        {MODE_IMM2, 8'h00}: begin // bra
+        {MODE_IMM2, 8'bxxx00000}: begin // bra
           state_next = STATE_FETCHIR1;
           pc_next = { 1'b0, pc } + mar;
         end
-        {MODE_IMM2, 8'h01}: begin // beq
+        {MODE_IMM2, 8'bxxx00001}: begin // beq
           state_next = STATE_FETCHIR1;
           if (zero)
             pc_next = { 1'b0, pc } + mar;
         end
-        {MODE_IMM2, 8'h02}: begin // bne
+        {MODE_IMM2, 8'bxxx00010}: begin // bne
           state_next = STATE_FETCHIR1;
           if (~zero)
             pc_next = { 1'b0, pc } + mar;        
         end
-        {MODE_IMM2, 8'h03}: begin // bgtu
+        {MODE_IMM2, 8'bxxx00011}: begin // bgtu
           state_next = STATE_FETCHIR1;
           if (~(zero | carry))
             pc_next = { 1'b0, pc } + mar;
         end
-        {MODE_IMM2, 8'h04}: begin // bgt
+        {MODE_IMM2, 8'bxxx00100}: begin // bgt
           state_next = STATE_FETCHIR1;
           if (~(zero | (negative ^ overflow)))
             pc_next = { 1'b0, pc } + mar;
         end
-        {MODE_IMM2, 8'h05}: begin // bge
+        {MODE_IMM2, 8'bxxx00101}: begin // bge
           state_next = STATE_FETCHIR1;
           if (~(negative ^ overflow))
             pc_next = { 1'b0, pc } + mar;
         end
-        {MODE_IMM2, 8'h06}: begin // ble
+        {MODE_IMM2, 8'bxxx00110}: begin // ble
           state_next = STATE_FETCHIR1;
           if (zero | (negative ^ overflow))
             pc_next = { 1'b0, pc } + mar;
         end
-        {MODE_IMM2, 8'h07}: begin // blt
+        {MODE_IMM2, 8'bxxx00111}: begin // blt
           state_next = STATE_FETCHIR1;
           if (negative ^ overflow)
             pc_next = { 1'b0, pc } + mar;
         end
-        {MODE_IMM2, 8'h08}: begin // bgeu
+        {MODE_IMM2, 8'bxxx01000}: begin // bgeu
           state_next = STATE_FETCHIR1;
           if (~carry)
             pc_next = { 1'b0, pc } + mar;
         end
-        {MODE_IMM2, 8'h09}: begin // bltu
+        {MODE_IMM2, 8'bxxx01001}: begin // bltu
           state_next = STATE_FETCHIR1;
           if (carry)
             pc_next = { 1'b0, pc } + mar;
         end
-        {MODE_IMM2, 8'h0a}: begin // bleu
+        {MODE_IMM2, 8'bxxx01010}: begin // bleu
           state_next = STATE_FETCHIR1;
           if (carry | zero)
             pc_next = { 1'b0, pc } + mar;
         end
-        {MODE_IMM2, 8'h0b}: begin // brn
+        {MODE_IMM2, 8'bxxx01011}: begin // brn
           state_next = STATE_FETCHIR1;
         end
-        {MODE_REG, 8'h0x}: begin // alu rA <= rB + rC
+        {MODE_REG, 8'bxx0xxxxx}: begin // alu rA <= rB + rC
           alu_func = ir_op[3:0];
           reg_read_addr1 = ir_rb;
           reg_read_addr2 = ir_rc;
@@ -313,7 +314,7 @@ begin
           reg_write = REG_WRITE_DW;
           state_next = STATE_FETCHIR1;
         end
-        {MODE_REG, 8'h2x}: begin // [un]signed rA <= rB * / % rC
+        {MODE_REG, 8'bxx1xxxxx}: begin // [un]signed rA <= rB * / % rC
           case (ir_op)
             'h29: int_func = 'b001;
             'h2a: int_func = 'b010;
@@ -419,7 +420,7 @@ begin
       if (delay == 'h0) begin
         addrsel_next = ADDR_PC;
         write_out_next = 1'b0;
-        delay_next = 'h3;
+        delay_next = 'h4;
       end else begin
         delay_next = delay - 3'b1;
         if (delay == 'h1) begin
