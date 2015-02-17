@@ -1,7 +1,7 @@
-module led_matrix(clk, rst_n, rgb_a, rgb_b, rgb_c, rgb0, rgb1, rgb_stb, rgb_clk, oe_n, data_in, data_out, address, write);
+module led_matrix(csi_clk, rsi_reset_n, rgb_a, rgb_b, rgb_c, rgb0, rgb1, rgb_stb, rgb_clk, oe_n, data_in, data_out, address, write);
 
-input clk;
-input rst_n;
+input csi_clk;
+input rsi_reset_n;
 output rgb_a, rgb_b, rgb_c;
 output [2:0] rgb0, rgb1;
 output rgb_stb;
@@ -39,9 +39,9 @@ reg [4:0] colpos, colpos_next;
 reg [2:0] state, state_next;
 reg [7:0] delay, delay_next;
 
-always @(posedge clk or negedge rst_n)
+always @(posedge csi_clk or negedge rsi_reset_n)
 begin
-  if (!rst_n) begin
+  if (!rsi_reset_n) begin
     rgb0 <= 1'b0;
     rgb1 <= 1'b0;
     delay <= 8'h00;
@@ -106,5 +106,5 @@ begin
   endcase
 end
 
-matrixmem m0(.clock(clk), .data_b(data_in), .wren_b(write), .address_b(address), .q_b(data_out), .wren_a(1'b0), .q_a(buffer), .address_a({ab, phase[2:0], colpos}));
+matrixmem m0(.clock(csi_clk), .data_b(data_in), .wren_b(write), .address_b(address), .q_b(data_out), .wren_a(1'b0), .q_a(buffer), .address_a({ab, phase[2:0], colpos}));
 endmodule

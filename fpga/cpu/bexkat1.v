@@ -1,23 +1,24 @@
-module mycpu(clk, rst_n, addrbus, data_in, data_out, write_out, bytectl, ccr, fault);
+`timescale 1ns / 1ns
 
-input clk;
-input rst_n;
-output [31:0] addrbus;
-input [15:0] data_in;
-output [15:0] data_out;
-output write_out;
-output bytectl;
-output [3:0] ccr;
-output fault;
+module bexkat1(
+  input csi_clk,
+  input rsi_reset_n,
+  input avm_m0_waitrequest,
+  output [31:0] avm_m0_address,
+  output reg avm_m0_read,
+  input [15:0] avm_m0_readdata,
+  output [15:0] avm_m0_writedata,
+  output reg avm_m0_write,
+  output reg [1:0] avm_m0_byteenable);
 
 reg [31:0] pc;
 reg [32:0] pc_next;
 reg [31:0] mar;
 reg [32:0] mar_next;
-reg [7:0] state, state_next;
+reg [7:0] state, state_next, return, return_next;
 reg [31:0] ir, ir_next;
-reg write_out, write_out_next;
-reg bytectl, bytectl_next;
+reg avm_m0_write_next, avm_m0_read_next;
+reg [1:0] avm_m0_byteenable_next;
 reg [31:0] mdr, mdr_next;
 reg [3:0] ccr, ccr_next;
 reg [7:0] delay, delay_next;
@@ -25,18 +26,18 @@ reg addrsel, addrsel_next;
 reg mdrsel, mdrsel_next;
 reg [31:0] divmul2, divmul2_next;
 
+// combinatorial stuff
 reg [31:0] alu_in2;
 reg [3:0] alu_func;
 reg [2:0] int_func;
 reg [4:0] reg_read_addr1, reg_read_addr2, reg_write_addr;
 reg [1:0] reg_write;
 
-assign fault = (state == STATE_FAULT);
-assign data_out = (mdrsel ? mdr[15:0] : mdr[31:16]);
-assign addrbus = (addrsel ? mar : pc);
+assign avm_m0_writedata = (mdrsel ? mdr[15:0] : mdr[31:16]);
+assign avm_m0_address = (addrsel ? mar : pc);
 
 wire data_access;
-wire [31:0] reg_data_out1, reg_data_out2, reg_data_in;
+reg [31:0] reg_data_out1, reg_data_out2, reg_data_in;
 wire carry, negative, overflow, zero;
 wire alu_carry, alu_negative, alu_overflow, alu_zero;
 wire [31:0] alu_out, fp_out, int_out, cvt_int_out, cvt_fp_out;
@@ -46,7 +47,7 @@ localparam STATE_STORE = 8'h06, STATE_STORE2 = 8'h07, STATE_STORE3 = 8'h08;
 localparam STATE_LOAD = 8'h09, STATE_LOAD2 = 8'h0a, STATE_LOAD3 = 8'h0b, STATE_LOAD4 = 8'h0c, STATE_FAULT = 8'h0d;
 localparam STATE_PUSH = 8'h0f, STATE_PUSH2 = 8'h10, STATE_PUSH3 = 8'h11, STATE_POP = 8'h12, STATE_POP2 = 8'h13, STATE_POP3 = 8'h14, STATE_POP4 = 8'h15;
 
-localparam REG_SP = 5'b11111, REG_FP = 5'b11110;
+localparam REG_SP = 5'b11111;
 localparam MDR_HIGH = 1'b0, MDR_LOW = 1'b1;
 localparam ADDR_PC = 1'b0, ADDR_MAR = 1'b1;
 
@@ -63,9 +64,9 @@ assign {carry, negative, overflow, zero} = ccr;
 
 localparam REG_WRITE_NONE = 2'b00, REG_WRITE_W0 = 2'b01, REG_WRITE_W1 = 2'b10, REG_WRITE_DW = 2'b11;
 
-always @(posedge clk or negedge rst_n)
+always @(posedge csi_clk or negedge rsi_reset_n)
 begin
-  if (!rst_n) begin
+  if (!rsi_reset_n) begin
     pc <= 'hffc00000; // start boot at base of monitor for now
     state <= STATE_FETCHIR1;
     ir <= 'h0000000;
@@ -75,9 +76,11 @@ begin
     mdrsel <= MDR_LOW;
     ccr <= 'h0;
     delay <= 'h0;
-    write_out <= 1'b0;
-    bytectl <= 1'b0;
+    avm_m0_write <= 1'b0;
+    avm_m0_read <= 1'b0;
+    avm_m0_byteenable <= 2'b11;
     divmul2 <= 'h1;
+    return <= STATE_FETCHIR1;
   end else begin
     pc <= pc_next[31:0];
     state <= state_next;
@@ -88,9 +91,11 @@ begin
     addrsel <= addrsel_next;
     mdrsel <= mdrsel_next;
     ccr <= ccr_next;
-    write_out <= write_out_next;
-    bytectl <= bytectl_next;
+    avm_m0_read <= avm_m0_read_next;
+    avm_m0_write <= avm_m0_write_next;
+    avm_m0_byteenable <= avm_m0_byteenable_next;
     divmul2 <= divmul2_next;
+    return <= return_next;
   end
 end
 
@@ -101,13 +106,15 @@ begin
   delay_next = delay;
   ir_next = ir;
   mdr_next = mdr;
-  write_out_next = write_out;
+  avm_m0_write_next = avm_m0_write;
+  avm_m0_read_next = avm_m0_read;
   mar_next = mar;
   addrsel_next = addrsel;
   mdrsel_next = mdrsel;
   ccr_next = ccr;
-  bytectl_next = bytectl;
+  avm_m0_byteenable_next = avm_m0_byteenable;
   divmul2_next = divmul2;
+  return_next = return;
   
   // Control signals we need to deal with
   alu_func = 4'h2; // add is default
@@ -120,19 +127,46 @@ begin
   alu_in2 = 'h2;
   case (state)
     STATE_FETCHIR1: begin
-      if (delay == 'h0) begin
-        addrsel_next = ADDR_PC;
-        write_out_next = 1'b0;
-        bytectl_next = 1'b0;
-        delay_next = 'h4;
-      end else begin
-        delay_next = delay - 3'b1;
-        if (delay == 'h1) begin
-          ir_next = { data_in, 16'h0000 };
-          pc_next = pc + 'h2;
-          state_next = STATE_EVALIR1;
-        end
-      end      
+      state_next = STATE_MEMLOAD1;
+      return_next = STATE_EVALIR1;
+      avm_m0_write_next = 1'b0;
+      avm_m0_read_next = 1'b1;
+      avm_m0_byteenable_next = 2'b11;
+      addrsel_next = ADDR_PC;
+    end
+    STATE_MEMLOAD1: begin
+      if (avm_m0_waitrequest == 1'b0) begin
+        state_next = return;
+        avm_m0_read_next = 1'b0;
+        avm_m0_byteenable_next = 2'b00;
+        case (return)
+          STATE_EVALIR1: begin
+            ir_next = { avm_m0_readdata, 16'h0000 };
+            pc_next = pc + 'h2;
+          end
+          STATE_POP: begin
+            mdr_next[31:16] = avm_m0_readdata;
+            reg_read_addr1 = REG_SP;
+            mar_next = reg_data_out1;
+      reg_write = REG_WRITE_DW;
+      reg_write_addr = REG_SP;
+          end
+          default:
+            state_next = STATE_FAULT;
+        endcase
+      end
+    end
+    STATE_MEMSAVE1: begin
+      if (avm_m0_waitrequest == 1'b0) begin
+        state_next = return;
+        avm_m0_write_next = 1'b0;
+        avm_m0_byteenable_next = 2'b00;
+        case (return)
+          STATE_PUSH: begin
+          end
+          default: state_next = STATE_FAULT;
+        endcase
+      end
     end
     STATE_EVALIR1: begin
       casex ({ir_mode, ir_op})
@@ -170,25 +204,29 @@ begin
           state_next = STATE_FETCHIR1;
         end
         {MODE_INH, 8'hax}: begin // push rA
-          state_next = STATE_PUSH;
+          state_next = STATE_MEMSAVE1;
+          return_next = STATE_PUSH;
+          avm_m0_write_next = 1'b1;
+          avm_m0_read_next = 1'b0;
+          avm_m0_byteenable_next= 2'b11;
+          mar_next = alu_out;
+          mdr_next = reg_data_out2;
+          mdrsel_next = MDR_LOW;
+          addrsel_next = ADDR_MAR;
           reg_read_addr1 = REG_SP;
           alu_func = 'h3; // sub
           reg_write = REG_WRITE_DW;
           reg_write_addr = REG_SP;
-          mar_next = alu_out;
-          addrsel_next = ADDR_MAR;          
           reg_read_addr2 = ir_ra;
-          mdr_next = reg_data_out2;
-          mdrsel_next = MDR_LOW;
-          write_out_next = 1'b1;
         end
         {MODE_INH, 8'hcx}: begin // pop rA
-          state_next = STATE_POP;
-          reg_read_addr1 = REG_SP;
-          reg_write = REG_WRITE_DW;
-          reg_write_addr = REG_SP;
-          addrsel_next = ADDR_MAR;
+          state_next = STATE_MEMLOAD1;
+          return_next = STATE_POP;
+          avm_m0_read_next = 1'b1;
+          avm_m0_byteenable_next = 2'b11;
           mar_next = reg_data_out1;
+          addrset_next = ADDR_MAR;
+          reg_read_addr1 = REG_SP;
         end
         {MODE_INH, 8'hex}: begin // mov
           state_next = STATE_FETCHIR1;
@@ -202,23 +240,23 @@ begin
     STATE_FETCHIR2: begin
       if (delay == 'h0) begin
         addrsel_next = ADDR_PC;
-        write_out_next = 1'b0;
+        write_next = 1'b0;
         delay_next = 'h4;
       end else begin
         delay_next = delay - 3'b1;
         if (delay == 'h1) begin
           case (ir_mode)
             MODE_IMM2  : begin
-              mar_next = { {16{data_in[15]}},data_in };
-              mdr_next = { 16'h0000, data_in };
+              mar_next = { {16{avm_m0_readdata[15]}},avm_m0_readdata };
+              mdr_next = { 16'h0000, avm_m0_readdata };
             end
             MODE_REGIND: begin
-              mar_next = { {21{data_in[10]}}, data_in[10:0] };
-              ir_next[15:0] = data_in;
+              mar_next = { {21{avm_m0_readdata[10]}}, avm_m0_readdata[10:0] };
+              ir_next[15:0] = avm_m0_readdata;
             end
-            MODE_DIR   : mar_next = { 16'h0000, data_in };
-            MODE_IMM3a : mdr_next = { 16'h0000, data_in };
-            default    : ir_next[15:0] = data_in;
+            MODE_DIR   : mar_next = { 16'h0000, avm_m0_readdata };
+            MODE_IMM3a : mdr_next = { 16'h0000, avm_m0_readdata };
+            default    : ir_next[15:0] = avm_m0_readdata;
           endcase
           pc_next = pc + 'h2;
           state_next = STATE_EVALIR2;
@@ -346,7 +384,7 @@ begin
             reg_read_addr2 = ir_ra;
             mdr_next = reg_data_out2;
             mdrsel_next = MDR_HIGH;
-            write_out_next = 1'b1;
+            write_next = 1'b1;
         end
         {MODE_REGIND, 8'h01}: begin // ld.l
             state_next = STATE_LOAD;
@@ -364,7 +402,7 @@ begin
             mdrsel_next = MDR_LOW;
             reg_read_addr2 = ir_ra;
             mdr_next = reg_data_out2;
-            write_out_next = 1'b1;
+            write_next = 1'b1;
         end
         {MODE_REGIND, 8'h03}: begin // ld
             state_next = STATE_LOAD;
@@ -385,8 +423,8 @@ begin
             else
               mdr_next[15:8] = reg_data_out2[7:0];
             mdrsel_next = MDR_LOW;
-            write_out_next = 1'b1;
-            bytectl_next = 1'b1;
+            write_next = 1'b1;
+            byteenable_next = 2'b01;
         end
         {MODE_REGIND, 8'h05}: begin // ld.b
             state_next = STATE_LOAD;
@@ -419,14 +457,14 @@ begin
     STATE_FETCHIR3: begin
       if (delay == 'h0) begin
         addrsel_next = ADDR_PC;
-        write_out_next = 1'b0;
+        write_next = 1'b0;
         delay_next = 'h4;
       end else begin
         delay_next = delay - 3'b1;
         if (delay == 'h1) begin
           case (ir_mode)
-            MODE_DIR: mar_next = { mar[15:0], data_in };
-            default: mdr_next = { mdr[15:0], data_in }; 
+            MODE_DIR: mar_next = { mar[15:0], avm_m0_readdata };
+            default: mdr_next = { mdr[15:0], avm_m0_readdata }; 
           endcase
           pc_next = pc + 'h2;
          state_next = STATE_EVALIR3;
@@ -474,7 +512,7 @@ begin
           mdr_next = reg_data_out1;
           mdrsel_next = MDR_HIGH;
           addrsel_next = ADDR_MAR;
-          write_out_next = 1'b1;
+          write_next = 1'b1;
         end
         {MODE_DIR, 8'h01}: begin // ldd.l
           state_next = STATE_LOAD;
@@ -485,7 +523,7 @@ begin
           mdr_next = reg_data_out1;
           mdrsel_next = MDR_LOW;
           addrsel_next = ADDR_MAR;
-          write_out_next = 1'b1;
+          write_next = 1'b1;
         end
         {MODE_DIR, 8'h03}: begin // ldd
           state_next = STATE_LOAD;
@@ -499,8 +537,8 @@ begin
             mdr_next[15:8] = reg_data_out1[7:0];
           mdrsel_next = MDR_LOW;
           addrsel_next = ADDR_MAR;
-          write_out_next = 1'b1;
-          bytectl_next = 1'b1;
+          write_next = 1'b1;
+          byteenable_next = 2'b01;
         end
         {MODE_DIR, 8'h05}: begin // ldd.b
           state_next = STATE_LOAD;
@@ -521,14 +559,14 @@ begin
           pc_next = mar;
           mdrsel_next = MDR_LOW;
           addrsel_next = ADDR_MAR;          
-          write_out_next = 1'b1;        
+          write_next = 1'b1;        
         end
         default: state_next = STATE_FAULT;
       endcase 
     end
     STATE_STORE: begin
-      write_out_next = 1'b0;
-      bytectl_next = 1'b0;
+      write_next = 1'b0;
+      byteenable_next = 2'b11;
       mdrsel_next = MDR_LOW;
       case (ir_op[3:1])
         'h0: begin
@@ -542,32 +580,32 @@ begin
     STATE_STORE2: begin
       state_next = STATE_STORE3;
       mar_next = mar + 'h2;
-      write_out_next = 1'b1;
+      write_next = 1'b1;
     end
     STATE_STORE3: begin
       state_next = STATE_FETCHIR1;
       addrsel_next = ADDR_PC;
-      write_out_next = 1'b0;
+      write_next = 1'b0;
     end
     STATE_LOAD: state_next = STATE_LOAD2;
     STATE_LOAD2: begin
       case (ir_op[3:1])
         'h0: begin
           state_next = STATE_LOAD3;
-          reg_data_in = { data_in, 16'h0000 };
+          reg_data_in = { avm_m0_readdata, 16'h0000 };
           reg_write = REG_WRITE_DW;
           mar_next = mar + 'h2;
         end
         'h1: begin
           state_next = STATE_FETCHIR1;
           addrsel_next = ADDR_PC;
-          reg_data_in = { 16'h0000, data_in };
+          reg_data_in = { 16'h0000, avm_m0_readdata };
           reg_write = REG_WRITE_DW;
         end
         'h2: begin
           state_next = STATE_FETCHIR1;
           addrsel_next = ADDR_PC;
-          reg_data_in = { 24'h000000, (mar[0] ? data_in[7:0] : data_in[15:8]) };
+          reg_data_in = { 24'h000000, (mar[0] ? avm_m0_readdata[7:0] : avm_m0_readdata[15:8]) };
           reg_write = REG_WRITE_DW;
         end 
         default: state_next = STATE_FAULT;
@@ -577,21 +615,17 @@ begin
     STATE_LOAD4: begin
       state_next = STATE_FETCHIR1;
       addrsel_next = ADDR_PC;
-      reg_data_in = { 16'h0000, data_in };
+      reg_data_in = { 16'h0000, avm_m0_readdata };
       reg_write = REG_WRITE_W0;
     end
-    STATE_POP: state_next = STATE_POP2;
-    STATE_POP2: begin
-      state_next = STATE_POP3;
-      reg_read_addr1 = REG_SP;
+    STATE_POP: begin
+      state_next = STATE_MEMLOAD1;
+      return_next = STATE_POP2;
+      avm_m0_read_next = 1'b1;
+      avm_m0_byteenable_next = 2'b11;
       mar_next = reg_data_out1;
-      case ({ir_mode, ir_op})
-        {MODE_INH, 8'hc0}: begin // pop
-          reg_data_in = { data_in, 16'h0000 };
-          reg_write = REG_WRITE_W1;
-        end
-        default: pc_next[31:16] = data_in;
-      endcase
+      addrset_next = ADDR_MAR;
+      reg_read_addr1 = REG_SP;
     end
     STATE_POP3: begin
       state_next = STATE_POP4;
@@ -603,20 +637,20 @@ begin
       state_next = STATE_FETCHIR1;
       case ({ir_mode, ir_op})
         {MODE_INH, 8'hc0}: begin // pop
-          reg_data_in = { 16'h0000, data_in };
+          reg_data_in = { 16'h0000, avm_m0_readdata };
           reg_write = REG_WRITE_W0;
         end
-        default: pc_next[15:0] = data_in;
+        default: pc_next[15:0] = avm_m0_readdata;
       endcase
       addrsel_next = ADDR_PC;      
     end
     STATE_PUSH: begin
       state_next = STATE_PUSH2;
-      write_out_next = 1'b0;
+      write_next = 1'b0;
     end
     STATE_PUSH2: begin
       state_next = STATE_PUSH3;
-      write_out_next = 1'b1;
+      write_next = 1'b1;
       reg_read_addr1 = REG_SP;
       alu_func = 'h3; // sub
       reg_write = REG_WRITE_DW;
@@ -626,7 +660,7 @@ begin
     end
     STATE_PUSH3: begin
       state_next = STATE_FETCHIR1;
-      write_out_next = 1'b0;
+      write_next = 1'b0;
       addrsel_next = ADDR_PC;
     end
     STATE_FAULT: state_next = STATE_FAULT;
@@ -634,8 +668,8 @@ begin
 end
 
 alu alu0(.in1(reg_data_out1), .in2(alu_in2), .func(alu_func), .out(alu_out), .c_out(alu_carry), .n_out(alu_negative), .v_out(alu_overflow), .z_out(alu_zero));
-intcalc int0(.clock(clk), .func(int_func), .in1(reg_data_out1), .in2(divmul2), .out(int_out));
-registerfile intreg(.clk(clk), .rst_n(rst_n), .read1(reg_read_addr1), .read2(reg_read_addr2), .write_addr(reg_write_addr),
+intcalc int0(.clock(csi_clk), .func(int_func), .in1(reg_data_out1), .in2(divmul2), .out(int_out));
+registerfile intreg(.clk(csi_clk), .rst_n(rsi_reset_n), .read1(reg_read_addr1), .read2(reg_read_addr2), .write_addr(reg_write_addr),
   .write_data(reg_data_in), .write_en(reg_write), .data1(reg_data_out1), .data2(reg_data_out2));
   
 endmodule

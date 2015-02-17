@@ -38,6 +38,5 @@ testbench/
 *.qar
 *.spoc_builder
 *example*
-*.tcl
 *.pin
 
