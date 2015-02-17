@@ -1,16 +1,19 @@
-module led_matrix(csi_clk, rsi_reset_n, rgb_a, rgb_b, rgb_c, rgb0, rgb1, rgb_stb, rgb_clk, oe_n, data_in, data_out, address, write);
-
-input csi_clk;
-input rsi_reset_n;
-output rgb_a, rgb_b, rgb_c;
-output [2:0] rgb0, rgb1;
-output rgb_stb;
-output rgb_clk;
-output oe_n;
-input [15:0] data_in;
-input [9:0] address;
-output [15:0] data_out;
-input write;
+module led_matrix(
+  input csi_clk,
+  input rsi_reset_n,
+  input [15:0] avs_s0_writedata,
+  output [15:0] avs_s0_readdata,
+  input [9:0] avs_s0_address,
+  input avs_s0_write,
+  input avs_s0_read,
+  output rgb_a,
+  output rgb_b,
+  output rgb_c,
+  output reg [2:0] rgb0,
+  output reg [2:0] rgb1,
+  output rgb_stb,
+  output rgb_clk,
+  output oe_n);
 
 wire [2:0] lp = phase[2:0]-1'b1;
 wire r,g,b;
@@ -34,7 +37,7 @@ parameter [7:0] DELAY = 8'h20;
 localparam STATE_IDLE = 3'b000, STATE_READ1 = 3'b001, STATE_READ2 = 3'b010, STATE_CLOCK = 3'b011, STATE_LATCH = 3'b100, STATE_BLANK1 = 3'b101, STATE_BLANK2 = 3'b111;
 
 reg [9:0] phase, phase_next;
-reg [2:0] rgb0, rgb0_next, rgb1, rgb1_next;
+reg [2:0] rgb0_next, rgb1_next;
 reg [4:0] colpos, colpos_next;
 reg [2:0] state, state_next;
 reg [7:0] delay, delay_next;
@@ -106,5 +109,5 @@ begin
   endcase
 end
 
-matrixmem m0(.clock(csi_clk), .data_b(data_in), .wren_b(write), .address_b(address), .q_b(data_out), .wren_a(1'b0), .q_a(buffer), .address_a({ab, phase[2:0], colpos}));
+matrixmem m0(.clock(csi_clk), .data_b(avs_s0_writedata), .wren_b(avs_s0_write), .address_b(avs_s0_address), .q_b(avs_s0_readdata), .wren_a(1'b0), .q_a(buffer), .address_a({ab, phase[2:0], colpos}));
 endmodule

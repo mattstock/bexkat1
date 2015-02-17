@@ -428,18 +428,6 @@ set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[8] -t
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[23] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
 set_global_assignment -name OPTIMIZE_HOLD_TIMING "ALL PATHS"
 set_global_assignment -name OPTIMIZE_MULTI_CORNER_TIMING ON
-set_global_assignment -name QIP_FILE fabirc/synthesis/fabirc.qip
-set_global_assignment -name SDC_FILE soc.sdc
-set_global_assignment -name VERILOG_FILE soc.v
-set_global_assignment -name VERILOG_FILE debounce.v
-set_global_assignment -name VERILOG_FILE led_matrix.v
-set_global_assignment -name VERILOG_FILE quadenc.v
-set_global_assignment -name VERILOG_FILE hexdisp.v
-set_global_assignment -name SIGNALTAP_FILE stp1.stp
-set_global_assignment -name VERILOG_FILE rgb_enc.v
-set_global_assignment -name QIP_FILE matrixmem.qip
-set_global_assignment -name QIP_FILE monitor.qip
-set_global_assignment -name CDF_FILE output_files/soc.cdf
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_clk -to clock_50 -section_id auto_signaltap_0
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[0] -to "fabirc:fabric0|bexkat1:bexkat1000_0|avm_m0_address[0]" -section_id auto_signaltap_0
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[1] -to "fabirc:fabric0|bexkat1:bexkat1000_0|avm_m0_address[10]" -section_id auto_signaltap_0
@@ -1215,5 +1203,14 @@ set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[3] -t
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[4] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[18] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[31] -to auto_signaltap_0|gnd -section_id auto_signaltap_0
+set_global_assignment -name QIP_FILE fabirc/synthesis/fabirc.qip
+set_global_assignment -name SDC_FILE soc.sdc
+set_global_assignment -name VERILOG_FILE soc.v
+set_global_assignment -name VERILOG_FILE debounce.v
+set_global_assignment -name VERILOG_FILE quadenc.v
+set_global_assignment -name VERILOG_FILE hexdisp.v
+set_global_assignment -name SIGNALTAP_FILE stp1.stp
+set_global_assignment -name VERILOG_FILE rgb_enc.v
+set_global_assignment -name CDF_FILE output_files/soc.cdf
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 set_global_assignment -name SLD_FILE db/stp1_auto_stripped.stp

@@ -71,10 +71,6 @@ output lcd_rw;
 output [7:0] lcd_data;
 
 wire rst_n;
-wire [15:0] mem_monitor_data, led_matrix_data_out, encoder_data, serial0_data, serial1_data, serial2_data, spi_data;
-wire [31:0] cpu_addrbus;
-wire [15:0] cpu_data_out;
-wire cpu_write, cpu_bytectl;
 
 // Reset button
 reg [2:0] rst_sync;
@@ -94,10 +90,6 @@ assign fl_ce_n = 1'b1;
 assign fl_rst_n = rst_n;
 assign fl_wp_n = 1'b1;
 
-// LED display driver
-led_matrix led0(.clk(clock_50), .rst_n(rst_n), .rgb_a(rgb_a), .rgb_b(rgb_b), .rgb_c(rgb_c), .rgb0(rgb0), .rgb1(rgb1), .rgb_clk(rgb_clk), .rgb_stb(rgb_stb), .oe_n(rgb_oe_n),
-  .data_in(cpu_data_out), .data_out(led_matrix_data_out), .write(cpu_write & mem_led_matrix), .address(cpu_addrbus[10:1]));
-
 // visualization stuff
 //hexdisp d7(.out(HEX7), .in(fs_addrbus[31:28]));
 //hexdisp d6(.out(HEX6), .in(fs_addrbus[27:24]));
@@ -111,13 +103,23 @@ hexdisp d0(.out(HEX0), .in(fs_addrbus[3:0]));
 assign LEDR = { cpu_bytectl, cpu_write, cpu_data_out };
 
 // quadrature encoder outputs 0-23
-rgb_enc io0(.clk(clock_50), .rst_n(rst_n), .quad(quad), .button(pb), .rgb_out(rgb),
-  .write(cpu_write & mem_encoder), .address(cpu_addrbus[2:1]), .data_in(cpu_data_out), .data_out(encoder_data));
+//rgb_enc io0(.clk(clock_50), .rst_n(rst_n), .quad(quad), .button(pb), .rgb_out(rgb),
+//  .write(cpu_write & mem_encoder), .address(cpu_addrbus[2:1]), .data_in(cpu_data_out), .data_out(encoder_data));
 
 fabirc fabric0(.clk_clk(clock_50), .reset_reset_n(~rst_n), .leds_export(LEDG), .fsbus_ssram1_ce_n(ssram1_ce_n),
   .fsbus_ssram0_ce_n(ssram0_ce_n), .fsbus_data(fs_databus), .fsbus_address(fs_addrbus), .fsbus_ssram_gw_n(ssram_we_n),
   .fsbus_ssram_bw_n(ssram_be), .fsbus_ssram_adsp_n(ssram_adsp_n), .fsbus_ssram_oe_n(ssram_oe_n), .uart_0_external_rxd(serial0_rx),
   .uart_0_external_txd(serial0_tx), .uart_0_external_cts_n(), .uart_0_external_rts(), .uart_1_external_txd(serial1_tx),
-  .lcd_external_RS(lcd_rs), .lcd_external_E(lcd_e), .lcd_external_RW(lcd_rw), .lcd_external_data(lcd_data));
+  .lcd_external_RS(lcd_rs), .lcd_external_E(lcd_e), .lcd_external_RW(lcd_rw), .lcd_external_data(lcd_data),
+  .matrix_a                     (rgb_a),                     //          matrix.a
+        .matrix_rgb_oe_n              (rgb_oe_n),              //                .rgb_oe_n
+        .matrix_b                     (rgb_b),                     //                .b
+        .matrix_c                     (rgb_c),                     //                .c
+        .matrix_rgb0                  (rgb0),                  //                .rgb0
+        .matrix_rgb1                  (rgb1),                  //                .rgb1
+        .matrix_stb                   (rgb_stb),                   //                .stb
+        .matrix_rgb_clk               (rgb_clk)                //                .rgb_clk
+    );
+
 
 endmodule

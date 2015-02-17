@@ -15,7 +15,7 @@ reg [31:0] pc;
 reg [32:0] pc_next;
 reg [31:0] mar;
 reg [32:0] mar_next;
-reg [7:0] state, state_next, return, return_next;
+reg [7:0] state, state_next, retstate, retstate_next;
 reg [31:0] ir, ir_next;
 reg avm_m0_write_next, avm_m0_read_next;
 reg [1:0] avm_m0_byteenable_next;
@@ -80,7 +80,7 @@ begin
     avm_m0_read <= 1'b0;
     avm_m0_byteenable <= 2'b11;
     divmul2 <= 'h1;
-    return <= STATE_FETCHIR1;
+    retstate <= STATE_FETCHIR1;
   end else begin
     pc <= pc_next[31:0];
     state <= state_next;
@@ -95,7 +95,7 @@ begin
     avm_m0_write <= avm_m0_write_next;
     avm_m0_byteenable <= avm_m0_byteenable_next;
     divmul2 <= divmul2_next;
-    return <= return_next;
+    retstate <= retstate_next;
   end
 end
 
@@ -114,7 +114,7 @@ begin
   ccr_next = ccr;
   avm_m0_byteenable_next = avm_m0_byteenable;
   divmul2_next = divmul2;
-  return_next = return;
+  retstate_next = retstate;
   
   // Control signals we need to deal with
   alu_func = 4'h2; // add is default
@@ -128,7 +128,7 @@ begin
   case (state)
     STATE_FETCHIR1: begin
       state_next = STATE_MEMLOAD1;
-      return_next = STATE_EVALIR1;
+      retstate_next = STATE_EVALIR1;
       avm_m0_write_next = 1'b0;
       avm_m0_read_next = 1'b1;
       avm_m0_byteenable_next = 2'b11;
@@ -136,10 +136,10 @@ begin
     end
     STATE_MEMLOAD1: begin
       if (avm_m0_waitrequest == 1'b0) begin
-        state_next = return;
+        state_next = retstate;
         avm_m0_read_next = 1'b0;
         avm_m0_byteenable_next = 2'b00;
-        case (return)
+        case (retstate)
           STATE_EVALIR1: begin
             ir_next = { avm_m0_readdata, 16'h0000 };
             pc_next = pc + 'h2;
@@ -158,10 +158,10 @@ begin
     end
     STATE_MEMSAVE1: begin
       if (avm_m0_waitrequest == 1'b0) begin
-        state_next = return;
+        state_next = retstate;
         avm_m0_write_next = 1'b0;
         avm_m0_byteenable_next = 2'b00;
-        case (return)
+        case (retstate)
           STATE_PUSH: begin
           end
           default: state_next = STATE_FAULT;
@@ -205,7 +205,7 @@ begin
         end
         {MODE_INH, 8'hax}: begin // push rA
           state_next = STATE_MEMSAVE1;
-          return_next = STATE_PUSH;
+          retstate_next = STATE_PUSH;
           avm_m0_write_next = 1'b1;
           avm_m0_read_next = 1'b0;
           avm_m0_byteenable_next= 2'b11;
@@ -221,7 +221,7 @@ begin
         end
         {MODE_INH, 8'hcx}: begin // pop rA
           state_next = STATE_MEMLOAD1;
-          return_next = STATE_POP;
+          retstate_next = STATE_POP;
           avm_m0_read_next = 1'b1;
           avm_m0_byteenable_next = 2'b11;
           mar_next = reg_data_out1;
@@ -620,7 +620,7 @@ begin
     end
     STATE_POP: begin
       state_next = STATE_MEMLOAD1;
-      return_next = STATE_POP2;
+      retstate_next = STATE_POP2;
       avm_m0_read_next = 1'b1;
       avm_m0_byteenable_next = 2'b11;
       mar_next = reg_data_out1;
