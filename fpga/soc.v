@@ -111,15 +111,7 @@ fabirc fabric0(.clk_clk(clock_50), .reset_reset_n(~rst_n), .leds_export(LEDG), .
   .fsbus_ssram_bw_n(ssram_be), .fsbus_ssram_adsp_n(ssram_adsp_n), .fsbus_ssram_oe_n(ssram_oe_n), .uart_0_external_rxd(serial0_rx),
   .uart_0_external_txd(serial0_tx), .uart_0_external_cts_n(), .uart_0_external_rts(), .uart_1_external_txd(serial1_tx),
   .lcd_external_RS(lcd_rs), .lcd_external_E(lcd_e), .lcd_external_RW(lcd_rw), .lcd_external_data(lcd_data),
-  .matrix_a                     (rgb_a),                     //          matrix.a
-        .matrix_rgb_oe_n              (rgb_oe_n),              //                .rgb_oe_n
-        .matrix_b                     (rgb_b),                     //                .b
-        .matrix_c                     (rgb_c),                     //                .c
-        .matrix_rgb0                  (rgb0),                  //                .rgb0
-        .matrix_rgb1                  (rgb1),                  //                .rgb1
-        .matrix_stb                   (rgb_stb),                   //                .stb
-        .matrix_rgb_clk               (rgb_clk)                //                .rgb_clk
-    );
-
+  .matrix_a(rgb_a), .matrix_b(rgb_b), .matrix_c(rgb_c), .matrix_rgb0(rgb0), .matrix_rgb1(rgb1),
+  .matrix_stb(rgb_stb), .matrix_rgb_oe_n(rgb_oe_n), .matrix_rgb_clk(rgb_clk));
 
 endmodule

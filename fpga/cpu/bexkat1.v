@@ -46,6 +46,7 @@ localparam STATE_FETCHIR1 = 8'h00, STATE_FETCHIR2 = 8'h01, STATE_FETCHIR3 = 8'h0
 localparam STATE_STORE = 8'h06, STATE_STORE2 = 8'h07, STATE_STORE3 = 8'h08;
 localparam STATE_LOAD = 8'h09, STATE_LOAD2 = 8'h0a, STATE_LOAD3 = 8'h0b, STATE_LOAD4 = 8'h0c, STATE_FAULT = 8'h0d;
 localparam STATE_PUSH = 8'h0f, STATE_PUSH2 = 8'h10, STATE_PUSH3 = 8'h11, STATE_POP = 8'h12, STATE_POP2 = 8'h13, STATE_POP3 = 8'h14, STATE_POP4 = 8'h15;
+localparam STATE_MEMLOAD1 = 8'h16, STATE_MEMSTATE1 = 8'h17;
 
 localparam REG_SP = 5'b11111;
 localparam MDR_HIGH = 1'b0, MDR_LOW = 1'b1;
@@ -144,12 +145,35 @@ begin
             ir_next = { avm_m0_readdata, 16'h0000 };
             pc_next = pc + 'h2;
           end
+          STATE_EVALIR2: begin
+            case (ir_mode)
+              MODE_IMM2  : begin
+                mar_next = { {16{avm_m0_readdata[15]}},avm_m0_readdata };
+                mdr_next = { 16'h0000, avm_m0_readdata };
+              end
+              MODE_REGIND: begin
+                mar_next = { {21{avm_m0_readdata[10]}}, avm_m0_readdata[10:0] };
+                ir_next[15:0] = avm_m0_readdata;
+              end
+              MODE_DIR   : mar_next = { 16'h0000, avm_m0_readdata };
+              MODE_IMM3a : mdr_next = { 16'h0000, avm_m0_readdata };
+              default    : ir_next[15:0] = avm_m0_readdata;
+            endcase
+            pc_next = pc + 'h2;
+          end
+          STATE_EVALIR3: begin
+            case (ir_mode)
+              MODE_DIR: mar_next = { mar[15:0], avm_m0_readdata };
+              default: mdr_next = { mdr[15:0], avm_m0_readdata }; 
+            endcase
+            pc_next = pc + 'h2;
+          end
           STATE_POP: begin
             mdr_next[31:16] = avm_m0_readdata;
             reg_read_addr1 = REG_SP;
             mar_next = reg_data_out1;
-      reg_write = REG_WRITE_DW;
-      reg_write_addr = REG_SP;
+            reg_write = REG_WRITE_DW;
+            reg_write_addr = REG_SP;
           end
           default:
             state_next = STATE_FAULT;
@@ -172,12 +196,13 @@ begin
       casex ({ir_mode, ir_op})
         {MODE_INH, 8'h0x}: state_next = STATE_FETCHIR1; // nop
         {MODE_INH, 8'h2x}: begin // rts
-          state_next = STATE_POP;
-          reg_read_addr1 = REG_SP;
-          reg_write = REG_WRITE_DW;
-          reg_write_addr = REG_SP;
-          addrsel_next = ADDR_MAR;
+          state_next = STATE_MEMLOAD1;
+          retstate_next = STATE_POP;
+          avm_m0_read_next = 1'b1;
+          avm_m0_byteenable_next = 2'b11;
           mar_next = reg_data_out1;
+          addrset_next = ADDR_MAR;
+          reg_read_addr1 = REG_SP;
         end
         {MODE_INH, 8'h4x}: begin // cmp
           alu_func = 'h3; // sub
@@ -238,30 +263,12 @@ begin
       endcase
     end
     STATE_FETCHIR2: begin
-      if (delay == 'h0) begin
-        addrsel_next = ADDR_PC;
-        write_next = 1'b0;
-        delay_next = 'h4;
-      end else begin
-        delay_next = delay - 3'b1;
-        if (delay == 'h1) begin
-          case (ir_mode)
-            MODE_IMM2  : begin
-              mar_next = { {16{avm_m0_readdata[15]}},avm_m0_readdata };
-              mdr_next = { 16'h0000, avm_m0_readdata };
-            end
-            MODE_REGIND: begin
-              mar_next = { {21{avm_m0_readdata[10]}}, avm_m0_readdata[10:0] };
-              ir_next[15:0] = avm_m0_readdata;
-            end
-            MODE_DIR   : mar_next = { 16'h0000, avm_m0_readdata };
-            MODE_IMM3a : mdr_next = { 16'h0000, avm_m0_readdata };
-            default    : ir_next[15:0] = avm_m0_readdata;
-          endcase
-          pc_next = pc + 'h2;
-          state_next = STATE_EVALIR2;
-        end
-      end      
+      state_next = STATE_MEMLOAD1;
+      retstate_next = STATE_EVALIR2;
+      avm_m0_write_next = 1'b0;
+      avm_m0_read_next = 1'b1;
+      avm_m0_byteenable_next = 2'b11;
+      addrsel_next = ADDR_PC;
     end
     STATE_EVALIR2: begin
       casex ({ir_mode, ir_op})
@@ -455,21 +462,12 @@ begin
       endcase
     end
     STATE_FETCHIR3: begin
-      if (delay == 'h0) begin
-        addrsel_next = ADDR_PC;
-        write_next = 1'b0;
-        delay_next = 'h4;
-      end else begin
-        delay_next = delay - 3'b1;
-        if (delay == 'h1) begin
-          case (ir_mode)
-            MODE_DIR: mar_next = { mar[15:0], avm_m0_readdata };
-            default: mdr_next = { mdr[15:0], avm_m0_readdata }; 
-          endcase
-          pc_next = pc + 'h2;
-         state_next = STATE_EVALIR3;
-        end
-      end      
+      state_next = STATE_MEMLOAD1;
+      retstate_next = STATE_EVALIR3;
+      avm_m0_write_next = 1'b0;
+      avm_m0_read_next = 1'b1;
+      avm_m0_byteenable_next = 2'b11;
+      addrsel_next = ADDR_PC;
     end
     STATE_EVALIR3: begin
       casex ({ir_mode, ir_op})
