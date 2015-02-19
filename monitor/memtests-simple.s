@@ -1,11 +1,7 @@
-ldiu %26, 0x0003
-ldiu %29, 0x0006
-ldiu %27, 0x0010
-push %26
-push %27
-push %29
-pop %26
-pop %27
-pop %29
+ldi %30, 0x12345678
+std.l %30, 0x00000000
+ldd.l %29, 0x00000000
+ldd %28, 0x00000000
+ldd %27, 0x00000001
 foo:
 jmpd foo

@@ -85,7 +85,7 @@ assign ssram_adv_n = 1'b1;
 assign ssram_clk = clock_50;
 assign ssram_adsc_n = 1'b1;
 assign fl_oe_n = ~fl_we_n;
-assign fl_we_n = ~cpu_write;
+assign fl_we_n = 1'b1;
 assign fl_ce_n = 1'b1;
 assign fl_rst_n = rst_n;
 assign fl_wp_n = 1'b1;
@@ -100,7 +100,7 @@ hexdisp d2(.out(HEX2), .in(fs_addrbus[11:8]));
 hexdisp d1(.out(HEX1), .in(fs_addrbus[7:4]));
 hexdisp d0(.out(HEX0), .in(fs_addrbus[3:0]));
 // Blinknlights
-assign LEDR = { cpu_bytectl, cpu_write, cpu_data_out };
+assign LEDR = 18'h0000;
 
 // quadrature encoder outputs 0-23
 //rgb_enc io0(.clk(clock_50), .rst_n(rst_n), .quad(quad), .button(pb), .rgb_out(rgb),
