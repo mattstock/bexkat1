@@ -205,7 +205,16 @@ begin
             mdr_next[31:16] = avm_m0_readdata;
           end
           STATE_LOAD2: begin
-            mdr_next[15:0] = avm_m0_readdata;
+	    if (avm_m0_byteenable == 2'b11) begin
+              if (ir_op == 8'h03)
+                mdr_next = { {16{avm_m0_readdata[15]}}, avm_m0_readdata };
+	      else
+		mdr_next[15:0] = avm_m0_readdata;
+	    end
+            if (avm_m0_byteenable == 2'b10)
+	      mdr_next = { {24{avm_m0_readdata[15]}}, avm_m0_readdata[15:8] };
+	    if (avm_m0_byteenable == 2'b01)
+	      mdr_next = { {24{avm_m0_readdata[7]}}, avm_m0_readdata[7:0] };
           end
           default:
             state_next = STATE_FAULT;
@@ -229,7 +238,6 @@ begin
       if (avm_m0_waitrequest == 1'b0) begin
         state_next = retstate;
         avm_m0_write_next = 1'b0;
-        avm_m0_byteenable_next = 2'b00;
       end
     end
     STATE_EVALIR1: begin
@@ -471,7 +479,6 @@ begin
           avm_m0_read_next = 1'b1;
           avm_m0_byteenable_next = 2'b11;
           mar_next = alu_out;
-          mdr_next[31:16] = 16'h0000; // clear upper range - may need to use sign carry? 
           reg_read_addr1 = ir_rb;
           alu_in2 = mar;
           addrsel_next = ADDR_MAR;
@@ -488,13 +495,15 @@ begin
           alu_in2 = mar;
 
           reg_read_addr2 = ir_ra;
-          mdr_next = reg_data_out2;
           mdrsel_next = MDR_LOW;
 
-          if (alu_out[0])
+          if (alu_out[0]) begin
+            mdr_next[15:8] = reg_data_out2[7:0];
 	    avm_m0_byteenable_next = 2'b10;
-          else
+          end else begin
+            mdr_next[7:0] = reg_data_out2[7:0];
 	    avm_m0_byteenable_next = 2'b01;
+	  end
         end
         {MODE_REGIND, 8'h05}: begin // ld.b
           state_next = STATE_MEMLOAD;
@@ -592,11 +601,11 @@ begin
           addrsel_next = ADDR_MAR;
         end
         {MODE_DIR, 8'h02}: begin // std
-	  state_next = STATE_MEMSAVE;
-	  retstate_next = STATE_STORE2;
-	  avm_m0_write_next = 1'b1;
-	  avm_m0_read_next = 1'b0;
-	  avm_m0_byteenable_next = 2'b11;
+	        state_next = STATE_MEMSAVE;
+	        retstate_next = STATE_STORE2;
+	        avm_m0_write_next = 1'b1;
+	        avm_m0_read_next = 1'b0;
+	        avm_m0_byteenable_next = 2'b11;
 
           mdr_next = reg_data_out1;
           mdrsel_next = MDR_LOW;
@@ -610,16 +619,18 @@ begin
           addrsel_next = ADDR_MAR;
         end
         {MODE_DIR, 8'h04}: begin // std.b
-	  state_next = STATE_MEMSAVE;
-	  retstate_next = STATE_STORE2;
-	  avm_m0_write_next = 1'b1;
-	  avm_m0_read_next = 1'b0;
-	  avm_m0_byteenable_next = 2'b11;
+	        state_next = STATE_MEMSAVE;
+	        retstate_next = STATE_STORE2;
+	        avm_m0_write_next = 1'b1;
+	        avm_m0_read_next = 1'b0;
 
-          if (alu_out[0])
-	    avm_m0_byteenable_next = 2'b10;
-          else
-	    avm_m0_byteenable_next = 2'b01;
+	        if (mar[0]) begin
+            mdr_next[15:8] = mdr[7:0];
+	          avm_m0_byteenable_next = 2'b10;
+          end else begin
+	          avm_m0_byteenable_next = 2'b01;
+	        end
+
           mdrsel_next = MDR_LOW;
           addrsel_next = ADDR_MAR;
         end
@@ -627,7 +638,10 @@ begin
           state_next = STATE_MEMLOAD;
           retstate_next = STATE_LOAD2;
           avm_m0_read_next = 1'b1;
-          avm_m0_byteenable_next = 2'b11;
+          if (mar[0])
+	          avm_m0_byteenable_next = 2'b10;
+          else
+	          avm_m0_byteenable_next = 2'b01;
           addrsel_next = ADDR_MAR;
         end
         {MODE_DIR, 8'h80}: begin // jmpd
