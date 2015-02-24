@@ -44,9 +44,9 @@ wire [31:0] alu_out, fp_out, int_out, cvt_int_out, cvt_fp_out;
 
 localparam STATE_FETCHIR1 = 8'h00, STATE_FETCHIR2 = 8'h01, STATE_FETCHIR3 = 8'h02, STATE_EVALIR1 = 8'h03, STATE_EVALIR2 = 8'h04, STATE_EVALIR3 = 8'h05;
 localparam STATE_STORE = 8'h06, STATE_STORE2 = 8'h07;
-localparam STATE_LOAD = 8'h08, STATE_LOAD2 = 8'h09, STATE_JSR = 8'h0a, STATE_JSR2 = 8'h0b, STATE_FAULT = 8'h14;
+localparam STATE_LOAD = 8'h08, STATE_LOAD2 = 8'h09, STATE_JSR = 8'h0a, STATE_JSR2 = 8'h0b;
 localparam STATE_PUSH = 8'h0c, STATE_PUSH2 = 8'h0d, STATE_POP = 8'h0e, STATE_POP2 = 8'h0f;
-localparam STATE_MEMLOAD = 8'h10, STATE_MEMSAVE = 8'h11, STATE_RTS = 8'h12, STATE_RTS2 = 8'h13;
+localparam STATE_MEMLOAD = 8'h10, STATE_MEMSAVE = 8'h11, STATE_RTS = 8'h12, STATE_RTS2 = 8'h13, STATE_LOAD3 = 8'h14, STATE_FAULT = 8'h15;
 
 localparam REG_SP = 5'b11111;
 localparam MDR_HIGH = 1'b0, MDR_LOW = 1'b1;
@@ -201,20 +201,14 @@ begin
             reg_write = REG_WRITE_DW;
             reg_write_addr = REG_SP; // SP + 2
           end
-          STATE_LOAD: begin
-            mdr_next[31:16] = avm_m0_readdata;
-          end
-          STATE_LOAD2: begin
-	    if (avm_m0_byteenable == 2'b11) begin
-              if (ir_op == 8'h03)
-                mdr_next = { {16{avm_m0_readdata[15]}}, avm_m0_readdata };
-	      else
-		mdr_next[15:0] = avm_m0_readdata;
-	    end
-            if (avm_m0_byteenable == 2'b10)
-	      mdr_next = { {24{avm_m0_readdata[15]}}, avm_m0_readdata[15:8] };
-	    if (avm_m0_byteenable == 2'b01)
-	      mdr_next = { {24{avm_m0_readdata[7]}}, avm_m0_readdata[7:0] };
+          STATE_LOAD: mdr_next[31:16] = avm_m0_readdata;
+          STATE_LOAD2: mdr_next[15:0] = avm_m0_readdata;
+          STATE_LOAD3: begin
+            case (avm_m0_byteenable)
+              2'b10: mdr_next = { {24{avm_m0_readdata[15]}}, avm_m0_readdata[15:8] };
+	            2'b01: mdr_next = { {24{avm_m0_readdata[7]}}, avm_m0_readdata[7:0] };
+              default: mdr_next = { {16{avm_m0_readdata[15]}}, avm_m0_readdata };
+            endcase
           end
           default:
             state_next = STATE_FAULT;
@@ -475,7 +469,7 @@ begin
         end
         {MODE_REGIND, 8'h03}: begin // ld
           state_next = STATE_MEMLOAD;
-          retstate_next = STATE_LOAD2;
+          retstate_next = STATE_LOAD3;
           avm_m0_read_next = 1'b1;
           avm_m0_byteenable_next = 2'b11;
           mar_next = alu_out;
@@ -498,21 +492,21 @@ begin
           mdrsel_next = MDR_LOW;
 
           if (alu_out[0]) begin
-            mdr_next[15:8] = reg_data_out2[7:0];
-	    avm_m0_byteenable_next = 2'b10;
-          end else begin
             mdr_next[7:0] = reg_data_out2[7:0];
 	    avm_m0_byteenable_next = 2'b01;
+          end else begin
+            mdr_next[15:8] = reg_data_out2[7:0];
+	    avm_m0_byteenable_next = 2'b10;
 	  end
         end
         {MODE_REGIND, 8'h05}: begin // ld.b
           state_next = STATE_MEMLOAD;
-          retstate_next = STATE_LOAD2;
+          retstate_next = STATE_LOAD3;
           avm_m0_read_next = 1'b1;
           if (alu_out[0])
-            avm_m0_byteenable_next = 2'b10;
-          else
             avm_m0_byteenable_next = 2'b01;
+          else
+            avm_m0_byteenable_next = 2'b10;
           mar_next = alu_out;
           reg_read_addr1 = ir_rb;
           alu_in2 = mar;
@@ -613,7 +607,7 @@ begin
         end
         {MODE_DIR, 8'h03}: begin // ldd
           state_next = STATE_MEMLOAD;
-          retstate_next = STATE_LOAD2;
+          retstate_next = STATE_LOAD3;
           avm_m0_read_next = 1'b1;
           avm_m0_byteenable_next = 2'b11;
           addrsel_next = ADDR_MAR;
@@ -625,10 +619,10 @@ begin
 	        avm_m0_read_next = 1'b0;
 
 	        if (mar[0]) begin
+	          avm_m0_byteenable_next = 2'b01;
+          end else begin
             mdr_next[15:8] = mdr[7:0];
 	          avm_m0_byteenable_next = 2'b10;
-          end else begin
-	          avm_m0_byteenable_next = 2'b01;
 	        end
 
           mdrsel_next = MDR_LOW;
@@ -636,12 +630,12 @@ begin
         end
         {MODE_DIR, 8'h05}: begin // ldd.b
           state_next = STATE_MEMLOAD;
-          retstate_next = STATE_LOAD2;
+          retstate_next = STATE_LOAD3;
           avm_m0_read_next = 1'b1;
           if (mar[0])
-	          avm_m0_byteenable_next = 2'b10;
-          else
 	          avm_m0_byteenable_next = 2'b01;
+          else
+	          avm_m0_byteenable_next = 2'b10;
           addrsel_next = ADDR_MAR;
         end
         {MODE_DIR, 8'h80}: begin // jmpd
@@ -695,6 +689,12 @@ begin
       addrsel_next = ADDR_PC;
       reg_data_in = mdr;
       reg_write = REG_WRITE_W0;
+    end
+    STATE_LOAD3: begin
+      state_next = STATE_FETCHIR1;
+      addrsel_next = ADDR_PC;
+      reg_data_in = { {16{mdr[15]}} , mdr[15:0] };
+      reg_write = REG_WRITE_DW;
     end
     STATE_POP: begin
       state_next = STATE_MEMLOAD;
