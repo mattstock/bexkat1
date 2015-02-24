@@ -93,7 +93,8 @@ always @(posedge clock_50) rst_sync <= { rst_sync[1:0], KEY[0] };
 
 assign lcd_on = SW[17];
 
-// Wiring for external SSRAM & flash
+// Wiring for external SDRAM, SSRAM & flash
+assign sdram_clk = clock_50;
 assign ssram_gw_n = 1'b1;
 assign ssram_adv_n = 1'b1;
 assign ssram_clk = clock_50;
@@ -127,6 +128,7 @@ fabirc fabric0(.clk_clk(clock_50), .reset_reset_n(rst_n), .fsbus_ssram1_ce_n(ssr
   .sdram0_wire_cs_n(sdram_cs_n), .sdram0_wire_dq(sdram_databus), .sdram0_wire_dqm(sdram_dqm), .sdram0_wire_ras_n(sdram_ras_n),
   .sdram0_wire_we_n(sdram_we_n), .uart0_rxd(serial0_rx), .uart0_txd(serial0_tx), .uart1_txd(serial1_tx), .uart1_rxd(1'b0),
   .led_matrix_a(rgb_a), .led_matrix_b(rgb_b), .led_matrix_c(rgb_c), .led_matrix_rgb0(rgb0), .led_matrix_rgb1(rgb1),
-  .led_matrix_rgb_oe_n(rgb_oe_n), .led_matrix_stb(rgb_stb), .led_matrix_rgb_clk(rgb_clk));
+  .led_matrix_rgb_oe_n(rgb_oe_n), .led_matrix_stb(rgb_stb), .led_matrix_rgb_clk(rgb_clk),
+  .lcd_RS(lcd_rs), .lcd_RW(lcd_rw), .lcd_data(lcd_data), .lcd_E(lcd_e));
 
 endmodule

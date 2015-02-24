@@ -1,9 +1,10 @@
 module led_matrix(
   input csi_clk,
   input rsi_reset_n,
-  input [15:0] avs_s0_writedata,
-  output [15:0] avs_s0_readdata,
-  input [9:0] avs_s0_address,
+  input [31:0] avs_s0_writedata,
+  output [31:0] avs_s0_readdata,
+  input [8:0] avs_s0_address,
+  input [3:0] avs_s0_byteenable,
   input avs_s0_write,
   input avs_s0_read,
   output rgb_a,
@@ -32,7 +33,7 @@ assign rgb_stb = (state == STATE_LATCH);
 assign rgb_clk = (state == STATE_CLOCK);
 assign oe_n = (state == STATE_LATCH || state == STATE_BLANK1 || state == STATE_BLANK2);
 
-parameter [7:0] DELAY = 8'h20;
+parameter [7:0] DELAY_VAL = 8'h20;
 
 localparam STATE_IDLE = 3'b000, STATE_READ1 = 3'b001, STATE_READ2 = 3'b010, STATE_CLOCK = 3'b011, STATE_LATCH = 3'b100, STATE_BLANK1 = 3'b101, STATE_BLANK2 = 3'b111;
 
@@ -85,7 +86,7 @@ begin
       colpos_next = colpos + 1'b1;
       if (colpos == 5'b11111) begin
         state_next = STATE_BLANK1;
-        delay_next = DELAY;
+        delay_next = DELAY_VAL;
       end else
         state_next = STATE_IDLE;
     end
@@ -98,7 +99,7 @@ begin
     STATE_LATCH: begin
       state_next = STATE_BLANK2;
       phase_next = phase + 1'b1;
-      delay_next = DELAY;
+      delay_next = DELAY_VAL;
     end
     STATE_BLANK2: begin
       if (delay == 8'h00)
@@ -109,5 +110,6 @@ begin
   endcase
 end
 
-matrixmem m0(.clock(csi_clk), .data_b(avs_s0_writedata), .wren_b(avs_s0_write), .address_b(avs_s0_address), .q_b(avs_s0_readdata), .wren_a(1'b0), .q_a(buffer), .address_a({ab, phase[2:0], colpos}));
+matrixmem m0(.clock(csi_clk), .data_b(avs_s0_writedata), .wren_b(avs_s0_write), .address_b(avs_s0_address), .byteena_b(avs_s0_byteenable),
+  .q_b(avs_s0_readdata), .wren_a(1'b0), .q_a(buffer), .address_a({ab, phase[2:0], colpos}));
 endmodule

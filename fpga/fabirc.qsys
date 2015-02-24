@@ -33,6 +33,22 @@
          type = "boolean";
       }
    }
+   element lcd0.control_slave
+   {
+      datum baseAddress
+      {
+         value = "8390720";
+         type = "String";
+      }
+   }
+   element lcd0
+   {
+      datum _sortIndex
+      {
+         value = "11";
+         type = "int";
+      }
+   }
    element led_matrix0
    {
       datum _sortIndex
@@ -69,17 +85,14 @@
    }
    element led_matrix0.s0
    {
+      datum _lockedAddress
+      {
+         value = "1";
+         type = "boolean";
+      }
       datum baseAddress
       {
          value = "8388608";
-         type = "String";
-      }
-   }
-   element uart0.s1
-   {
-      datum baseAddress
-      {
-         value = "8390688";
          type = "String";
       }
    }
@@ -96,7 +109,7 @@
          type = "String";
       }
    }
-   element uart1.s1
+   element uart0.s1
    {
       datum baseAddress
       {
@@ -114,6 +127,14 @@
       datum baseAddress
       {
          value = "134217728";
+         type = "String";
+      }
+   }
+   element uart1.s1
+   {
+      datum baseAddress
+      {
+         value = "8390688";
          type = "String";
       }
    }
@@ -185,19 +206,6 @@
          type = "int";
       }
    }
-   element ssram0.uas
-   {
-      datum _lockedAddress
-      {
-         value = "1";
-         type = "boolean";
-      }
-      datum baseAddress
-      {
-         value = "0";
-         type = "String";
-      }
-   }
    element ssram1.uas
    {
       datum _lockedAddress
@@ -208,6 +216,19 @@
       datum baseAddress
       {
          value = "4194304";
+         type = "String";
+      }
+   }
+   element ssram0.uas
+   {
+      datum _lockedAddress
+      {
+         value = "1";
+         type = "boolean";
+      }
+      datum baseAddress
+      {
+         value = "0";
          type = "String";
       }
    }
@@ -250,6 +271,7 @@
    internal="led_matrix0.matrix"
    type="conduit"
    dir="end" />
+ <interface name="lcd" internal="lcd0.external" type="conduit" dir="end" />
  <module kind="clock_source" version="14.0" enabled="1" name="clk0">
   <parameter name="clockFrequency" value="50000000" />
   <parameter name="clockFrequencyKnown" value="true" />
@@ -485,13 +507,14 @@
   <parameter name="useRelativePathForSimFile" value="false" />
   <parameter name="clockRate" value="50000000" />
  </module>
- <module kind="led_matrix" version="1.0" enabled="1" name="led_matrix0">
-  <parameter name="DELAY" value="32" />
-  <parameter name="AUTO_CLOCK_CLOCK_RATE" value="50000000" />
- </module>
  <module kind="bexkat1000" version="1.0" enabled="1" name="bexkat1">
   <parameter name="AUTO_CLOCK_CLOCK_RATE" value="50000000" />
  </module>
+ <module kind="led_matrix" version="1.1" enabled="1" name="led_matrix0">
+  <parameter name="DELAY" value="32" />
+  <parameter name="AUTO_CLOCK_CLOCK_RATE" value="50000000" />
+ </module>
+ <module kind="altera_avalon_lcd_16207" version="14.0" enabled="1" name="lcd0" />
  <connection kind="clock" version="14.0" start="clk0.clk" end="monitor.clk1" />
  <connection
    kind="reset"
@@ -558,7 +581,7 @@
  </connection>
  <connection kind="avalon" version="14.0" start="bexkat1.m0" end="uart1.s1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00800800" />
+  <parameter name="baseAddress" value="0x00800820" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection kind="avalon" version="14.0" start="bexkat1.m0" end="sdram0.s1">
@@ -568,7 +591,7 @@
  </connection>
  <connection kind="avalon" version="14.0" start="bexkat1.m0" end="uart0.s1">
   <parameter name="arbitrationPriority" value="1" />
-  <parameter name="baseAddress" value="0x00800820" />
+  <parameter name="baseAddress" value="0x00800800" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <connection kind="avalon" version="14.0" start="bexkat1.m0" end="monitor.s1">
@@ -584,6 +607,17 @@
  <connection kind="avalon" version="14.0" start="bexkat1.m0" end="ssram1.uas">
   <parameter name="arbitrationPriority" value="1" />
   <parameter name="baseAddress" value="0x00400000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection kind="reset" version="14.0" start="clk0.clk_reset" end="lcd0.reset" />
+ <connection kind="clock" version="14.0" start="clk0.clk" end="lcd0.clk" />
+ <connection
+   kind="avalon"
+   version="14.0"
+   start="bexkat1.m0"
+   end="lcd0.control_slave">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00800840" />
   <parameter name="defaultConnection" value="false" />
  </connection>
  <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />

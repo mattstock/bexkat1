@@ -56,9 +56,6 @@ char serial_getchar(unsigned short port) {
   case 1:
     p = serial1;
     break;
-  case 2:
-    p = serial2;
-    break;
   default:
     p = serial0;
   }
@@ -88,9 +85,6 @@ void serial_putchar(unsigned short port, char c) {
     break;
   case 1:
     p = serial1;
-    break;
-  case 2:
-    p = serial2;
     break;
   default:
     p = serial0;
@@ -159,9 +153,9 @@ void main(void) {
   x = 16;
   y = 8;
   val = 0x80808000;
-  serial_putbin(1, katherine, 6);
+//  serial_putbin(1, katherine, 6);
   delay(0x15000);
-  serial_putbin(1, rebecca, 6);
+//  serial_putbin(1, rebecca, 6);
   while (1) {
     matrix_fade();
     c = random(2000);
