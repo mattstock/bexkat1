@@ -109,11 +109,11 @@
          type = "String";
       }
    }
-   element uart0.s1
+   element uart1.s1
    {
       datum baseAddress
       {
-         value = "8390656";
+         value = "8390688";
          type = "String";
       }
    }
@@ -130,11 +130,11 @@
          type = "String";
       }
    }
-   element uart1.s1
+   element uart0.s1
    {
       datum baseAddress
       {
-         value = "8390688";
+         value = "8390656";
          type = "String";
       }
    }
@@ -173,7 +173,7 @@
       }
       datum sopceditor_expanded
       {
-         value = "0";
+         value = "1";
          type = "boolean";
       }
    }
@@ -206,19 +206,6 @@
          type = "int";
       }
    }
-   element ssram1.uas
-   {
-      datum _lockedAddress
-      {
-         value = "0";
-         type = "boolean";
-      }
-      datum baseAddress
-      {
-         value = "4194304";
-         type = "String";
-      }
-   }
    element ssram0.uas
    {
       datum _lockedAddress
@@ -229,6 +216,19 @@
       datum baseAddress
       {
          value = "0";
+         type = "String";
+      }
+   }
+   element ssram1.uas
+   {
+      datum _lockedAddress
+      {
+         value = "0";
+         type = "boolean";
+      }
+      datum baseAddress
+      {
+         value = "4194304";
          type = "String";
       }
    }
@@ -266,12 +266,12 @@
    internal="uart1.external_connection"
    type="conduit"
    dir="end" />
+ <interface name="lcd" internal="lcd0.external" type="conduit" dir="end" />
  <interface
    name="led_matrix"
    internal="led_matrix0.matrix"
    type="conduit"
    dir="end" />
- <interface name="lcd" internal="lcd0.external" type="conduit" dir="end" />
  <module kind="clock_source" version="14.0" enabled="1" name="clk0">
   <parameter name="clockFrequency" value="50000000" />
   <parameter name="clockFrequencyKnown" value="true" />
@@ -510,11 +510,10 @@
  <module kind="bexkat1000" version="1.0" enabled="1" name="bexkat1">
   <parameter name="AUTO_CLOCK_CLOCK_RATE" value="50000000" />
  </module>
- <module kind="led_matrix" version="1.1" enabled="1" name="led_matrix0">
-  <parameter name="DELAY" value="32" />
-  <parameter name="AUTO_CLOCK_CLOCK_RATE" value="50000000" />
- </module>
  <module kind="altera_avalon_lcd_16207" version="14.0" enabled="1" name="lcd0" />
+ <module kind="led_matrix" version="1.2" enabled="1" name="led_matrix0">
+  <parameter name="DELAY_VAL" value="32" />
+ </module>
  <connection kind="clock" version="14.0" start="clk0.clk" end="monitor.clk1" />
  <connection
    kind="reset"
