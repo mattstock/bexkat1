@@ -80,9 +80,6 @@ char serial_getchar(unsigned short port) {
   case 1:
     p = serial1;
     break;
-  case 2:
-    p = serial2;
-    break;
   default:
     p = serial0;
   }
@@ -178,9 +175,6 @@ void serial_putchar(unsigned short port, char c) {
     break;
   case 1:
     p = serial1;
-    break;
-  case 2:
-    p = serial2;
     break;
   default:
     p = serial0;

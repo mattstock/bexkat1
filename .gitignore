@@ -8,6 +8,7 @@
 output/
 Debug/
 output_files/
+greybox_tmp/
 *.bak
 *~
 db/
@@ -37,6 +38,5 @@ testbench/
 *.qar
 *.spoc_builder
 *example*
-*.tcl
 *.pin
 

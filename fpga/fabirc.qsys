@@ -1,0 +1,696 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<system name="$${FILENAME}">
+ <component
+   name="$${FILENAME}"
+   displayName="$${FILENAME}"
+   version="1.0"
+   description=""
+   tags=""
+   categories="System" />
+ <parameter name="bonusData"><![CDATA[bonusData 
+{
+   element $${FILENAME}
+   {
+   }
+   element bexkat1
+   {
+      datum _sortIndex
+      {
+         value = "9";
+         type = "int";
+      }
+   }
+   element clk0
+   {
+      datum _sortIndex
+      {
+         value = "0";
+         type = "int";
+      }
+      datum sopceditor_expanded
+      {
+         value = "1";
+         type = "boolean";
+      }
+   }
+   element lcd0.control_slave
+   {
+      datum baseAddress
+      {
+         value = "8390752";
+         type = "String";
+      }
+   }
+   element lcd0
+   {
+      datum _sortIndex
+      {
+         value = "10";
+         type = "int";
+      }
+   }
+   element led0
+   {
+      datum _sortIndex
+      {
+         value = "12";
+         type = "int";
+      }
+   }
+   element led_matrix0
+   {
+      datum _sortIndex
+      {
+         value = "8";
+         type = "int";
+      }
+   }
+   element membridge0
+   {
+      datum _sortIndex
+      {
+         value = "3";
+         type = "int";
+      }
+      datum sopceditor_expanded
+      {
+         value = "0";
+         type = "boolean";
+      }
+   }
+   element monitor
+   {
+      datum _sortIndex
+      {
+         value = "11";
+         type = "int";
+      }
+   }
+   element led_matrix0.s0
+   {
+      datum _lockedAddress
+      {
+         value = "1";
+         type = "boolean";
+      }
+      datum baseAddress
+      {
+         value = "8388608";
+         type = "String";
+      }
+   }
+   element monitor.s0
+   {
+      datum _lockedAddress
+      {
+         value = "1";
+         type = "boolean";
+      }
+      datum baseAddress
+      {
+         value = "4290772992";
+         type = "String";
+      }
+   }
+   element sdram0.s1
+   {
+      datum _lockedAddress
+      {
+         value = "0";
+         type = "boolean";
+      }
+      datum baseAddress
+      {
+         value = "134217728";
+         type = "String";
+      }
+   }
+   element led0.s1
+   {
+      datum _lockedAddress
+      {
+         value = "1";
+         type = "boolean";
+      }
+      datum baseAddress
+      {
+         value = "8390736";
+         type = "String";
+      }
+   }
+   element sw0.s1
+   {
+      datum _lockedAddress
+      {
+         value = "1";
+         type = "boolean";
+      }
+      datum baseAddress
+      {
+         value = "8390720";
+         type = "String";
+      }
+   }
+   element uart1.s1
+   {
+      datum _lockedAddress
+      {
+         value = "1";
+         type = "boolean";
+      }
+      datum baseAddress
+      {
+         value = "8390688";
+         type = "String";
+      }
+   }
+   element uart0.s1
+   {
+      datum _lockedAddress
+      {
+         value = "1";
+         type = "boolean";
+      }
+      datum baseAddress
+      {
+         value = "8390656";
+         type = "String";
+      }
+   }
+   element sdram0
+   {
+      datum _sortIndex
+      {
+         value = "5";
+         type = "int";
+      }
+      datum sopceditor_expanded
+      {
+         value = "0";
+         type = "boolean";
+      }
+   }
+   element ssram0
+   {
+      datum _sortIndex
+      {
+         value = "1";
+         type = "int";
+      }
+      datum sopceditor_expanded
+      {
+         value = "0";
+         type = "boolean";
+      }
+   }
+   element ssram1
+   {
+      datum _sortIndex
+      {
+         value = "4";
+         type = "int";
+      }
+      datum sopceditor_expanded
+      {
+         value = "1";
+         type = "boolean";
+      }
+   }
+   element sw0
+   {
+      datum _sortIndex
+      {
+         value = "13";
+         type = "int";
+      }
+   }
+   element tristate_conduit_pin_sharer_0
+   {
+      datum _sortIndex
+      {
+         value = "2";
+         type = "int";
+      }
+      datum sopceditor_expanded
+      {
+         value = "0";
+         type = "boolean";
+      }
+   }
+   element uart0
+   {
+      datum _sortIndex
+      {
+         value = "6";
+         type = "int";
+      }
+   }
+   element uart1
+   {
+      datum _sortIndex
+      {
+         value = "7";
+         type = "int";
+      }
+   }
+   element ssram0.uas
+   {
+      datum _lockedAddress
+      {
+         value = "1";
+         type = "boolean";
+      }
+      datum baseAddress
+      {
+         value = "0";
+         type = "String";
+      }
+   }
+   element ssram1.uas
+   {
+      datum _lockedAddress
+      {
+         value = "1";
+         type = "boolean";
+      }
+      datum baseAddress
+      {
+         value = "4194304";
+         type = "String";
+      }
+   }
+}
+]]></parameter>
+ <parameter name="clockCrossingAdapter" value="HANDSHAKE" />
+ <parameter name="device" value="EP4CGX150DF31C7" />
+ <parameter name="deviceFamily" value="Cyclone IV GX" />
+ <parameter name="deviceSpeedGrade" value="7" />
+ <parameter name="fabricMode" value="QSYS" />
+ <parameter name="generateLegacySim" value="false" />
+ <parameter name="generationId" value="0" />
+ <parameter name="globalResetBus" value="false" />
+ <parameter name="hdlLanguage" value="VERILOG" />
+ <parameter name="hideFromIPCatalog" value="false" />
+ <parameter name="maxAdditionalLatency" value="1" />
+ <parameter name="projectName" value="soc.qpf" />
+ <parameter name="sopcBorderPoints" value="false" />
+ <parameter name="systemHash" value="0" />
+ <parameter name="testBenchDutName" value="" />
+ <parameter name="timeStamp" value="0" />
+ <parameter name="useTestBenchNamingPattern" value="false" />
+ <instanceScript></instanceScript>
+ <interface name="clk" internal="clk0.clk_in" type="clock" dir="end" />
+ <interface name="reset" internal="clk0.clk_in_reset" type="reset" dir="end" />
+ <interface name="fsbus" internal="membridge0.out" type="conduit" dir="end" />
+ <interface name="sdram0_wire" internal="sdram0.wire" type="conduit" dir="end" />
+ <interface
+   name="uart0"
+   internal="uart0.external_connection"
+   type="conduit"
+   dir="end" />
+ <interface
+   name="uart1"
+   internal="uart1.external_connection"
+   type="conduit"
+   dir="end" />
+ <interface name="lcd" internal="lcd0.external" type="conduit" dir="end" />
+ <interface
+   name="led_matrix"
+   internal="led_matrix0.matrix"
+   type="conduit"
+   dir="end" />
+ <interface
+   name="ledg"
+   internal="led0.external_connection"
+   type="conduit"
+   dir="end" />
+ <interface name="sw" internal="sw0.external_connection" type="conduit" dir="end" />
+ <module kind="clock_source" version="14.0" enabled="1" name="clk0">
+  <parameter name="clockFrequency" value="50000000" />
+  <parameter name="clockFrequencyKnown" value="true" />
+  <parameter name="inputClockFrequency" value="0" />
+  <parameter name="resetSynchronousEdges" value="NONE" />
+ </module>
+ <module
+   kind="altera_generic_tristate_controller"
+   version="14.0"
+   enabled="1"
+   name="ssram0">
+  <parameter name="TCM_ADDRESS_W" value="22" />
+  <parameter name="TCM_DATA_W" value="32" />
+  <parameter name="TCM_BYTEENABLE_W" value="4" />
+  <parameter name="TCM_READ_WAIT" value="1" />
+  <parameter name="TCM_WRITE_WAIT" value="1" />
+  <parameter name="TCM_SETUP_WAIT" value="0" />
+  <parameter name="TCM_DATA_HOLD" value="0" />
+  <parameter name="TCM_MAX_PENDING_READ_TRANSACTIONS" value="5" />
+  <parameter name="TCM_TURNAROUND_TIME" value="2" />
+  <parameter name="TCM_TIMING_UNITS" value="1" />
+  <parameter name="TCM_READLATENCY" value="4" />
+  <parameter name="TCM_SYMBOLS_PER_WORD" value="4" />
+  <parameter name="USE_READDATA" value="1" />
+  <parameter name="USE_WRITEDATA" value="1" />
+  <parameter name="USE_READ" value="0" />
+  <parameter name="USE_WRITE" value="1" />
+  <parameter name="USE_BEGINTRANSFER" value="1" />
+  <parameter name="USE_BYTEENABLE" value="1" />
+  <parameter name="USE_CHIPSELECT" value="1" />
+  <parameter name="USE_LOCK" value="0" />
+  <parameter name="USE_ADDRESS" value="1" />
+  <parameter name="USE_WAITREQUEST" value="0" />
+  <parameter name="USE_WRITEBYTEENABLE" value="0" />
+  <parameter name="USE_OUTPUTENABLE" value="1" />
+  <parameter name="USE_RESETREQUEST" value="0" />
+  <parameter name="USE_IRQ" value="0" />
+  <parameter name="USE_RESET_OUTPUT" value="0" />
+  <parameter name="ACTIVE_LOW_READ" value="0" />
+  <parameter name="ACTIVE_LOW_LOCK" value="0" />
+  <parameter name="ACTIVE_LOW_WRITE" value="1" />
+  <parameter name="ACTIVE_LOW_CHIPSELECT" value="1" />
+  <parameter name="ACTIVE_LOW_BYTEENABLE" value="1" />
+  <parameter name="ACTIVE_LOW_OUTPUTENABLE" value="1" />
+  <parameter name="ACTIVE_LOW_WRITEBYTEENABLE" value="0" />
+  <parameter name="ACTIVE_LOW_WAITREQUEST" value="0" />
+  <parameter name="ACTIVE_LOW_BEGINTRANSFER" value="1" />
+  <parameter name="ACTIVE_LOW_RESETREQUEST" value="0" />
+  <parameter name="ACTIVE_LOW_IRQ" value="0" />
+  <parameter name="ACTIVE_LOW_RESET_OUTPUT" value="0" />
+  <parameter name="CHIPSELECT_THROUGH_READLATENCY" value="1" />
+  <parameter name="IS_MEMORY_DEVICE" value="1" />
+  <parameter name="MODULE_ASSIGNMENT_KEYS">embeddedsw.configuration.hwClassnameDriverSupportList,embeddedsw.CMacro.SRAM_MEMORY_SIZE,embeddedsw.CMacro.SRAM_MEMORY_UNITS,embeddedsw.CMacro.SSRAM_DATA_WIDTH,embeddedsw.CMacro.SSRAM_READ_LATENCY,embeddedsw.memoryInfo.MEM_INIT_DATA_WIDTH,embeddedsw.memoryInfo.HAS_BYTE_LANE,embeddedsw.memoryInfo.GENERATE_DAT_SYM,embeddedsw.memoryInfo.DAT_SYM_INSTALL_DIR</parameter>
+  <parameter name="MODULE_ASSIGNMENT_VALUES">altera_avalon_lan91c111:altera_avalon_cfi_flash,2,524288,32,2,32,1,1,SIM_DIR</parameter>
+  <parameter name="INTERFACE_ASSIGNMENT_KEYS">embeddedsw.configuration.isMemoryDevice</parameter>
+  <parameter name="INTERFACE_ASSIGNMENT_VALUES" value="1" />
+  <parameter name="CLOCK_RATE" value="50000000" />
+  <parameter name="AUTO_CLK_CLOCK_DOMAIN" value="1" />
+  <parameter name="AUTO_CLK_RESET_DOMAIN" value="1" />
+  <parameter name="AUTO_TRISTATECONDUIT_MASTERS" value="" />
+  <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone IV GX" />
+  <parameter name="AUTO_DEVICE" value="EP4CGX150DF31C7" />
+ </module>
+ <module
+   kind="altera_tristate_conduit_pin_sharer"
+   version="14.0"
+   enabled="1"
+   name="tristate_conduit_pin_sharer_0">
+  <parameter name="INTERFACE_INFO"><![CDATA[<info><slave name="tcs0"><master name="ssram0.tcm"><pin role="" width="1" type="Invalid" output_name="" output_enable_name="" input_name="" /><pin role="begintransfer_n" width="1" type="Output" output_name="tcm_begintransfer_n_out" output_enable_name="" input_name="" /><pin role="address" width="22" type="Output" output_name="tcm_address_out" output_enable_name="" input_name="" /><pin role="write_n" width="1" type="Output" output_name="tcm_write_n_out" output_enable_name="" input_name="" /><pin role="byteenable_n" width="4" type="Output" output_name="tcm_byteenable_n_out" output_enable_name="" input_name="" /><pin role="data" width="32" type="Bidirectional" output_name="tcm_data_out" output_enable_name="tcm_data_outen" input_name="tcm_data_in" /><pin role="outputenable_n" width="1" type="Output" output_name="tcm_outputenable_n_out" output_enable_name="" input_name="" /><pin role="chipselect_n" width="1" type="Output" output_name="tcm_chipselect_n_out" output_enable_name="" input_name="" /></master></slave><slave name="tcs1"><master name="ssram1.tcm"><pin role="" width="1" type="Invalid" output_name="" output_enable_name="" input_name="" /><pin role="begintransfer_n" width="1" type="Output" output_name="tcm_begintransfer_n_out" output_enable_name="" input_name="" /><pin role="address" width="22" type="Output" output_name="tcm_address_out" output_enable_name="" input_name="" /><pin role="write_n" width="1" type="Output" output_name="tcm_write_n_out" output_enable_name="" input_name="" /><pin role="byteenable_n" width="4" type="Output" output_name="tcm_byteenable_n_out" output_enable_name="" input_name="" /><pin role="data" width="32" type="Bidirectional" output_name="tcm_data_out" output_enable_name="tcm_data_outen" input_name="tcm_data_in" /><pin role="outputenable_n" width="1" type="Output" output_name="tcm_outputenable_n_out" output_enable_name="" input_name="" /><pin role="chipselect_n" width="1" type="Output" output_name="tcm_chipselect_n_out" output_enable_name="" input_name="" /></master></slave></info>]]></parameter>
+  <parameter name="NUM_INTERFACES" value="2" />
+  <parameter name="MODULE_ORIGIN_LIST">ssram1.tcm,ssram1.tcm,ssram1.tcm,ssram1.tcm,ssram1.tcm,ssram1.tcm,ssram1.tcm,ssram0.tcm,ssram0.tcm,ssram0.tcm,ssram0.tcm,ssram0.tcm,ssram0.tcm,ssram0.tcm</parameter>
+  <parameter name="SIGNAL_ORIGIN_LIST">address,outputenable_n,byteenable_n,begintransfer_n,write_n,data,chipselect_n,address,outputenable_n,byteenable_n,begintransfer_n,write_n,data,chipselect_n</parameter>
+  <parameter name="SHARED_SIGNAL_LIST">address,ssram_oe_n,ssram_be_n,ssram_adsp_n,ssram_we_n,data,ssram1_ce_n,address,ssram_oe_n,ssram_be_n,ssram_adsp_n,ssram_we_n,data,ssram0_ce_n</parameter>
+  <parameter name="AUTO_CLK_CLOCK_RATE" value="50000000" />
+  <parameter name="AUTO_CLK_CLOCK_DOMAIN" value="1" />
+  <parameter name="AUTO_CLK_RESET_DOMAIN" value="1" />
+  <parameter name="AUTO_TRISTATECONDUIT_MASTERS"><![CDATA[<info><slave name="tcs0"><master name="ssram0.tcm"><port role="write_n_out" direction="output" width="1" /><port role="begintransfer_n_out" direction="output" width="1" /><port role="chipselect_n_out" direction="output" width="1" /><port role="outputenable_n_out" direction="output" width="1" /><port role="request" direction="output" width="1" /><port role="grant" direction="input" width="1" /><port role="address_out" direction="output" width="22" /><port role="byteenable_n_out" direction="output" width="4" /><port role="data_out" direction="output" width="32" /><port role="data_outen" direction="output" width="1" /><port role="data_in" direction="input" width="32" /></master></slave><slave name="tcs1"><master name="ssram1.tcm"><port role="write_n_out" direction="output" width="1" /><port role="begintransfer_n_out" direction="output" width="1" /><port role="chipselect_n_out" direction="output" width="1" /><port role="outputenable_n_out" direction="output" width="1" /><port role="request" direction="output" width="1" /><port role="grant" direction="input" width="1" /><port role="address_out" direction="output" width="22" /><port role="byteenable_n_out" direction="output" width="4" /><port role="data_out" direction="output" width="32" /><port role="data_outen" direction="output" width="1" /><port role="data_in" direction="input" width="32" /></master></slave></info>]]></parameter>
+  <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone IV GX" />
+  <parameter name="AUTO_DEVICE" value="EP4CGX150DF31C7" />
+ </module>
+ <module
+   kind="altera_tristate_conduit_bridge"
+   version="14.0"
+   enabled="1"
+   name="membridge0">
+  <parameter name="INTERFACE_INFO"><![CDATA[<info><slave name="tcs"><master name="tristate_conduit_pin_sharer_0.tcm"><pin role="" width="1" type="Invalid" output_name="" output_enable_name="" input_name="" /><pin role="ssram_oe_n" width="1" type="Output" output_name="ssram_oe_n" output_enable_name="" input_name="" /><pin role="ssram_we_n" width="1" type="Output" output_name="ssram_we_n" output_enable_name="" input_name="" /><pin role="ssram_adsp_n" width="1" type="Output" output_name="ssram_adsp_n" output_enable_name="" input_name="" /><pin role="address" width="22" type="Output" output_name="address" output_enable_name="" input_name="" /><pin role="ssram1_ce_n" width="1" type="Output" output_name="ssram1_ce_n" output_enable_name="" input_name="" /><pin role="ssram0_ce_n" width="1" type="Output" output_name="ssram0_ce_n" output_enable_name="" input_name="" /><pin role="data" width="32" type="Bidirectional" output_name="data" output_enable_name="data_outen" input_name="data_in" /><pin role="ssram_be_n" width="4" type="Output" output_name="ssram_be_n" output_enable_name="" input_name="" /></master></slave></info>]]></parameter>
+  <parameter name="AUTO_CLK_CLOCK_RATE" value="50000000" />
+  <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone IV GX" />
+ </module>
+ <module
+   kind="altera_generic_tristate_controller"
+   version="14.0"
+   enabled="1"
+   name="ssram1">
+  <parameter name="TCM_ADDRESS_W" value="22" />
+  <parameter name="TCM_DATA_W" value="32" />
+  <parameter name="TCM_BYTEENABLE_W" value="4" />
+  <parameter name="TCM_READ_WAIT" value="1" />
+  <parameter name="TCM_WRITE_WAIT" value="1" />
+  <parameter name="TCM_SETUP_WAIT" value="0" />
+  <parameter name="TCM_DATA_HOLD" value="0" />
+  <parameter name="TCM_MAX_PENDING_READ_TRANSACTIONS" value="5" />
+  <parameter name="TCM_TURNAROUND_TIME" value="2" />
+  <parameter name="TCM_TIMING_UNITS" value="1" />
+  <parameter name="TCM_READLATENCY" value="4" />
+  <parameter name="TCM_SYMBOLS_PER_WORD" value="4" />
+  <parameter name="USE_READDATA" value="1" />
+  <parameter name="USE_WRITEDATA" value="1" />
+  <parameter name="USE_READ" value="0" />
+  <parameter name="USE_WRITE" value="1" />
+  <parameter name="USE_BEGINTRANSFER" value="1" />
+  <parameter name="USE_BYTEENABLE" value="1" />
+  <parameter name="USE_CHIPSELECT" value="1" />
+  <parameter name="USE_LOCK" value="0" />
+  <parameter name="USE_ADDRESS" value="1" />
+  <parameter name="USE_WAITREQUEST" value="0" />
+  <parameter name="USE_WRITEBYTEENABLE" value="0" />
+  <parameter name="USE_OUTPUTENABLE" value="1" />
+  <parameter name="USE_RESETREQUEST" value="0" />
+  <parameter name="USE_IRQ" value="0" />
+  <parameter name="USE_RESET_OUTPUT" value="0" />
+  <parameter name="ACTIVE_LOW_READ" value="0" />
+  <parameter name="ACTIVE_LOW_LOCK" value="0" />
+  <parameter name="ACTIVE_LOW_WRITE" value="1" />
+  <parameter name="ACTIVE_LOW_CHIPSELECT" value="1" />
+  <parameter name="ACTIVE_LOW_BYTEENABLE" value="1" />
+  <parameter name="ACTIVE_LOW_OUTPUTENABLE" value="1" />
+  <parameter name="ACTIVE_LOW_WRITEBYTEENABLE" value="0" />
+  <parameter name="ACTIVE_LOW_WAITREQUEST" value="0" />
+  <parameter name="ACTIVE_LOW_BEGINTRANSFER" value="1" />
+  <parameter name="ACTIVE_LOW_RESETREQUEST" value="0" />
+  <parameter name="ACTIVE_LOW_IRQ" value="0" />
+  <parameter name="ACTIVE_LOW_RESET_OUTPUT" value="0" />
+  <parameter name="CHIPSELECT_THROUGH_READLATENCY" value="1" />
+  <parameter name="IS_MEMORY_DEVICE" value="1" />
+  <parameter name="MODULE_ASSIGNMENT_KEYS">embeddedsw.configuration.hwClassnameDriverSupportList,embeddedsw.CMacro.SRAM_MEMORY_SIZE,embeddedsw.CMacro.SRAM_MEMORY_UNITS,embeddedsw.CMacro.SSRAM_DATA_WIDTH,embeddedsw.CMacro.SSRAM_READ_LATENCY,embeddedsw.memoryInfo.MEM_INIT_DATA_WIDTH,embeddedsw.memoryInfo.HAS_BYTE_LANE,embeddedsw.memoryInfo.GENERATE_DAT_SYM,embeddedsw.memoryInfo.DAT_SYM_INSTALL_DIR</parameter>
+  <parameter name="MODULE_ASSIGNMENT_VALUES">altera_avalon_lan91c111:altera_avalon_cfi_flash,2,524288,32,2,32,1,1,SIM_DIR</parameter>
+  <parameter name="INTERFACE_ASSIGNMENT_KEYS">embeddedsw.configuration.isMemoryDevice</parameter>
+  <parameter name="INTERFACE_ASSIGNMENT_VALUES" value="1" />
+  <parameter name="CLOCK_RATE" value="50000000" />
+  <parameter name="AUTO_CLK_CLOCK_DOMAIN" value="1" />
+  <parameter name="AUTO_CLK_RESET_DOMAIN" value="1" />
+  <parameter name="AUTO_TRISTATECONDUIT_MASTERS" value="" />
+  <parameter name="AUTO_DEVICE_FAMILY" value="Cyclone IV GX" />
+  <parameter name="AUTO_DEVICE" value="EP4CGX150DF31C7" />
+ </module>
+ <module
+   kind="altera_avalon_new_sdram_controller"
+   version="14.0"
+   enabled="1"
+   name="sdram0">
+  <parameter name="TAC" value="5.5" />
+  <parameter name="TRCD" value="20.0" />
+  <parameter name="TRFC" value="70.0" />
+  <parameter name="TRP" value="20.0" />
+  <parameter name="TWR" value="14.0" />
+  <parameter name="casLatency" value="3" />
+  <parameter name="columnWidth" value="10" />
+  <parameter name="dataWidth" value="32" />
+  <parameter name="generateSimulationModel" value="false" />
+  <parameter name="initRefreshCommands" value="2" />
+  <parameter name="model">single_Micron_MT48LC4M32B2_7_chip</parameter>
+  <parameter name="numberOfBanks" value="4" />
+  <parameter name="numberOfChipSelects" value="1" />
+  <parameter name="pinsSharedViaTriState" value="false" />
+  <parameter name="powerUpDelay" value="100.0" />
+  <parameter name="refreshPeriod" value="15.625" />
+  <parameter name="rowWidth" value="13" />
+  <parameter name="masteredTristateBridgeSlave" value="0" />
+  <parameter name="TMRD" value="3" />
+  <parameter name="initNOPDelay" value="0.0" />
+  <parameter name="registerDataIn" value="true" />
+  <parameter name="clockRate" value="50000000" />
+  <parameter name="componentName" value="$${FILENAME}_sdram0" />
+ </module>
+ <module kind="altera_avalon_uart" version="14.0" enabled="1" name="uart0">
+  <parameter name="baud" value="115200" />
+  <parameter name="dataBits" value="8" />
+  <parameter name="fixedBaud" value="true" />
+  <parameter name="parity" value="NONE" />
+  <parameter name="simCharStream" value="" />
+  <parameter name="simInteractiveInputEnable" value="false" />
+  <parameter name="simInteractiveOutputEnable" value="false" />
+  <parameter name="simTrueBaud" value="false" />
+  <parameter name="stopBits" value="1" />
+  <parameter name="syncRegDepth" value="2" />
+  <parameter name="useCtsRts" value="false" />
+  <parameter name="useEopRegister" value="false" />
+  <parameter name="useRelativePathForSimFile" value="false" />
+  <parameter name="clockRate" value="50000000" />
+ </module>
+ <module kind="altera_avalon_uart" version="14.0" enabled="1" name="uart1">
+  <parameter name="baud" value="9600" />
+  <parameter name="dataBits" value="8" />
+  <parameter name="fixedBaud" value="true" />
+  <parameter name="parity" value="NONE" />
+  <parameter name="simCharStream" value="" />
+  <parameter name="simInteractiveInputEnable" value="false" />
+  <parameter name="simInteractiveOutputEnable" value="false" />
+  <parameter name="simTrueBaud" value="false" />
+  <parameter name="stopBits" value="1" />
+  <parameter name="syncRegDepth" value="2" />
+  <parameter name="useCtsRts" value="false" />
+  <parameter name="useEopRegister" value="false" />
+  <parameter name="useRelativePathForSimFile" value="false" />
+  <parameter name="clockRate" value="50000000" />
+ </module>
+ <module kind="bexkat1" version="1.1" enabled="1" name="bexkat1">
+  <parameter name="AUTO_CLOCK_CLOCK_RATE" value="50000000" />
+ </module>
+ <module kind="altera_avalon_lcd_16207" version="14.0" enabled="1" name="lcd0" />
+ <module kind="led_matrix" version="1.2" enabled="1" name="led_matrix0">
+  <parameter name="DELAY_VAL" value="32" />
+  <parameter name="AUTO_CLOCK_CLOCK_RATE" value="50000000" />
+ </module>
+ <module kind="memswap" version="1.4" enabled="1" name="monitor">
+  <parameter name="AUTO_CLOCK_CLOCK_RATE" value="50000000" />
+ </module>
+ <module kind="altera_avalon_pio" version="14.0" enabled="1" name="led0">
+  <parameter name="bitClearingEdgeCapReg" value="false" />
+  <parameter name="bitModifyingOutReg" value="false" />
+  <parameter name="captureEdge" value="false" />
+  <parameter name="direction" value="Output" />
+  <parameter name="edgeType" value="RISING" />
+  <parameter name="generateIRQ" value="false" />
+  <parameter name="irqType" value="LEVEL" />
+  <parameter name="resetValue" value="0" />
+  <parameter name="simDoTestBenchWiring" value="false" />
+  <parameter name="simDrivenValue" value="0" />
+  <parameter name="width" value="8" />
+  <parameter name="clockRate" value="50000000" />
+ </module>
+ <module kind="altera_avalon_pio" version="14.0" enabled="1" name="sw0">
+  <parameter name="bitClearingEdgeCapReg" value="false" />
+  <parameter name="bitModifyingOutReg" value="false" />
+  <parameter name="captureEdge" value="false" />
+  <parameter name="direction" value="Input" />
+  <parameter name="edgeType" value="RISING" />
+  <parameter name="generateIRQ" value="false" />
+  <parameter name="irqType" value="LEVEL" />
+  <parameter name="resetValue" value="0" />
+  <parameter name="simDoTestBenchWiring" value="false" />
+  <parameter name="simDrivenValue" value="0" />
+  <parameter name="width" value="8" />
+  <parameter name="clockRate" value="50000000" />
+ </module>
+ <connection kind="clock" version="14.0" start="clk0.clk" end="ssram0.clk" />
+ <connection kind="reset" version="14.0" start="clk0.clk_reset" end="ssram0.reset" />
+ <connection kind="clock" version="14.0" start="clk0.clk" end="membridge0.clk" />
+ <connection
+   kind="reset"
+   version="14.0"
+   start="clk0.clk_reset"
+   end="tristate_conduit_pin_sharer_0.reset" />
+ <connection
+   kind="clock"
+   version="14.0"
+   start="clk0.clk"
+   end="tristate_conduit_pin_sharer_0.clk" />
+ <connection
+   kind="reset"
+   version="14.0"
+   start="clk0.clk_reset"
+   end="membridge0.reset" />
+ <connection
+   kind="tristate_conduit"
+   version="14.0"
+   start="tristate_conduit_pin_sharer_0.tcm"
+   end="membridge0.tcs" />
+ <connection
+   kind="tristate_conduit"
+   version="14.0"
+   start="ssram0.tcm"
+   end="tristate_conduit_pin_sharer_0.tcs0" />
+ <connection kind="clock" version="14.0" start="clk0.clk" end="ssram1.clk" />
+ <connection kind="reset" version="14.0" start="clk0.clk_reset" end="ssram1.reset" />
+ <connection
+   kind="tristate_conduit"
+   version="14.0"
+   start="ssram1.tcm"
+   end="tristate_conduit_pin_sharer_0.tcs1" />
+ <connection kind="reset" version="14.0" start="clk0.clk_reset" end="sdram0.reset" />
+ <connection kind="clock" version="14.0" start="clk0.clk" end="sdram0.clk" />
+ <connection kind="clock" version="14.0" start="clk0.clk" end="uart0.clk" />
+ <connection kind="reset" version="14.0" start="clk0.clk_reset" end="uart0.reset" />
+ <connection kind="clock" version="14.0" start="clk0.clk" end="uart1.clk" />
+ <connection kind="reset" version="14.0" start="clk0.clk_reset" end="uart1.reset" />
+ <connection kind="clock" version="14.0" start="clk0.clk" end="led_matrix0.clock" />
+ <connection
+   kind="reset"
+   version="14.0"
+   start="clk0.clk_reset"
+   end="led_matrix0.reset" />
+ <connection kind="clock" version="14.0" start="clk0.clk" end="bexkat1.clock" />
+ <connection
+   kind="reset"
+   version="14.0"
+   start="clk0.clk_reset"
+   end="bexkat1.reset" />
+ <connection kind="avalon" version="14.0" start="bexkat1.m0" end="led_matrix0.s0">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00800000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection kind="avalon" version="14.0" start="bexkat1.m0" end="uart1.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00800820" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection kind="avalon" version="14.0" start="bexkat1.m0" end="sdram0.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x08000000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection kind="avalon" version="14.0" start="bexkat1.m0" end="uart0.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00800800" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection kind="avalon" version="14.0" start="bexkat1.m0" end="ssram0.uas">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x0000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection kind="avalon" version="14.0" start="bexkat1.m0" end="ssram1.uas">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00400000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection kind="reset" version="14.0" start="clk0.clk_reset" end="lcd0.reset" />
+ <connection kind="clock" version="14.0" start="clk0.clk" end="lcd0.clk" />
+ <connection
+   kind="avalon"
+   version="14.0"
+   start="bexkat1.m0"
+   end="lcd0.control_slave">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00800860" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection kind="clock" version="14.0" start="clk0.clk" end="monitor.clock" />
+ <connection
+   kind="reset"
+   version="14.0"
+   start="clk0.clk_reset"
+   end="monitor.reset" />
+ <connection kind="avalon" version="14.0" start="bexkat1.m0" end="monitor.s0">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0xffc00000" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection kind="clock" version="14.0" start="clk0.clk" end="led0.clk" />
+ <connection kind="reset" version="14.0" start="clk0.clk_reset" end="led0.reset" />
+ <connection kind="avalon" version="14.0" start="bexkat1.m0" end="led0.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00800850" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <connection kind="clock" version="14.0" start="clk0.clk" end="sw0.clk" />
+ <connection kind="reset" version="14.0" start="clk0.clk_reset" end="sw0.reset" />
+ <connection kind="avalon" version="14.0" start="bexkat1.m0" end="sw0.s1">
+  <parameter name="arbitrationPriority" value="1" />
+  <parameter name="baseAddress" value="0x00800840" />
+  <parameter name="defaultConnection" value="false" />
+ </connection>
+ <interconnectRequirement for="$system" name="qsys_mm.clockCrossingAdapter" value="HANDSHAKE" />
+ <interconnectRequirement for="$system" name="qsys_mm.maxAdditionalLatency" value="1" />
+ <interconnectRequirement for="$system" name="qsys_mm.insertDefaultSlave" value="FALSE" />
+</system>
