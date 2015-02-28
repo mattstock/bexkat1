@@ -425,15 +425,15 @@ begin
           end
         end
         {MODE_REGIND, 8'h00}: begin // st.l
-	  state_next = STATE_MEMSAVE;
-	  retstate_next = STATE_STORE;
-	  avm_m0_write_next = 1'b1;
-	  avm_m0_read_next = 1'b0;
-	  avm_m0_byteenable_next = 2'b11;
+          state_next = STATE_MEMSAVE;
+          retstate_next = STATE_STORE;
+          avm_m0_write_next = 1'b1;
+          avm_m0_read_next = 1'b0;
+          avm_m0_byteenable_next = 2'b11;
            
-	  mar_next = alu_out;
-	  addrsel_next = ADDR_MAR;
-	  reg_read_addr1 = ir_rb;
+          mar_next = alu_out;
+          addrsel_next = ADDR_MAR;
+          reg_read_addr1 = ir_rb;
           alu_in2 = mar;
 
           reg_read_addr2 = ir_ra;
@@ -577,11 +577,11 @@ begin
           reg_write = REG_WRITE_DW;        
         end
         {MODE_DIR, 8'h00}: begin // std.l
- 	  state_next = STATE_MEMSAVE;
-	  retstate_next = STATE_STORE;
-	  avm_m0_write_next = 1'b1;
-	  avm_m0_read_next = 1'b0;
-	  avm_m0_byteenable_next = 2'b11;
+          state_next = STATE_MEMSAVE;
+          retstate_next = STATE_STORE;
+          avm_m0_write_next = 1'b1;
+          avm_m0_read_next = 1'b0;
+          avm_m0_byteenable_next = 2'b11;
 
           mdr_next = reg_data_out1;
           mdrsel_next = MDR_HIGH;

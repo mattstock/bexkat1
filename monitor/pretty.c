@@ -60,11 +60,12 @@ char serial_getchar(unsigned short port) {
     p = serial0;
   }
 
-  result  = p[0];
-  while ((result & 0x8000) == 0)
-    result = p[0];
-  return (char)(result & 0xff); 
+  result  = p[2];
+  while ((result & 0x0080) == 0)
+    result = p[2];
+  return (char)(p[0] & 0xff); 
 }
+
 char *itos(unsigned int val, char *s) {
   unsigned int c;
 
@@ -90,8 +91,8 @@ void serial_putchar(unsigned short port, char c) {
     p = serial0;
   }
 
-  while (!(p[0] & 0x4000));
-  p[0] = (unsigned short)c;
+  while (!(p[2] & 0x0040));
+  p[1] = (unsigned short)c;
 }
 
 void serial_putbin(unsigned short port, char *list, unsigned short len) {
@@ -154,7 +155,7 @@ void main(void) {
   y = 8;
   val = 0x80808000;
 //  serial_putbin(1, katherine, 6);
-  delay(0x15000);
+//  delay(0x15000);
 //  serial_putbin(1, rebecca, 6);
   while (1) {
     matrix_fade();

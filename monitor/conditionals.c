@@ -20,8 +20,9 @@ void _start(void) {
 }
 
 void draw(unsigned x, unsigned y, unsigned val, unsigned exp) {
-    matrix[y*32+x] = (val == exp ? 0x00ff0000 : 0xff000000);
+    matrix[y*32+x] = (val == exp ? 0x000000ff : 0x0000ff00);
 }
+
 
 void main(void) {
   unsigned v1,v2, a1, a2, a3;

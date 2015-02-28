@@ -116,6 +116,7 @@ hexdisp d1(.out(HEX1), .in(fs_addrbus[7:4]));
 hexdisp d0(.out(HEX0), .in(fs_addrbus[3:0]));
 // Blinknlights
 assign LEDR = 18'h0000;
+assign LEDG[8] = 1'b1;
 
 // quadrature encoder outputs 0-23
 //rgb_enc io0(.clk(clock_50), .rst_n(rst_n), .quad(quad), .button(pb), .rgb_out(rgb),
@@ -129,6 +130,7 @@ fabirc fabric0(.clk_clk(clock_50), .reset_reset_n(rst_n), .fsbus_ssram1_ce_n(ssr
   .sdram0_wire_we_n(sdram_we_n), .uart0_rxd(serial0_rx), .uart0_txd(serial0_tx), .uart1_txd(serial1_tx), .uart1_rxd(1'b0),
   .led_matrix_a(rgb_a), .led_matrix_b(rgb_b), .led_matrix_c(rgb_c), .led_matrix_rgb0(rgb0), .led_matrix_rgb1(rgb1),
   .led_matrix_rgb_oe_n(rgb_oe_n), .led_matrix_stb(rgb_stb), .led_matrix_rgb_clk(rgb_clk),
-  .lcd_RS(lcd_rs), .lcd_RW(lcd_rw), .lcd_data(lcd_data), .lcd_E(lcd_e));
+  .lcd_RS(lcd_rs), .lcd_RW(lcd_rw), .lcd_data(lcd_data), .lcd_E(lcd_e),
+  .sw_export(SW[7:0]), .ledg_export(LEDG[7:0]));
 
 endmodule

@@ -16,8 +16,8 @@ set_false_path -from * -to [get_ports {rgb[*]}]
 set_false_path -from [get_ports {pb}] -to *
 set_false_path -from [get_ports {quad[*]}] -to *
 
-set_multicycle_path -from * -to [get_registers {*bexkat1|ccr[*]}] -setup -start 2
-set_multicycle_path -from * -to [get_registers {*bexkat1|ccr[*]}] -hold -start 1
+set_multicycle_path -from * -to [get_registers {*bexkat0|ccr[*]}] -setup -start 2
+set_multicycle_path -from * -to [get_registers {*bexkat0|ccr[*]}] -hold -start 1
 
 set_multicycle_path -through [get_pins -compatibility_mode {*intcalc*}] -setup -start 8
 set_multicycle_path -through [get_pins -compatibility_mode {*intcalc*}] -hold -start 7
