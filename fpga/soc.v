@@ -1,55 +1,64 @@
-module soc(SW, KEY, HEX0, HEX1, HEX2, HEX3, LEDR, LEDG, clock_50, clock_27,
-  aud_adclrck, aud_adcdat, aud_daclrck, aud_dacdat, aud_xck, aud_bclk, i2c_sclk, i2c_sdat,
+module soc(SW, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HEX6, HEX7, LEDR, LEDG, clock_50,
   quad, rgb, pb,
-  sram_addrbus, sram_databus, sram_we_n, sram_oe_n, sram_ub_n, sram_lb_n, sram_ce_n,
-  ps2_dat, ps2_clk, lcd_e, lcd_rs, lcd_data,
+  fs_addrbus, fs_databus, ssram_be, ssram0_ce_n, ssram1_ce_n, ssram_oe_n, ssram_we_n,
+  ssram_adv_n, ssram_adsp_n, ssram_gw_n, ssram_adsc_n, ssram_clk,
+  lcd_e, lcd_rw, lcd_on, lcd_rs, lcd_data,
   rgb0, rgb1, rgb_a, rgb_b, rgb_c, rgb_stb, rgb_clk, rgb_oe_n,
-  fl_addrbus, fl_databus, fl_oe_n, fl_ce_n, fl_we_n, fl_rst_n,
-  miso, mosi, sclk, ss_sdcard, ss_ethernet,
-  serial0_tx, serial0_rx, serial1_tx, serial2_tx, serial2_rx,
-  dram_dq, dram_addr, dram_ba, dram_ldqm, dram_udqm, dram_ras_n, dram_cas_n, dram_cke, dram_clk, dram_we_n, dram_ce_n);
+  fl_oe_n, fl_ce_n, fl_we_n, fl_rst_n, fl_ry, fl_wp_n,
+  sdram_addrbus, sdram_databus, sdram_ba, sdram_dqm, sdram_ras_n, sdram_cas_n, sdram_cke, sdram_clk,
+  sdram_we_n, sdram_cs_n,
+  serial0_tx, serial0_rx, serial1_tx);
 
-// SRAM
-output [17:0] sram_addrbus;
-inout [15:0] sram_databus;
-output sram_we_n;
-output sram_oe_n;
-output sram_ub_n;
-output sram_lb_n;
-output sram_ce_n;
+// SSRAM & flash
+output [26:0] fs_addrbus;
+inout [31:0] fs_databus;
+
+// SSRAM
+output [3:0] ssram_be;
+output ssram_oe_n;
+output ssram0_ce_n;
+output ssram1_ce_n;
+output ssram_we_n;
+output ssram_adv_n;
+output ssram_adsp_n;
+output ssram_gw_n;
+output ssram_adsc_n;
+output ssram_clk;
 
 // Flash
-inout [7:0] fl_databus;
-output [21:0] fl_addrbus;
 output fl_oe_n;
 output fl_ce_n;
 output fl_we_n;
+input fl_ry;
 output fl_rst_n;
+output fl_wp_n;
 
 // SDRAM
-inout [15:0] dram_dq;
-output [11:0] dram_addr;
-output [1:0] dram_ba;
-output dram_ldqm;
-output dram_udqm;
-output dram_ras_n;
-output dram_cas_n;
-output dram_cke;
-output dram_clk;
-output dram_we_n;
-output dram_ce_n;
+output [12:0] sdram_addrbus;
+inout [31:0] sdram_databus;
+output [1:0] sdram_ba;
+output [3:0] sdram_dqm;
+output sdram_ras_n;
+output sdram_cas_n;
+output sdram_cke;
+output sdram_clk;
+output sdram_we_n;
+output sdram_cs_n;
 
 // FPGA board stuff
 input clock_50;
-input [1:0] clock_27;
-input [9:0] SW;
+input [17:0] SW;
 input [3:0] KEY;
-output [7:0] LEDG;
-output [9:0] LEDR;
+output [8:0] LEDG;
+output [17:0] LEDR;
 output [6:0] HEX0;
 output [6:0] HEX1;
 output [6:0] HEX2;
 output [6:0] HEX3;
+output [6:0] HEX4;
+output [6:0] HEX5;
+output [6:0] HEX6;
+output [6:0] HEX7;
 
 // LED panel
 output [2:0] rgb0;
@@ -64,153 +73,64 @@ output [2:0] rgb;
 input [1:0] quad;
 input pb;
 
-// CODEC
-inout i2c_sdat;
-output i2c_sclk;
-output aud_xck;
-output aud_bclk;
-output aud_dacdat;
-output aud_daclrck;
-output aud_adclrck;
-input aud_adcdat;
-
 // serial
-input serial0_rx, serial2_rx;
-output serial0_tx, serial1_tx, serial2_tx;
-
-// ps2
-input ps2_dat;
-input ps2_clk;
+input serial0_rx;
+output serial0_tx, serial1_tx;
 
 // LCD display
 output lcd_e;
 output lcd_rs;
+output lcd_on;
+output lcd_rw;
 output [7:0] lcd_data;
 
-// SPI
-input miso;
-output mosi;
-output sclk;
-output ss_ethernet;
-output ss_sdcard;
-
 wire rst_n;
-wire [5:0] encoder_val;
-wire kbd_event;
-wire [7:0] kbd_data;
-
-wire mem_flash, mem_monitor, mem_dram, mem_sram, mem_led_matrix, mem_kbd, mem_encoder, mem_serial0, mem_serial1;
-wire mem_switch, mem_serial2, mem_spi;
-wire [15:0] mem_monitor_data, led_matrix_data_out, encoder_data, serial0_data, serial1_data, serial2_data, spi_data;
-wire [31:0] cpu_addrbus;
-wire [15:0] cpu_data_out;
-wire cpu_write, cpu_bytectl;
-wire [3:0] ccr;
-
-wire [15:0] cpu_data_in0 = (mem_monitor ? mem_monitor_data : 16'h0000);
-wire [15:0] cpu_data_in1 = (mem_flash ? { 8'h00, fl_databus } : 16'h0000);
-wire [15:0] cpu_data_in2 = (mem_dram ? dram_dq : 16'h0000);
-wire [15:0] cpu_data_in3 = (mem_sram ? sram_databus : 16'h0000);
-wire [15:0] cpu_data_in4 = (mem_led_matrix ? led_matrix_data_out : 16'h0000);
-wire [15:0] cpu_data_in5 = (mem_kbd ? { 8'h00, kbd_data}  : 16'h0000);
-wire [15:0] cpu_data_in6 = (mem_encoder ? encoder_data : 16'h0000);
-wire [15:0] cpu_data_in7 = (mem_serial0 ? serial0_data : 16'h0000);
-wire [15:0] cpu_data_in8 = (mem_serial1 ? serial1_data : 16'h0000);
-wire [15:0] cpu_data_in9 = (mem_serial2 ? serial2_data : 16'h0000);
-wire [15:0] cpu_data_in10 = (mem_switch ? { 8'h00, SW[7:0] } : 16'h0000);
-wire [15:0] cpu_data_in11 = (mem_spi ? spi_data : 16'h0000);
-wire [15:0] cpu_data_in = cpu_data_in0 |
-  cpu_data_in1 | cpu_data_in2 | cpu_data_in3 | cpu_data_in4 |
-  cpu_data_in5 | cpu_data_in6 | cpu_data_in7 | cpu_data_in8 |
-  cpu_data_in9 | cpu_data_in10 | cpu_data_in11;
 
 // Reset button
 reg [2:0] rst_sync;
 assign rst_n = rst_sync[2];
 always @(posedge clock_50) rst_sync <= { rst_sync[1:0], KEY[0] };
 
-// No audio for now
-assign aud_adclrck = aud_daclrck;
-assign aud_daclrck = 1'b0;
-assign aud_dacdat = 1'bz;
-assign aud_xck = 1'bz;
-assign aud_bclk = 1'bz;
-assign i2c_sclk = 1'bz;
+assign lcd_on = SW[17];
 
-// No SDRAM for now, need a refresh module
-assign dram_addr = 12'h00000;
-assign dram_ba = 2'h0;
-assign dram_ldqm = cpu_bytectl & ~cpu_addrbus[0];
-assign dram_udqm = cpu_bytectl & cpu_addrbus[0];
-assign dram_ras_n = 1'b1;
-assign dram_cas_n = 1'b1;
-assign dram_cke = 1'b0;
-assign dram_clk = clock_50;
-assign dram_we_n = ~cpu_write;
-assign dram_ce_n = ~mem_dram;
-assign dram_dq = (cpu_write ? cpu_data_out : 16'hzzzz);
-
-// Wiring for external SRAM
-assign sram_lb_n = cpu_bytectl & ~cpu_addrbus[0];
-assign sram_ub_n = cpu_bytectl & cpu_addrbus[0];
-assign sram_we_n = ~cpu_write;
-assign sram_ce_n = ~mem_sram;
-assign sram_oe_n = ~sram_we_n;
-assign sram_databus = (cpu_write ? cpu_data_out : 16'hzzzz);
-assign sram_addrbus = cpu_addrbus[18:1]; // Byte addressable, but word memory
-
-// Flash wiring
-assign fl_addrbus = cpu_addrbus[21:0];
+// Wiring for external SDRAM, SSRAM & flash
+assign sdram_clk = clock_50;
+assign ssram_gw_n = 1'b1;
+assign ssram_adv_n = 1'b1;
+assign ssram_clk = clock_50;
+assign ssram_adsc_n = 1'b1;
 assign fl_oe_n = ~fl_we_n;
-assign fl_we_n = ~cpu_write;
-assign fl_ce_n = ~mem_flash;
+assign fl_we_n = 1'b1;
+assign fl_ce_n = 1'b1;
 assign fl_rst_n = rst_n;
-assign fl_databus = (cpu_write ? cpu_data_out[7:0] : 8'hzz);
-
-// LED display driver
-led_matrix led0(.clk(clock_50), .rst_n(rst_n), .rgb_a(rgb_a), .rgb_b(rgb_b), .rgb_c(rgb_c), .rgb0(rgb0), .rgb1(rgb1), .rgb_clk(rgb_clk), .rgb_stb(rgb_stb), .oe_n(rgb_oe_n),
-  .data_in(cpu_data_out), .data_out(led_matrix_data_out), .write(cpu_write & mem_led_matrix), .address(cpu_addrbus[10:1]));
+assign fl_wp_n = 1'b1;
 
 // visualization stuff
-hexdisp d0(.out(HEX3), .in(cpu_data_out[15:12]));
-hexdisp d1(.out(HEX2), .in(cpu_data_out[11:8]));
-hexdisp d2(.out(HEX1), .in(cpu_data_out[7:4]));
-hexdisp d3(.out(HEX0), .in(cpu_data_out[3:0]));
+hexdisp d7(.out(HEX7), .in(4'h0));
+hexdisp d6(.out(HEX6), .in({ 1'b0, fs_addrbus[26:24] }));
+hexdisp d5(.out(HEX5), .in(fs_addrbus[23:20]));
+hexdisp d4(.out(HEX4), .in(fs_addrbus[19:16]));
+hexdisp d3(.out(HEX3), .in(fs_addrbus[15:12]));
+hexdisp d2(.out(HEX2), .in(fs_addrbus[11:8]));
+hexdisp d1(.out(HEX1), .in(fs_addrbus[7:4]));
+hexdisp d0(.out(HEX0), .in(fs_addrbus[3:0]));
 // Blinknlights
-assign LEDG = { mem_flash, mem_monitor, mem_sram, mem_led_matrix, mem_encoder, mem_serial0, mem_serial1, mem_serial2 };
-assign LEDR = { 2'b00, cpu_bytectl, cpu_write, ccr};
+assign LEDR = 18'h0000;
+assign LEDG[8] = 1'b1;
 
 // quadrature encoder outputs 0-23
-rgb_enc io0(.clk(clock_50), .rst_n(rst_n), .quad(quad), .button(pb), .rgb_out(rgb),
-  .write(cpu_write & mem_encoder), .address(cpu_addrbus[2:1]), .data_in(cpu_data_out), .data_out(encoder_data));
+//rgb_enc io0(.clk(clock_50), .rst_n(rst_n), .quad(quad), .button(pb), .rgb_out(rgb),
+//  .write(cpu_write & mem_encoder), .address(cpu_addrbus[2:1]), .data_in(cpu_data_out), .data_out(encoder_data));
 
-// LCD module
-lcd_module lcd0(.clk(clock_50), .rst_n(rst_n), .e(lcd_e), .data_out(lcd_data), .rs(lcd_rs));
+fabirc fabric0(.clk_clk(clock_50), .reset_reset_n(rst_n), .fsbus_ssram1_ce_n(ssram1_ce_n),
+  .fsbus_ssram0_ce_n(ssram0_ce_n), .fsbus_data(fs_databus), .fsbus_address(fs_addrbus), .fsbus_ssram_we_n(ssram_we_n),
+  .fsbus_ssram_be_n(ssram_be), .fsbus_ssram_adsp_n(ssram_adsp_n), .fsbus_ssram_oe_n(ssram_oe_n),
+  .sdram0_wire_addr(sdram_addrbus), .sdram0_wire_ba(sdram_ba), .sdram0_wire_cas_n(sdram_cas_n), .sdram0_wire_cke(sdram_cke),
+  .sdram0_wire_cs_n(sdram_cs_n), .sdram0_wire_dq(sdram_databus), .sdram0_wire_dqm(sdram_dqm), .sdram0_wire_ras_n(sdram_ras_n),
+  .sdram0_wire_we_n(sdram_we_n), .uart0_rxd(serial0_rx), .uart0_txd(serial0_tx), .uart1_txd(serial1_tx), .uart1_rxd(1'b0),
+  .led_matrix_a(rgb_a), .led_matrix_b(rgb_b), .led_matrix_c(rgb_c), .led_matrix_rgb0(rgb0), .led_matrix_rgb1(rgb1),
+  .led_matrix_rgb_oe_n(rgb_oe_n), .led_matrix_stb(rgb_stb), .led_matrix_rgb_clk(rgb_clk),
+  .lcd_RS(lcd_rs), .lcd_RW(lcd_rw), .lcd_data(lcd_data), .lcd_E(lcd_e),
+  .sw_export(SW[7:0]), .ledg_export(LEDG[7:0]));
 
-// Keyboard
-user_input kbd0(.clk(clock_50), .rst_n(rst_n), .ps2_clock(ps2_clk), .ps2_data(ps2_dat), .data_read(pb), .data_ready(kbd_event), .data_out(kbd_data));
-
-// UART for RS232
-uart #(.baud(115200)) uart0(.clk(clock_50), .rst_n(rst_n), .rx(serial0_rx), .tx(serial0_tx), .data_in(cpu_data_out), .data_out(serial0_data),
-  .write(cpu_write), .select(mem_serial0), .address(cpu_addrbus[3:0]));
-// UART for speach generator
-uart #(.baud(9600)) uart1(.clk(clock_50), .rst_n(rst_n), .tx(serial1_tx), .data_in(cpu_data_out), .data_out(serial1_data),
-  .write(cpu_write), .select(mem_serial1), .address(cpu_addrbus[3:0]));
-// UART for logic level testing
-uart #(.baud(115200)) uart2(.clk(clock_50), .rst_n(rst_n), .rx(serial2_rx), .tx(serial2_tx), .data_in(cpu_data_out), .data_out(serial2_data),
-  .write(cpu_write), .select(mem_serial2), .address(cpu_addrbus[3:0]));
-
-// SPI module
-spi_master spi0(.clk(clock_50), .rst_n(rst_n), .miso(miso), .mosi(mosi), .sclk(sclk), .ss({ss_ethernet, ss_sdcard}), .data_in(cpu_data_out), .data_out(spi_data),
-  .write(cpu_write), .select(mem_spi), .address(cpu_addrbus[3:0]));
-  
-mycpu cpu0(.clk(clock_50), .rst_n(rst_n), .addrbus(cpu_addrbus), .data_in(cpu_data_in), .data_out(cpu_data_out), .write_out(cpu_write), .bytectl(cpu_bytectl), .ccr(ccr));
-
-// Chip select logic
-mem_select memmap0(.address(cpu_addrbus), .flash(mem_flash), .dram(mem_dram), .sram(mem_sram), .monitor(mem_monitor), .led_matrix(mem_led_matrix),
-  .kbd(mem_kbd), .encoder(mem_encoder), .serial0(mem_serial0), .serial1(mem_serial1), .serial2(mem_serial2), .switch(mem_switch), .spi(mem_spi));
-
-// ROM monitor code
-monitor rom0(.clock(clock_50), .address(cpu_addrbus[12:1]), .q(mem_monitor_data));
- 
 endmodule

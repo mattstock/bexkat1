@@ -11,10 +11,10 @@ TEMP := $(shell mktemp)
 
 .PHONY: all clean
 
-all: monitor.hex frametests.s frametests.hex memtests.s memtests.hex stacktests.hex conditionals.s conditionals.hex conditionals-simple.hex types.s types.hex multiply.s multiply.hex multiply-simple.hex fib.s fib.hex spi.s spi.hex spi-simple.hex structures.s structures.hex fp.s fp.hex pretty.s pretty.hex
+all: monitor.hex frametests.s frametests.hex memtests.s memtests.hex stacktests.hex conditionals.s conditionals.hex conditionals-simple.hex types.s types.hex multiply.s multiply.hex multiply-simple.hex fib.s fib.hex structures.s structures.hex fp.s fp.hex pretty.s pretty.hex memtests-simple.hex
 
 clean:
-	rm -f *.o *.srec *.hex memtests stacktests monitor monitor.s frametests frametests.s memtests.s conditionals conditionals.s conditionals-simple types.s types multiply.s multiply multiply-simple fib.s fib spi.s spi spi-simple structures.s structures fp.s fp pretty.s pretty
+	rm -f *.o *.srec *.hex memtests stacktests monitor monitor.s frametests frametests.s memtests.s conditionals conditionals.s conditionals-simple types.s types multiply.s multiply multiply-simple fib.s fib spi.s spi spi-simple structures.s structures fp.s fp pretty.s pretty memtests-simple
 
 %.s: %.c
 	$(CC) -S $(CFLAGS) -Wf-target=$(CCTARGET) -o $@ $^
@@ -58,4 +58,6 @@ structures: structures.o
 fp: fp.o
 	$(LD) -o $@ $^ -T $(LD_SCRIPT)
 pretty: pretty.o
+	$(LD) -o $@ $^ -T $(LD_SCRIPT)
+memtests-simple: memtests-simple.o
 	$(LD) -o $@ $^ -T $(LD_SCRIPT)

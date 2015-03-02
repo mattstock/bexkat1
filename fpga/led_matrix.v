@@ -1,21 +1,31 @@
-module led_matrix(clk, rst_n, rgb_a, rgb_b, rgb_c, rgb0, rgb1, rgb_stb, rgb_clk, oe_n, data_in, data_out, address, write);
-
-input clk;
-input rst_n;
-output rgb_a, rgb_b, rgb_c;
-output [2:0] rgb0, rgb1;
-output rgb_stb;
-output rgb_clk;
-output oe_n;
-input [15:0] data_in;
-input [9:0] address;
-output [15:0] data_out;
-input write;
+module led_matrix(
+  input csi_clk,
+  input rsi_reset_n,
+  input [31:0] avs_s0_writedata,
+  output [31:0] avs_s0_readdata,
+  input [8:0] avs_s0_address,
+  input [3:0] avs_s0_byteenable,
+  input avs_s0_write,
+  input avs_s0_read,
+  output rgb_a,
+  output rgb_b,
+  output rgb_c,
+  output reg [2:0] rgb0,
+  output reg [2:0] rgb1,
+  output rgb_stb,
+  output rgb_clk,
+  output oe_n);
 
 wire [2:0] lp = phase[2:0]-1'b1;
 wire r,g,b;
 wire [31:0] buffer;
 wire ab;
+wire [31:0] writedata_be, readdata_be;
+wire [3:0] byteenable_be;
+
+assign writedata_be = { avs_s0_writedata[7:0], avs_s0_writedata[15:8], avs_s0_writedata[23:16], avs_s0_writedata[31:24] };
+assign byteenable_be = { avs_s0_byteenable[0], avs_s0_byteenable[1], avs_s0_byteenable[2], avs_s0_byteenable[3] };
+assign avs_s0_readdata = { readdata_be[7:0], readdata_be[15:8], readdata_be[23:16], readdata_be[31:24] };
 
 assign r = (phase[9:2] < buffer[15:8]);
 assign g = (phase[9:2] < buffer[7:0]);
@@ -29,19 +39,20 @@ assign rgb_stb = (state == STATE_LATCH);
 assign rgb_clk = (state == STATE_CLOCK);
 assign oe_n = (state == STATE_LATCH || state == STATE_BLANK1 || state == STATE_BLANK2);
 
-parameter [7:0] DELAY = 8'h20;
+
+parameter [7:0] DELAY_VAL = 8'h20;
 
 localparam STATE_IDLE = 3'b000, STATE_READ1 = 3'b001, STATE_READ2 = 3'b010, STATE_CLOCK = 3'b011, STATE_LATCH = 3'b100, STATE_BLANK1 = 3'b101, STATE_BLANK2 = 3'b111;
 
 reg [9:0] phase, phase_next;
-reg [2:0] rgb0, rgb0_next, rgb1, rgb1_next;
+reg [2:0] rgb0_next, rgb1_next;
 reg [4:0] colpos, colpos_next;
 reg [2:0] state, state_next;
 reg [7:0] delay, delay_next;
 
-always @(posedge clk or negedge rst_n)
+always @(posedge csi_clk or negedge rsi_reset_n)
 begin
-  if (!rst_n) begin
+  if (!rsi_reset_n) begin
     rgb0 <= 1'b0;
     rgb1 <= 1'b0;
     delay <= 8'h00;
@@ -82,7 +93,7 @@ begin
       colpos_next = colpos + 1'b1;
       if (colpos == 5'b11111) begin
         state_next = STATE_BLANK1;
-        delay_next = DELAY;
+        delay_next = DELAY_VAL;
       end else
         state_next = STATE_IDLE;
     end
@@ -95,7 +106,7 @@ begin
     STATE_LATCH: begin
       state_next = STATE_BLANK2;
       phase_next = phase + 1'b1;
-      delay_next = DELAY;
+      delay_next = DELAY_VAL;
     end
     STATE_BLANK2: begin
       if (delay == 8'h00)
@@ -106,5 +117,6 @@ begin
   endcase
 end
 
-matrixmem m0(.clock(clk), .data_b(data_in), .wren_b(write), .address_b(address), .q_b(data_out), .wren_a(1'b0), .q_a(buffer), .address_a({ab, phase[2:0], colpos}));
+matrixmem m0(.clock(csi_clk), .data_b(writedata_be), .wren_b(avs_s0_write), .address_b(avs_s0_address), .byteena_b(byteenable_be),
+  .q_b(readdata_be), .wren_a(1'b0), .q_a(buffer), .address_a({ab, phase[2:0], colpos}));
 endmodule

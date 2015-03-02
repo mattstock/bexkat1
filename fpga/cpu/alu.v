@@ -4,8 +4,6 @@ module alu(
   input wire [WIDTH-1:0] in1,
   input wire [WIDTH-1:0] in2,
   input wire [3:0] func,
-  input wire c_in,
-  input wire z_in,
   output reg [WIDTH-1:0] out,
   output reg c_out,
   output wire z_out,
@@ -23,9 +21,12 @@ localparam ALU_LSHIFT =  'h4;
 localparam ALU_RSHIFTA = 'h5;
 localparam ALU_RSHIFTL = 'h6;
 localparam ALU_XOR =     'h7;
+localparam ALU_IN1 =     'h8;
+localparam ALU_IN2 =     'h9;
+localparam ALU_ZERO =    'ha;
 
 assign n_out = out[WIDTH-1];
-assign z_out = ~|{out,z_in};
+assign z_out = ~|out;
 
 always @*
 begin
@@ -33,20 +34,20 @@ begin
     ALU_AND: begin
       out = in1 & in2;
       v_out = 1'b0;
-      c_out = c_in;
+      c_out = 1'b0;
     end  
     ALU_OR: begin
       out = in1 | in2;
       v_out = 1'b0;
-      c_out = c_in;
+      c_out = 1'b0;
     end
     ALU_XOR: begin
       out = in1 ^ in2;
       v_out = 1'b0;
-      c_out = c_in;
+      c_out = 1'b0;
     end
     ALU_ADD: begin
-      out = in1 + in2 + c_in;
+      out = in1 + in2;
       v_out = (in1[WIDTH-1] & in2[WIDTH-1] & ~out[WIDTH-1]) | (~in1[WIDTH-1] & ~in2[WIDTH-1] & out[WIDTH-1]);
       c_out = (in1[WIDTH-1] & in2[WIDTH-1]) | (in2[WIDTH-1] & out[WIDTH-1]) | (out[WIDTH-1] & in1[WIDTH-1]);
     end  
@@ -62,17 +63,27 @@ begin
     ALU_RSHIFTA: begin
       out = in1 >>> in2;
       c_out = 1'b0;
-      v_out = n_out ^ c_out;
+      v_out = n_out;
     end
     ALU_RSHIFTL: begin
       out = in1 >> in2;
       c_out = 1'b0;
-      v_out = n_out ^ c_out;
+      v_out = n_out;
+    end
+    ALU_IN1: begin
+      out = in1;
+      c_out = 1'b0;
+      v_out = n_out;
+    end
+    ALU_IN2: begin
+      out = in2;
+      c_out = 1'b0;
+      v_out = n_out;
     end
     default: begin
       out = in1;
       v_out = 1'b0;
-      c_out = c_in;
+      c_out = 1'b0;
     end
   endcase
 end
