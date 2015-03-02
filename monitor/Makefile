@@ -20,7 +20,7 @@ clean:
 	$(CC) -S $(CFLAGS) -Wf-target=$(CCTARGET) -o $@ $^
 
 %.o: %.s
-	$(AS) -o $@ $^
+	$(AS) -EL -o $@ $^
 
 %.srec: %
 	$(OBJCOPY) -O srec $< $@
@@ -30,34 +30,34 @@ clean:
 	egrep -v "^:02000004" $(TEMP) | egrep -v "^:04000005" > $@	
 
 memtests: memtests.o
-	$(LD) -o $@ $^ -T $(LD_SCRIPT)
+	$(LD) -EL -o $@ $^ -T $(LD_SCRIPT)
 monitor: monitor.o
-	$(LD) -o $@ $^ -T $(LD_SCRIPT)
+	$(LD) -EL -o $@ $^ -T $(LD_SCRIPT)
 stacktests: stacktests.o
-	$(LD) -o $@ $^ -T $(LD_SCRIPT)
+	$(LD) -EL -o $@ $^ -T $(LD_SCRIPT)
 frametests: frametests.o
-	$(LD) -o $@ $^ -T $(LD_SCRIPT)
+	$(LD) -EL -o $@ $^ -T $(LD_SCRIPT)
 conditionals: conditionals.o
-	$(LD) -o $@ $^ -T $(LD_SCRIPT)
+	$(LD) -EL -o $@ $^ -T $(LD_SCRIPT)
 conditionals-simple: conditionals-simple.o
-	$(LD) -o $@ $^ -T $(LD_SCRIPT)
+	$(LD) -EL -o $@ $^ -T $(LD_SCRIPT)
 types: types.o
-	$(LD) -o $@ $^ -T $(LD_SCRIPT)
+	$(LD) -EL -o $@ $^ -T $(LD_SCRIPT)
 multiply: multiply.o
-	$(LD) -o $@ $^ -T $(LD_SCRIPT)
+	$(LD) -EL -o $@ $^ -T $(LD_SCRIPT)
 multiply-simple: multiply-simple.o
-	$(LD) -o $@ $^ -T $(LD_SCRIPT)
+	$(LD) -EL -o $@ $^ -T $(LD_SCRIPT)
 fib: fib.o
-	$(LD) -o $@ $^ -T $(LD_SCRIPT)
+	$(LD) -EL -o $@ $^ -T $(LD_SCRIPT)
 spi: spi.o
-	$(LD) -o $@ $^ -T $(LD_SCRIPT)
+	$(LD) -EL -o $@ $^ -T $(LD_SCRIPT)
 spi-simple: spi-simple.o
-	$(LD) -o $@ $^ -T $(LD_SCRIPT)
+	$(LD) -EL -o $@ $^ -T $(LD_SCRIPT)
 structures: structures.o
-	$(LD) -o $@ $^ -T $(LD_SCRIPT)
+	$(LD) -EL -o $@ $^ -T $(LD_SCRIPT)
 fp: fp.o
-	$(LD) -o $@ $^ -T $(LD_SCRIPT)
+	$(LD) -EL -o $@ $^ -T $(LD_SCRIPT)
 pretty: pretty.o
-	$(LD) -o $@ $^ -T $(LD_SCRIPT)
+	$(LD) -EL -o $@ $^ -T $(LD_SCRIPT)
 memtests-simple: memtests-simple.o
-	$(LD) -o $@ $^ -T $(LD_SCRIPT)
+	$(LD) -EL -o $@ $^ -T $(LD_SCRIPT)

@@ -1,8 +1,7 @@
 MEMORY
 {
-  rom  : ORIGIN = 0xffc00000, LENGTH = 4K
-  flash : ORIGIN = 0xfe000000, LENGTH = 4M
-  ram : ORIGIN = 0x00000000, LENGTH = 512K
+  rom  : ORIGIN = 0xffc00000, LENGTH = 16K
+  ram : ORIGIN = 0x00000000, LENGTH = 4K
 }
 
 ENTRY(_start)
