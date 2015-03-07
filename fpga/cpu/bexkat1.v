@@ -65,7 +65,7 @@ wire [7:0] ir_op   = ir[28:21];
 wire [4:0] ir_ra   = ir[20:16];
 wire [4:0] ir_rb   = ir[15:11];
 wire [4:0] ir_rc   = ir[10:6];
-wire [10:0] ir_ind = ir[10:0];
+wire [31:0] ir_ind = { {20{ir[10]}}, ir[10:0] };
 		  
 assign {carry, negative, overflow, zero} = ccr;
 
@@ -128,7 +128,7 @@ begin
   reg_write_addr = ir_ra;
   reg_data_in = alu_out;
   reg_write = REG_WRITE_NONE;
-  alu_in2 = 'h1;
+  alu_in2 = 'h4;
   case (state)
     STATE_FETCHIR: begin
       state_next = STATE_MEMLOAD;
@@ -162,14 +162,14 @@ begin
             reg_read_addr1 = REG_SP;
             mar_next = reg_data_out1;
             reg_write = REG_WRITE_DW;
-            reg_write_addr = REG_SP; // SP + 1
+            reg_write_addr = REG_SP; // SP + 4
           end
           STATE_POP: begin
             mdr_next = busdata;
             reg_read_addr1 = REG_SP;
             mar_next = reg_data_out1;
             reg_write = REG_WRITE_DW;
-            reg_write_addr = REG_SP; // SP + 1
+            reg_write_addr = REG_SP; // SP + 4
           end
           STATE_LOAD: begin
             case (be)
@@ -239,7 +239,6 @@ begin
           state_next = STATE_MEMSAVE;
           retstate_next = STATE_PUSH;
           avm_m0_write_next = 1'b1;
-          avm_m0_read_next = 1'b0;
           be_next= 4'b1111;
           mar_next = alu_out;
           mdr_next = reg_data_out2;
@@ -385,7 +384,7 @@ begin
           mar_next = alu_out;
           addrsel_next = ADDR_MAR;
           reg_read_addr1 = ir_rb;
-          alu_in2 = mar;
+          alu_in2 = ir_ind;
 
           reg_read_addr2 = ir_ra;
           mdr_next = reg_data_out2;
@@ -399,7 +398,7 @@ begin
           mar_next = alu_out;
           addrsel_next = ADDR_MAR;
           reg_read_addr1 = ir_rb;
-          alu_in2 = mar;
+          alu_in2 = ir_ind;
         end
         {MODE_REGIND, 8'h02}: begin // st
           state_next = STATE_MEMSAVE;
@@ -410,7 +409,7 @@ begin
           mar_next = alu_out;
           addrsel_next = ADDR_MAR;
           reg_read_addr1 = ir_rb;
-          alu_in2 = mar;
+          alu_in2 = ir_ind;
 
           reg_read_addr2 = ir_ra;
           if (alu_out[1]) begin
@@ -427,7 +426,7 @@ begin
           avm_m0_read_next = 1'b1;
           mar_next = alu_out;
           reg_read_addr1 = ir_rb;
-          alu_in2 = mar;
+          alu_in2 = ir_ind;
           addrsel_next = ADDR_MAR;
           be_next = (alu_out[1] ? 4'b1100 : 4'b0011);
         end
@@ -440,7 +439,7 @@ begin
           mar_next = alu_out;
           addrsel_next = ADDR_MAR;
           reg_read_addr1 = ir_rb;
-          alu_in2 = mar;
+          alu_in2 = ir_ind;
 
           reg_read_addr2 = ir_ra;
           case (alu_out[1:0])
@@ -474,19 +473,19 @@ begin
           endcase
           mar_next = alu_out;
           reg_read_addr1 = ir_rb;
-          alu_in2 = mar;
+          alu_in2 = ir_ind;
           addrsel_next = ADDR_MAR;
         end
         {MODE_REGIND, 8'h0a}: begin // lda
           state_next = STATE_FETCHIR;
           reg_read_addr1 = ir_rb;
-          alu_in2 = mar;
+          alu_in2 = ir_ind;
           reg_write = REG_WRITE_DW;
         end
-        {MODE_REGIND, 8'ha0}: begin // jmp
+        {MODE_REGIND, 8'h0b}: begin // jmp
           state_next = STATE_FETCHIR;
           reg_read_addr1 = ir_rb;
-          alu_in2 = mar;
+          alu_in2 = ir_ind;
           pc_next = { 1'b0, alu_out};
         end
         {MODE_DIR, 8'hxx}: state_next = STATE_FETCHARG;
@@ -564,7 +563,7 @@ begin
               mdr_next[31:16] = reg_data_out1[15:0];
             end else begin
               be_next = 4'b0011;
-              mdr_next = reg_data_out1;
+              mdr_next[15:0] = reg_data_out1[15:0];
             end
             addrsel_next = ADDR_MAR;
           end
@@ -582,18 +581,19 @@ begin
 
             case (mar[1:0])
               2'b00: begin 
+                mdr_next[7:0] = reg_data_out1[7:0];
                 be_next = 4'b0001;
               end
               2'b01: begin
-                mdr_next[15:8] = mdr[7:0];
+                mdr_next[15:8] = reg_data_out1[7:0];
                 be_next = 4'b0010;
               end
               2'b10: begin
-                mdr_next[23:16] = mdr[7:0];
+                mdr_next[23:16] = reg_data_out1[7:0];
                 be_next = 4'b0100;
               end
               2'b11: begin
-                mdr_next[31:24] = mdr[7:0];
+                mdr_next[31:24] = reg_data_out1[7:0];
                 be_next = 4'b1000;
               end
             endcase      
