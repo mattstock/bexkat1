@@ -26,6 +26,7 @@ void _start(void) {
   while (dst < &_edata) {
     *dst++ = *src++;
   }
+  // zero the bss
   main();
 }
 
@@ -124,19 +125,19 @@ void matrix_fade(void) {
   for (i=0; i < 16*32; i++) {
     subber=0;
     a = matrix[i];
-    b = a & 0xff000000;
-    if (b >= 0x07000000)
-      subber += 0x07000000;
+    b = a & 0xff0000;
+    if (b >= 0x70000)
+      subber += 0x70000;
     else
       subber += b;
-    b = a & 0x00ff0000;
-    if (b >= 0x00070000)
-      subber += 0x00070000;
+    b = a & 0xff00;
+    if (b >= 0x700)
+      subber += 0x700;
     else
       subber += b;
-    b = a & 0x0000ff00;
-    if (b >= 0x00000700)
-      subber += 0x00000700;
+    b = a & 0xff;
+    if (b >= 0x7)
+      subber += 0x7;
     else
       subber += b;
     matrix[i] -= subber; 
@@ -153,13 +154,13 @@ void main(void) {
 
   x = 16;
   y = 8;
-  val = 0x80808000;
+  val = 0x00808080;
 //  serial_putbin(1, katherine, 6);
 //  delay(0x15000);
 //  serial_putbin(1, rebecca, 6);
   while (1) {
     matrix_fade();
-    c = random(2000);
+    c = random(2010);
     switch (c % 4) {
       case 0:
         if (x > 0)
