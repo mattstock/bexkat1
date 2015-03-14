@@ -26,6 +26,7 @@ void _start(void) {
   while (dst < &_edata) {
     *dst++ = *src++;
   }
+  // zero the bss
   main();
 }
 
@@ -154,12 +155,12 @@ void main(void) {
   x = 16;
   y = 8;
   val = 0x00808080;
-  serial_putbin(1, katherine, 6);
-  delay(0x15000);
-  serial_putbin(1, rebecca, 6);
+//  serial_putbin(1, katherine, 6);
+//  delay(0x15000);
+//  serial_putbin(1, rebecca, 6);
   while (1) {
     matrix_fade();
-    c = random(2000);
+    c = random(2010);
     switch (c % 4) {
       case 0:
         if (x > 0)

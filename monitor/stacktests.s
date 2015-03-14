@@ -6,6 +6,8 @@ ldi %14, 0x01234567
 push %30
 push %14
 jsrd foo
+pop %27
+pop %13
 .L4:
 jmpd .L4
 rts
@@ -14,11 +16,8 @@ rts
 .align 4
 .type foo,@function
 foo:
+push %30
 pop %29
-pop %28
-pop %27
-pop %13
-.L10:
-bra .L10
+rts
 .Lf7:
 .size foo,.Lf7-foo
