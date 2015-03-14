@@ -94,7 +94,7 @@
       }
       datum sopceditor_expanded
       {
-         value = "0";
+         value = "1";
          type = "boolean";
       }
    }
@@ -137,7 +137,7 @@
          type = "String";
       }
    }
-   element led0.s1
+   element uart0.s1
    {
       datum _lockedAddress
       {
@@ -146,7 +146,7 @@
       }
       datum baseAddress
       {
-         value = "8390736";
+         value = "8390656";
          type = "String";
       }
    }
@@ -163,6 +163,19 @@
          type = "String";
       }
    }
+   element led0.s1
+   {
+      datum _lockedAddress
+      {
+         value = "1";
+         type = "boolean";
+      }
+      datum baseAddress
+      {
+         value = "8390736";
+         type = "String";
+      }
+   }
    element uart1.s1
    {
       datum _lockedAddress
@@ -173,19 +186,6 @@
       datum baseAddress
       {
          value = "8390688";
-         type = "String";
-      }
-   }
-   element uart0.s1
-   {
-      datum _lockedAddress
-      {
-         value = "1";
-         type = "boolean";
-      }
-      datum baseAddress
-      {
-         value = "8390656";
          type = "String";
       }
    }
@@ -293,19 +293,6 @@
          type = "boolean";
       }
    }
-   element ssram1.uas
-   {
-      datum _lockedAddress
-      {
-         value = "1";
-         type = "boolean";
-      }
-      datum baseAddress
-      {
-         value = "4194304";
-         type = "String";
-      }
-   }
    element ssram0.uas
    {
       datum _lockedAddress
@@ -316,6 +303,19 @@
       datum baseAddress
       {
          value = "0";
+         type = "String";
+      }
+   }
+   element ssram1.uas
+   {
+      datum _lockedAddress
+      {
+         value = "1";
+         type = "boolean";
+      }
+      datum baseAddress
+      {
+         value = "4194304";
          type = "String";
       }
    }

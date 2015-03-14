@@ -27,9 +27,9 @@ assign writedata_be = { avs_s0_writedata[7:0], avs_s0_writedata[15:8], avs_s0_wr
 assign byteenable_be = { avs_s0_byteenable[0], avs_s0_byteenable[1], avs_s0_byteenable[2], avs_s0_byteenable[3] };
 assign avs_s0_readdata = { readdata_be[7:0], readdata_be[15:8], readdata_be[23:16], readdata_be[31:24] };
 
-assign r = (phase[9:2] < buffer[15:8]);
+assign b = (phase[9:2] < buffer[15:8]);
 assign g = (phase[9:2] < buffer[7:0]);
-assign b = (phase[9:2] < buffer[31:24]);
+assign r = (phase[9:2] < buffer[31:24]);
 assign ab = (state == STATE_READ1);
 
 assign rgb_a = lp[0];

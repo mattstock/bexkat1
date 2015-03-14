@@ -7,7 +7,7 @@ module soc(SW, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HEX6, HEX7, LEDR, LEDG, 
   fl_oe_n, fl_ce_n, fl_we_n, fl_rst_n, fl_ry, fl_wp_n,
   sdram_addrbus, sdram_databus, sdram_ba, sdram_dqm, sdram_ras_n, sdram_cas_n, sdram_cke, sdram_clk,
   sdram_we_n, sdram_cs_n,
-  serial0_tx, serial0_rx, serial1_tx);
+  serial0_tx, serial0_rx, serial0_cts, serial0_rts, serial1_tx);
 
 // SSRAM & flash
 output [26:0] fs_addrbus;
@@ -74,8 +74,8 @@ input [1:0] quad;
 input pb;
 
 // serial
-input serial0_rx;
-output serial0_tx, serial1_tx;
+input serial0_rx, serial0_cts;
+output serial0_tx, serial1_tx, serial0_rts;
 
 // LCD display
 output lcd_e;
@@ -85,6 +85,7 @@ output lcd_rw;
 output [7:0] lcd_data;
 
 wire rst_n;
+wire uart0_txd;
 
 // Reset button
 reg [2:0] rst_sync;
@@ -92,6 +93,8 @@ assign rst_n = rst_sync[2];
 always @(posedge clock_50) rst_sync <= { rst_sync[1:0], KEY[0] };
 
 assign lcd_on = SW[17];
+assign serial0_rts = (SW[16] ? serial0_cts : 1'b1);
+assign serial0_tx = (SW[15] ? serial0_rx : uart0_txd);
 
 // Wiring for external SDRAM, SSRAM & flash
 assign sdram_clk = clock_50;
@@ -127,7 +130,7 @@ fabirc fabric0(.clk_clk(clock_50), .reset_reset_n(rst_n), .fsbus_ssram1_ce_n(ssr
   .fsbus_ssram_be_n(ssram_be), .fsbus_ssram_adsp_n(ssram_adsp_n), .fsbus_ssram_oe_n(ssram_oe_n),
   .sdram0_wire_addr(sdram_addrbus), .sdram0_wire_ba(sdram_ba), .sdram0_wire_cas_n(sdram_cas_n), .sdram0_wire_cke(sdram_cke),
   .sdram0_wire_cs_n(sdram_cs_n), .sdram0_wire_dq(sdram_databus), .sdram0_wire_dqm(sdram_dqm), .sdram0_wire_ras_n(sdram_ras_n),
-  .sdram0_wire_we_n(sdram_we_n), .uart0_rxd(serial0_rx), .uart0_txd(serial0_tx), .uart1_txd(serial1_tx), .uart1_rxd(1'b0),
+  .sdram0_wire_we_n(sdram_we_n), .uart0_rxd(serial0_rx), .uart0_txd(uart0_txd), .uart1_txd(serial1_tx), .uart1_rxd(1'b0),
   .led_matrix_a(rgb_a), .led_matrix_b(rgb_b), .led_matrix_c(rgb_c), .led_matrix_rgb0(rgb0), .led_matrix_rgb1(rgb1),
   .led_matrix_rgb_oe_n(rgb_oe_n), .led_matrix_stb(rgb_stb), .led_matrix_rgb_clk(rgb_clk),
   .lcd_RS(lcd_rs), .lcd_RW(lcd_rw), .lcd_data(lcd_data), .lcd_E(lcd_e),

@@ -39,7 +39,7 @@ wire [31:0] busdata;
 assign avm_m0_writedata = (big_endian ? mdr : {mdr[7:0], mdr[15:8], mdr[23:16], mdr[31:24]});
 assign busdata = (big_endian ? avm_m0_readdata : {avm_m0_readdata[7:0], avm_m0_readdata[15:8], 
   avm_m0_readdata[23:16], avm_m0_readdata[31:24]});
-assign avm_m0_byteenable = (big_endian ? be : {be[0], be[1], be[2], be[3]});
+assign avm_m0_byteenable = (big_endian ? be: {be[0], be[1], be[2], be[3]});
 
 assign avm_m0_address = (addrsel ? mar : pc);
 

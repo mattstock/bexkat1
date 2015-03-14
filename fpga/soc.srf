@@ -1,4 +1,6 @@
 { "" "" "" "Family doesn't support jitter analysis." {  } {  } 0 332153 "" 0 0 "Quartus II" 0 -1 0 ""}
+{ "" "" "" "Ignored Virtual Pin assignment on output enabled pin \"fs_addrbus\[0\]\"" {  } {  } 0 15728 "" 0 0 "Quartus II" 0 -1 0 ""}
+{ "" "" "" "Some pins have incomplete I/O assignments. Refer to the I/O Assignment Warnings report for details" {  } {  } 0 15714 "" 0 0 "Quartus II" 0 -1 0 ""}
 { "" "" "" "*" {  } {  } 0 15706 "" 0 0 "Quartus II" 0 -1 0 ""}
 { "" "" "" "*" {  } {  } 0 292013 "" 0 0 "Quartus II" 0 -1 0 ""}
 { "" "" "" "*" {  } {  } 0 14284 "" 0 0 "Quartus II" 0 -1 0 ""}
