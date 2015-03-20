@@ -93,7 +93,7 @@ assign rst_n = rst_sync[2];
 always @(posedge clock_50) rst_sync <= { rst_sync[1:0], KEY[0] };
 
 assign lcd_on = SW[17];
-assign serial0_rts = (SW[16] ? serial0_cts : 1'b1);
+assign serial0_rts = serial0_cts;
 assign serial0_tx = (SW[15] ? serial0_rx : uart0_txd);
 
 // Wiring for external SDRAM, SSRAM & flash
@@ -121,19 +121,41 @@ hexdisp d0(.out(HEX0), .in(fs_addrbus[3:0]));
 assign LEDR = 18'h0000;
 assign LEDG[8] = 1'b1;
 
+wire [31:0] cpu_address;
+wire [31:0] cpu_readdata, cpu_writedata, mon_readdata, ram_readdata, ram_writedata;
+wire [3:0] cpu_be;
+wire cpu_write, cpu_read, cpu_wait, ram_write, ram_read, mon_read;
+
 // quadrature encoder outputs 0-23
 //rgb_enc io0(.clk(clock_50), .rst_n(rst_n), .quad(quad), .button(pb), .rgb_out(rgb),
 //  .write(cpu_write & mem_encoder), .address(cpu_addrbus[2:1]), .data_in(cpu_data_out), .data_out(encoder_data));
 
-fabirc fabric0(.clk_clk(clock_50), .reset_reset_n(rst_n), .fsbus_ssram1_ce_n(ssram1_ce_n),
-  .fsbus_ssram0_ce_n(ssram0_ce_n), .fsbus_data(fs_databus), .fsbus_address(fs_addrbus), .fsbus_ssram_we_n(ssram_we_n),
-  .fsbus_ssram_be_n(ssram_be), .fsbus_ssram_adsp_n(ssram_adsp_n), .fsbus_ssram_oe_n(ssram_oe_n),
-  .sdram0_wire_addr(sdram_addrbus), .sdram0_wire_ba(sdram_ba), .sdram0_wire_cas_n(sdram_cas_n), .sdram0_wire_cke(sdram_cke),
-  .sdram0_wire_cs_n(sdram_cs_n), .sdram0_wire_dq(sdram_databus), .sdram0_wire_dqm(sdram_dqm), .sdram0_wire_ras_n(sdram_ras_n),
-  .sdram0_wire_we_n(sdram_we_n), .uart0_rxd(serial0_rx), .uart0_txd(uart0_txd), .uart1_txd(serial1_tx), .uart1_rxd(1'b0),
-  .led_matrix_a(rgb_a), .led_matrix_b(rgb_b), .led_matrix_c(rgb_c), .led_matrix_rgb0(rgb0), .led_matrix_rgb1(rgb1),
-  .led_matrix_rgb_oe_n(rgb_oe_n), .led_matrix_stb(rgb_stb), .led_matrix_rgb_clk(rgb_clk),
-  .lcd_RS(lcd_rs), .lcd_RW(lcd_rw), .lcd_data(lcd_data), .lcd_E(lcd_e),
-  .sw_export(SW[7:0]), .ledg_export(LEDG[7:0]));
+bexkat1 bexkat0(.csi_clk(clock_50), .rsi_reset_n(rst_n), .avm_m0_address(cpu_address), .avm_m0_read(cpu_read), .avm_m0_readdata(cpu_readdata),
+  .avm_m0_write(cpu_write), .avm_m0_writedata(cpu_writedata), .avm_m0_byteenable(cpu_be), .avm_m0_waitrequest(cpu_wait));
+monitor mon0(.clock(clock_50), .q(mon_readdata), .rden(mon_read), .address(cpu_address[13:2]));
+scratch ram0(.clock(clock_50), .data(ram_writedata), .q(ram_readdata), .wren(ram_write), .rden(ram_read), .address(cpu_address[13:2]),
+  .byteena(cpu_be));
+assign cpu_readdata = (cpu_address[31] ? mon_readdata : ram_readdata);
+assign ram_write = (cpu_address[31] ? 1'b0 : cpu_write);
+assign ram_read = (cpu_address[31] ? 1'b0 : cpu_read);
+assign mon_read = (cpu_address[31] ? cpu_read : 1'b0);
+assign cpu_wait = state;
 
+assign ram_writedata = cpu_writedata;
+
+reg state;
+
+always @(posedge clock_50 or negedge rst_n)
+begin
+  if (!rst_n) begin
+    state <= 1'b0;
+  end else begin
+    if (!state && (cpu_read || cpu_write)) begin
+      state <= 1'b1;
+    end else begin
+      state <= 1'b0;
+    end
+  end
+end
+  
 endmodule
