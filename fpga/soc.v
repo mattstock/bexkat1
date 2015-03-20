@@ -109,53 +109,59 @@ assign fl_rst_n = rst_n;
 assign fl_wp_n = 1'b1;
 
 // visualization stuff
-hexdisp d7(.out(HEX7), .in(4'h0));
-hexdisp d6(.out(HEX6), .in({ 1'b0, fs_addrbus[26:24] }));
-hexdisp d5(.out(HEX5), .in(fs_addrbus[23:20]));
-hexdisp d4(.out(HEX4), .in(fs_addrbus[19:16]));
-hexdisp d3(.out(HEX3), .in(fs_addrbus[15:12]));
-hexdisp d2(.out(HEX2), .in(fs_addrbus[11:8]));
-hexdisp d1(.out(HEX1), .in(fs_addrbus[7:4]));
-hexdisp d0(.out(HEX0), .in(fs_addrbus[3:0]));
+hexdisp d7(.out(HEX7), .in(bm_address[31:28]));
+hexdisp d6(.out(HEX6), .in(bm_address[27:24]));
+hexdisp d5(.out(HEX5), .in(bm_address[23:20]));
+hexdisp d4(.out(HEX4), .in(bm_address[19:16]));
+hexdisp d3(.out(HEX3), .in(bm_address[15:12]));
+hexdisp d2(.out(HEX2), .in(bm_address[11:8]));
+hexdisp d1(.out(HEX1), .in(bm_address[7:4]));
+hexdisp d0(.out(HEX0), .in(bm_address[3:0]));
 // Blinknlights
 assign LEDR = 18'h0000;
-assign LEDG[8] = 1'b1;
+assign LEDG = { 1'b1, chipselect };
 
-wire [31:0] cpu_address;
-wire [31:0] cpu_readdata, cpu_writedata, mon_readdata, ram_readdata, ram_writedata;
-wire [3:0] cpu_be;
-wire cpu_write, cpu_read, cpu_wait, ram_write, ram_read, mon_read;
+wire [7:0] chipselect;
+wire [31:0] cpu_address, bm_address;
+wire [31:0] cpu_readdata, bm_writedata, bm_readdata, cpu_writedata, mon_readdata, ram_readdata, matrix_readdata, rom_readdata;
+wire [3:0] cpu_be, bm_be;
+wire cpu_write, cpu_read, cpu_wait, bm_read, bm_write, bm_wait, ram_write, ram_read, rom_read;
+wire matrix_read, matrix_write;
 
 // quadrature encoder outputs 0-23
 //rgb_enc io0(.clk(clock_50), .rst_n(rst_n), .quad(quad), .button(pb), .rgb_out(rgb),
 //  .write(cpu_write & mem_encoder), .address(cpu_addrbus[2:1]), .data_in(cpu_data_out), .data_out(encoder_data));
 
+assign bm_readdata = (chipselect[7] ? rom_readdata : 32'h0) |
+                     (chipselect[6] ? ram_readdata : 32'h0) |
+                     (chipselect[5] ? matrix_readdata : 32'h0);
+
+assign rom_read = (chipselect[7] ? bm_read : 1'b0);
+assign ram_read = (chipselect[6] ? bm_read : 1'b0);
+assign ram_write = (chipselect[6] ? bm_write : 1'b0);
+assign matrix_read = (chipselect[5] ? bm_read : 1'b0);
+assign matrix_write = (chipselect[5] ? bm_write : 1'b0);
+
+// Until we have multiple master
+assign bm_write = cpu_write;
+assign bm_read = cpu_read;
+assign bm_be = cpu_be;
+assign bm_writedata = cpu_writedata;
+assign bm_address = cpu_address;
+assign cpu_wait = bm_wait;
+assign cpu_readdata = bm_readdata;
+
 bexkat1 bexkat0(.csi_clk(clock_50), .rsi_reset_n(rst_n), .avm_m0_address(cpu_address), .avm_m0_read(cpu_read), .avm_m0_readdata(cpu_readdata),
   .avm_m0_write(cpu_write), .avm_m0_writedata(cpu_writedata), .avm_m0_byteenable(cpu_be), .avm_m0_waitrequest(cpu_wait));
-monitor mon0(.clock(clock_50), .q(mon_readdata), .rden(mon_read), .address(cpu_address[13:2]));
-scratch ram0(.clock(clock_50), .data(ram_writedata), .q(ram_readdata), .wren(ram_write), .rden(ram_read), .address(cpu_address[13:2]),
-  .byteena(cpu_be));
-assign cpu_readdata = (cpu_address[31] ? mon_readdata : ram_readdata);
-assign ram_write = (cpu_address[31] ? 1'b0 : cpu_write);
-assign ram_read = (cpu_address[31] ? 1'b0 : cpu_read);
-assign mon_read = (cpu_address[31] ? cpu_read : 1'b0);
-assign cpu_wait = state;
+monitor rom0(.clock(clock_50), .q(rom_readdata), .rden(rom_read), .address(bm_address[13:2]));
+scratch ram0(.clock(clock_50), .data(bm_writedata), .q(ram_readdata), .wren(ram_write), .rden(ram_read), .address(bm_address[13:2]),
+  .byteena(bm_be));
+led_matrix matrix0(.csi_clk(clock_50), .rsi_reset_n(rst_n), .avs_s0_writedata(bm_writedata), .avs_s0_readdata(matrix_readdata),
+  .avs_s0_address(bm_address[11:2]), .avs_s0_byteenable(bm_be), .avs_s0_write(matrix_write), .avs_s0_read(matrix_read),
+  .rgb_a(rgb_a), .rgb_b(rgb_b), .rgb_c(rgb_c), .rgb0(rgb0), .rgb1(rgb1), .rgb_stb(rgb_stb), .rgb_clk(rgb_clk), .oe_n(rgb_oe_n));
 
-assign ram_writedata = cpu_writedata;
-
-reg state;
-
-always @(posedge clock_50 or negedge rst_n)
-begin
-  if (!rst_n) begin
-    state <= 1'b0;
-  end else begin
-    if (!state && (cpu_read || cpu_write)) begin
-      state <= 1'b1;
-    end else begin
-      state <= 1'b0;
-    end
-  end
-end
+buscontroller bc0(.clock(clock_50), .reset_n(rst_n),
+  .bm_address(bm_address), .bm_read(bm_read), .bm_write(bm_write), .bm_wait(bm_wait),
+  .chipselect(chipselect));
   
 endmodule

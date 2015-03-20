@@ -22,7 +22,7 @@ begin
   if (!rst_n) begin
     for (int i=0; i < COUNT-1; i = i + 1)
       regfile[i] <= 'h00000000;
-    regfile[COUNT-1] <= 'h00080000;  // such a hack
+    regfile[COUNT-1] <= 'h00004000;  // such a hack
   end else begin
     for (int i=0; i < COUNT; i = i + 1)
       regfile[i] <= regfile_next[i];

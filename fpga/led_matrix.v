@@ -19,13 +19,6 @@ module led_matrix(
 wire [2:0] lp = phase[2:0]-1'b1;
 wire r,g,b;
 wire [31:0] buffer;
-wire ab;
-wire [31:0] writedata_be, readdata_be;
-wire [3:0] byteenable_be;
-
-assign writedata_be = { avs_s0_writedata[7:0], avs_s0_writedata[15:8], avs_s0_writedata[23:16], avs_s0_writedata[31:24] };
-assign byteenable_be = { avs_s0_byteenable[0], avs_s0_byteenable[1], avs_s0_byteenable[2], avs_s0_byteenable[3] };
-assign avs_s0_readdata = { readdata_be[7:0], readdata_be[15:8], readdata_be[23:16], readdata_be[31:24] };
 
 assign b = (phase[9:2] < buffer[15:8]);
 assign g = (phase[9:2] < buffer[7:0]);
@@ -117,6 +110,6 @@ begin
   endcase
 end
 
-matrixmem m0(.clock(csi_clk), .data_b(writedata_be), .wren_b(avs_s0_write), .address_b(avs_s0_address), .byteena_b(byteenable_be),
-  .q_b(readdata_be), .wren_a(1'b0), .q_a(buffer), .address_a({ab, phase[2:0], colpos}));
+matrixmem m0(.clock(csi_clk), .data_b(avs_s0_writedata), .wren_b(avs_s0_write), .address_b(avs_s0_address), .byteena_b(avs_s0_byteenable),
+  .q_b(avs_s0_readdata), .wren_a(1'b0), .q_a(buffer), .address_a({ab, phase[2:0], colpos}));
 endmodule

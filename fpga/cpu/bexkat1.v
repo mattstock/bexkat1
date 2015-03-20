@@ -74,7 +74,7 @@ localparam REG_WRITE_NONE = 2'b00, REG_WRITE_DW = 2'b11;
 always @(posedge csi_clk or negedge rsi_reset_n)
 begin
   if (!rsi_reset_n) begin
-    pc <= 'hffc00000; // start boot at base of monitor for now
+    pc <= 'hffffc000; // start boot at base of monitor for now
     state <= STATE_FETCHIR;
     ir <= 'h0000000;
     mdr <= 'h00000000;
