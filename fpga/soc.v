@@ -7,6 +7,7 @@ module soc(SW, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HEX6, HEX7, LEDR, LEDG, 
   fl_oe_n, fl_ce_n, fl_we_n, fl_rst_n, fl_ry, fl_wp_n,
   sdram_addrbus, sdram_databus, sdram_ba, sdram_dqm, sdram_ras_n, sdram_cas_n, sdram_cke, sdram_clk,
   sdram_we_n, sdram_cs_n,
+  vga_vs, vga_hs, vga_r, vga_g, vga_b, vga_clock, vga_sync_n, vga_blank_n,
   serial0_tx, serial0_rx, serial0_cts, serial0_rts, serial1_tx);
 
 // SSRAM & flash
@@ -60,6 +61,14 @@ output [6:0] HEX5;
 output [6:0] HEX6;
 output [6:0] HEX7;
 
+// VGA
+output vga_vs;
+output vga_hs;
+output [7:0] vga_r, vga_g, vga_b;
+output vga_clock;
+output vga_sync_n;
+output vga_blank_n;
+
 // LED panel
 output [2:0] rgb0;
 output [2:0] rgb1;
@@ -84,12 +93,7 @@ output lcd_on;
 output lcd_rw;
 output [7:0] lcd_data;
 
-wire rst_n;
-
-// Reset button
-reg [2:0] rst_sync;
-assign rst_n = rst_sync[2];
-always @(posedge clock_50) rst_sync <= { rst_sync[1:0], KEY[0] };
+wire rst_n, clock_100;
 
 assign lcd_on = SW[17];
 assign serial0_rts = serial0_cts;
@@ -120,12 +124,12 @@ assign LEDR = { 8'h0, chipselect };
 assign LEDG = 9'h00;
 
 wire [9:0] chipselect;
-wire [31:0] cpu_address, bm_address;
+wire [31:0] cpu_address, bm_address, vga_address;
 wire [31:0] cpu_readdata, bm_writedata, bm_readdata, cpu_writedata, mon_readdata, ram_readdata, matrix_readdata, rom_readdata;
-wire [31:0] uart0_readdata, uart0_writedata, uart1_readdata, uart1_writedata;
+wire [31:0] uart0_readdata, uart0_writedata, uart1_readdata, uart1_writedata, vga_readdata;
 wire [3:0] cpu_be, bm_be;
 wire cpu_write, cpu_read, cpu_wait, bm_read, bm_write, bm_wait, ram_write, ram_read, rom_read;
-wire uart0_write, uart0_read, uart1_write, uart1_read;
+wire uart0_write, uart0_read, uart1_write, uart1_read, vga_wait, vga_read;
 wire matrix_read, matrix_write;
 
 // quadrature encoder outputs 0-23
@@ -149,13 +153,15 @@ assign uart1_read = (chipselect[3] ? bm_read : 1'b0);
 assign uart1_write = (chipselect[3] ? bm_write : 1'b0);
 
 // Until we have multiple master
-assign bm_write = cpu_write;
-assign bm_read = cpu_read;
-assign bm_be = cpu_be;
-assign bm_writedata = cpu_writedata;
-assign bm_address = cpu_address;
+assign bm_write = (1'b1 ? cpu_write : 1'h0);
+assign bm_read = (1'b1 ? cpu_read : vga_read);
+assign bm_be = (1'b1 ? cpu_be : 4'b1111);
+assign bm_writedata = (1'b1 ? cpu_writedata : 0);
+assign bm_address = (1'b1 ? cpu_address : vga_address);
 assign cpu_wait = bm_wait;
+assign vga_wait = bm_wait;
 assign cpu_readdata = bm_readdata;
+assign vga_readdata = bm_readdata;
 
 bexkat1 bexkat0(.csi_clk(clock_50), .rsi_reset_n(rst_n), .avm_m0_address(cpu_address), .avm_m0_read(cpu_read), .avm_m0_readdata(cpu_readdata),
   .avm_m0_write(cpu_write), .avm_m0_writedata(cpu_writedata), .avm_m0_byteenable(cpu_be), .avm_m0_waitrequest(cpu_wait));
@@ -172,5 +178,10 @@ uart uart1(.clk(clock_50), .rst_n(rst_n), .rx(1'b0), .tx(serial1_tx), .data_in(b
 buscontroller bc0(.clock(clock_50), .reset_n(rst_n),
   .bm_address(bm_address), .bm_read(bm_read), .bm_write(bm_write), .bm_wait(bm_wait),
   .chipselect(chipselect));
-  
+vga_framebuffer vga0(.vs(vga_vs), .hs(vga_hs), .clock(clock_50), .reset_n(rst_n),
+  .r(vga_r), .g(vga_g), .b(vga_b), .data(vga_readdata), .bus_read(vga_read), 
+  .bus_wait(vga_wait), .address(vga_address), .vga_clock(vga_clock), .sync_n(vga_sync_n),
+  .blank_n(vga_blank_n));
+sysclock pll0(.inclk0(clock_50), .c0(clock_100), .areset(KEY[0]), .locked(rst_n));
+
 endmodule
