@@ -85,7 +85,6 @@ output lcd_rw;
 output [7:0] lcd_data;
 
 wire rst_n;
-wire uart0_txd;
 
 // Reset button
 reg [2:0] rst_sync;
@@ -94,7 +93,6 @@ always @(posedge clock_50) rst_sync <= { rst_sync[1:0], KEY[0] };
 
 assign lcd_on = SW[17];
 assign serial0_rts = serial0_cts;
-assign serial0_tx = (SW[15] ? serial0_rx : uart0_txd);
 
 // Wiring for external SDRAM, SSRAM & flash
 assign sdram_clk = clock_50;
@@ -118,14 +116,16 @@ hexdisp d2(.out(HEX2), .in(bm_address[11:8]));
 hexdisp d1(.out(HEX1), .in(bm_address[7:4]));
 hexdisp d0(.out(HEX0), .in(bm_address[3:0]));
 // Blinknlights
-assign LEDR = 18'h0000;
-assign LEDG = { 1'b1, chipselect };
+assign LEDR = { 8'h0, chipselect };
+assign LEDG = 9'h00;
 
-wire [7:0] chipselect;
+wire [9:0] chipselect;
 wire [31:0] cpu_address, bm_address;
 wire [31:0] cpu_readdata, bm_writedata, bm_readdata, cpu_writedata, mon_readdata, ram_readdata, matrix_readdata, rom_readdata;
+wire [31:0] uart0_readdata, uart0_writedata, uart1_readdata, uart1_writedata;
 wire [3:0] cpu_be, bm_be;
 wire cpu_write, cpu_read, cpu_wait, bm_read, bm_write, bm_wait, ram_write, ram_read, rom_read;
+wire uart0_write, uart0_read, uart1_write, uart1_read;
 wire matrix_read, matrix_write;
 
 // quadrature encoder outputs 0-23
@@ -134,13 +134,19 @@ wire matrix_read, matrix_write;
 
 assign bm_readdata = (chipselect[7] ? rom_readdata : 32'h0) |
                      (chipselect[6] ? ram_readdata : 32'h0) |
-                     (chipselect[5] ? matrix_readdata : 32'h0);
+                     (chipselect[5] ? matrix_readdata : 32'h0) |
+                     (chipselect[4] ? uart0_readdata : 32'h0) |
+                     (chipselect[3] ? uart1_readdata : 32'h0);
 
 assign rom_read = (chipselect[7] ? bm_read : 1'b0);
 assign ram_read = (chipselect[6] ? bm_read : 1'b0);
 assign ram_write = (chipselect[6] ? bm_write : 1'b0);
 assign matrix_read = (chipselect[5] ? bm_read : 1'b0);
 assign matrix_write = (chipselect[5] ? bm_write : 1'b0);
+assign uart0_read = (chipselect[4] ? bm_read : 1'b0);
+assign uart0_write = (chipselect[4] ? bm_write : 1'b0);
+assign uart1_read = (chipselect[3] ? bm_read : 1'b0);
+assign uart1_write = (chipselect[3] ? bm_write : 1'b0);
 
 // Until we have multiple master
 assign bm_write = cpu_write;
@@ -159,7 +165,10 @@ scratch ram0(.clock(clock_50), .data(bm_writedata), .q(ram_readdata), .wren(ram_
 led_matrix matrix0(.csi_clk(clock_50), .rsi_reset_n(rst_n), .avs_s0_writedata(bm_writedata), .avs_s0_readdata(matrix_readdata),
   .avs_s0_address(bm_address[11:2]), .avs_s0_byteenable(bm_be), .avs_s0_write(matrix_write), .avs_s0_read(matrix_read),
   .rgb_a(rgb_a), .rgb_b(rgb_b), .rgb_c(rgb_c), .rgb0(rgb0), .rgb1(rgb1), .rgb_stb(rgb_stb), .rgb_clk(rgb_clk), .oe_n(rgb_oe_n));
-
+uart #(.baud(115200)) uart0(.clk(clock_50), .rst_n(rst_n), .rx(serial0_rx), .tx(serial0_tx), .data_in(bm_writedata), .be(bm_be),
+  .data_out(uart0_readdata), .select(uart0_read|uart0_write), .write(uart0_write), .address(bm_address[2]));
+uart uart1(.clk(clock_50), .rst_n(rst_n), .rx(1'b0), .tx(serial1_tx), .data_in(bm_writedata), .be(bm_be),
+  .data_out(uart1_readdata), .select(uart1_read|uart1_write), .write(uart1_write), .address(bm_address[2]));
 buscontroller bc0(.clock(clock_50), .reset_n(rst_n),
   .bm_address(bm_address), .bm_read(bm_read), .bm_write(bm_write), .bm_wait(bm_wait),
   .chipselect(chipselect));
