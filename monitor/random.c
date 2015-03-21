@@ -59,7 +59,6 @@ void main(void) {
   matrix_clear();
   while (1) {
     c = random(sw[0]);
-    leds[0] = c;
     matrix_put(c%32, 0, 0x00ff00ff);
     delay(0x300000);
   }

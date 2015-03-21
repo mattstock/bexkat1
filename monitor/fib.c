@@ -30,7 +30,7 @@ void delay() {
 }
 
 void serial_putchar(unsigned short port, char c) {
-  volatile unsigned short *p;
+  volatile unsigned int *p;
 
   switch (port) {
   case 0:

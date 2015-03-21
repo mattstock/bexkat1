@@ -8,17 +8,17 @@ unsigned int addr;
 unsigned short data;
 
 // Serial IO stuff
-void serial_putbin(unsigned short port,
+void serial_putbin(unsigned port,
 		   char *list,
 		   unsigned short len);
-void serial_putchar(unsigned short, char);
-short serial_getline(unsigned short port,
+void serial_putchar(unsigned port, char);
+short serial_getline(unsigned port,
 		     char *str, 
 		     unsigned short *len);
-void serial_printhex(unsigned short port, unsigned val);
-char serial_getchar(unsigned short);
-void serial_print(unsigned short, char *);
-void serial_srec(unsigned short port);
+void serial_printhex(unsigned port, unsigned val);
+char serial_getchar(unsigned port);
+void serial_print(unsigned port, char *);
+void serial_srec(unsigned port);
 
 // LED matrix stuff
 void matrix_init(void);
@@ -69,9 +69,9 @@ void delay(unsigned int limit) {
   for (i=0; i < limit; i++);
 }
 
-char serial_getchar(unsigned short port) {
+char serial_getchar(unsigned port) {
   unsigned short result;
-  volatile unsigned short *p;
+  volatile unsigned int *p;
 
   switch (port) {
   case 0:
@@ -110,7 +110,7 @@ int hextoi(char s) {
   return -1;
 }
 
-void serial_srec(unsigned short port) {
+void serial_srec(unsigned port) {
   unsigned short done = 0;
   char c;
   unsigned char len;
@@ -166,8 +166,8 @@ void serial_srec(unsigned short port) {
   }
 }
 
-void serial_putchar(unsigned short port, char c) {
-  volatile unsigned short *p;
+void serial_putchar(unsigned port, char c) {
+  volatile unsigned int *p;
 
   switch (port) {
   case 0:
@@ -180,7 +180,7 @@ void serial_putchar(unsigned short port, char c) {
     p = serial0;
   }
 
-  while (!(p[0] & 0x4000));
+  while (!(p[0] & 0x2000));
   p[0] = (unsigned short)c;
 }
 
@@ -221,12 +221,12 @@ static char *int2hex(int v) {
   return buf;
 }  
 
-void serial_printhex(unsigned short port, unsigned val) {
+void serial_printhex(unsigned port, unsigned val) {
   char *x = int2hex(val);
   serial_print(port, x);
 }
 
-void serial_print(unsigned short port, char *str) {
+void serial_print(unsigned port, char *str) {
   char *c = str;
 
   while (*c != '\0') {
@@ -235,7 +235,7 @@ void serial_print(unsigned short port, char *str) {
   }
 }
 
-short serial_getline(unsigned short port,
+short serial_getline(unsigned port,
 		     char *str, 
 		     unsigned short *len) {
   unsigned short i=0;
@@ -269,7 +269,7 @@ void matrix_put(unsigned x, unsigned y, unsigned val) {
   matrix[y*32+x] = val;
 }
 
-void serial_dumpmem(unsigned short port,
+void serial_dumpmem(unsigned port,
 		    unsigned addr, 
 		    unsigned short len) {
   short i;

@@ -11,7 +11,7 @@ TEMP := $(shell mktemp)
 
 .PHONY: all clean
 
-all: monitor.hex frametests.s frametests.hex memtests.s memtests.hex stacktests.hex conditionals.s conditionals.hex conditionals-simple.hex types.s types.hex multiply.s multiply.hex multiply-simple.hex fib.s fib.hex structures.s structures.hex fp.s fp.hex pretty.s pretty.hex memtests-simple.hex serial.s serial.hex random.s random.hex serial-simple.hex
+all: monitor.s monitor.hex frametests.s frametests.hex memtests.s memtests.hex stacktests.hex conditionals.s conditionals.hex conditionals-simple.hex types.s types.hex multiply.s multiply.hex multiply-simple.hex fib.s fib.hex structures.s structures.hex fp.s fp.hex pretty.s pretty.hex memtests-simple.hex serial.s serial.hex random.s random.hex serial-simple.hex
 
 clean:
 	rm -f *.o *.srec *.hex memtests stacktests monitor monitor.s frametests frametests.s memtests.s conditionals conditionals.s conditionals-simple types.s types multiply.s multiply multiply-simple fib.s fib spi.s spi spi-simple structures.s structures fp.s fp pretty.s pretty memtests-simple serial serial.s random random.s serial-simple

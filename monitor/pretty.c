@@ -48,7 +48,7 @@ void delay(unsigned int limit) {
 
 char serial_getchar(unsigned short port) {
   unsigned short result;
-  volatile unsigned short *p;
+  volatile unsigned int *p;
 
   switch (port) {
   case 0:
@@ -79,7 +79,7 @@ char *itos(unsigned int val, char *s) {
 }
   
 void serial_putchar(unsigned short port, char c) {
-  volatile unsigned short *p;
+  volatile unsigned int *p;
 
   switch (port) {
   case 0:
