@@ -93,10 +93,11 @@ output lcd_on;
 output lcd_rw;
 output [7:0] lcd_data;
 
-wire rst_n, clock_100;
+wire rst_n, clock_100, clock_25;
 
 assign lcd_on = SW[17];
 assign serial0_rts = serial0_cts;
+assign vga_sync = 1'b0;
 
 // Wiring for external SDRAM, SSRAM & flash
 assign sdram_clk = clock_50;
@@ -178,10 +179,9 @@ uart uart1(.clk(clock_50), .rst_n(rst_n), .rx(1'b0), .tx(serial1_tx), .data_in(b
 buscontroller bc0(.clock(clock_50), .reset_n(rst_n),
   .bm_address(bm_address), .bm_read(bm_read), .bm_write(bm_write), .bm_wait(bm_wait),
   .chipselect(chipselect));
-vga_framebuffer vga0(.vs(vga_vs), .hs(vga_hs), .clock(clock_50), .reset_n(rst_n),
+vga_framebuffer vga0(.vs(vga_vs), .hs(vga_hs), .vga_clock(clock_25), .reset_n(rst_n),
   .r(vga_r), .g(vga_g), .b(vga_b), .data(vga_readdata), .bus_read(vga_read), 
-  .bus_wait(vga_wait), .address(vga_address), .vga_clock(vga_clock), .sync_n(vga_sync_n),
-  .blank_n(vga_blank_n));
-sysclock pll0(.inclk0(clock_50), .c0(clock_100), .areset(KEY[0]), .locked(rst_n));
+  .bus_wait(vga_wait), .address(vga_address), .blank_n(vga_blank_n));
+sysclock pll0(.inclk0(clock_50), .c0(clock_100), .c1(clock_25), .areset(KEY[0]), .locked(rst_n));
 
 endmodule
