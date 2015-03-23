@@ -1,4 +1,4 @@
-module soc(SW, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HEX6, HEX7, LEDR, LEDG, clock_50,
+module soc(SW, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HEX6, HEX7, LEDR, LEDG, raw_clock_50,
   quad, rgb, pb,
   fs_addrbus, fs_databus, ssram_be, ssram0_ce_n, ssram1_ce_n, ssram_oe_n, ssram_we_n,
   ssram_adv_n, ssram_adsp_n, ssram_gw_n, ssram_adsc_n, ssram_clk,
@@ -47,7 +47,7 @@ output sdram_we_n;
 output sdram_cs_n;
 
 // FPGA board stuff
-input clock_50;
+input raw_clock_50;
 input [17:0] SW;
 input [3:0] KEY;
 output [8:0] LEDG;
@@ -93,11 +93,13 @@ output lcd_on;
 output lcd_rw;
 output [7:0] lcd_data;
 
-wire rst_n, clock_100, clock_25;
+wire rst_n, clock_100, clock_200, clock_50, clock_25, locked;
 
 assign lcd_on = SW[17];
 assign serial0_rts = serial0_cts;
-assign vga_sync = 1'b0;
+assign vga_sync_n = 1'b0;
+assign vga_clock = clock_25;
+assign rst_n = locked;
 
 // Wiring for external SDRAM, SSRAM & flash
 assign sdram_clk = clock_50;
@@ -122,12 +124,13 @@ hexdisp d1(.out(HEX1), .in(bm_address[7:4]));
 hexdisp d0(.out(HEX0), .in(bm_address[3:0]));
 // Blinknlights
 assign LEDR = { 8'h0, chipselect };
-assign LEDG = 9'h00;
+assign LEDG = { raw_clock_50, clock_200, clock_100, clock_50, clock_25, locked, 3'h0 };
 
 wire [9:0] chipselect;
 wire [31:0] cpu_address, bm_address, vga_address;
 wire [31:0] cpu_readdata, bm_writedata, bm_readdata, cpu_writedata, mon_readdata, ram_readdata, matrix_readdata, rom_readdata;
-wire [31:0] uart0_readdata, uart0_writedata, uart1_readdata, uart1_writedata, vga_readdata;
+wire [31:0] uart0_readdata, uart0_writedata, uart1_readdata, uart1_writedata;
+wire [23:0] vga_readdata;
 wire [3:0] cpu_be, bm_be;
 wire cpu_write, cpu_read, cpu_wait, bm_read, bm_write, bm_wait, ram_write, ram_read, rom_read;
 wire uart0_write, uart0_read, uart1_write, uart1_read, vga_wait, vga_read;
@@ -160,9 +163,9 @@ assign bm_be = (1'b1 ? cpu_be : 4'b1111);
 assign bm_writedata = (1'b1 ? cpu_writedata : 0);
 assign bm_address = (1'b1 ? cpu_address : vga_address);
 assign cpu_wait = bm_wait;
-assign vga_wait = bm_wait;
+assign vga_wait = 1'b0;
 assign cpu_readdata = bm_readdata;
-assign vga_readdata = bm_readdata;
+assign vga_readdata = (SW[17] ? bm_readdata[23:0] : (SW[16] ? 24'h00ff00 : 24'h0030a0));
 
 bexkat1 bexkat0(.csi_clk(clock_50), .rsi_reset_n(rst_n), .avm_m0_address(cpu_address), .avm_m0_read(cpu_read), .avm_m0_readdata(cpu_readdata),
   .avm_m0_write(cpu_write), .avm_m0_writedata(cpu_writedata), .avm_m0_byteenable(cpu_be), .avm_m0_waitrequest(cpu_wait));
@@ -182,6 +185,6 @@ buscontroller bc0(.clock(clock_50), .reset_n(rst_n),
 vga_framebuffer vga0(.vs(vga_vs), .hs(vga_hs), .vga_clock(clock_25), .reset_n(rst_n),
   .r(vga_r), .g(vga_g), .b(vga_b), .data(vga_readdata), .bus_read(vga_read), 
   .bus_wait(vga_wait), .address(vga_address), .blank_n(vga_blank_n));
-sysclock pll0(.inclk0(clock_50), .c0(clock_100), .c1(clock_25), .areset(KEY[0]), .locked(rst_n));
+sysclock pll0(.inclk0(raw_clock_50), .c0(clock_100), .c1(clock_25), .c2(clock_50), .c3(clock_200), .areset(~KEY[0]), .locked(locked));
 
 endmodule

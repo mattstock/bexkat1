@@ -1,3 +1,5 @@
+void foo(char *x);
+
 void main(void) {
   char a[10];
   char *b;
@@ -6,4 +8,8 @@ void main(void) {
 
   a[0] = 'a';
   b[0] = 'b';
+}
+
+void foo(char *x) {
+  x[1] = 'c';
 }

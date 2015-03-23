@@ -70,8 +70,8 @@ void delay(unsigned int limit) {
 }
 
 char serial_getchar(unsigned port) {
-  unsigned short result;
-  volatile unsigned int *p;
+  unsigned result;
+  volatile unsigned *p;
 
   switch (port) {
   case 0:
@@ -167,7 +167,7 @@ void serial_srec(unsigned port) {
 }
 
 void serial_putchar(unsigned port, char c) {
-  volatile unsigned int *p;
+  volatile unsigned *p;
 
   switch (port) {
   case 0:
@@ -181,7 +181,7 @@ void serial_putchar(unsigned port, char c) {
   }
 
   while (!(p[0] & 0x2000));
-  p[0] = (unsigned short)c;
+  p[0] = (unsigned)c;
 }
 
 static char nibble2hex(char n) {

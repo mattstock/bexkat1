@@ -7,16 +7,16 @@ input reset_n;
 input clock;
 output [11:0] x, y;
 
-// VESA 640x480 @ 62Hz, pixel clock is 25MHz
-localparam [11:0]	H_SYNC_INT	=	12'd64;   
-localparam [11:0] H_SYNC_BACK	=	12'd120;   
-localparam [11:0] H_SYNC_ACT	=	12'd640;
-localparam [11:0] H_SYNC_FRONT=	12'd16;  
+// VESA 640x480 @ 60Hz, pixel clock is 25MHz
+localparam [11:0]	H_SYNC_INT	=	12'd95;  // 3.8us / 40ns    
+localparam [11:0] H_SYNC_BACK	=	12'd48;  // 1.9us / 40ns 
+localparam [11:0] H_SYNC_ACT	=	12'd640; // 25.4us / 40ns
+localparam [11:0] H_SYNC_FRONT=	12'd15;  // 0.6us / 40ns
 localparam [11:0] H_SYNC_TOTAL=	H_SYNC_ACT+H_SYNC_FRONT+H_SYNC_INT+H_SYNC_BACK;
-localparam [11:0] V_SYNC_INT	=	12'd3;
-localparam [11:0] V_SYNC_BACK	=	12'd16;
+localparam [11:0] V_SYNC_INT	=	12'd2;
+localparam [11:0] V_SYNC_BACK	=	12'd33;
 localparam [11:0] V_SYNC_ACT	=	12'd480;
-localparam [11:0] V_SYNC_FRONT=	12'd1;
+localparam [11:0] V_SYNC_FRONT=	12'd10;
 localparam [11:0] V_SYNC_TOTAL=	V_SYNC_ACT+V_SYNC_FRONT+V_SYNC_INT+V_SYNC_BACK;
 
 parameter	X_START		=	H_SYNC_INT+H_SYNC_BACK;

@@ -19,7 +19,7 @@ wire [7:0] rx_in;
 
 reg [7:0] tx_byte, tx_byte_next;
 reg [7:0] rx_byte, rx_byte_next;
-reg rx_queue, rx_queue_next;
+reg [1:0] rx_queue, rx_queue_next;
 reg tx_queue, tx_queue_next;
 
 // memory logic
@@ -27,7 +27,7 @@ always @(posedge clk or negedge rst_n)
 begin
   if (!rst_n) begin
     tx_byte <= 8'h00;
-    rx_queue <= 1'b0;
+    rx_queue <= 2'b00;
     rx_byte <= 8'h00;
     tx_queue <= 1'b0;
   end else begin
@@ -45,37 +45,39 @@ begin
   tx_queue_next = tx_queue;
   rx_queue_next = rx_queue;
   tx_start = 1'b0;
+  data_out = 0;
   case ({select, write})
     'b11: begin    
-      data_out = 32'h00000000;
       case (address)
+        'h1: begin
+          // nothing for now
+        end
         'h0: begin
           if (tx_ready && be[0]) begin
             tx_queue_next = 1'b1;
             tx_byte_next = data_in[7:0];
           end
         end
-        'h1: begin
-          // nothing for now
-        end
       endcase
     end
     'b10: begin
       case (address)
         'h0: begin
-          data_out = {16'h0000, rx_queue, tx_queue, tx_ready, 5'h00, rx_byte};
-          rx_queue_next = 1'b0;
+          data_out = {16'h0000, rx_queue[0], tx_queue, tx_ready, 5'h00, rx_byte};
+          if (rx_queue == 2'b01)
+            rx_queue_next = 2'b11;
         end
         'h1: begin
-          data_out = { 15'h00000, tx_queue };
+          data_out = 32'hbeef0023;
         end
       endcase
     end
-    default: data_out = 16'h0000;
+    'b00: if (rx_queue == 2'b11) rx_queue_next = 2'b00;
+    'b01: begin end
   endcase
   if (rx_ready) begin
     rx_byte_next = rx_in;
-    rx_queue_next = 1'b1;
+    rx_queue_next = 2'b01;
   end
   if (tx_ready) begin
     if (tx_queue) begin
