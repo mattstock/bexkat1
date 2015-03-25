@@ -272,7 +272,7 @@ void matrix_put(unsigned x, unsigned y, unsigned val) {
 void serial_dumpmem(unsigned port,
 		    unsigned addr, 
 		    unsigned short len) {
-  short i;
+  unsigned int i;
   unsigned *pos = (unsigned *)addr;
   
   serial_print(port, "\n");
@@ -294,10 +294,10 @@ void main(void) {
   unsigned short size=20;
   char buf[20];
   char *msg;
-  short val;
-  short *ref;
+  int val;
+  int *ref;
 
-  addr = 0xff100000;
+  addr = 0x00c00000;
   while (1) {
     serial_print(0, "\nBexkat1 [");
     serial_printhex(0, addr);
@@ -328,7 +328,7 @@ void main(void) {
 	val = (val << 4) + hextoi(*msg);
 	msg++;
       }
-      ref = (short *)addr;
+      ref = (int *)addr;
       *ref = val;
       serial_print(0, "\n");
       break;

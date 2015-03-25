@@ -103,15 +103,33 @@ assign rst_n = locked;
 
 // Wiring for external SDRAM, SSRAM & flash
 assign sdram_clk = clock_50;
-assign ssram_gw_n = 1'b1;
-assign ssram_adv_n = 1'b1;
-assign ssram_clk = clock_50;
-assign ssram_adsc_n = 1'b1;
+assign sdram_databus = 32'hzzzzzzzz;
+assign sdram_cke = 1'b1;
+assign sdram_we_n = 1'b1;
+assign sdram_cs_n = 1'b1;
+assign sdram_cas_n = 1'b1;
+assign sdram_ras_n = 1'b1;
+assign sdram_dqm = 4'b0000;
+assign sdram_ba = 2'b00;
+assign sdram_addrbus = 13'h0000;
 assign fl_oe_n = ~fl_we_n;
 assign fl_we_n = 1'b1;
 assign fl_ce_n = 1'b1;
 assign fl_rst_n = rst_n;
 assign fl_wp_n = 1'b1;
+
+assign ssram_gw_n = 1'b1;
+assign ssram_adv_n = 1'b1;
+assign ssram_clk = clock_50;
+assign ssram_adsc_n = 1'b1;
+assign ssram_adsp_n = ~(chipselect[0] && bm_start);
+assign ssram_we_n = ~ssram_write;
+assign ssram_be = bm_be;
+assign ssram_oe_n = ~ssram_read;
+assign ssram0_ce_n = ~(chipselect[0] && ~bm_address[29]);
+assign ssram1_ce_n = ~(chipselect[0] && bm_address[29]);
+assign fs_addrbus = bm_address[28:2];
+assign fs_databus = (ssram_oe_n ? bm_writedata : 32'hzzzzzzzz);
 
 // visualization stuff
 hexdisp d7(.out(HEX7), .in(bm_address[31:28]));
@@ -134,17 +152,22 @@ wire [23:0] vga_readdata;
 wire [3:0] cpu_be, bm_be;
 wire cpu_write, cpu_read, cpu_wait, bm_read, bm_write, bm_wait, ram_write, ram_read, rom_read;
 wire uart0_write, uart0_read, uart1_write, uart1_read, vga_wait, vga_read;
-wire matrix_read, matrix_write;
+wire matrix_read, matrix_write, ssram_read, ssram_write, bm_start;
+wire [1:0] bus_grant;
 
 // quadrature encoder outputs 0-23
 //rgb_enc io0(.clk(clock_50), .rst_n(rst_n), .quad(quad), .button(pb), .rgb_out(rgb),
 //  .write(cpu_write & mem_encoder), .address(cpu_addrbus[2:1]), .data_in(cpu_data_out), .data_out(encoder_data));
 
+assign cpu_readdata = bm_readdata;
+assign vga_readdata = bm_readdata[23:0];
+
 assign bm_readdata = (chipselect[7] ? rom_readdata : 32'h0) |
                      (chipselect[6] ? ram_readdata : 32'h0) |
                      (chipselect[5] ? matrix_readdata : 32'h0) |
                      (chipselect[4] ? uart0_readdata : 32'h0) |
-                     (chipselect[3] ? uart1_readdata : 32'h0);
+                     (chipselect[3] ? uart1_readdata : 32'h0) |
+                     (chipselect[0] ? fs_databus : 32'h0);
 
 assign rom_read = (chipselect[7] ? bm_read : 1'b0);
 assign ram_read = (chipselect[6] ? bm_read : 1'b0);
@@ -155,17 +178,8 @@ assign uart0_read = (chipselect[4] ? bm_read : 1'b0);
 assign uart0_write = (chipselect[4] ? bm_write : 1'b0);
 assign uart1_read = (chipselect[3] ? bm_read : 1'b0);
 assign uart1_write = (chipselect[3] ? bm_write : 1'b0);
-
-// Until we have multiple master
-assign bm_write = (1'b1 ? cpu_write : 1'h0);
-assign bm_read = (1'b1 ? cpu_read : vga_read);
-assign bm_be = (1'b1 ? cpu_be : 4'b1111);
-assign bm_writedata = (1'b1 ? cpu_writedata : 0);
-assign bm_address = (1'b1 ? cpu_address : vga_address);
-assign cpu_wait = bm_wait;
-assign vga_wait = 1'b0;
-assign cpu_readdata = bm_readdata;
-assign vga_readdata = (SW[17] ? bm_readdata[23:0] : (SW[16] ? 24'h00ff00 : 24'h0030a0));
+assign ssram_read = (chipselect[0] ? bm_read : 1'b0);
+assign ssram_write = (chipselect[0] ? bm_write : 1'b0);
 
 bexkat1 bexkat0(.csi_clk(clock_50), .rsi_reset_n(rst_n), .avm_m0_address(cpu_address), .avm_m0_read(cpu_read), .avm_m0_readdata(cpu_readdata),
   .avm_m0_write(cpu_write), .avm_m0_writedata(cpu_writedata), .avm_m0_byteenable(cpu_be), .avm_m0_waitrequest(cpu_wait));
@@ -180,8 +194,12 @@ uart #(.baud(115200)) uart0(.clk(clock_50), .rst_n(rst_n), .rx(serial0_rx), .tx(
 uart uart1(.clk(clock_50), .rst_n(rst_n), .rx(1'b0), .tx(serial1_tx), .data_in(bm_writedata), .be(bm_be),
   .data_out(uart1_readdata), .select(uart1_read|uart1_write), .write(uart1_write), .address(bm_address[2]));
 buscontroller bc0(.clock(clock_50), .reset_n(rst_n),
-  .bm_address(bm_address), .bm_read(bm_read), .bm_write(bm_write), .bm_wait(bm_wait),
-  .chipselect(chipselect));
+  .address(bm_address), .cpu_address(cpu_address), .vga_address(vga_address),
+  .read(bm_read), .cpu_read((SW[17] ? cpu_read : 1'b0)), .vga_read((SW[16] ? vga_read : 1'b0)), 
+  .start(bm_start), .chipselect(chipselect),
+  .write(bm_write), .cpu_write((SW[17] ? cpu_write : 1'b0)),
+  .cpu_writedata(cpu_writedata), .writedata(bm_writedata), .be(bm_be), .cpu_be(cpu_be),
+  .cpu_wait(cpu_wait), .vga_wait(vga_wait));
 vga_framebuffer vga0(.vs(vga_vs), .hs(vga_hs), .vga_clock(clock_25), .reset_n(rst_n),
   .r(vga_r), .g(vga_g), .b(vga_b), .data(vga_readdata), .bus_read(vga_read), 
   .bus_wait(vga_wait), .address(vga_address), .blank_n(vga_blank_n));
