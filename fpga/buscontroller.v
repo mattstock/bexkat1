@@ -89,7 +89,7 @@ begin
       end
     end
     STATE_START: begin
-      delay_next = 4'h2;
+      delay_next = 4'h1;
       if (grant[MASTER_CPU] && (cpu_read || cpu_write))
         state_next = STATE_PRE;
       else if (grant[MASTER_VGA] && vga_read)

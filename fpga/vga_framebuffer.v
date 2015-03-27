@@ -20,7 +20,7 @@ wire [7:0] scanpos;
 reg [11:0] y_last;
 reg [1:0] state, state_next;
 reg [17:0] pixel, pixel_next;
-reg [11:0] idx, idx_next;
+reg [17:0] idx, idx_next;
 reg [31:0] scandata_in, scandata_in_next;
 reg [31:0] address, address_next;
 reg scandata_we, scandata_we_next;
@@ -32,7 +32,7 @@ assign g = scandata_out[15:8];
 assign b = scandata_out[7:0];
 
 assign bus_read = (state == STATE_BUS || state == STATE_GRAPHICS);
-assign xlookahead = x + 2'h2;
+assign xlookahead = x;
 
 always @(posedge vga_clock or negedge reset_n)
 begin
@@ -66,8 +66,10 @@ begin
   // x and y take care of themselves
   case (state)
     STATE_IDLE: begin
-      if (y == 12'h0 && y_last != 12'h0 && x == 12'h0)
+      if (y == 12'h0 && y_last != 12'h0 && x == 12'h0) begin
         pixel_next = 18'h0;
+        address_next = VIDMEM;
+      end
       if (y != y_last && x == 12'h0) begin
         state_next = STATE_BUS;
         address_next = VIDMEM + pixel + idx;
@@ -83,8 +85,8 @@ begin
     end
     STATE_GRAPHICS: begin
       scandata_we_next = 1'b0;
-      if (idx < 12'd640) begin
-        idx_next = idx + 1'b1;
+      if (idx < 17'ha00) begin
+        idx_next = idx + 3'h4;
         state_next = STATE_RELEASE;
       end else begin
         pixel_next = pixel + idx;
@@ -99,6 +101,6 @@ begin
 end
 
 vga_controller vga0(.x(x), .y(y), .active(blank_n), .vs(vs), .hs(hs), .clock(vga_clock), .reset_n(reset_n));
-vga_linebuf scanline0(.clock(vga_clock), .rdaddress(xlookahead[11:2]), .wraddress(idx), .wren(scandata_we),
+vga_linebuf scanline0(.clock(vga_clock), .rdaddress(xlookahead[11:2]), .wraddress(idx[11:2]), .wren(scandata_we),
   .q(scandata_out), .data(scandata_in));
 endmodule

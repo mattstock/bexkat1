@@ -124,11 +124,11 @@ assign ssram_clk = clock_50;
 assign ssram_adsc_n = 1'b1;
 assign ssram_adsp_n = ~(chipselect[0] && bm_start);
 assign ssram_we_n = ~ssram_write;
-assign ssram_be = bm_be;
+assign ssram_be = (ssram_write ? ~bm_be : 4'b1111);
 assign ssram_oe_n = ~ssram_read;
-assign ssram0_ce_n = ~(chipselect[0] && ~bm_address[29]);
-assign ssram1_ce_n = ~(chipselect[0] && bm_address[29]);
-assign fs_addrbus = bm_address[28:2];
+assign ssram0_ce_n = ~(chipselect[0] && ~bm_address[22]);
+assign ssram1_ce_n = ~(chipselect[0] && bm_address[22]);
+assign fs_addrbus = bm_address[26:0];
 assign fs_databus = (ssram_oe_n ? bm_writedata : 32'hzzzzzzzz);
 
 // visualization stuff
