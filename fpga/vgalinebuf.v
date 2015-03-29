@@ -4,7 +4,7 @@
 // MODULE: altsyncram 
 
 // ============================================================
-// File Name: vga_linebuf.v
+// File Name: vgalinebuf.v
 // Megafunction Name(s):
 // 			altsyncram
 //
@@ -37,24 +37,26 @@
 // synopsys translate_off
 `timescale 1 ps / 1 ps
 // synopsys translate_on
-module vga_linebuf (
-	clock,
+module vgalinebuf (
 	data,
 	rdaddress,
+	rdclock,
 	wraddress,
+	wrclock,
 	wren,
 	q);
 
-	input	  clock;
 	input	[23:0]  data;
 	input	[9:0]  rdaddress;
+	input	  rdclock;
 	input	[9:0]  wraddress;
+	input	  wrclock;
 	input	  wren;
 	output	[23:0]  q;
 `ifndef ALTERA_RESERVED_QIS
 // synopsys translate_off
 `endif
-	tri1	  clock;
+	tri1	  wrclock;
 	tri0	  wren;
 `ifndef ALTERA_RESERVED_QIS
 // synopsys translate_on
@@ -66,7 +68,8 @@ module vga_linebuf (
 	altsyncram	altsyncram_component (
 				.address_a (wraddress),
 				.address_b (rdaddress),
-				.clock0 (clock),
+				.clock0 (wrclock),
+				.clock1 (rdclock),
 				.data_a (data),
 				.wren_a (wren),
 				.q_b (sub_wire0),
@@ -76,7 +79,6 @@ module vga_linebuf (
 				.addressstall_b (1'b0),
 				.byteena_a (1'b1),
 				.byteena_b (1'b1),
-				.clock1 (1'b1),
 				.clocken0 (1'b1),
 				.clocken1 (1'b1),
 				.clocken2 (1'b1),
@@ -88,20 +90,19 @@ module vga_linebuf (
 				.rden_b (1'b1),
 				.wren_b (1'b0));
 	defparam
-		altsyncram_component.address_reg_b = "CLOCK0",
+		altsyncram_component.address_aclr_b = "NONE",
+		altsyncram_component.address_reg_b = "CLOCK1",
 		altsyncram_component.clock_enable_input_a = "BYPASS",
 		altsyncram_component.clock_enable_input_b = "BYPASS",
-		altsyncram_component.clock_enable_output_a = "BYPASS",
 		altsyncram_component.clock_enable_output_b = "BYPASS",
-		altsyncram_component.intended_device_family = "Cyclone II",
+		altsyncram_component.intended_device_family = "Cyclone IV GX",
 		altsyncram_component.lpm_type = "altsyncram",
 		altsyncram_component.numwords_a = 1024,
 		altsyncram_component.numwords_b = 1024,
 		altsyncram_component.operation_mode = "DUAL_PORT",
 		altsyncram_component.outdata_aclr_b = "NONE",
-		altsyncram_component.outdata_reg_b = "CLOCK0",
+		altsyncram_component.outdata_reg_b = "CLOCK1",
 		altsyncram_component.power_up_uninitialized = "FALSE",
-		altsyncram_component.read_during_write_mode_mixed_ports = "DONT_CARE",
 		altsyncram_component.widthad_a = 10,
 		altsyncram_component.widthad_b = 10,
 		altsyncram_component.width_a = 24,
@@ -132,7 +133,7 @@ endmodule
 // Retrieval info: PRIVATE: CLRrren NUMERIC "0"
 // Retrieval info: PRIVATE: CLRwraddress NUMERIC "0"
 // Retrieval info: PRIVATE: CLRwren NUMERIC "0"
-// Retrieval info: PRIVATE: Clock NUMERIC "0"
+// Retrieval info: PRIVATE: Clock NUMERIC "1"
 // Retrieval info: PRIVATE: Clock_A NUMERIC "0"
 // Retrieval info: PRIVATE: Clock_B NUMERIC "0"
 // Retrieval info: PRIVATE: IMPLEMENT_IN_LES NUMERIC "0"
@@ -140,7 +141,7 @@ endmodule
 // Retrieval info: PRIVATE: INDATA_REG_B NUMERIC "0"
 // Retrieval info: PRIVATE: INIT_FILE_LAYOUT STRING "PORT_B"
 // Retrieval info: PRIVATE: INIT_TO_SIM_X NUMERIC "0"
-// Retrieval info: PRIVATE: INTENDED_DEVICE_FAMILY STRING "Cyclone II"
+// Retrieval info: PRIVATE: INTENDED_DEVICE_FAMILY STRING "Cyclone IV GX"
 // Retrieval info: PRIVATE: JTAG_ENABLED NUMERIC "0"
 // Retrieval info: PRIVATE: JTAG_ID STRING "NONE"
 // Retrieval info: PRIVATE: MAXIMUM_DEPTH NUMERIC "0"
@@ -174,41 +175,42 @@ endmodule
 // Retrieval info: PRIVATE: enable NUMERIC "0"
 // Retrieval info: PRIVATE: rden NUMERIC "0"
 // Retrieval info: LIBRARY: altera_mf altera_mf.altera_mf_components.all
-// Retrieval info: CONSTANT: ADDRESS_REG_B STRING "CLOCK0"
+// Retrieval info: CONSTANT: ADDRESS_ACLR_B STRING "NONE"
+// Retrieval info: CONSTANT: ADDRESS_REG_B STRING "CLOCK1"
 // Retrieval info: CONSTANT: CLOCK_ENABLE_INPUT_A STRING "BYPASS"
 // Retrieval info: CONSTANT: CLOCK_ENABLE_INPUT_B STRING "BYPASS"
-// Retrieval info: CONSTANT: CLOCK_ENABLE_OUTPUT_A STRING "BYPASS"
 // Retrieval info: CONSTANT: CLOCK_ENABLE_OUTPUT_B STRING "BYPASS"
-// Retrieval info: CONSTANT: INTENDED_DEVICE_FAMILY STRING "Cyclone II"
+// Retrieval info: CONSTANT: INTENDED_DEVICE_FAMILY STRING "Cyclone IV GX"
 // Retrieval info: CONSTANT: LPM_TYPE STRING "altsyncram"
 // Retrieval info: CONSTANT: NUMWORDS_A NUMERIC "1024"
 // Retrieval info: CONSTANT: NUMWORDS_B NUMERIC "1024"
 // Retrieval info: CONSTANT: OPERATION_MODE STRING "DUAL_PORT"
 // Retrieval info: CONSTANT: OUTDATA_ACLR_B STRING "NONE"
-// Retrieval info: CONSTANT: OUTDATA_REG_B STRING "CLOCK0"
+// Retrieval info: CONSTANT: OUTDATA_REG_B STRING "CLOCK1"
 // Retrieval info: CONSTANT: POWER_UP_UNINITIALIZED STRING "FALSE"
-// Retrieval info: CONSTANT: READ_DURING_WRITE_MODE_MIXED_PORTS STRING "DONT_CARE"
 // Retrieval info: CONSTANT: WIDTHAD_A NUMERIC "10"
 // Retrieval info: CONSTANT: WIDTHAD_B NUMERIC "10"
 // Retrieval info: CONSTANT: WIDTH_A NUMERIC "24"
 // Retrieval info: CONSTANT: WIDTH_B NUMERIC "24"
 // Retrieval info: CONSTANT: WIDTH_BYTEENA_A NUMERIC "1"
-// Retrieval info: USED_PORT: clock 0 0 0 0 INPUT VCC "clock"
 // Retrieval info: USED_PORT: data 0 0 24 0 INPUT NODEFVAL "data[23..0]"
 // Retrieval info: USED_PORT: q 0 0 24 0 OUTPUT NODEFVAL "q[23..0]"
 // Retrieval info: USED_PORT: rdaddress 0 0 10 0 INPUT NODEFVAL "rdaddress[9..0]"
+// Retrieval info: USED_PORT: rdclock 0 0 0 0 INPUT NODEFVAL "rdclock"
 // Retrieval info: USED_PORT: wraddress 0 0 10 0 INPUT NODEFVAL "wraddress[9..0]"
+// Retrieval info: USED_PORT: wrclock 0 0 0 0 INPUT VCC "wrclock"
 // Retrieval info: USED_PORT: wren 0 0 0 0 INPUT GND "wren"
 // Retrieval info: CONNECT: @address_a 0 0 10 0 wraddress 0 0 10 0
 // Retrieval info: CONNECT: @address_b 0 0 10 0 rdaddress 0 0 10 0
-// Retrieval info: CONNECT: @clock0 0 0 0 0 clock 0 0 0 0
+// Retrieval info: CONNECT: @clock0 0 0 0 0 wrclock 0 0 0 0
+// Retrieval info: CONNECT: @clock1 0 0 0 0 rdclock 0 0 0 0
 // Retrieval info: CONNECT: @data_a 0 0 24 0 data 0 0 24 0
 // Retrieval info: CONNECT: @wren_a 0 0 0 0 wren 0 0 0 0
 // Retrieval info: CONNECT: q 0 0 24 0 @q_b 0 0 24 0
-// Retrieval info: GEN_FILE: TYPE_NORMAL vga_linebuf.v TRUE
-// Retrieval info: GEN_FILE: TYPE_NORMAL vga_linebuf.inc FALSE
-// Retrieval info: GEN_FILE: TYPE_NORMAL vga_linebuf.cmp FALSE
-// Retrieval info: GEN_FILE: TYPE_NORMAL vga_linebuf.bsf FALSE
-// Retrieval info: GEN_FILE: TYPE_NORMAL vga_linebuf_inst.v FALSE
-// Retrieval info: GEN_FILE: TYPE_NORMAL vga_linebuf_bb.v FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL vgalinebuf.v TRUE
+// Retrieval info: GEN_FILE: TYPE_NORMAL vgalinebuf.inc FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL vgalinebuf.cmp FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL vgalinebuf.bsf FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL vgalinebuf_inst.v FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL vgalinebuf_bb.v FALSE
 // Retrieval info: LIB_FILE: altera_mf

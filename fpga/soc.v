@@ -95,6 +95,11 @@ output [7:0] lcd_data;
 
 wire rst_n, clock_100, clock_200, clock_50, clock_25, locked;
 
+assign rgb = 3'b000;
+assign lcd_data = 8'hzz;
+assign lcd_e = 1'b0;
+assign lcd_rw = 1'b1;
+assign lcd_rs = 1'b0;
 assign lcd_on = SW[17];
 assign serial0_rts = serial0_cts;
 assign vga_sync_n = 1'b0;
@@ -102,7 +107,7 @@ assign vga_clock = clock_25;
 assign rst_n = locked;
 
 // Wiring for external SDRAM, SSRAM & flash
-assign sdram_clk = clock_50;
+assign sdram_clk = 1'b0;
 assign sdram_databus = 32'hzzzzzzzz;
 assign sdram_cke = 1'b1;
 assign sdram_we_n = 1'b1;
@@ -142,7 +147,7 @@ hexdisp d1(.out(HEX1), .in(bm_address[7:4]));
 hexdisp d0(.out(HEX0), .in(bm_address[3:0]));
 // Blinknlights
 assign LEDR = { 8'h0, chipselect };
-assign LEDG = { raw_clock_50, clock_200, clock_100, clock_50, clock_25, locked, 3'h0 };
+assign LEDG = { locked, 4'b0000, clock_200, clock_100, clock_50, clock_25 };
 
 wire [9:0] chipselect;
 wire [31:0] cpu_address, bm_address, vga_address;
@@ -200,7 +205,7 @@ buscontroller bc0(.clock(clock_50), .reset_n(rst_n),
   .write(bm_write), .cpu_write((SW[17] ? cpu_write : 1'b0)),
   .cpu_writedata(cpu_writedata), .writedata(bm_writedata), .be(bm_be), .cpu_be(cpu_be),
   .cpu_wait(cpu_wait), .vga_wait(vga_wait));
-vga_framebuffer vga0(.vs(vga_vs), .hs(vga_hs), .vga_clock(clock_25), .reset_n(rst_n),
+vga_framebuffer vga0(.vs(vga_vs), .hs(vga_hs), .sys_clock(clock_50), .vga_clock(clock_25), .reset_n(rst_n),
   .r(vga_r), .g(vga_g), .b(vga_b), .data(vga_readdata), .bus_read(vga_read), 
   .bus_wait(vga_wait), .address(vga_address), .blank_n(vga_blank_n));
 sysclock pll0(.inclk0(raw_clock_50), .c0(clock_100), .c1(clock_25), .c2(clock_50), .c3(clock_200), .areset(~KEY[0]), .locked(locked));

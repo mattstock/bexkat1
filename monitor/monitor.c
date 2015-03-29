@@ -19,6 +19,7 @@ void serial_printhex(unsigned port, unsigned val);
 char serial_getchar(unsigned port);
 void serial_print(unsigned port, char *);
 void serial_srec(unsigned port);
+void vga_test();
 
 // LED matrix stuff
 void matrix_init(void);
@@ -67,6 +68,20 @@ unsigned char random(unsigned int r_base) {
 void delay(unsigned int limit) {
   unsigned i;
   for (i=0; i < limit; i++);
+}
+
+void vga_test() {
+  unsigned i;
+
+  while (1) {
+    for (i=0; i < 640*480; i++) {
+      vga[i+1] = 0;
+      vga[i] = 0x0000ff88;
+      serial_printhex(0, i);
+      serial_print(0, "...\n");
+      delay(0x8000);
+    }
+  }
 }
 
 char serial_getchar(unsigned port) {
@@ -314,6 +329,10 @@ void main(void) {
 	addr = (addr << 4) + hextoi(*msg);
 	msg++;
       }
+      break;
+    case 'v':
+      serial_print(0, "\nVGA test starting...\n");
+      vga_test();
       break;
     case 's':
       serial_print(0, "\nstart srec upload...\n");

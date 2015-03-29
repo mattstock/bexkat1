@@ -3,14 +3,22 @@ create_clock -name raw_clock_50 -period 20ns [get_ports {raw_clock_50} ] -wavefo
 derive_pll_clocks
 derive_clock_uncertainty
 
-create_clock -name vga_clk -period 40ns
-create_clock -name ssram_clk -period 20ns
-
-set_clock_groups -asynchronous -group { ssram_clk vga_clk \
+# 0 - 100MHz
+# 1 - 25MHz
+# 2 - 50MHz
+# 3 - 200MHz
+ 
+set_clock_groups -asynchronous -group { \
+  pll0|altpll_component|auto_generated|pll1|clk[3] \
   pll0|altpll_component|auto_generated|pll1|clk[2] \
   pll0|altpll_component|auto_generated|pll1|clk[1] \
   pll0|altpll_component|auto_generated|pll1|clk[0]} -group { altera_reserved_tck }
 
+# JTAG
+set_input_delay -clock altera_reserved_tck 20 [ get_ports altera_reserved_tdi ]
+set_input_delay -clock altera_reserved_tck 20 [ get_ports altera_reserved_tms ]
+set_output_delay -clock altera_reserved_tck 20 [ get_ports altera_reserved_tdo ]
+  
 # all async user input stuff
 set_false_path -from [get_ports {KEY*}] -to *
 set_false_path -from [get_ports {SW*}] -to *
@@ -41,37 +49,41 @@ set_multicycle_path -through [get_pins -compatibility_mode {*intcalc*}] -hold -s
 #set_input_delay -clock spi_sclk_pin -min 0ns [get_ports miso]
 #set_input_delay -clock spi_sclk_pin -max 0ns [get_ports miso]
 
-set_output_delay -clock vga_clk -max 0ns [get_ports {vga_r*}]
-set_output_delay -clock vga_clk -min 0ns [get_ports {vga_r*}]
-set_output_delay -clock vga_clk -max 0ns [get_ports {vga_g*}]
-set_output_delay -clock vga_clk -min 0ns [get_ports {vga_g*}]
-set_output_delay -clock vga_clk -max 0ns [get_ports {vga_b*}]
-set_output_delay -clock vga_clk -min 0ns [get_ports {vga_b*}]
-set_output_delay -clock vga_clk -max 0ns [get_ports {vga_hs}]
-set_output_delay -clock vga_clk -min 0ns [get_ports {vga_hs}]
-set_output_delay -clock vga_clk -max 0ns [get_ports {vga_vs}]
-set_output_delay -clock vga_clk -min 0ns [get_ports {vga_vs}]
-set_output_delay -clock vga_clk -max 0ns [get_ports {vga_clock}]
-set_output_delay -clock vga_clk -min 0ns [get_ports {vga_clock}]
+set_output_delay -clock pll0|altpll_component|auto_generated|pll1|clk[1] -max 0ns [get_ports {vga_r*}]
+set_output_delay -clock pll0|altpll_component|auto_generated|pll1|clk[1] -min 0ns [get_ports {vga_r*}]
+set_output_delay -clock pll0|altpll_component|auto_generated|pll1|clk[1] -max 0ns [get_ports {vga_g*}]
+set_output_delay -clock pll0|altpll_component|auto_generated|pll1|clk[1] -min 0ns [get_ports {vga_g*}]
+set_output_delay -clock pll0|altpll_component|auto_generated|pll1|clk[1] -max 0ns [get_ports {vga_b*}]
+set_output_delay -clock pll0|altpll_component|auto_generated|pll1|clk[1] -min 0ns [get_ports {vga_b*}]
+set_output_delay -clock pll0|altpll_component|auto_generated|pll1|clk[1] -max 0ns [get_ports {vga_hs}]
+set_output_delay -clock pll0|altpll_component|auto_generated|pll1|clk[1] -min 0ns [get_ports {vga_hs}]
+set_output_delay -clock pll0|altpll_component|auto_generated|pll1|clk[1] -max 0ns [get_ports {vga_vs}]
+set_output_delay -clock pll0|altpll_component|auto_generated|pll1|clk[1] -min 0ns [get_ports {vga_vs}]
+set_output_delay -clock pll0|altpll_component|auto_generated|pll1|clk[1] -max 0ns [get_ports {vga_clock}]
+set_output_delay -clock pll0|altpll_component|auto_generated|pll1|clk[1] -min 0ns [get_ports {vga_clock}]
 
-set_output_delay -clock ssram_clk -max 0ns [get_ports {fs_databus*}]
-set_output_delay -clock ssram_clk -min 0ns [get_ports {fs_databus*}]
-set_output_delay -clock ssram_clk -max 0ns [get_ports {fs_addrbus*}]
-set_output_delay -clock ssram_clk -min 0ns [get_ports {fs_addrbus*}]
-set_output_delay -clock ssram_clk -max 0ns [get_ports ssram0_ce_n]
-set_output_delay -clock ssram_clk -min 0ns [get_ports ssram0_ce_n]
-set_output_delay -clock ssram_clk -max 0ns [get_ports ssram1_ce_n]
-set_output_delay -clock ssram_clk -min 0ns [get_ports ssram1_ce_n]
-set_output_delay -clock ssram_clk -max 0ns [get_ports ssram_gw_n]
-set_output_delay -clock ssram_clk -min 0ns [get_ports ssram_gw_n]
-set_output_delay -clock ssram_clk -max 0ns [get_ports {ssram_be*}]
-set_output_delay -clock ssram_clk -min 0ns [get_ports {ssram_be*}]
-set_output_delay -clock ssram_clk -max 0ns [get_ports ssram_oe_n]
-set_output_delay -clock ssram_clk -min 0ns [get_ports ssram_oe_n]
-set_output_delay -clock ssram_clk -max 0ns [get_ports ssram_adsp_n]
-set_output_delay -clock ssram_clk -min 0ns [get_ports ssram_adsp_n]
-set_output_delay -clock ssram_clk -max 0ns [get_ports ssram_clk]
-set_output_delay -clock ssram_clk -min 0ns [get_ports ssram_clk]
+set_input_delay -clock pll0|altpll_component|auto_generated|pll1|clk[2] -max 0ns [get_ports {fs_databus*}]
+set_input_delay -clock pll0|altpll_component|auto_generated|pll1|clk[2] -min 0ns [get_ports {fs_databus*}]
+set_output_delay -clock pll0|altpll_component|auto_generated|pll1|clk[2] -max 0ns [get_ports {fs_databus*}]
+set_output_delay -clock pll0|altpll_component|auto_generated|pll1|clk[2] -min 0ns [get_ports {fs_databus*}]
+set_output_delay -clock pll0|altpll_component|auto_generated|pll1|clk[2] -max 0ns [get_ports {fs_addrbus*}]
+set_output_delay -clock pll0|altpll_component|auto_generated|pll1|clk[2] -min 0ns [get_ports {fs_addrbus*}]
+set_output_delay -clock pll0|altpll_component|auto_generated|pll1|clk[2] -max 0ns [get_ports ssram0_ce_n]
+set_output_delay -clock pll0|altpll_component|auto_generated|pll1|clk[2] -min 0ns [get_ports ssram0_ce_n]
+set_output_delay -clock pll0|altpll_component|auto_generated|pll1|clk[2] -max 0ns [get_ports ssram1_ce_n]
+set_output_delay -clock pll0|altpll_component|auto_generated|pll1|clk[2] -min 0ns [get_ports ssram1_ce_n]
+set_output_delay -clock pll0|altpll_component|auto_generated|pll1|clk[2] -max 0ns [get_ports ssram_we_n]
+set_output_delay -clock pll0|altpll_component|auto_generated|pll1|clk[2] -min 0ns [get_ports ssram_we_n]
+set_output_delay -clock pll0|altpll_component|auto_generated|pll1|clk[2] -max 0ns [get_ports ssram_gw_n]
+set_output_delay -clock pll0|altpll_component|auto_generated|pll1|clk[2] -min 0ns [get_ports ssram_gw_n]
+set_output_delay -clock pll0|altpll_component|auto_generated|pll1|clk[2] -max 0ns [get_ports {ssram_be*}]
+set_output_delay -clock pll0|altpll_component|auto_generated|pll1|clk[2] -min 0ns [get_ports {ssram_be*}]
+set_output_delay -clock pll0|altpll_component|auto_generated|pll1|clk[2] -max 0ns [get_ports ssram_oe_n]
+set_output_delay -clock pll0|altpll_component|auto_generated|pll1|clk[2] -min 0ns [get_ports ssram_oe_n]
+set_output_delay -clock pll0|altpll_component|auto_generated|pll1|clk[2] -max 0ns [get_ports ssram_adsp_n]
+set_output_delay -clock pll0|altpll_component|auto_generated|pll1|clk[2] -min 0ns [get_ports ssram_adsp_n]
+set_output_delay -clock pll0|altpll_component|auto_generated|pll1|clk[2] -max 0ns [get_ports ssram_clk]
+set_output_delay -clock pll0|altpll_component|auto_generated|pll1|clk[2] -min 0ns [get_ports ssram_clk]
 
 create_generated_clock -name led_clk -master_clock pll0|altpll_component|auto_generated|pll1|clk[2] -source pll0|altpll_component|auto_generated|pll1|clk[2] -divide_by 4 [get_registers {*led_matrix:matrix0|state.STATE_CLOCK} ]
 create_generated_clock -name led_clk_pin -source [get_registers {*led_matrix:matrix0|state.STATE_CLOCK} ] [get_ports {rgb_clk}]

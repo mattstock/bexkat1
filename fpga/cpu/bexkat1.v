@@ -306,7 +306,7 @@ begin
               state_next = STATE_FETCHIR;
             end
           end
-        end       
+        end
         {MODE_IMM, 8'h00}: begin // bra
           state_next = STATE_FETCHIR;
           pc_next = { 1'b0, pc } + mar;
