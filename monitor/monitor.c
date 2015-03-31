@@ -19,7 +19,6 @@ void serial_printhex(unsigned port, unsigned val);
 char serial_getchar(unsigned port);
 void serial_print(unsigned port, char *);
 void serial_srec(unsigned port);
-void vga_test();
 
 // LED matrix stuff
 void matrix_init(void);
@@ -29,6 +28,7 @@ void matrix_put(unsigned, unsigned, unsigned);
 void delay(unsigned int limit);
 unsigned char random(unsigned int);
 static char *int2hex(int v);
+void vga_test();
 
 // conversion stuff
 static char nibble2hex(char n);
@@ -73,15 +73,16 @@ void delay(unsigned int limit) {
 void vga_test() {
   unsigned i;
 
-  while (1) {
-    for (i=0; i < 640*480; i++) {
-      vga[i+1] = 0;
-      vga[i] = 0x0000ff88;
-      serial_printhex(0, i);
-      serial_print(0, "...\n");
-      delay(0x8000);
-    }
+  for (i=0; i < 640*480; i++) {
+    vga[i] = 0;
   }
+  vga[0] = 0xff0000;
+  vga[1] = 0xff00;
+  vga[2] = 0xff;
+  vga[10] = 0xa0;
+  vga[639] = 0xa000;
+  vga[640] = 0xa00000;
+  vga[240*640+320] = 0xb0b0b0;
 }
 
 char serial_getchar(unsigned port) {
@@ -131,12 +132,13 @@ void serial_srec(unsigned port) {
   unsigned char len;
   char type;
   unsigned char sum;
+  unsigned short pos;
   char *s;
 
   while (!done && (serial_getchar(port) == 'S')) {
     type = serial_getchar(port);
-    //    switch (type) {
-    // case '0':
+    switch (type) {
+    case '0':
       len = hextoi(serial_getchar(port));
       len = (len << 4) + hextoi(serial_getchar(port));
       sum = len;
@@ -151,8 +153,11 @@ void serial_srec(unsigned port) {
       if (sum != 0xff) {
 	done = 1;
 	serial_print(0, "checksum fail!?\n");
+        matrix[pos++] = 0xff0000;
+      } else {
+  	matrix[pos++] = 0xff00;
       }
-      /* break;
+    break;
     case '1':
       len = hextoi(serial_getchar(port));
       len = (len << 4) + hextoi(serial_getchar(port));
@@ -177,7 +182,7 @@ void serial_srec(unsigned port) {
     case '7':
       done = 1;
       break;
-      }*/
+    }
   }
 }
 

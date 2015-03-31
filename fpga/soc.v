@@ -124,9 +124,9 @@ assign fl_rst_n = rst_n;
 assign fl_wp_n = 1'b1;
 
 assign ssram_gw_n = 1'b1;
-assign ssram_adv_n = 1'b1;
-assign ssram_clk = clock_50;
-assign ssram_adsc_n = 1'b1;
+assign ssram_adv_n = ~(chipselect[0] && bm_burst_adv);
+assign ssram_clk = clock_100;
+assign ssram_adsc_n = ~(chipselect[0] && bm_burst);
 assign ssram_adsp_n = ~(chipselect[0] && bm_start);
 assign ssram_we_n = ~ssram_write;
 assign ssram_be = (ssram_write ? ~bm_be : 4'b1111);
@@ -157,7 +157,7 @@ wire [23:0] vga_readdata;
 wire [3:0] cpu_be, bm_be;
 wire cpu_write, cpu_read, cpu_wait, bm_read, bm_write, bm_wait, ram_write, ram_read, rom_read;
 wire uart0_write, uart0_read, uart1_write, uart1_read, vga_wait, vga_read;
-wire matrix_read, matrix_write, ssram_read, ssram_write, bm_start;
+wire matrix_read, matrix_write, ssram_read, ssram_write, bm_start, bm_burst, bm_burst_adv;
 wire [1:0] bus_grant;
 
 // quadrature encoder outputs 0-23
@@ -188,8 +188,8 @@ assign ssram_write = (chipselect[0] ? bm_write : 1'b0);
 
 bexkat1 bexkat0(.csi_clk(clock_50), .rsi_reset_n(rst_n), .avm_m0_address(cpu_address), .avm_m0_read(cpu_read), .avm_m0_readdata(cpu_readdata),
   .avm_m0_write(cpu_write), .avm_m0_writedata(cpu_writedata), .avm_m0_byteenable(cpu_be), .avm_m0_waitrequest(cpu_wait));
-monitor rom0(.clock(clock_50), .q(rom_readdata), .rden(rom_read), .address(bm_address[13:2]));
-scratch ram0(.clock(clock_50), .data(bm_writedata), .q(ram_readdata), .wren(ram_write), .rden(ram_read), .address(bm_address[13:2]),
+monitor rom0(.clock(clock_100), .q(rom_readdata), .rden(rom_read), .address(bm_address[13:2]));
+scratch ram0(.clock(clock_100), .data(bm_writedata), .q(ram_readdata), .wren(ram_write), .rden(ram_read), .address(bm_address[13:2]),
   .byteena(bm_be));
 led_matrix matrix0(.csi_clk(clock_50), .rsi_reset_n(rst_n), .avs_s0_writedata(bm_writedata), .avs_s0_readdata(matrix_readdata),
   .avs_s0_address(bm_address[11:2]), .avs_s0_byteenable(bm_be), .avs_s0_write(matrix_write), .avs_s0_read(matrix_read),
@@ -198,12 +198,13 @@ uart #(.baud(115200)) uart0(.clk(clock_50), .rst_n(rst_n), .rx(serial0_rx), .tx(
   .data_out(uart0_readdata), .select(uart0_read|uart0_write), .write(uart0_write), .address(bm_address[2]));
 uart uart1(.clk(clock_50), .rst_n(rst_n), .rx(1'b0), .tx(serial1_tx), .data_in(bm_writedata), .be(bm_be),
   .data_out(uart1_readdata), .select(uart1_read|uart1_write), .write(uart1_write), .address(bm_address[2]));
-buscontroller bc0(.clock(clock_50), .reset_n(rst_n),
+buscontroller bc0(.clock(clock_100), .reset_n(rst_n),
   .address(bm_address), .cpu_address(cpu_address), .vga_address(vga_address),
   .read(bm_read), .cpu_read((SW[17] ? cpu_read : 1'b0)), .vga_read((SW[16] ? vga_read : 1'b0)), 
   .start(bm_start), .chipselect(chipselect),
   .write(bm_write), .cpu_write((SW[17] ? cpu_write : 1'b0)),
   .cpu_writedata(cpu_writedata), .writedata(bm_writedata), .be(bm_be), .cpu_be(cpu_be),
+  .burst(bm_burst), .burst_adv(bm_burst_adv),
   .cpu_wait(cpu_wait), .vga_wait(vga_wait));
 vga_framebuffer vga0(.vs(vga_vs), .hs(vga_hs), .sys_clock(clock_50), .vga_clock(clock_25), .reset_n(rst_n),
   .r(vga_r), .g(vga_g), .b(vga_b), .data(vga_readdata), .bus_read(vga_read), 

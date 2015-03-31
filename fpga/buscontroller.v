@@ -14,6 +14,8 @@ module buscontroller(
   output cpu_wait,
   output vga_wait,
   output start,
+  output burst,
+  output burst_adv,
   output [3:0] be,
   output [31:0] writedata,
   output [9:0] chipselect);

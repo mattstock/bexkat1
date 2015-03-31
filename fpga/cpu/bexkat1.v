@@ -29,7 +29,7 @@ parameter big_endian = 1'b1;
 
 // combinatorial stuff
 reg [31:0] alu_in2;
-reg [3:0] alu_func;
+reg [2:0] alu_func;
 reg [2:0] int_func;
 reg [4:0] reg_read_addr1, reg_read_addr2, reg_write_addr;
 reg [1:0] reg_write;
@@ -121,7 +121,7 @@ begin
   retstate_next = retstate;
   
   // Control signals we need to deal with
-  alu_func = 4'h2; // add is default
+  alu_func = 3'h2; // add is default
   int_func = 3'b000;
   reg_read_addr1 = ir_ra;
   reg_read_addr2 = ir_rb;
@@ -277,7 +277,7 @@ begin
           reg_write = REG_WRITE_DW;
         end
         {MODE_REG, 8'h2x}: begin // alu rA <= rB + rC
-          alu_func = ir_op[3:0];
+          alu_func = ir_op[2:0];
           reg_read_addr1 = ir_rb;
           reg_read_addr2 = ir_rc;
           alu_in2 = reg_data_out2;
@@ -502,7 +502,7 @@ begin
     STATE_EVALARG: begin
         casex (ir_op)
           8'h0x: begin // alu rA <= rB + 0xabcd1234
-            alu_func = ir_op[3:0];
+            alu_func = ir_op[2:0];
             reg_read_addr1 = ir_rb;
             alu_in2 = mdr;
             reg_write = REG_WRITE_DW;
