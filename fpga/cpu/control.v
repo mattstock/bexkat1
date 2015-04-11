@@ -101,7 +101,35 @@ begin
     STATE_EVALIR: begin
       casex ({ir_mode, ir_op})
         {MODE_REG, 8'h00}: state_next = STATE_FETCHIR; // nop
-        default: state_next = STATE_FAULT;
+        {MODE_REG, 8'h01}: begin // rts
+          case (seq)
+            3'h0: begin
+              reg_read_addr1 = REG_SP;
+              marsel = 2'h3; // mar <= SP
+              addrsel = 3'h1; // MAR
+              bus_read = 1'b1;
+              alu2sel = 3'h4; // aluval <= SP + 4
+              if (bus_wait == 1'b0)
+                seq_next = 3'h1;
+            end
+            3'h1: begin
+              addrsel = 3'h1; // MAR
+              bus_read = 1'b1;
+              marsel = 3'h1; // mar <= busread
+              reg_write_addr = REG_SP;
+              reg_write = REG_WRITE_DW;
+              regsel = 3'h0; // SP <= aluval
+              seq_next = 3'h2;
+            end
+            3'h2: begin
+              pcsel = 3'h2; // PC <= mar 
+              reg_write = REG_WRITE_DW;
+              seq_next = 3'h0;
+              state_next = STATE_FETCHIR;
+            end
+            default: state_next = STATE_FAULT;
+          endcase
+        end
         {MODE_REG, 8'h05}: begin // push rA
           case (seq)
             3'h0: begin // ALUOUT <= SP - 4
@@ -208,6 +236,7 @@ begin
             default: state_next = STATE_FAULT;
           endcase
         end
+
         {MODE_REG, 8'h3x}: begin // [un]signed rA <= rB * / % rC
           case (ir_op)
             'h31: int_func = 'b001;
@@ -233,6 +262,7 @@ begin
             default: seq_next = seq + 1'b1;
           endcase
         end
+        default: state_next = STATE_FAULT;
       endcase
     end
     STATE_FETCHARG: begin
