@@ -34,7 +34,7 @@ wire [4:0] ir_rc   = ir[10:6];
 reg [3:0] state, state_next;
 reg [2:0] seq, seq_next;
 
-localparam [3:0] STATE_FETCHIR = 4'h0, STATE_EVALIR = 4'h1, STATE_FETCHARG= 4'h2, STATE_EVALARG = 4'h3, STATE_FAULT = 4'h4;
+localparam [3:0] STATE_FETCHIR = 4'h0, STATE_EVALIR = 4'h1, STATE_FETCHARG= 4'h2, STATE_EVALARG = 4'h3, STATE_FAULT = 4'h4, STATE_RESET = 4'h5;
 localparam MODE_REG = 3'h0, MODE_REGIND = 3'h1, MODE_IMM = 3'h2, MODE_DIR = 3'h4;
 localparam REG_WRITE_NONE = 2'b00, REG_WRITE_DW = 2'b11;
 localparam REG_SP = 5'b11111;
@@ -42,7 +42,7 @@ localparam REG_SP = 5'b11111;
 always @(posedge clock or negedge reset_n)
 begin
   if (!reset_n) begin
-    state <= STATE_FETCHIR;
+    state <= STATE_RESET;
     seq <= 3'h0;
   end else begin
     seq <= seq_next;
@@ -69,7 +69,7 @@ begin
   int1sel = 2'b0;
   int2sel = 2'b0;
   int_func = 3'b0;
-  addrsel = 1'b0; // MAR
+  addrsel = 1'b0; // PC
   pcsel = 2'b0;
   bus_read = 1'b0;
   bus_write = 1'b0;
@@ -77,17 +77,16 @@ begin
   byteenable = 4'b1111;
   
   case (state)
+    STATE_RESET: state_next = STATE_FETCHIR;
     STATE_FETCHIR: begin
       case (seq)
         3'h0: begin
-          bus_read = 1'b1; // put PC on addrbus 
-          addrsel= 1'b1;   // and request read
+          bus_read = 1'b1;
           if (bus_wait == 1'b0) // wait until we get control of bus
-            seq_next = 3'b1;
+            seq_next = 3'h1;
         end
         3'h1: begin
           bus_read = 1'b1; // still assert bus control
-          addrsel = 1'b1;
           ir_write = 1'b1; // latch bus into ir
           seq_next = 3'h2;
         end
@@ -118,11 +117,20 @@ begin
               reg_write_addr = REG_SP;
               reg_write = REG_WRITE_DW;
               regsel = 3'h0; // SP <= aluval
+              addrsel = 3'h1; // MAR
               bus_write = 1'b1;
-              if (bus_wait == 1'b0)
-                seq_next = 3'h2;
+              seq_next = 3'h2;
             end
-            3'h2: state_next = STATE_FETCHIR;
+            3'h2: begin
+              addrsel = 3'h1; // MAR
+              bus_write = 1'b1;            
+              if (bus_wait == 1'b0)
+                seq_next = 3'h3;
+            end
+            3'h3: begin
+              state_next = STATE_FETCHIR;
+              seq_next = 3'h0;
+            end
             default: state_next = STATE_FAULT;
           endcase
         end
@@ -131,12 +139,14 @@ begin
             3'h0: begin
               reg_read_addr1 = REG_SP;
               marsel = 2'h3; // mar <= SP
+              addrsel = 3'h1; // MAR
               bus_read = 1'b1;
               alu2sel = 3'h4; // aluval <= SP + 4
               if (bus_wait == 1'b0)
                 seq_next = 3'h1;
             end
             3'h1: begin
+              addrsel = 3'h1; // MAR
               bus_read = 1'b1;
               mdrsel = 3'h1; // mdr <= busread
               reg_write_addr = REG_SP;

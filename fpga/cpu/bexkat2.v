@@ -119,7 +119,7 @@ always @* begin
   endcase  
 end
 
-control con0(.clock(clk), .ir(ir), .ir_write(ir_write), .ccr(ccr), .ccr_write(ccr_write), .alu_func(alu_func), .alu1sel(alu1sel), .alu2sel(alu2sel),
+control con0(.clock(clk), .reset_n(reset_n), .ir(ir), .ir_write(ir_write), .ccr(ccr), .ccr_write(ccr_write), .alu_func(alu_func), .alu1sel(alu1sel), .alu2sel(alu2sel),
   .regsel(regsel), .reg_read_addr1(reg_read_addr1), .reg_read_addr2(reg_read_addr2), .reg_write_addr(reg_write_addr), .reg_write(reg_write),
   .mdrsel(mdrsel), .marsel(marsel), .pcsel(pcsel), .int1sel(int1sel), .int2sel(int2sel), .int_func(int_func),
   .addrsel(addrsel), .byteenable(byteenable), .bus_read(read), .bus_write(write), .bus_wait(waitrequest));
