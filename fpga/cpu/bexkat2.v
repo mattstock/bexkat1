@@ -27,14 +27,15 @@ wire [3:0] ccr_next;
 wire alu_carry, alu_negative, alu_overflow, alu_zero;
 
 // Special registers
-reg [31:0] mdr, mdr_next, mar, mar_next, pc, pc_next, aluval, ir;
+reg [31:0] mdr, mdr_next, mar, pc, aluval, ir;
+reg [32:0] pc_next, mar_next;
 reg [31:0] reg_data_in, alu_in1, alu_in2, int_in1, int_in2;
 reg [63:0] intval;
 reg [3:0] ccr;
 
 // opcode format
 wire [31:0] ir_ind = { {21{ir[10]}}, ir[10:0] };
-wire [15:0] ir_bra = ir[15:0];
+wire [31:0] ir_bra = { {16{ir[15]}}, ir[15:0] };
 
 // Data switching logic
 assign writedata = mdr;
@@ -65,16 +66,17 @@ end
 
 always @* begin
   case (pcsel)
-    3'h0: pc_next = pc;
-    3'h1: pc_next = pc + 'h4;
-    3'h2: pc_next = mar;
+    2'h0: pc_next = pc;
+    2'h1: pc_next = pc + 'h4;
+    2'h2: pc_next = { 1'b0, mar };
+    2'h3: pc_next = { 1'b0, pc } + ir_bra;  // relative branching
     default: pc_next = pc;
   endcase  
   case (marsel)
-    3'h0: mar_next = mar;
-    3'h1: mar_next = readdata;
-    3'h2: mar_next = aluval;
-    3'h3: mar_next = reg_data_out1;
+    2'h0: mar_next = mar;
+    2'h1: mar_next = readdata;
+    2'h2: mar_next = aluval;
+    2'h3: mar_next = reg_data_out1;
     default: mar_next = mar;
   endcase 
   case (mdrsel)
@@ -92,6 +94,8 @@ always @* begin
     3'h2: reg_data_in = -reg_data_out2;
     3'h3: reg_data_in = ~reg_data_out2;
     3'h4: reg_data_in = reg_data_out2;
+    3'h5: reg_data_in = {{16{ir[15]}}, ir[15:0] }; // sign ext
+    3'h6: reg_data_in = { 16'h0000, ir[15:0] }; // no sign ext
     default: reg_data_in = 0;
   endcase
   case (alu1sel)
@@ -106,6 +110,7 @@ always @* begin
     3'h2: alu_in2 = 1;
     3'h3: alu_in2 = ir_bra;
     3'h4: alu_in2 = 4;
+    3'h5: alu_in2 = mdr;
     default: alu_in2 = 0;
   endcase
   case (int1sel)

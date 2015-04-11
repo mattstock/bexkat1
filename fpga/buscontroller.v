@@ -28,6 +28,9 @@ reg [1:0] grant, grant_next;
 localparam [1:0] STATE_IDLE = 2'b00, STATE_START = 2'b01, STATE_PRE = 2'b10, STATE_POST = 2'b11;
 localparam MASTER_CPU = 1'b0, MASTER_VGA = 1'b1;
 
+assign burst = 1'b0;
+assign burst_adv = 1'b0;
+
 assign write = (grant[MASTER_CPU] ? cpu_write : 1'b0);
 assign read = (grant[MASTER_CPU] ? cpu_read : 1'b0) | (grant[MASTER_VGA] ? vga_read : 1'b0);
 assign be = (grant[MASTER_CPU] ? cpu_be : 4'b0000) | (grant[MASTER_VGA] ? 4'b1111 : 4'b0000);
