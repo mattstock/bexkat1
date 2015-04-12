@@ -125,7 +125,7 @@ assign fl_wp_n = 1'b1;
 
 assign ssram_gw_n = 1'b1;
 assign ssram_adv_n = ~(chipselect[0] && bm_burst_adv);
-assign ssram_clk = clock_100;
+assign ssram_clk = clock_50;
 assign ssram_adsc_n = ~(chipselect[0] && bm_burst);
 assign ssram_adsp_n = ~(chipselect[0] && bm_start);
 assign ssram_we_n = ~ssram_write;
