@@ -147,7 +147,7 @@ hexdisp d1(.out(HEX1), .in(bm_address[7:4]));
 hexdisp d0(.out(HEX0), .in(bm_address[3:0]));
 // Blinknlights
 assign LEDR = { 8'h0, chipselect };
-assign LEDG = { locked, 4'b0000, clock_200, clock_100, clock_50, clock_25 };
+assign LEDG = { locked, 8'b00000000 };
 
 wire [9:0] chipselect;
 wire [31:0] cpu_address, bm_address, vga_address;

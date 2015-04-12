@@ -197,15 +197,33 @@ begin
           state_next = STATE_FETCHIR;
         end
         {MODE_REG, 8'h03}: begin // inc rA
-          alu2sel = 'h2; // regA <= regA + 1
-          reg_write = REG_WRITE_DW;
-          state_next = STATE_FETCHIR;
+          case (seq)
+            3'h0: begin
+              alu2sel = 'h2; // aluval <= regA + 1
+              seq_next = 3'h1;
+            end
+            3'h1: begin
+              reg_write = REG_WRITE_DW; // rA <= aluval
+              seq_next = 3'h0;
+              state_next = STATE_FETCHIR;
+            end
+            default: state_next = STATE_FAULT;
+          endcase
         end
         {MODE_REG, 8'h04}: begin // dec rA
-          alu_func = 'h3; // sub
-          alu2sel = 'h2; // regA <= regA - 1
-          reg_write = REG_WRITE_DW;
-          state_next = STATE_FETCHIR;
+          case (seq)
+            3'h0: begin
+              alu_func = 'h3; // sub
+              alu2sel = 'h2; // aluval <= regA - 1
+              seq_next = 3'h1;
+            end
+            3'h1: begin  
+              reg_write = REG_WRITE_DW; // rA <= aluval
+              seq_next = 3'h0;
+              state_next = STATE_FETCHIR;
+            end
+            default: state_next = STATE_FAULT;
+          endcase
         end
         {MODE_REG, 8'h07}: begin // mov
           regsel = 3'h4; // reg_data_out2
