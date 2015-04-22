@@ -459,6 +459,8 @@ begin
           addrsel = 1'b1; // MAR
           case (seq)
             3'h0: begin
+              reg_read_addr1 = ir_rb;
+              mdrsel = 3'h3;
               bus_write = 1'b1; // databus <= MDR, addrbus <= MAR
               if (bus_wait == 1'b0)
                 seq_next = 3'h1;
@@ -474,9 +476,10 @@ begin
           addrsel = 1'b1; // MAR
           case (seq)
             3'h0: begin
+              reg_read_addr1 = ir_rb;
               bus_write = 1'b1;
               byteenable = (bus_align[1] ? 4'b0011 : 4'b1100);
-              mdrsel = 3'h3; // MDR <= rA (with bytelanes)
+              mdrsel = 3'h3; // MDR <= rB (with bytelanes)
               if (bus_wait == 1'b0)
                 seq_next = 3'h1;
             end
@@ -491,6 +494,7 @@ begin
           addrsel = 1'b1; // MAR
           case (seq)
             3'h0: begin
+              reg_read_addr1 = ir_rb;
               bus_write = 1'b1; // databus <= MDR, addrbus <= MAR
               mdrsel = 3'h3;
               case (bus_align[1:0])
@@ -520,6 +524,7 @@ begin
             end
             3'h1: begin
               regsel = 3'h1; // rA <= MDR
+              reg_write = REG_WRITE_DW;
               seq_next = 3'h0;
               state_next = STATE_FETCHIR;
             end
