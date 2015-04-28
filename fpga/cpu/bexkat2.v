@@ -121,6 +121,7 @@ always @* begin
     3'h3: mdr_next = reg_data_out1;
     3'h4: mdr_next = intval[31:0];
     3'h5: mdr_next = intval[63:32];
+    3'h6: mdr_next = pc;
     default: mdr_next = mdr;
   endcase
   case (regsel)

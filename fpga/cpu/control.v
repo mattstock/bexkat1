@@ -538,7 +538,8 @@ begin
               alu_func = 'h3; // sub
               alu2sel = 3'h4; // 4
               seq_next = 3'h1;
-              pcsel = 3'h2; // PC <= MAR;
+              mdrsel = 3'h6; // MDR <= PC
+              pcsel = 3'h2; // PC <= MAR
             end
             3'h1: begin
               marsel = 2'h2; // mar <= aluval
