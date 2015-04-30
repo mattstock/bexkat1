@@ -528,6 +528,49 @@ begin
             default: state_next = STATE_FAULT;
           endcase
         end
+        8'h33: begin // ldd
+          addrsel = 1'b1; // MAR
+          case (seq)
+            3'h0: begin
+              bus_read = 1'b1;
+              byteenable = (bus_align[1] ? 4'b0011 : 4'b1100);
+              mdrsel = 3'h1; // MDR <= databus
+              if (bus_wait == 1'b0)
+                seq_next = 3'h1;
+            end
+            3'h1: begin
+              regsel = 3'h1; // rA <= MDR
+              reg_write = REG_WRITE_DW;
+              seq_next = 3'h0;
+              state_next = STATE_FETCHIR;
+            end
+            default: state_next = STATE_FAULT;
+          endcase
+        end
+        8'h35: begin // ldd.b
+          addrsel = 1'b1; // MAR
+          case (seq)
+            3'h0: begin
+              bus_read = 1'b1;
+              case (bus_align[1:0])
+                2'b00: byteenable = 4'b1000;
+                2'b01: byteenable = 4'b0100;
+                2'b10: byteenable = 4'b0010;
+                2'b11: byteenable = 4'b0001;
+              endcase
+              mdrsel = 3'h1; // MDR <= databus
+              if (bus_wait == 1'b0)
+                seq_next = 3'h1;
+            end
+            3'h1: begin
+              regsel = 3'h1; // rA <= MDR
+              reg_write = REG_WRITE_DW;
+              seq_next = 3'h0;
+              state_next = STATE_FETCHIR;
+            end
+            default: state_next = STATE_FAULT;
+          endcase
+        end
         8'h3b: begin // jsrd = push PC, jmp
           case (seq)
             3'h0: begin // aluval <= SP - 4

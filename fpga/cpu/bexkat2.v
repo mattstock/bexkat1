@@ -90,7 +90,7 @@ always @* begin
       busin_be = { {16{readdata[15]}}, readdata[15:0] };
     end 
     4'b1100: begin
-      writedata = { 16'h0000, mdr[31:16] };
+      writedata = { mdr[15:0], 16'h0000 };
       busin_be = { {16{readdata[31]}}, readdata[31:16] };
     end
     4'b0001: begin
@@ -98,15 +98,15 @@ always @* begin
       busin_be = { {24{readdata[7]}}, readdata[7:0] };
     end
     4'b0010: begin
-      writedata = { 24'h0000, mdr[15:8] };
+      writedata = { 16'h0000, mdr[7:0], 8'h00 };
       busin_be = { {24{readdata[15]}}, readdata[15:8] };
     end
     4'b0100: begin
-      writedata = { 24'h0000, mdr[23:16] };
+      writedata = { 8'h00, mdr[7:0], 16'h0000 };
       busin_be = { {24{readdata[23]}}, readdata[23:16] };
     end
     4'b1000: begin
-      writedata = { 24'h0000, mdr[31:24] };
+      writedata = { mdr[7:0], 24'h000000 };
       busin_be = { {24{readdata[31]}}, readdata[31:24] };
     end
     default: begin // really these are invalid
