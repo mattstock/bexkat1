@@ -365,6 +365,176 @@ begin
             default: state_next = STATE_FAULT;
           endcase
         end
+        {MODE_REGIND, 8'h00}: begin // st.l
+          addrsel = 1'b1; // MAR
+          case (seq)
+            3'h0: begin
+              reg_read_addr1 = ir_rb;
+              alu2sel = 3'h1; // aluval <= rB + ir_ind
+              seq_next = 3'h1;
+            end
+            3'h1: begin
+              marsel = 2'h2; // mar <= aluval
+              seq_next = 3'h2;
+            end
+            3'h2: begin
+              mdrsel = 3'h3; // MDR <= rA
+              bus_write = 1'b1; //  addrbus <= MAR
+              if (bus_wait == 1'b0)
+                seq_next = 3'h3;
+            end
+            3'h3: begin
+              state_next = STATE_FETCHIR;
+              seq_next = 3'h0;
+            end
+            default: state_next = STATE_FAULT;
+          endcase
+        end
+        {MODE_REGIND, 8'h02}: begin // st
+          addrsel = 1'b1; // MAR
+          case (seq)
+            3'h0: begin
+              reg_read_addr1 = ir_rb;
+              alu2sel = 3'h1; // aluval <= rB + ir_ind
+              seq_next = 3'h1;
+            end
+            3'h1: begin
+              marsel = 2'h2; // mar <= aluval
+              seq_next = 3'h2;
+            end
+            3'h2: begin
+              bus_write = 1'b1;
+              byteenable = (bus_align[1] ? 4'b0011 : 4'b1100);
+              mdrsel = 3'h3; // MDR <= rA (with bytelanes)
+              if (bus_wait == 1'b0)
+                seq_next = 3'h3;
+            end
+            3'h3: begin
+              state_next = STATE_FETCHIR;
+              seq_next = 3'h0;
+            end
+            default: state_next = STATE_FAULT;
+          endcase
+        end
+        {MODE_REGIND, 8'h04}: begin // st.b
+          addrsel = 1'b1; // MAR
+          case (seq)
+            3'h0: begin
+              reg_read_addr1 = ir_rb;
+              alu2sel = 3'h1; // aluval <= rB + ir_ind
+              seq_next = 3'h1;
+            end
+            3'h1: begin
+              marsel = 2'h2; // mar <= aluval
+              seq_next = 3'h2;
+            end
+            3'h2: begin
+              bus_write = 1'b1; // addrbus <= MAR
+              mdrsel = 3'h3; // MDR <= rA
+              case (bus_align[1:0])
+                2'b00: byteenable = 4'b1000;
+                2'b01: byteenable = 4'b0100;
+                2'b10: byteenable = 4'b0010;
+                2'b11: byteenable = 4'b0001;
+              endcase
+              if (bus_wait == 1'b0)
+                seq_next = 3'h3;
+            end
+            3'h3: begin
+              state_next = STATE_FETCHIR;
+              seq_next = 3'h0;
+            end
+            default: state_next = STATE_FAULT;
+          endcase
+        end
+        {MODE_REGIND, 8'h01}: begin // ld.l
+          addrsel = 1'b1; // MAR
+          case (seq)
+            3'h0: begin
+              reg_read_addr1 = ir_rb;
+              alu2sel = 3'h1; // aluval <= rB + ir_ind
+              seq_next = 3'h1;
+            end
+            3'h1: begin
+              marsel = 2'h2; // mar <= aluval
+              seq_next = 3'h2;
+            end
+            3'h2: begin
+              bus_read = 1'b1;
+              mdrsel = 3'h1; // MDR <= databus
+              if (bus_wait == 1'b0)
+                seq_next = 3'h3;
+            end
+            3'h3: begin
+              regsel = 3'h1; // rA <= MDR
+              reg_write = REG_WRITE_DW;
+              seq_next = 3'h0;
+              state_next = STATE_FETCHIR;
+            end
+            default: state_next = STATE_FAULT;
+          endcase
+        end
+        {MODE_REGIND, 8'h03}: begin // ld
+          addrsel = 1'b1; // MAR
+          case (seq)
+            3'h0: begin
+              reg_read_addr1 = ir_rb;
+              alu2sel = 3'h1; // aluval <= rB + ir_ind
+              seq_next = 3'h1;
+            end
+            3'h1: begin
+              marsel = 2'h2; // mar <= aluval
+              seq_next = 3'h2;
+            end
+            3'h2: begin
+              bus_read = 1'b1;
+              byteenable = (bus_align[1] ? 4'b0011 : 4'b1100);
+              mdrsel = 3'h1; // MDR <= databus
+              if (bus_wait == 1'b0)
+                seq_next = 3'h3;
+            end
+            3'h3: begin
+              regsel = 3'h1; // rA <= MDR
+              reg_write = REG_WRITE_DW;
+              seq_next = 3'h0;
+              state_next = STATE_FETCHIR;
+            end
+            default: state_next = STATE_FAULT;
+          endcase
+        end
+        {MODE_REGIND, 8'h05}: begin // ld.b
+          addrsel = 1'b1; // MAR
+          case (seq)
+            3'h0: begin
+              reg_read_addr1 = ir_rb;
+              alu2sel = 3'h1; // aluval <= rB + ir_ind
+              seq_next = 3'h1;
+            end
+            3'h1: begin
+              marsel = 2'h2; // mar <= aluval
+              seq_next = 3'h2;
+            end
+            3'h2: begin
+              bus_read = 1'b1;
+              case (bus_align[1:0])
+                2'b00: byteenable = 4'b1000;
+                2'b01: byteenable = 4'b0100;
+                2'b10: byteenable = 4'b0010;
+                2'b11: byteenable = 4'b0001;
+              endcase
+              mdrsel = 3'h1; // MDR <= databus
+              if (bus_wait == 1'b0)
+                seq_next = 3'h3;
+            end
+            3'h3: begin
+              regsel = 3'h1; // rA <= MDR
+              reg_write = REG_WRITE_DW;
+              seq_next = 3'h0;
+              state_next = STATE_FETCHIR;
+            end
+            default: state_next = STATE_FAULT;
+          endcase
+        end
         {MODE_REGIND, 8'h0b}: begin // jmp
           case (seq)
             3'h0: begin
