@@ -8,6 +8,7 @@ module buscontroller(
   input cpu_write,
   input [3:0] cpu_be,
   input [31:0] cpu_writedata,
+  input [1:0] map,
   output [31:0] address,
   output read,
   output write,
@@ -56,26 +57,50 @@ end
 
 always @*
 begin
-  if (address >= 32'h00000000 && address <= 32'h000fffff)
-    cs = 10'b0000000001; // 1M x 32 SSRAM
-  else if (address >= 32'h00800000 && address <= 32'h008007ff)
-    cs = 10'b0000100000; // LED matrix
-  else if (address >= 32'h00800800 && address <= 32'h00800807)
-    cs = 10'b0000010000; // UART 0
-  else if (address >= 32'h00800808 && address <= 32'h0080080f)
-    cs = 10'b0000001000; // UART 1
-  else if (address >= 32'h00800810 && address <= 32'h00800813)
-    cs = 10'b0000000100; // SW
-  else if (address >= 32'h00800814 && address <= 32'h0080081f)
-    cs = 10'b0000000010; // Encoder
-  else if (address >= 32'h00800c00 && address <= 32'h00800cff)
-    cs = 10'b0100000000; // LCD
-  else if (address >= 32'hffff8000 && address <= 32'hffffbfff)
-    cs = 10'b0001000000; // 4k x 32 internal RAM
-  else if (address >= 32'hffffc000 && address <= 32'hffffffff)
-    cs = 10'b0010000000; // 4k x 32 internal ROM
-  else
-    cs = 10'b0000000000;
+  case (map)
+    2'b00:
+      if (address >= 32'h00000000 && address <= 32'h00003fff)
+        cs = 10'b0001000000; // 4k x 32 internal RAM
+      else if (address >= 32'h00004000 && address <= 32'h000fffff)
+        cs = 10'b0000000001; // 1M x 32 SSRAM
+      else if (address >= 32'h00800000 && address <= 32'h008007ff)
+        cs = 10'b0000100000; // LED matrix
+      else if (address >= 32'h00800800 && address <= 32'h00800807)
+        cs = 10'b0000010000; // UART 0
+      else if (address >= 32'h00800808 && address <= 32'h0080080f)
+        cs = 10'b0000001000; // UART 1
+      else if (address >= 32'h00800810 && address <= 32'h00800813)
+        cs = 10'b0000000100; // SW
+      else if (address >= 32'h00800814 && address <= 32'h0080081f)
+        cs = 10'b0000000010; // Encoder
+      else if (address >= 32'h00800c00 && address <= 32'h00800cff)
+        cs = 10'b0100000000; // LCD
+      else if (address >= 32'hffffc000 && address <= 32'hffffffff)
+        cs = 10'b0010000000; // 4k x 32 internal ROM
+      else
+        cs = 10'b0000000000;
+    default:
+      if (address >= 32'h00000000 && address <= 32'h000fffff)
+        cs = 10'b0000000001; // 1M x 32 SSRAM
+      else if (address >= 32'h00800000 && address <= 32'h008007ff)
+        cs = 10'b0000100000; // LED matrix
+      else if (address >= 32'h00800800 && address <= 32'h00800807)
+        cs = 10'b0000010000; // UART 0
+      else if (address >= 32'h00800808 && address <= 32'h0080080f)
+        cs = 10'b0000001000; // UART 1
+      else if (address >= 32'h00800810 && address <= 32'h00800813)
+        cs = 10'b0000000100; // SW
+      else if (address >= 32'h00800814 && address <= 32'h0080081f)
+        cs = 10'b0000000010; // Encoder
+      else if (address >= 32'h00800c00 && address <= 32'h00800cff)
+        cs = 10'b0100000000; // LCD
+      else if (address >= 32'hffff8000 && address <= 32'hffffbfff)
+        cs = 10'b0001000000; // 4k x 32 internal RAM
+      else if (address >= 32'hffffc000 && address <= 32'hffffffff)
+        cs = 10'b0010000000; // 4k x 32 internal ROM
+      else
+        cs = 10'b0000000000;
+  endcase
 end
 
 always @*
@@ -94,7 +119,7 @@ begin
       end
     end
     STATE_START: begin
-      delay_next = 4'h1;
+      delay_next = 4'h0;
       if (grant[MASTER_CPU] && (cpu_read || cpu_write))
         state_next = STATE_PRE;
       else if (grant[MASTER_VGA] && vga_read)

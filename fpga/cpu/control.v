@@ -160,6 +160,10 @@ begin
                 seq_next = 3'h3;
             end
             3'h3: begin
+              addrsel = 1'b1;
+              seq_next = 3'h4;
+            end
+            3'h4: begin
               state_next = STATE_FETCHIR;
               seq_next = 3'h0;
             end
@@ -167,26 +171,32 @@ begin
           endcase
         end
         {MODE_REG, 8'h06}: begin // pop rA
+          addrsel = 1'b1; // MAR
           case (seq)
             3'h0: begin
               reg_read_addr1 = REG_SP;
               marsel = 2'h3; // mar <= SP
-              addrsel = 1'b1; // MAR
-              bus_read = 1'b1;
-              alu2sel = 3'h4; // aluval <= SP + 4
-              if (bus_wait == 1'b0)
-                seq_next = 3'h1;
+              seq_next = 3'h1;
             end
             3'h1: begin
-              addrsel = 1'b1; // MAR
               bus_read = 1'b1;
+              if (bus_wait == 1'b0)
+                seq_next = 3'h2;
+            end
+            3'h2: begin
+              bus_read = 1'b1;
+              alu2sel = 3'h4; // aluval <= SP + 4
               mdrsel = 3'h1; // mdr <= busread
+              seq_next = 3'h3;
+            end
+            3'h3: begin
+              bus_read = 1'b1;
               reg_write_addr = REG_SP;
               reg_write = REG_WRITE_DW;
               regsel = 3'h0; // SP <= aluval
-              seq_next = 3'h2;
+              seq_next = 3'h4;
             end
-            3'h2: begin
+            3'h4: begin
               regsel = 3'h1; // rA <= mdr 
               reg_write = REG_WRITE_DW;
               seq_next = 3'h0;
@@ -767,6 +777,10 @@ begin
                 seq_next = 3'h3;
             end
             3'h3: begin
+              addrsel = 1'b1;
+              seq_next = 3'h4;
+            end
+            3'h4: begin
               state_next = STATE_FETCHIR;
               seq_next = 3'h0;
             end

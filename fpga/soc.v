@@ -207,7 +207,7 @@ buscontroller bc0(.clock(clock_50), .reset_n(rst_n),
   .write(bm_write), .cpu_write((SW[17] ? cpu_write : 1'b0)),
   .cpu_writedata(cpu_writedata), .writedata(bm_writedata), .be(bm_be), .cpu_be(cpu_be),
   .burst(bm_burst), .burst_adv(bm_burst_adv),
-  .cpu_wait(cpu_wait), .vga_wait(vga_wait));
+  .cpu_wait(cpu_wait), .vga_wait(vga_wait), .map(SW[15:14]));
 vga_framebuffer vga0(.vs(vga_vs), .hs(vga_hs), .sys_clock(clock_50), .vga_clock(clock_25), .reset_n(rst_n),
   .r(vga_r), .g(vga_g), .b(vga_b), .data(vga_readdata), .bus_read(vga_read), 
   .bus_wait(vga_wait), .address(vga_address), .blank_n(vga_blank_n));
