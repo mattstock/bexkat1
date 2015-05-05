@@ -102,7 +102,7 @@ always @* begin
     3'h1: sp_next = sp + 'h4;
     3'h2: sp_next = sp - 'h4;
     3'h3: sp_next = mdr;
-    3'h4: sp_next = reg_data_out2;
+    3'h4: sp_next = reg_data_out1;
     3'h5: sp_next = aluval;
     default: sp_next = sp;
   endcase
@@ -111,7 +111,7 @@ always @* begin
     3'h1: ssp_next = ssp + 'h4;
     3'h2: ssp_next = ssp - 'h4;
     3'h3: ssp_next = mdr;
-    3'h4: ssp_next = reg_data_out2;
+    3'h4: ssp_next = reg_data_out1;
     3'h5: ssp_next = aluval;
     default: ssp_next = ssp;
   endcase

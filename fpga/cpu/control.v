@@ -231,7 +231,7 @@ begin
           state_next = STATE_FETCHIR;
         end
         {MODE_REG, 8'h15}: begin // mov to sp
-          spsel = 3'h4; // SP <= reg_data_out2
+          spsel = 3'h4; // SP <= reg_data_out1
           state_next = STATE_FETCHIR;
         end
         {MODE_REG, 8'h16}: begin // mov from sp
