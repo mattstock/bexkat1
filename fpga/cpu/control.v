@@ -23,6 +23,9 @@ module control(
   output [3:0] byteenable,
   output bus_read,
   output bus_write,
+  output [1:0] spsel,
+  output [1:0] sspsel,
+  input supervisor,
   input bus_wait,
   input [1:0] bus_align);
 
@@ -38,10 +41,9 @@ assign {carry, negative, overflow, zero} = ccr;
 reg [3:0] state, state_next;
 reg [2:0] seq, seq_next;
 
-localparam [3:0] STATE_FETCHIR = 4'h0, STATE_EVALIR = 4'h1, STATE_FETCHARG= 4'h2, STATE_EVALARG = 4'h3, STATE_FAULT = 4'h4, STATE_RESET = 4'h5;
+localparam [3:0] STATE_FETCHIR = 4'h0, STATE_EVALIR = 4'h1, STATE_FETCHARG= 4'h2, STATE_EVALARG = 4'h3, STATE_FAULT = 4'h4, STATE_EXCEPTION = 4'h5, STATE_RESET = 4'h6;
 localparam MODE_REG = 3'h0, MODE_REGIND = 3'h1, MODE_IMM = 3'h2, MODE_DIR = 3'h4;
 localparam REG_WRITE_NONE = 2'b00, REG_WRITE_DW = 2'b11;
-localparam REG_SP = 5'b11111;
 
 always @(posedge clock or negedge reset_n)
 begin
@@ -79,9 +81,16 @@ begin
   bus_write = 1'b0;
   ir_write = 1'b0;
   byteenable = 4'b1111;
+  spsel = 2'h0;
+  sspsel = 2'h0;
   
   case (state)
-    STATE_RESET: state_next = STATE_FETCHIR;
+    STATE_RESET: begin
+      pcsel = 3'h5; // load exception handler address into PC
+      state_next = STATE_FETCHIR;
+    end
+    STATE_EXCEPTION: begin
+    end
     STATE_FETCHIR: begin
       case (seq)
         3'h0: begin
@@ -108,11 +117,9 @@ begin
         {MODE_REG, 8'h01}: begin // rts
           case (seq)
             3'h0: begin
-              reg_read_addr1 = REG_SP;
               marsel = 2'h3; // mar <= SP
               addrsel = 1'b1; // MAR
               bus_read = 1'b1;
-              alu2sel = 3'h4; // aluval <= SP + 4
               if (bus_wait == 1'b0)
                 seq_next = 3'h1;
             end
@@ -120,9 +127,7 @@ begin
               addrsel = 1'b1; // MAR
               bus_read = 1'b1;
               marsel = 2'h1; // mar <= busread
-              reg_write_addr = REG_SP;
-              reg_write = REG_WRITE_DW;
-              regsel = 3'h0; // SP <= aluval
+              spsel = 2'h1; // SP <= SP + 'h4;
               seq_next = 3'h2;
             end
             3'h2: begin
@@ -136,19 +141,14 @@ begin
         end
         {MODE_REG, 8'h05}: begin // push rA
           case (seq)
-            3'h0: begin // ALUOUT <= SP - 4
-              reg_read_addr1 = REG_SP;
-              alu_func = 'h3; // sub
-              alu2sel = 3'h4; // 4
+            3'h0: begin
+              spsel = 2'h2; // SP <= SP -'h4
               reg_read_addr2 = ir_ra;
               mdrsel = 3'h2; // mdr <= rA
               seq_next = 3'h1;
             end
             3'h1: begin
-              marsel = 2'h2; // mar <= aluval
-              reg_write_addr = REG_SP;
-              reg_write = REG_WRITE_DW;
-              regsel = 3'h0; // SP <= aluval
+              marsel = 2'h3; // mar <= aluval
               addrsel = 1'b1; // MAR
               bus_write = 1'b1;
               seq_next = 3'h2;
@@ -169,11 +169,10 @@ begin
         {MODE_REG, 8'h06}: begin // pop rA
           case (seq)
             3'h0: begin
-              reg_read_addr1 = REG_SP;
               marsel = 2'h3; // mar <= SP
               addrsel = 1'b1; // MAR
               bus_read = 1'b1;
-              alu2sel = 3'h4; // aluval <= SP + 4
+              spsel = 2'h1; // SP <= SP + 4
               if (bus_wait == 1'b0)
                 seq_next = 3'h1;
             end
@@ -181,9 +180,6 @@ begin
               addrsel = 1'b1; // MAR
               bus_read = 1'b1;
               mdrsel = 3'h1; // mdr <= busread
-              reg_write_addr = REG_SP;
-              reg_write = REG_WRITE_DW;
-              regsel = 3'h0; // SP <= aluval
               seq_next = 3'h2;
             end
             3'h2: begin
@@ -743,19 +739,14 @@ begin
         end
         8'h3b: begin // jsrd = push PC, jmp
           case (seq)
-            3'h0: begin // aluval <= SP - 4
-              reg_read_addr1 = REG_SP;
-              alu_func = 'h3; // sub
-              alu2sel = 3'h4; // 4
+            3'h0: begin
+              spsel = 2'h2; // SP <= SP - 4
               seq_next = 3'h1;
               mdrsel = 3'h6; // MDR <= PC
               pcsel = 3'h2; // PC <= MAR
             end
             3'h1: begin
-              marsel = 2'h2; // mar <= aluval
-              reg_write_addr = REG_SP;
-              reg_write = REG_WRITE_DW;
-              regsel = 3'h0; // SP <= aluval
+              marsel = 2'h3; // mar <= SP
               addrsel = 1'b1; // MAR
               bus_write = 1'b1;
               seq_next = 3'h2;
