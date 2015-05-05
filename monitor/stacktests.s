@@ -1,6 +1,7 @@
 .align 4
 .type _start,@function
 _start:
+ldsp 0x00004000
 ldi %30, 0xabcdef12
 ldi %14, 0x01234567
 push %30

@@ -14,52 +14,68 @@ module bexkat2(
 // Control signals
 wire [1:0] reg_write;
 wire [2:0] alu_func, int_func;
-wire addrsel, ir_write, ccr_write;
+wire addrsel, ir_write, ccr_write, vectoff_write;
 wire [4:0] reg_read_addr1, reg_read_addr2, reg_write_addr;
 wire [1:0] marsel, alu1sel, int1sel, int2sel;
-wire [2:0] pcsel, mdrsel, regsel, alu2sel;
+wire [2:0] pcsel, mdrsel, spsel, sspsel, alu2sel;
+wire [3:0] regsel;
 
 // Data paths
 wire [31:0] alu_out, reg_data_out1, reg_data_out2;
-wire [31:0] ir_next;
+wire [31:0] ir_next, vectoff_next;
 wire [63:0] int_out;
 wire [3:0] ccr_next;
 wire alu_carry, alu_negative, alu_overflow, alu_zero;
 
 // Special registers
-reg [31:0] mdr, mdr_next, mar, pc, aluval, ir, busin_be;
+reg [31:0] mdr, mdr_next, mar, pc, aluval, ir, busin_be, vectoff;
 reg [32:0] pc_next, mar_next;
 reg [31:0] reg_data_in, alu_in1, alu_in2, int_in1, int_in2;
 reg [63:0] intval;
 reg [3:0] ccr;
+reg [3:0] status, status_next;
+reg [31:0] sp, sp_next, ssp, ssp_next;
 
 // opcode format
 wire [31:0] ir_ind = { {21{ir[10]}}, ir[10:0] };
 wire [31:0] ir_bra = { {16{ir[15]}}, ir[15:0] };
 
+// Convenience mappings
+wire super_mode = status[3];
+wire [3:0] imask = status[2:0];
+
 // Data switching logic
 assign address = (addrsel ? mar : pc);
 assign ir_next = (ir_write ? readdata : ir);
 assign ccr_next = (ccr_write ? {alu_carry, alu_negative, alu_overflow, alu_zero} : ccr);
+assign vectoff_next = (vectoff_write ? readdata : vectoff);
 
 always @(posedge clk or negedge reset_n)
 begin
   if (!reset_n) begin
-    pc <= 'hffffc000; // start boot at base of monitor for now
+    pc <= 'h0;
+    sp <= 'h0;
+    ssp <= 'h0;
     ir <= 0;
     mdr <= 0;
     mar <= 0;
     aluval <= 0;
     intval <= 0;
     ccr <= 4'b0000;
+    vectoff <= 'hffffffff;
+    status <= 4'b1000; // start in supervisor mode
   end else begin
     pc <= pc_next[31:0];
+    sp <= sp_next;
+    ssp <= ssp_next;
     ir <= ir_next;
     mdr <= mdr_next;
     mar <= mar_next[31:0];
     aluval <= alu_out;
     intval <= int_out;
     ccr <= ccr_next;
+    vectoff <= vectoff_next;
+    status <= status_next;
   end
 end
 
@@ -70,15 +86,34 @@ always @* begin
     3'h1: pc_next = pc + 'h4;
     3'h2: pc_next = { 1'b0, mar };
     3'h3: pc_next = { 1'b0, pc } + ir_bra;  // relative branching
-    3'h4: pc_next = { 1'b0, aluval };
+    3'h4: pc_next = { 1'b0, aluval }; // reg offset
+    3'h5: pc_next = { 1'b0, vectoff } - { mdr[7:0], 2'b00 }; // exception vectors 
     default: pc_next = pc;
   endcase  
   case (marsel)
     2'h0: mar_next = mar;
     2'h1: mar_next = readdata;
     2'h2: mar_next = aluval;
-    2'h3: mar_next = reg_data_out1;
+    2'h3: mar_next = sp;
     default: mar_next = mar;
+  endcase
+  case (spsel)
+    3'h0: sp_next = sp;
+    3'h1: sp_next = sp + 'h4;
+    3'h2: sp_next = sp - 'h4;
+    3'h3: sp_next = mdr;
+    3'h4: sp_next = reg_data_out1;
+    3'h5: sp_next = aluval;
+    default: sp_next = sp;
+  endcase
+  case (sspsel)
+    3'h0: ssp_next = ssp;
+    3'h1: ssp_next = ssp + 'h4;
+    3'h2: ssp_next = ssp - 'h4;
+    3'h3: ssp_next = mdr;
+    3'h4: ssp_next = reg_data_out1;
+    3'h5: ssp_next = aluval;
+    default: ssp_next = ssp;
   endcase
   case (byteenable)
     4'b1111: begin
@@ -125,19 +160,23 @@ always @* begin
     default: mdr_next = mdr;
   endcase
   case (regsel)
-    3'h0: reg_data_in = aluval;
-    3'h1: reg_data_in = mdr;
-    3'h2: reg_data_in = -reg_data_out2;
-    3'h3: reg_data_in = ~reg_data_out2;
-    3'h4: reg_data_in = reg_data_out2;
-    3'h5: reg_data_in = {{16{ir[15]}}, ir[15:0] }; // sign ext
-    3'h6: reg_data_in = { 16'h0000, ir[15:0] }; // no sign ext
+    4'h0: reg_data_in = aluval;
+    4'h1: reg_data_in = mdr;
+    4'h2: reg_data_in = -reg_data_out2;
+    4'h3: reg_data_in = ~reg_data_out2;
+    4'h4: reg_data_in = reg_data_out2;
+    4'h5: reg_data_in = {{16{ir[15]}}, ir[15:0] }; // sign ext
+    4'h6: reg_data_in = { 16'h0000, ir[15:0] }; // no sign ext
+    4'h7: reg_data_in = sp;
+    4'h8: reg_data_in = ssp;
     default: reg_data_in = 0;
   endcase
   case (alu1sel)
     3'h0: alu_in1 = reg_data_out1;
     3'h1: alu_in1 = mar;
     3'h2: alu_in1 = mdr;
+    3'h3: alu_in1 = sp;
+    3'h4: alu_in1 = ssp;
     default: alu_in1 = 0;
   endcase
   case (alu2sel)
@@ -147,6 +186,8 @@ always @* begin
     3'h3: alu_in2 = ir_bra;
     3'h4: alu_in2 = 4;
     3'h5: alu_in2 = mdr;
+    3'h6: alu_in2 = sp;
+    3'h7: alu_in2 = ssp;
     default: alu_in2 = 0;
   endcase
   case (int1sel)
@@ -162,8 +203,9 @@ end
 
 control con0(.clock(clk), .reset_n(reset_n), .ir(ir), .ir_write(ir_write), .ccr(ccr), .ccr_write(ccr_write), .alu_func(alu_func), .alu1sel(alu1sel), .alu2sel(alu2sel),
   .regsel(regsel), .reg_read_addr1(reg_read_addr1), .reg_read_addr2(reg_read_addr2), .reg_write_addr(reg_write_addr), .reg_write(reg_write),
-  .mdrsel(mdrsel), .marsel(marsel), .pcsel(pcsel), .int1sel(int1sel), .int2sel(int2sel), .int_func(int_func),
-  .addrsel(addrsel), .byteenable(byteenable), .bus_read(read), .bus_write(write), .bus_wait(waitrequest), .bus_align(address[1:0]));
+  .mdrsel(mdrsel), .marsel(marsel), .pcsel(pcsel), .int1sel(int1sel), .int2sel(int2sel), .int_func(int_func), .supervisor(super_mode),
+  .addrsel(addrsel), .byteenable(byteenable), .bus_read(read), .bus_write(write), .bus_wait(waitrequest), .bus_align(address[1:0]),
+  .spsel(spsel), .sspsel(sspsel));
 
 alu alu0(.in1(alu_in1), .in2(alu_in2), .func(alu_func), .out(alu_out), .c_out(alu_carry), .n_out(alu_negative), .v_out(alu_overflow), .z_out(alu_zero));
 intcalc int0(.clock(clk), .func(int_func), .in1(int_in1), .in2(int_in2), .out(int_out));
