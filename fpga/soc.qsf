@@ -454,42 +454,6 @@ set_location_assignment PIN_AK4 -to sdram_ras_n
 set_location_assignment PIN_AK3 -to sdram_we_n
 set_location_assignment PIN_D26 -to serial0_cts
 set_location_assignment PIN_A29 -to serial0_rts
-set_global_assignment -name VERILOG_FILE vga_framebuffer.v
-set_global_assignment -name VERILOG_FILE vga_controller.v
-set_global_assignment -name VERILOG_FILE baudgen.v
-set_global_assignment -name VERILOG_FILE uart_rx.v
-set_global_assignment -name VERILOG_FILE uart.v
-set_global_assignment -name VERILOG_FILE uart_tx.v
-set_global_assignment -name VERILOG_FILE scratch.v
-set_global_assignment -name QIP_FILE scratch.qip
-set_global_assignment -name VERILOG_FILE cpu/registerfile.v
-set_global_assignment -name VERILOG_FILE cpu/intumult.v
-set_global_assignment -name QIP_FILE cpu/intumult.qip
-set_global_assignment -name VERILOG_FILE cpu/intudiv.v
-set_global_assignment -name QIP_FILE cpu/intudiv.qip
-set_global_assignment -name VERILOG_FILE cpu/intsmult.v
-set_global_assignment -name QIP_FILE cpu/intsmult.qip
-set_global_assignment -name VERILOG_FILE cpu/intsdiv.v
-set_global_assignment -name QIP_FILE cpu/intsdiv.qip
-set_global_assignment -name QIP_FILE cpu/intmult.qip
-set_global_assignment -name VERILOG_FILE cpu/intcalc.v
-set_global_assignment -name VERILOG_FILE cpu/bexkat1.v
-set_global_assignment -name VERILOG_FILE cpu/alu.v
-set_global_assignment -name VERILOG_FILE matrixmem.v
-set_global_assignment -name QIP_FILE matrixmem.qip
-set_global_assignment -name QIP_FILE monitor.qip
-set_global_assignment -name VERILOG_FILE monitor.v
-set_global_assignment -name VERILOG_FILE led_matrix.v
-set_global_assignment -name SDC_FILE soc.sdc
-set_global_assignment -name VERILOG_FILE soc.v
-set_global_assignment -name VERILOG_FILE debounce.v
-set_global_assignment -name VERILOG_FILE quadenc.v
-set_global_assignment -name VERILOG_FILE hexdisp.v
-set_global_assignment -name SIGNALTAP_FILE stp1.stp
-set_global_assignment -name VERILOG_FILE rgb_enc.v
-set_global_assignment -name CDF_FILE output_files/soc.cdf
-set_global_assignment -name VERILOG_FILE buscontroller.v
-set_global_assignment -name QIP_FILE sysclock.qip
 set_location_assignment PIN_C22 -to vga_b[7]
 set_location_assignment PIN_G25 -to vga_b[6]
 set_location_assignment PIN_A23 -to vga_b[5]
@@ -520,9 +484,6 @@ set_location_assignment PIN_A17 -to vga_r[0]
 set_location_assignment PIN_AH20 -to vga_sync_n
 set_location_assignment PIN_A24 -to vga_vs
 set_location_assignment PIN_AJ16 -to raw_clock_50
-set_global_assignment -name QIP_FILE vgalinebuf.qip
-set_global_assignment -name VERILOG_FILE cpu/bexkat2.v
-set_global_assignment -name VERILOG_FILE cpu/control.v
 set_global_assignment -name SLD_NODE_CREATOR_ID 110 -section_id cpu
 set_global_assignment -name SLD_NODE_ENTITY_NAME sld_signaltap -section_id cpu
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_clk -to "sysclock:pll0|c2" -section_id cpu
@@ -1516,8 +1477,6 @@ set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_IN_ENABLE
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ADVANCED_TRIGGER_ENTITY=basic,1," -section_id cpu
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_LEVEL_PIPELINE=1" -section_id cpu
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ENABLE_ADVANCED_TRIGGER=0" -section_id cpu
-set_global_assignment -name HEX_FILE cpu/vectors.hex
-set_global_assignment -name QIP_FILE cpu/vectors.qip
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[479] -to "bexkat2:bexkat0|sp[0]" -section_id cpu
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[480] -to "bexkat2:bexkat0|sp[10]" -section_id cpu
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[481] -to "bexkat2:bexkat0|sp[11]" -section_id cpu
@@ -1672,5 +1631,47 @@ set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[27] -
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[28] -to cpu|vcc -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[29] -to cpu|vcc -section_id cpu
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SAMPLE_DEPTH=8192" -section_id cpu
+set_global_assignment -name VERILOG_FILE lcd_module.v
+set_global_assignment -name VERILOG_FILE vga_framebuffer.v
+set_global_assignment -name VERILOG_FILE vga_controller.v
+set_global_assignment -name VERILOG_FILE baudgen.v
+set_global_assignment -name VERILOG_FILE uart_rx.v
+set_global_assignment -name VERILOG_FILE uart.v
+set_global_assignment -name VERILOG_FILE uart_tx.v
+set_global_assignment -name VERILOG_FILE scratch.v
+set_global_assignment -name QIP_FILE scratch.qip
+set_global_assignment -name VERILOG_FILE cpu/registerfile.v
+set_global_assignment -name VERILOG_FILE cpu/intumult.v
+set_global_assignment -name QIP_FILE cpu/intumult.qip
+set_global_assignment -name VERILOG_FILE cpu/intudiv.v
+set_global_assignment -name QIP_FILE cpu/intudiv.qip
+set_global_assignment -name VERILOG_FILE cpu/intsmult.v
+set_global_assignment -name QIP_FILE cpu/intsmult.qip
+set_global_assignment -name VERILOG_FILE cpu/intsdiv.v
+set_global_assignment -name QIP_FILE cpu/intsdiv.qip
+set_global_assignment -name QIP_FILE cpu/intmult.qip
+set_global_assignment -name VERILOG_FILE cpu/intcalc.v
+set_global_assignment -name VERILOG_FILE cpu/bexkat1.v
+set_global_assignment -name VERILOG_FILE cpu/alu.v
+set_global_assignment -name VERILOG_FILE matrixmem.v
+set_global_assignment -name QIP_FILE matrixmem.qip
+set_global_assignment -name QIP_FILE monitor.qip
+set_global_assignment -name VERILOG_FILE monitor.v
+set_global_assignment -name VERILOG_FILE led_matrix.v
+set_global_assignment -name SDC_FILE soc.sdc
+set_global_assignment -name VERILOG_FILE soc.v
+set_global_assignment -name VERILOG_FILE debounce.v
+set_global_assignment -name VERILOG_FILE quadenc.v
+set_global_assignment -name VERILOG_FILE hexdisp.v
+set_global_assignment -name SIGNALTAP_FILE stp1.stp
+set_global_assignment -name VERILOG_FILE rgb_enc.v
+set_global_assignment -name CDF_FILE output_files/soc.cdf
+set_global_assignment -name VERILOG_FILE buscontroller.v
+set_global_assignment -name QIP_FILE sysclock.qip
+set_global_assignment -name QIP_FILE vgalinebuf.qip
+set_global_assignment -name VERILOG_FILE cpu/bexkat2.v
+set_global_assignment -name VERILOG_FILE cpu/control.v
+set_global_assignment -name HEX_FILE cpu/vectors.hex
+set_global_assignment -name QIP_FILE cpu/vectors.qip
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 set_global_assignment -name SLD_FILE db/stp1_auto_stripped.stp
