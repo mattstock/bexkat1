@@ -1,43 +1,9 @@
-#include "monitor.h"
+#include "serial.h"
+#include "misc.h"
+#include "matrix.h"
 
-void serial_putchar(unsigned short, char);
-void serial_print(unsigned short, char *);
-void delay(void);
-void main(void);
 unsigned fib(unsigned short x);
 void bitprint(short row, unsigned val);
-
-void delay() {
-  unsigned i;
-  for (i=0; i < 0x10000; i++);
-}
-
-void serial_putchar(unsigned short port, char c) {
-  volatile unsigned int *p;
-
-  switch (port) {
-  case 0:
-    p = serial0;
-    break;
-  case 1:
-    p = serial1;
-    break;
-  default:
-    p = serial0;
-  }
-
-  while (!(p[0] & 0x4000));
-  p[0] = (unsigned short)c;
-}
-
-void serial_print(unsigned short port, char *str) {
-  char *c = str;
-
-  while (*c != '\0') {
-    serial_putchar(port, *c);
-    c++;
-  }
-}
 
 void bitprint(short row, unsigned val) {
   unsigned short i=0;
@@ -72,7 +38,7 @@ void main(void) {
     bitprint(1, 0xffffffff); 
     bitprint(3, 0xaaaa5555); 
     matrix[1] = 0xff000000;
-    v = fib(sw[1]);
+    v = fib(250);
     matrix[1] = 0x00ff0000;
     bitprint(2, v);
     matrix[2] = 0x00ff0000;

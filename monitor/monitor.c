@@ -1,65 +1,16 @@
-#include "monitor.h"
-
-extern unsigned _etext;
-extern unsigned _data;
-extern unsigned _edata;
+#include "misc.h"
+#include "matrix.h"
+#include "serial.h"
 
 unsigned int addr;
 unsigned short data;
 
-// Serial IO stuff
-void serial_putbin(unsigned port,
-		   char *list,
-		   unsigned short len);
-void serial_putchar(unsigned port, char);
-short serial_getline(unsigned port,
-		     char *str, 
-		     unsigned short *len);
-void serial_printhex(unsigned port, unsigned val);
-char serial_getchar(unsigned port);
-void serial_print(unsigned port, char *);
+volatile unsigned int *vga = (unsigned int *)0x00c00000;
+
 void serial_srec(unsigned port);
-
-// LED matrix stuff
-void matrix_init(void);
-void matrix_put(unsigned, unsigned, unsigned);
-
-// misc functions
-void delay(unsigned int limit);
-unsigned char random(unsigned int);
-static char *int2hex(int v);
 void vga_test();
 
-// conversion stuff
-static char nibble2hex(char n);
-static char *byte2hex(char b);
-static char *short2hex(short s);
-static char *int2hex(int v);
-int hextoi(char s);
-
-void main(void);
-
-// for now, the first function in the object is the one that gets run
-// we mark the entry point in the object code, but we need a program loader
-// to use it
-
 char helpmsg[] = "\n? = help\np hhhh = set high address page\nr llll xx = read xx bytes of page hhhh llll and display\nw llll xx = write byte xx to location hhhh llll\ns = s-record upload\n\n";
-
-unsigned char random(unsigned int r_base) {
-  static unsigned char y;
-  static unsigned int r;
-
-  if (r == 0 || r == 1 || r == -1)
-    r = r_base;
-  r = (9973 * ~r) + (y % 701);
-  y = (r >> 24);
-  return y;
-}
-
-void delay(unsigned int limit) {
-  unsigned i;
-  for (i=0; i < limit; i++);
-}
 
 void vga_test() {
   unsigned i;
@@ -74,47 +25,6 @@ void vga_test() {
   vga[639] = 0xa000;
   vga[640] = 0xa00000;
   vga[240*640+320] = 0xb0b0b0;
-}
-
-char serial_getchar(unsigned port) {
-  unsigned result;
-  volatile unsigned *p;
-
-  switch (port) {
-  case 0:
-    p = serial0;
-    break;
-  case 1:
-    p = serial1;
-    break;
-  default:
-    p = serial0;
-  }
-
-  result  = p[0];
-  while ((result & 0x8000) == 0)
-    result = p[0];
-  return (char)(result & 0xff); 
-}
-char *itos(unsigned int val, char *s) {
-  unsigned int c;
-
-  c = val % 10;
-  val /= 10;
-  if (val)
-    s = itos(val, s);
-  *s++ = (c+'0');
-  return s;
-}
-
-int hextoi(char s) {
-  if (s >= '0' && s <= '9')
-    return s-'0';
-  if (s >= 'a' && s <= 'f')
-    return s+10-'a';
-  if (s >= 'A' && s <= 'F')
-    return s+10-'A';
-  return -1;
 }
 
 void serial_srec(unsigned port) {
@@ -175,109 +85,6 @@ void serial_srec(unsigned port) {
       break;
     }
   }
-}
-
-void serial_putchar(unsigned port, char c) {
-  volatile unsigned *p;
-
-  switch (port) {
-  case 0:
-    p = serial0;
-    break;
-  case 1:
-    p = serial1;
-    break;
-  default:
-    p = serial0;
-  }
-
-  while (!(p[0] & 0x2000));
-  p[0] = (unsigned)c;
-}
-
-static char nibble2hex(char n) {
-  char x = (n & 0xf);
-  static const char hex[] = "0123456789abcdef";
-  if (x >= 0 || x <= 15)
-    return hex[n & 0xf];
-  else
-    return 'n';
-}
-
-static char *byte2hex(char b) {
-  static char buf[3];
-  buf[0] = nibble2hex(b >> 4);
-  buf[1] = nibble2hex(b);
-  buf[2] = '\0';
-  return buf;
-}
-
-static char *short2hex(short s) {
-  static char buf[5];
-  unsigned short i;
-
-  for (i=0; i < 4; i++)
-    buf[i] = nibble2hex(s >> (12 - i*4));
-  buf[4] = '\0';
-  return buf;
-}
-
-static char *int2hex(int v) {
-  static char buf[9];
-  unsigned short i;
-  
-  for (i=0; i < 8; i++)
-    buf[i] = nibble2hex(v >> (28 - i*4));
-  buf[8] = '\0';
-  return buf;
-}  
-
-void serial_printhex(unsigned port, unsigned val) {
-  char *x = int2hex(val);
-  serial_print(port, x);
-}
-
-void serial_print(unsigned port, char *str) {
-  char *c = str;
-
-  while (*c != '\0') {
-    serial_putchar(port, *c);
-    c++;
-  }
-}
-
-short serial_getline(unsigned port,
-		     char *str, 
-		     unsigned short *len) {
-  unsigned short i=0;
-  char c;
-
-  while (1) {
-    c = serial_getchar(port);
-    if (c >= ' ' && c <= '~') {
-      serial_putchar(port, c);
-      str[i++] = c;
-    }
-    if (c == '\r' || c == '\n') {
-      str[i] = '\0';
-      return i;
-    }
-    if (c == 0x03) {
-      str[0] = '\0';
-      return -1;
-    }
-    if ((c == 0x7f || c == 0x08) && i > 0) {
-      serial_putchar(port, c);
-      i--;
-    }
-  }
-  return 0;
-}	
-
-void matrix_put(unsigned x, unsigned y, unsigned val) {
-  if (y > 15 || x > 31)
-    return;
-  matrix[y*32+x] = val;
 }
 
 void serial_dumpmem(unsigned port,

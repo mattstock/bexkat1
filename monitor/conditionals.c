@@ -1,12 +1,10 @@
-#include "monitor.h"
+#include "matrix.h"
 
-void main(void);
-void draw(unsigned, unsigned, unsigned, unsigned);
+volatile unsigned short *sw = (unsigned short *)0x00800810;
 
 void draw(unsigned x, unsigned y, unsigned val, unsigned exp) {
     matrix[y*32+x] = (val == exp ? 0x000000ff : 0x0000ff00);
 }
-
 
 void main(void) {
   unsigned v1,v2, a1, a2, a3;

@@ -1,104 +1,10 @@
-#include "monitor.h"
+#include "misc.h"
+#include "matrix.h"
+#include "serial.h"
 
-void serial_putbin(unsigned short port, char *list, unsigned short len);
-void serial_putchar(unsigned short, char);
-char serial_getchar(unsigned short);
-void serial_print(unsigned short, char *);
 void matrix_fade(void);
-void matrix_put(unsigned, unsigned, unsigned);
 
-void delay(unsigned int limit);
 void main(void);
-char *itos(unsigned int val, char *s);
-unsigned char random(unsigned int);
-
-unsigned char random(unsigned int r_base) {
-  static unsigned char y;
-  static unsigned int r;
-
-  if (r == 0 || r == 1 || r == -1)
-    r = r_base;
-  r = (9973 * ~r) + (y % 701);
-  y = (r >> 24);
-  return y;
-}
-
-void delay(unsigned int limit) {
-  unsigned i;
-  for (i=0; i < limit; i++);
-}
-
-char serial_getchar(unsigned short port) {
-  unsigned short result;
-  volatile unsigned int *p;
-
-  switch (port) {
-  case 0:
-    p = serial0;
-    break;
-  case 1:
-    p = serial1;
-    break;
-  default:
-    p = serial0;
-  }
-
-  result  = p[2];
-  while ((result & 0x0080) == 0)
-    result = p[2];
-  return (char)(p[0] & 0xff); 
-}
-
-char *itos(unsigned int val, char *s) {
-  unsigned int c;
-
-  c = val % 10;
-  val /= 10;
-  if (val)
-    s = itos(val, s);
-  *s++ = (c+'0');
-  return s;
-}
-  
-void serial_putchar(unsigned short port, char c) {
-  volatile unsigned int *p;
-
-  switch (port) {
-  case 0:
-    p = serial0;
-    break;
-  case 1:
-    p = serial1;
-    break;
-  default:
-    p = serial0;
-  }
-
-  while (!(p[2] & 0x0040));
-  p[1] = (unsigned short)c;
-}
-
-void serial_putbin(unsigned short port, char *list, unsigned short len) {
-  unsigned short i;
-
-  for (i=0; i < len; i++)
-    serial_putchar(port, list[i]);
-}
-
-void serial_print(unsigned short port, char *str) {
-  char *c = str;
-
-  while (*c != '\0') {
-    serial_putchar(port, *c);
-    c++;
-  }
-}
-
-void matrix_put(unsigned x, unsigned y, unsigned val) {
-  if (y > 15 || x > 31)
-    return;
-  matrix[y*32+x] = val;
-}
 
 void matrix_fade(void) {
   unsigned short i;

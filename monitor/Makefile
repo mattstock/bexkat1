@@ -1,5 +1,7 @@
 CC = ~/lcc/lcc
 #CFLAGS = -Wf-d
+CFLAGS = -Iinclude
+LDFLAGS = -Llib -lsupport
 OBJCOPY = bexkat1-elf-objcopy
 OBJDUMP = bexkat1-elf-objdump
 AS = bexkat1-elf-as
@@ -9,12 +11,16 @@ CCTARGET=bexkat1/bexkat1000
 LD_SCRIPT = profile.ld
 TEMP := $(shell mktemp)
 
-.PHONY: all clean
+.PHONY: all clean lib
 
-all: boot.o monitor.s monitor.hex frametests.s frametests.hex memtests.s memtests.hex stacktests.hex conditionals.s conditionals.hex conditionals-simple.hex types.s types.hex multiply.s multiply.hex multiply-simple.hex fib.s fib.hex structures.s structures.hex fp.s fp.hex pretty.s pretty.hex memtests-simple.hex serial.s serial.hex random.s random.hex serial-simple.hex vga.s vga.hex ops.s ops.hex
+all: lib boot.o monitor.s monitor.hex frametests.s frametests.hex memtests.s memtests.hex stacktests.hex conditionals.s conditionals.hex conditionals-simple.hex types.s types.hex multiply.s multiply.hex multiply-simple.hex fib.s fib.hex structures.s structures.hex fp.s fp.hex pretty.s pretty.hex memtests-simple.hex serial.s serial.hex random.s random.hex serial-simple.hex vga.s vga.hex ops.s ops.hex
 
 clean:
+	cd lib; make clean
 	rm -f *.o *.srec *.hex memtests stacktests monitor monitor.s frametests frametests.s memtests.s conditionals conditionals.s conditionals-simple types.s types multiply.s multiply multiply-simple fib.s fib spi.s spi spi-simple structures.s structures fp.s fp pretty.s pretty memtests-simple serial serial.s random random.s serial-simple vga.s vga ops
+
+lib:
+	cd lib; make
 
 %.s: %.c
 	$(CC) -S $(CFLAGS) -Wf-target=$(CCTARGET) -o $@ $^
@@ -32,13 +38,13 @@ clean:
 memtests: memtests.o
 	$(LD) -o $@ $^ -T $(LD_SCRIPT)
 monitor: monitor.o 
-	$(LD) -o $@ $^ -T $(LD_SCRIPT)
+	$(LD) -o $@ $^ -T $(LD_SCRIPT) $(LDFLAGS)
 stacktests: stacktests.o
 	$(LD) -o $@ $^ -T $(LD_SCRIPT)
 frametests: frametests.o
 	$(LD) -o $@ $^ -T $(LD_SCRIPT)
 conditionals: conditionals.o
-	$(LD) -o $@ $^ -T $(LD_SCRIPT)
+	$(LD) -o $@ $^ -T $(LD_SCRIPT) $(LDFLAGS)
 conditionals-simple: conditionals-simple.o
 	$(LD) -o $@ $^ -T $(LD_SCRIPT)
 types: types.o
@@ -48,26 +54,26 @@ multiply: multiply.o
 multiply-simple: multiply-simple.o
 	$(LD) -o $@ $^ -T $(LD_SCRIPT)
 fib: fib.o
-	$(LD) -o $@ $^ -T $(LD_SCRIPT)
+	$(LD) -o $@ $^ -T $(LD_SCRIPT) $(LDFLAGS)
 spi: spi.o
 	$(LD) -o $@ $^ -T $(LD_SCRIPT)
 spi-simple: spi-simple.o
 	$(LD) -o $@ $^ -T $(LD_SCRIPT)
 structures: structures.o
-	$(LD) -o $@ $^ -T $(LD_SCRIPT)
+	$(LD) -o $@ $^ -T $(LD_SCRIPT) $(LDFLAGS)
 fp: fp.o
 	$(LD) -o $@ $^ -T $(LD_SCRIPT)
 pretty: pretty.o
-	$(LD) -o $@ $^ -T $(LD_SCRIPT)
+	$(LD) -o $@ $^ -T $(LD_SCRIPT) $(LDFLAGS)
 memtests-simple: memtests-simple.o
 	$(LD) -o $@ $^ -T $(LD_SCRIPT)
 serial: serial.o
-	$(LD) -o $@ $^ -T $(LD_SCRIPT)
+	$(LD) -o $@ $^ -T $(LD_SCRIPT) $(LDFLAGS)
 serial-simple: serial-simple.o
 	$(LD) -o $@ $^ -T $(LD_SCRIPT)
 random: random.o
-	$(LD) -o $@ $^ -T $(LD_SCRIPT)
+	$(LD) -o $@ $^ -T $(LD_SCRIPT) $(LDFLAGS)
 vga: vga.o
-	$(LD) -o $@ $^ -T $(LD_SCRIPT)
+	$(LD) -o $@ $^ -T $(LD_SCRIPT) $(LDFLAGS)
 ops: ops.o
 	$(LD) -o $@ $^ -T $(LD_SCRIPT)

@@ -1,15 +1,5 @@
-#include "monitor.h"
-
-// LED matrix stuff
-void matrix_put(unsigned, unsigned, unsigned);
-
-void main(void);
-
-void matrix_put(unsigned x, unsigned y, unsigned val) {
-  if (y > 15 || x > 31)
-    return;
-  matrix[y*32+x] = val;
-}
+#include "matrix.h"
+#include "serial.h"
 
 void main() {
   unsigned int x;
