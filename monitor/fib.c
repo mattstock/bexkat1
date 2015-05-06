@@ -1,28 +1,11 @@
 #include "monitor.h"
 
-extern unsigned _etext;
-extern unsigned _data;
-extern unsigned _edata;
-
 void serial_putchar(unsigned short, char);
 void serial_print(unsigned short, char *);
 void delay(void);
 void main(void);
 unsigned fib(unsigned short x);
 void bitprint(short row, unsigned val);
-
-// for now, the first function in the object is the one that gets run
-// we mark the entry point in the object code, but we need a program loader
-// to use it
-void _start(void) {
-  unsigned *src = &_etext;
-  unsigned *dst = &_data;
-
-  while (dst < &_edata) {
-    *dst++ = *src++;
-  }
-  main();
-}
 
 void delay() {
   unsigned i;

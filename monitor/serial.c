@@ -1,26 +1,9 @@
 #include "monitor.h"
 
-extern unsigned _etext;
-extern unsigned _data;
-extern unsigned _edata;
-
 // LED matrix stuff
 void matrix_put(unsigned, unsigned, unsigned);
 
 void main(void);
-
-// for now, the first function in the object is the one that gets run
-// we mark the entry point in the object code, but we need a program loader
-// to use it
-void _start(void) {
-  unsigned *src = &_etext;
-  unsigned *dst = &_data;
-
-  while (dst < &_edata) {
-    *dst++ = *src++;
-  }
-  main();
-}
 
 void matrix_put(unsigned x, unsigned y, unsigned val) {
   if (y > 15 || x > 31)

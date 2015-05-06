@@ -1,9 +1,5 @@
 #include "monitor.h"
 
-extern unsigned _etext;
-extern unsigned _data;
-extern unsigned _edata;
-
 void serial_putbin(unsigned short port, char *list, unsigned short len);
 void serial_putchar(unsigned short, char);
 char serial_getchar(unsigned short);
@@ -15,20 +11,6 @@ void delay(unsigned int limit);
 void main(void);
 char *itos(unsigned int val, char *s);
 unsigned char random(unsigned int);
-
-// for now, the first function in the object is the one that gets run
-// we mark the entry point in the object code, but we need a program loader
-// to use it
-void _start(void) {
-  unsigned *src = &_etext;
-  unsigned *dst = &_data;
-
-  while (dst < &_edata) {
-    *dst++ = *src++;
-  }
-  // zero the bss
-  main();
-}
 
 unsigned char random(unsigned int r_base) {
   static unsigned char y;

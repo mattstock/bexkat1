@@ -1,3 +1,5 @@
+.globl main
+main:
 ldi %0, 0x1
 ldi %1, 0x0
 ldi %2, 0x50

@@ -1,3 +1,5 @@
+.globl main
+main:
 ldi %29,0x00000000
 std.l %29, 0x00000000
 std.l %29, 0x00000004

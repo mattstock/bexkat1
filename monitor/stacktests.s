@@ -1,6 +1,7 @@
+.globl main
 .align 4
-.type _start,@function
-_start:
+.type main,@function
+main:
 ldsp 0x00004000
 ldi %30, 0xabcdef12
 ldi %14, 0x01234567
@@ -13,7 +14,7 @@ pop %13
 jmpd .L4
 rts
 .Lf5:
-.size _start,.Lf5-_start
+.size main,.Lf5-main
 .align 4
 .type foo,@function
 foo:

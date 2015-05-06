@@ -1,3 +1,5 @@
+.globl main
+main:
 ldiu %30, 0x0003
 ldiu %29, 0x0006
 ldiu %28, 0x0010

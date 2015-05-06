@@ -1,23 +1,7 @@
 #include "monitor.h"
 
-extern unsigned _etext;
-extern unsigned _data;
-extern unsigned _edata;
-
 void main(void);
 void draw(unsigned, unsigned, unsigned, unsigned);
-
-// for now, the first function in the object is the one that gets run
-// figure this out so we don't feel stupid
-void _start(void) {
-  unsigned *src = &_etext;
-  unsigned *dst = &_data;
-
-  while (dst < &_edata) {
-    *dst++ = *src++;
-  }
-  main();
-}
 
 void draw(unsigned x, unsigned y, unsigned val, unsigned exp) {
     matrix[y*32+x] = (val == exp ? 0x000000ff : 0x0000ff00);

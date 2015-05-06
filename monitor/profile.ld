@@ -4,10 +4,16 @@ MEMORY
   ram : ORIGIN = 0x00000000, LENGTH = 16K
 }
 
+STARTUP(boot.o)
 ENTRY(_start)
 SECTIONS
 {
-  .text : AT (0x0000)
+  .vectors 0xffffffc0 :
+    {
+      _vectors_addr = . ;
+      KEEP(*(.vectors))
+    }
+  .text : AT (0x00000000)
     { 
       *(.text)
       _etext = . ;

@@ -1,6 +1,3 @@
-extern unsigned _etext;
-extern unsigned _data;
-extern unsigned _edata;
 unsigned gui1;
 int gi1;
 unsigned short gus1;
@@ -9,18 +6,6 @@ char gc1;
 unsigned char guc1;
 
 void main(void);
-
-// for now, the first function in the object is the one that gets run
-// figure this out so we don't feel stupid
-void _start(void) {
-  unsigned *src = &_etext;
-  unsigned *dst = &_data;
-
-  while (dst < &_edata) {
-    *dst++ = *src++;
-  }
-  main();
-}
 
 void main(void) {
   unsigned ui1;

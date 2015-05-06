@@ -1,3 +1,5 @@
+.globl main
+main:
 ldi %30, 0x696a6b6c
 ldi %28, 0x64636261
 foo:
