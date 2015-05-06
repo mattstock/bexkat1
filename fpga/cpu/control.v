@@ -6,7 +6,7 @@ module control(
   input [3:0] ccr,
   output ccr_write,
   output [2:0] alu_func,
-  output [1:0] alu1sel,
+  output [2:0] alu1sel,
   output [2:0] alu2sel,
   output [3:0] regsel,
   output [4:0] reg_read_addr1,
@@ -62,7 +62,7 @@ begin
   seq_next = seq;
   ir_write = 1'b0;
   alu_func = 3'h2; // add
-  alu1sel = 2'b0; // reg_data_out1
+  alu1sel = 3'b0; // reg_data_out1
   ccr_write = 1'b0;
   alu2sel = 3'b0; // reg_data_out2
   regsel = 4'b0; // aluout
@@ -86,8 +86,25 @@ begin
   
   case (state)
     STATE_RESET: begin
-      pcsel = 3'h5; // load exception handler address into PC
-      state_next = STATE_FETCHIR;
+      case (seq)
+        3'h0: begin
+          pcsel = 3'h5; // load exception handler address into PC
+          bus_read = 1'b1;
+          if (bus_wait == 1'b0)
+            seq_next = 3'h1;
+        end
+        3'h1: begin
+          bus_read = 1'b1;
+          marsel = 2'h1; // MAR <= vector address
+          seq_next = 3'h2;
+        end
+        3'h2: begin
+          pcsel = 3'h2; // PC <= MAR
+          seq_next = 3'h0;
+          state_next = STATE_FETCHIR;
+        end
+        default: state_next = STATE_FAULT;
+      endcase
     end
     STATE_EXCEPTION: begin
     end
@@ -113,7 +130,7 @@ begin
     end
     STATE_EVALIR: begin
       casex ({ir_mode, ir_op})
-        {MODE_REG, 8'h00}: state_next = STATE_FETCHIR; // nop
+        {MODE_REG, 8'h00}: state_next = STATE_FAULT; // nop
         {MODE_REG, 8'h01}: begin // rts
           case (seq)
             3'h0: begin
@@ -142,13 +159,13 @@ begin
         {MODE_REG, 8'h05}: begin // push rA
           case (seq)
             3'h0: begin
-              spsel = 2'h2; // SP <= SP -'h4
+              spsel = 2'h2; // SP <= SP -4
               reg_read_addr2 = ir_ra;
               mdrsel = 3'h2; // mdr <= rA
               seq_next = 3'h1;
             end
             3'h1: begin
-              marsel = 2'h3; // mar <= aluval
+              marsel = 2'h3; // mar <= SP
               addrsel = 1'b1; // MAR
               bus_write = 1'b1;
               seq_next = 3'h2;
@@ -175,21 +192,20 @@ begin
           case (seq)
             3'h0: begin
               marsel = 2'h3; // mar <= SP
+              spsel = 2'h1; // SP <= SP + 4
               seq_next = 3'h1;
             end
             3'h1: begin
               bus_read = 1'b1;
-              spsel = 2'h1; // SP <= SP + 4
               if (bus_wait == 1'b0)
                 seq_next = 3'h2;
             end
             3'h2: begin
               bus_read = 1'b1;
-              alu2sel = 3'h4; // aluval <= SP + 4
               mdrsel = 3'h1; // mdr <= busread
-              seq_next = 3'h2;
+              seq_next = 3'h3;
             end
-            3'h2: begin
+            3'h3: begin
               regsel = 4'h1; // rA <= mdr 
               reg_write = REG_WRITE_DW;
               seq_next = 3'h0;
@@ -605,8 +621,8 @@ begin
         end
         8'h1x: begin // alu SP <= SP + 0x1234568
           alu_func = ir_op[2:0];
-          alu1sel = 3'h3;
-          alu2sel = 3'h6;
+          alu1sel = 3'h3; // SP
+          alu2sel = 3'h5; // MDR
           case (seq)
             3'h0: seq_next = 3'h1;
             3'h1: begin

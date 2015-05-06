@@ -58,7 +58,7 @@ end
 always @*
 begin
   case (map)
-    2'b00:
+    2'b11:
       if (address >= 32'h00000000 && address <= 32'h00003fff)
         cs = 10'b0001000000; // 4k x 32 internal RAM
       else if (address >= 32'h00004000 && address <= 32'h000fffff)
@@ -75,8 +75,10 @@ begin
         cs = 10'b0000000010; // Encoder
       else if (address >= 32'h00800c00 && address <= 32'h00800cff)
         cs = 10'b0100000000; // LCD
-      else if (address >= 32'hffffc000 && address <= 32'hffffffff)
+      else if (address >= 32'hffffc000 && address <= 32'hffffffbf)
         cs = 10'b0010000000; // 4k x 32 internal ROM
+      else if (address >= 32'hffffffc0 && address <= 32'hffffffff)
+        cs = 10'b1000000000; // interrupt vectors
       else
         cs = 10'b0000000000;
     default:
@@ -96,8 +98,10 @@ begin
         cs = 10'b0100000000; // LCD
       else if (address >= 32'hffff8000 && address <= 32'hffffbfff)
         cs = 10'b0001000000; // 4k x 32 internal RAM
-      else if (address >= 32'hffffc000 && address <= 32'hffffffff)
+      else if (address >= 32'hffffc000 && address <= 32'hffffffbf)
         cs = 10'b0010000000; // 4k x 32 internal ROM
+      else if (address >= 32'hffffffc0 && address <= 32'hffffffff)
+        cs = 10'b1000000000; // interrupt vectors
       else
         cs = 10'b0000000000;
   endcase

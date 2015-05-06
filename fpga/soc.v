@@ -152,11 +152,11 @@ assign LEDG = { locked, 8'b00000000 };
 wire [9:0] chipselect;
 wire [31:0] cpu_address, bm_address, vga_address;
 wire [31:0] cpu_readdata, bm_writedata, bm_readdata, cpu_writedata, mon_readdata, ram_readdata, matrix_readdata, rom_readdata;
-wire [31:0] uart0_readdata, uart0_writedata, uart1_readdata, uart1_writedata;
+wire [31:0] uart0_readdata, uart0_writedata, uart1_readdata, uart1_writedata, vect_readdata;
 wire [23:0] vga_readdata;
 wire [3:0] cpu_be, bm_be;
 wire cpu_write, cpu_read, cpu_wait, bm_read, bm_write, bm_wait, ram_write, ram_read, rom_read;
-wire uart0_write, uart0_read, uart1_write, uart1_read, vga_wait, vga_read;
+wire uart0_write, uart0_read, uart1_write, uart1_read, vga_wait, vga_read, vect_read;
 wire matrix_read, matrix_write, ssram_read, ssram_write, bm_start, bm_burst, bm_burst_adv;
 wire [1:0] bus_grant;
 
@@ -167,13 +167,15 @@ wire [1:0] bus_grant;
 assign cpu_readdata = bm_readdata;
 assign vga_readdata = bm_readdata[23:0];
 
-assign bm_readdata = (chipselect[7] ? rom_readdata : 32'h0) |
+assign bm_readdata = (chipselect[9] ? vect_readdata : 32'h0) |
+                     (chipselect[7] ? rom_readdata : 32'h0) |
                      (chipselect[6] ? ram_readdata : 32'h0) |
                      (chipselect[5] ? matrix_readdata : 32'h0) |
                      (chipselect[4] ? uart0_readdata : 32'h0) |
                      (chipselect[3] ? uart1_readdata : 32'h0) |
                      (chipselect[0] ? fs_databus : 32'h0);
 
+assign vect_read = (chipselect[9] ? bm_read : 1'b0);
 assign rom_read = (chipselect[7] ? bm_read : 1'b0);
 assign ram_read = (chipselect[6] ? bm_read : 1'b0);
 assign ram_write = (chipselect[6] ? bm_write : 1'b0);
@@ -190,6 +192,7 @@ assign ssram_write = (chipselect[0] ? bm_write : 1'b0);
 //  .avm_m0_write(cpu_write), .avm_m0_writedata(cpu_writedata), .avm_m0_byteenable(cpu_be), .avm_m0_waitrequest(cpu_wait));
 bexkat2 bexkat0(.clk(clock_50), .reset_n(rst_n), .address(cpu_address), .read(cpu_read), .readdata(cpu_readdata),
   .write(cpu_write), .writedata(cpu_writedata), .byteenable(cpu_be), .waitrequest(cpu_wait));
+vectors rom1(.clock(clock_50), .q(vect_readdata), .rden(vect_read), .address(bm_address[6:2]));
 monitor rom0(.clock(clock_50), .q(rom_readdata), .rden(rom_read), .address(bm_address[13:2]));
 scratch ram0(.clock(clock_50), .data(bm_writedata), .q(ram_readdata), .wren(ram_write), .rden(ram_read), .address(bm_address[13:2]),
   .byteena(bm_be));

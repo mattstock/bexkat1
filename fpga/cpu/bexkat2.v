@@ -16,8 +16,8 @@ wire [1:0] reg_write;
 wire [2:0] alu_func, int_func;
 wire addrsel, ir_write, ccr_write, vectoff_write;
 wire [4:0] reg_read_addr1, reg_read_addr2, reg_write_addr;
-wire [1:0] marsel, alu1sel, int1sel, int2sel;
-wire [2:0] pcsel, mdrsel, spsel, sspsel, alu2sel;
+wire [1:0] marsel, int1sel, int2sel;
+wire [2:0] pcsel, mdrsel, spsel, sspsel, alu1sel, alu2sel;
 wire [3:0] regsel;
 
 // Data paths
@@ -57,12 +57,12 @@ begin
     sp <= 'h0;
     ssp <= 'h0;
     ir <= 0;
-    mdr <= 0;
+    mdr <= 'h3c; // exception vector for reset
     mar <= 0;
     aluval <= 0;
     intval <= 0;
     ccr <= 4'b0000;
-    vectoff <= 'hffffffff;
+    vectoff <= 'hffffffc0;
     status <= 4'b1000; // start in supervisor mode
   end else begin
     pc <= pc_next[31:0];
@@ -81,13 +81,14 @@ end
 
 // All of the datapath options
 always @* begin
+  status_next = status;
   case (pcsel)
     3'h0: pc_next = pc;
     3'h1: pc_next = pc + 'h4;
     3'h2: pc_next = { 1'b0, mar };
     3'h3: pc_next = { 1'b0, pc } + ir_bra;  // relative branching
     3'h4: pc_next = { 1'b0, aluval }; // reg offset
-    3'h5: pc_next = { 1'b0, vectoff } - { mdr[7:0], 2'b00 }; // exception vectors 
+    3'h5: pc_next = { 1'b0, vectoff } + mdr[7:0]; // exception vectors 
     default: pc_next = pc;
   endcase  
   case (marsel)
