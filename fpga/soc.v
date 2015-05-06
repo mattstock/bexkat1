@@ -91,11 +91,15 @@ output lcd_e;
 output lcd_rs;
 output lcd_on;
 output lcd_rw;
-output [7:0] lcd_data;
+inout [7:0] lcd_data;
 
 wire rst_n, clock_100, clock_200, clock_50, clock_25, locked;
 
 assign rgb = 3'b000;
+
+// LCD handling
+assign lcd_data = (lcd_rw ? 8'hzz : lcd_dataout);
+
 assign serial0_rts = serial0_cts;
 assign vga_sync_n = 1'b0;
 assign vga_clock = clock_25;
@@ -150,6 +154,7 @@ wire [31:0] cpu_readdata, bm_writedata, bm_readdata, cpu_writedata, mon_readdata
 wire [31:0] uart0_readdata, uart1_readdata, vect_readdata, lcd_readdata;
 wire [23:0] vga_readdata;
 wire [3:0] cpu_be, bm_be;
+wire [7:0] lcd_dataout;
 wire cpu_write, cpu_read, cpu_wait, bm_read, bm_write, bm_wait, ram_write, ram_read, rom_read;
 wire uart0_write, uart0_read, uart1_write, uart1_read, vga_wait, vga_read, vect_read, lcd_read;
 wire matrix_read, matrix_write, ssram_read, ssram_write, bm_start, bm_burst, bm_burst_adv, lcd_write;
@@ -195,7 +200,7 @@ monitor rom0(.clock(clock_50), .q(rom_readdata), .rden(rom_read), .address(bm_ad
 scratch ram0(.clock(clock_50), .data(bm_writedata), .q(ram_readdata), .wren(ram_write), .rden(ram_read), .address(bm_address[13:2]),
   .byteena(bm_be));
 lcd_module lcd0(.clk(clock_50), .read(lcd_read), .write(lcd_write), .writedata(bm_writedata), .readdata(lcd_readdata), .be(bm_be), .address(bm_address[8:2]),
-  .e(lcd_e), .data_out(lcd_data), .rs(lcd_rs), .on(lcd_on), .rw(lcd_rw));
+  .e(lcd_e), .data_out(lcd_dataout), .rs(lcd_rs), .on(lcd_on), .rw(lcd_rw));
 led_matrix matrix0(.csi_clk(clock_50), .rsi_reset_n(rst_n), .avs_s0_writedata(bm_writedata), .avs_s0_readdata(matrix_readdata),
   .avs_s0_address(bm_address[11:2]), .avs_s0_byteenable(bm_be), .avs_s0_write(matrix_write), .avs_s0_read(matrix_read),
   .rgb_a(rgb_a), .rgb_b(rgb_b), .rgb_c(rgb_c), .rgb0(rgb0), .rgb1(rgb1), .rgb_stb(rgb_stb), .rgb_clk(rgb_clk), .oe_n(rgb_oe_n));
