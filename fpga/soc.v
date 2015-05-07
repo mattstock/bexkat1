@@ -1,97 +1,90 @@
-module soc(SW, KEY, HEX0, HEX1, HEX2, HEX3, HEX4, HEX5, HEX6, HEX7, LEDR, LEDG, raw_clock_50,
-  quad, rgb, pb,
-  fs_addrbus, fs_databus, ssram_be, ssram0_ce_n, ssram1_ce_n, ssram_oe_n, ssram_we_n,
-  ssram_adv_n, ssram_adsp_n, ssram_gw_n, ssram_adsc_n, ssram_clk,
-  lcd_e, lcd_rw, lcd_on, lcd_rs, lcd_data,
-  rgb0, rgb1, rgb_a, rgb_b, rgb_c, rgb_stb, rgb_clk, rgb_oe_n,
-  fl_oe_n, fl_ce_n, fl_we_n, fl_rst_n, fl_ry, fl_wp_n,
-  sdram_addrbus, sdram_databus, sdram_ba, sdram_dqm, sdram_ras_n, sdram_cas_n, sdram_cke, sdram_clk,
-  sdram_we_n, sdram_cs_n,
-  vga_vs, vga_hs, vga_r, vga_g, vga_b, vga_clock, vga_sync_n, vga_blank_n,
-  serial0_tx, serial0_rx, serial0_cts, serial0_rts, serial1_tx);
-
-// SSRAM & flash
-output [26:0] fs_addrbus;
-inout [31:0] fs_databus;
-
-// SSRAM
-output [3:0] ssram_be;
-output ssram_oe_n;
-output ssram0_ce_n;
-output ssram1_ce_n;
-output ssram_we_n;
-output ssram_adv_n;
-output ssram_adsp_n;
-output ssram_gw_n;
-output ssram_adsc_n;
-output ssram_clk;
-
-// Flash
-output fl_oe_n;
-output fl_ce_n;
-output fl_we_n;
-input fl_ry;
-output fl_rst_n;
-output fl_wp_n;
-
-// SDRAM
-output [12:0] sdram_addrbus;
-inout [31:0] sdram_databus;
-output [1:0] sdram_ba;
-output [3:0] sdram_dqm;
-output sdram_ras_n;
-output sdram_cas_n;
-output sdram_cke;
-output sdram_clk;
-output sdram_we_n;
-output sdram_cs_n;
-
-// FPGA board stuff
-input raw_clock_50;
-input [17:0] SW;
-input [3:0] KEY;
-output [8:0] LEDG;
-output [17:0] LEDR;
-output [6:0] HEX0;
-output [6:0] HEX1;
-output [6:0] HEX2;
-output [6:0] HEX3;
-output [6:0] HEX4;
-output [6:0] HEX5;
-output [6:0] HEX6;
-output [6:0] HEX7;
-
-// VGA
-output vga_vs;
-output vga_hs;
-output [7:0] vga_r, vga_g, vga_b;
-output vga_clock;
-output vga_sync_n;
-output vga_blank_n;
-
-// LED panel
-output [2:0] rgb0;
-output [2:0] rgb1;
-output rgb_clk;
-output rgb_oe_n;
-output rgb_a, rgb_b, rgb_c;
-output rgb_stb;
-
-// rgb encoder
-output [2:0] rgb;
-input [1:0] quad;
-input pb;
-
-// serial
-input serial0_rx, serial0_cts;
-output serial0_tx, serial1_tx, serial0_rts;
-
-// LCD display
-output lcd_e;
-output lcd_rs;
-output lcd_on;
-output lcd_rw;
-inout [7:0] lcd_data;
+module soc(
+  input raw_clock_50,
+  input [17:0] SW,
+  input [3:0] KEY,
+  output [8:0] LEDG,
+  output [17:0] LEDR,
+  output [6:0] HEX0,
+  output [6:0] HEX1,
+  output [6:0] HEX2,
+  output [6:0] HEX3,
+  output [6:0] HEX4,
+  output [6:0] HEX5,
+  output [6:0] HEX6,
+  output [6:0] HEX7,
+  output [26:0] fs_addrbus,
+  inout [31:0] fs_databus,
+  output [3:0] ssram_be,
+  output ssram_oe_n,
+  output ssram0_ce_n,
+  output ssram1_ce_n,
+  output ssram_we_n,
+  output ssram_adv_n,
+  output ssram_adsp_n,
+  output ssram_gw_n,
+  output ssram_adsc_n,
+  output ssram_clk,
+  output fl_oe_n,
+  output fl_ce_n,
+  output fl_we_n,
+  input fl_ry,
+  output fl_rst_n,
+  output fl_wp_n,
+  output [12:0] sdram_addrbus,
+  inout [31:0] sdram_databus,
+  output [1:0] sdram_ba,
+  output [3:0] sdram_dqm,
+  output sdram_ras_n,
+  output sdram_cas_n,
+  output sdram_cke,
+  output sdram_clk,
+  output sdram_we_n,
+  output sdram_cs_n,
+  output vga_vs,
+  output vga_hs,
+  output [7:0] vga_r,
+  output [7:0] vga_g, 
+  output [7:0] vga_b,
+  output vga_clock,
+  output vga_sync_n,
+  output vga_blank_n,
+  output lcd_e,
+  output lcd_rs,
+  output lcd_on,
+  output lcd_rw,
+  inout [7:0] lcd_data,
+  output [3:0] enet_tx_data,
+  input [3:0] enet_rx_data,
+  output enet_gtx_clk,
+  output enet_tx_en,
+  output enet_tx_er,
+  inout enet_mdio,
+  output enet_mdc,
+  output enet_rst_n,
+  input enet_int_n,
+  input enet_link100,
+  input enet_rx_clk,
+  input enet_rx_col,
+  input enet_rx_crs,
+  input enet_rx_dv,
+  input enet_rx_er,
+  input enet_tx_clk, 
+  output [2:0] rgb0,
+  output [2:0] rgb1,
+  output rgb_clk,
+  output rgb_oe_n,
+  output rgb_a, 
+  output rgb_b,
+  output rgb_c,
+  output rgb_stb,
+  output [2:0] rgb,
+  input [1:0] quad,
+  input pb,
+  input serial0_rx,
+  input serial0_cts,
+  output serial0_tx,
+  output serial1_tx,
+  output serial0_rts);
 
 wire rst_n, clock_100, clock_200, clock_50, clock_25, locked;
 
@@ -145,7 +138,7 @@ hexdisp d2(.out(HEX2), .in(bm_address[11:8]));
 hexdisp d1(.out(HEX1), .in(bm_address[7:4]));
 hexdisp d0(.out(HEX0), .in(bm_address[3:0]));
 // Blinknlights
-assign LEDR = { 8'h0, chipselect };
+assign LEDR = { enet_rx_clk, 7'h0, chipselect };
 assign LEDG = { locked, 8'b00000000 };
 
 wire [9:0] chipselect;
