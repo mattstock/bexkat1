@@ -19,5 +19,5 @@ clean:
 %.o: %.s
 	$(AS) -EB -o $@ $^
 
-libsupport.a: serial.o misc.o matrix.o
+libsupport.a: serial.o misc.o matrix.o lcd.o
 	$(AR) rcs -o $@ $^

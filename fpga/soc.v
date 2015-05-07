@@ -199,7 +199,7 @@ vectors rom1(.clock(clock_50), .q(vect_readdata), .rden(vect_read), .address(bm_
 monitor rom0(.clock(clock_50), .q(rom_readdata), .rden(rom_read), .address(bm_address[13:2]));
 scratch ram0(.clock(clock_50), .data(bm_writedata), .q(ram_readdata), .wren(ram_write), .rden(ram_read), .address(bm_address[13:2]),
   .byteena(bm_be));
-lcd_module lcd0(.clk(clock_50), .read(lcd_read), .write(lcd_write), .writedata(bm_writedata), .readdata(lcd_readdata), .be(bm_be), .address(bm_address[8:2]),
+lcd_module lcd0(.clk(clock_50), .rst_n(rst_n), .read(lcd_read), .write(lcd_write), .writedata(bm_writedata), .readdata(lcd_readdata), .be(bm_be), .address(bm_address[8:2]),
   .e(lcd_e), .data_out(lcd_dataout), .rs(lcd_rs), .on(lcd_on), .rw(lcd_rw));
 led_matrix matrix0(.csi_clk(clock_50), .rsi_reset_n(rst_n), .avs_s0_writedata(bm_writedata), .avs_s0_readdata(matrix_readdata),
   .avs_s0_address(bm_address[11:2]), .avs_s0_byteenable(bm_be), .avs_s0_write(matrix_write), .avs_s0_read(matrix_read),
