@@ -3,7 +3,7 @@ create_clock -name raw_clock_50 -period 20ns [get_ports {raw_clock_50} ] -wavefo
 derive_pll_clocks
 derive_clock_uncertainty
 
-create_clock -period 100ns -name led_clk
+create_clock -period 200ns -name led_clk
 create_clock -period 40ns -name vga_clk
 create_clock -period 20ns -name ssram_clk
 
@@ -94,22 +94,22 @@ set_output_delay -clock ssram_clk -min -0.4ns [get_ports ssram_adsp_n]
 set_output_delay -clock ssram_clk -max 0ns [get_ports ssram_clk]
 set_output_delay -clock ssram_clk -min 0ns [get_ports ssram_clk]
 
-set_output_delay -clock led_clk -max 5ns [get_ports {rgb0[*]}]
-set_output_delay -clock led_clk -min -5ns [get_ports {rgb0[*]}]
-set_output_delay -clock led_clk -max 5ns [get_ports {rgb1[*]}]
-set_output_delay -clock led_clk -min -5ns [get_ports {rgb1[*]}]
-set_output_delay -clock led_clk -max 5ns [get_ports rgb_a]
-set_output_delay -clock led_clk -min -5ns [get_ports rgb_a]
-set_output_delay -clock led_clk -max 5ns [get_ports rgb_b]
-set_output_delay -clock led_clk -min -5ns [get_ports rgb_b]
-set_output_delay -clock led_clk -max 5ns [get_ports rgb_c]
-set_output_delay -clock led_clk -min -5ns [get_ports rgb_c]
-set_output_delay -clock led_clk -max 5ns [get_ports rgb_oe_n]
-set_output_delay -clock led_clk -min -5ns [get_ports rgb_oe_n]
-set_output_delay -clock led_clk -max 5ns [get_ports rgb_stb]
-set_output_delay -clock led_clk -min -5ns [get_ports rgb_stb]
-set_output_delay -clock led_clk -max 5ns [get_ports rgb_clk]
-set_output_delay -clock led_clk -min -5ns [get_ports rgb_clk]
+set_output_delay -clock led_clk -max 0ns [get_ports {rgb0[*]}]
+set_output_delay -clock led_clk -min 0ns [get_ports {rgb0[*]}]
+set_output_delay -clock led_clk -max 0ns [get_ports {rgb1[*]}]
+set_output_delay -clock led_clk -min 0ns [get_ports {rgb1[*]}]
+set_output_delay -clock led_clk -max 0ns [get_ports rgb_a]
+set_output_delay -clock led_clk -min 0ns [get_ports rgb_a]
+set_output_delay -clock led_clk -max 0ns [get_ports rgb_b]
+set_output_delay -clock led_clk -min 0ns [get_ports rgb_b]
+set_output_delay -clock led_clk -max 0ns [get_ports rgb_c]
+set_output_delay -clock led_clk -min 0ns [get_ports rgb_c]
+set_output_delay -clock led_clk -max 0ns [get_ports rgb_oe_n]
+set_output_delay -clock led_clk -min 0ns [get_ports rgb_oe_n]
+set_output_delay -clock led_clk -max 0ns [get_ports rgb_stb]
+set_output_delay -clock led_clk -min 0ns [get_ports rgb_stb]
+set_output_delay -clock led_clk -max 0ns [get_ports rgb_clk]
+set_output_delay -clock led_clk -min 0ns [get_ports rgb_clk]
 
 #create_clock -name dram_clk -period 20ns
 #set_output_delay -clock dram_clk -max 0ns [get_ports {dram_*}]

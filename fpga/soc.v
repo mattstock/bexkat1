@@ -91,7 +91,7 @@ module soc(
   output serial1_tx,
   output serial0_rts);
 
-wire rst_n, clock_10, clock_50, clock_25, locked;
+wire rst_n, clock_5, clock_50, clock_25, locked;
 
 assign rgb = 3'b000;
 
@@ -211,7 +211,7 @@ scratch ram0(.clock(clock_50), .data(bm_writedata), .q(ram_readdata), .wren(ram_
   .byteena(bm_be));
 lcd_module lcd0(.clk(clock_50), .rst_n(rst_n), .read(lcd_read), .write(lcd_write), .writedata(bm_writedata), .readdata(lcd_readdata), .be(bm_be), .address(bm_address[8:2]),
   .e(lcd_e), .data_out(lcd_dataout), .rs(lcd_rs), .on(lcd_on), .rw(lcd_rw));
-led_matrix matrix0(.csi_clk(clock_50), .led_clk(clock_10), .rsi_reset_n(rst_n), .avs_s0_writedata(bm_writedata), .avs_s0_readdata(matrix_readdata),
+led_matrix matrix0(.csi_clk(clock_50), .led_clk(clock_5), .rsi_reset_n(rst_n), .avs_s0_writedata(bm_writedata), .avs_s0_readdata(matrix_readdata),
   .avs_s0_address(bm_address[11:2]), .avs_s0_byteenable(bm_be), .avs_s0_write(matrix_write), .avs_s0_read(matrix_read),
   .demux({rgb_a, rgb_b, rgb_c}), .rgb0(rgb0), .rgb1(rgb1), .rgb_stb(rgb_stb), .rgb_clk(rgb_clk), .oe_n(rgb_oe_n));
 uart #(.baud(115200)) uart0(.clk(clock_50), .rst_n(rst_n), .rx(serial0_rx), .tx(serial0_tx), .data_in(bm_writedata), .be(bm_be),
@@ -229,7 +229,7 @@ buscontroller bc0(.clock(clock_50), .reset_n(rst_n),
 vga_framebuffer vga0(.vs(vga_vs), .hs(vga_hs), .sys_clock(clock_50), .vga_clock(clock_25), .reset_n(rst_n),
   .r(vga_r), .g(vga_g), .b(vga_b), .data(vga_readdata), .bus_read(vga_read), 
   .bus_wait(vga_wait), .address(vga_address), .blank_n(vga_blank_n));
-sysclock pll0(.inclk0(raw_clock_50), .c0(clock_10), .c1(clock_25), .c2(clock_50), .areset(~KEY[0]), .locked(locked));
+sysclock pll0(.inclk0(raw_clock_50), .c0(clock_5), .c1(clock_25), .c2(clock_50), .areset(~KEY[0]), .locked(locked));
 fan_ctrl fan0(.clk(clock_25), .rst_n(rst_n), .fan_pwm(fan_ctrl));
 
 endmodule
