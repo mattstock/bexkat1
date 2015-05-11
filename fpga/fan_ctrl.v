@@ -9,7 +9,7 @@ assign fan_pwm = tick[15];
 
 always @(posedge clk or negedge rst_n)
   if (!rst_n)
-    tick <= 24'h0;
+    tick <= 16'h0;
   else
     tick <= tick + 1'h1;
   

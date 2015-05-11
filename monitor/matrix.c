@@ -1,11 +1,12 @@
 #include "matrix.h"
+#include "misc.h"
 
 void main() {
-  matrix_put(0,0,0xff0000);
-  matrix_put(1,1,0xff00);
-  matrix_put(2,2,0xff);
-  matrix_put(16,8,0xff0000);
-  matrix_put(17,9,0xff00);
-  matrix_put(18,10,0xff);
-  while (1);
+  int i,x,y;
+  while (1) {
+      for (x=0; x < 32; x++)
+        for (y=0; y < 16; y++)
+          matrix_put(x,y,(y << 19)+x);
+      delay(0x10000);
+  }
 }

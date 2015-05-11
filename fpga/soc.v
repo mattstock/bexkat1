@@ -69,6 +69,10 @@ module soc(
   input enet_rx_dv,
   input enet_rx_er,
   input enet_tx_clk,
+  inout [3:0] sd_dat,
+  inout sd_cmd,
+  output sd_clk,
+  input sd_wp_n,
   output fan_ctrl, 
   output [2:0] rgb0,
   output [2:0] rgb1,
@@ -97,7 +101,13 @@ assign enet_gtx_clk = 1'bz;
 assign enet_tx_en = 1'b0;
 assign enet_tx_er = 1'b0;
 assign enet_mdc = 1'bz;
+assign enet_mdio = 1'bz;
 assign enet_rst_n = 1'b1;
+
+// SDcard stubs
+assign sd_dat = 4'hz;
+assign sd_cmd = 1'bz;
+assign sd_clk = 1'b0;
 
 // LCD handling
 assign lcd_data = (lcd_rw ? 8'hzz : lcd_dataout);
@@ -201,7 +211,7 @@ scratch ram0(.clock(clock_50), .data(bm_writedata), .q(ram_readdata), .wren(ram_
   .byteena(bm_be));
 lcd_module lcd0(.clk(clock_50), .rst_n(rst_n), .read(lcd_read), .write(lcd_write), .writedata(bm_writedata), .readdata(lcd_readdata), .be(bm_be), .address(bm_address[8:2]),
   .e(lcd_e), .data_out(lcd_dataout), .rs(lcd_rs), .on(lcd_on), .rw(lcd_rw));
-led_matrix matrix0(.csi_clk(clock_50), .led_clk(clock_25), .rsi_reset_n(rst_n), .avs_s0_writedata(bm_writedata), .avs_s0_readdata(matrix_readdata),
+led_matrix matrix0(.csi_clk(clock_50), .led_clk(clock_10), .rsi_reset_n(rst_n), .avs_s0_writedata(bm_writedata), .avs_s0_readdata(matrix_readdata),
   .avs_s0_address(bm_address[11:2]), .avs_s0_byteenable(bm_be), .avs_s0_write(matrix_write), .avs_s0_read(matrix_read),
   .demux({rgb_a, rgb_b, rgb_c}), .rgb0(rgb0), .rgb1(rgb1), .rgb_stb(rgb_stb), .rgb_clk(rgb_clk), .oe_n(rgb_oe_n));
 uart #(.baud(115200)) uart0(.clk(clock_50), .rst_n(rst_n), .rx(serial0_rx), .tx(serial0_tx), .data_in(bm_writedata), .be(bm_be),
