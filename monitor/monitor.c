@@ -13,18 +13,13 @@ void vga_test();
 char helpmsg[] = "\n? = help\np hhhh = set high address page\nr llll xx = read xx bytes of page hhhh llll and display\nw llll xx = write byte xx to location hhhh llll\ns = s-record upload\n\n";
 
 void vga_test() {
-  unsigned i;
+  unsigned x,y;
 
-  for (i=0; i < 640*480; i++) {
-    vga[i] = 0;
+  for (x=0; x < 640; x++) {
+    for (y=0; y < 480; y++) {
+      vga[(y*640)+x] = 0x800000 + x;
+    }
   }
-  vga[0] = 0xff0000;
-  vga[1] = 0xff00;
-  vga[2] = 0xff;
-  vga[10] = 0xa0;
-  vga[639] = 0xa000;
-  vga[640] = 0xa00000;
-  vga[240*640+320] = 0xb0b0b0;
 }
 
 void serial_srec(unsigned port) {
@@ -115,8 +110,9 @@ void main(void) {
   int val;
   int *ref;
 
-  addr = 0x00c00000;
-  matrix_put(0,0, 0xff00);
+  addr = 0x00800004;
+  matrix_put(0,0, 0x1000);
+  matrix_put(3,0, 0x80);
   while (1) {
     serial_print(0, "\nBexkat1 [");
     serial_printhex(0, addr);
