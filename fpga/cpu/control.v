@@ -25,10 +25,13 @@ module control(
   output bus_write,
   output [2:0] spsel,
   output [2:0] sspsel,
+  output vectoff_write,
   input supervisor,
   input bus_wait,
   input [1:0] bus_align);
 
+assign vectoff_write = 1'b0; // hardcode interrupt vector offset
+  
 wire [2:0] ir_mode = ir[31:29];
 wire [7:0] ir_op   = ir[28:21];
 wire [4:0] ir_ra   = ir[20:16];

@@ -42,7 +42,7 @@ wire [31:0] ir_bra = { {16{ir[15]}}, ir[15:0] };
 
 // Convenience mappings
 wire super_mode = status[3];
-wire [3:0] imask = status[2:0];
+//wire [3:0] imask = status[2:0];
 
 // Data switching logic
 assign address = (addrsel ? mar : pc);
@@ -206,7 +206,7 @@ control con0(.clock(clk), .reset_n(reset_n), .ir(ir), .ir_write(ir_write), .ccr(
   .regsel(regsel), .reg_read_addr1(reg_read_addr1), .reg_read_addr2(reg_read_addr2), .reg_write_addr(reg_write_addr), .reg_write(reg_write),
   .mdrsel(mdrsel), .marsel(marsel), .pcsel(pcsel), .int1sel(int1sel), .int2sel(int2sel), .int_func(int_func), .supervisor(super_mode),
   .addrsel(addrsel), .byteenable(byteenable), .bus_read(read), .bus_write(write), .bus_wait(waitrequest), .bus_align(address[1:0]),
-  .spsel(spsel), .sspsel(sspsel));
+  .spsel(spsel), .sspsel(sspsel), .vectoff_write(vectoff_write));
 
 alu alu0(.in1(alu_in1), .in2(alu_in2), .func(alu_func), .out(alu_out), .c_out(alu_carry), .n_out(alu_negative), .v_out(alu_overflow), .z_out(alu_zero));
 intcalc int0(.clock(clk), .func(int_func), .in1(int_in1), .in2(int_in2), .out(int_out));
