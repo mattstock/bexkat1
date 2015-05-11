@@ -19,10 +19,10 @@ module buscontroller(
   output burst_adv,
   output [3:0] be,
   output [31:0] writedata,
-  output [9:0] chipselect);
+  output [10:0] chipselect);
   
 reg [3:0] delay, delay_next;
-reg [9:0] cs;
+reg [10:0] cs;
 reg [1:0] state, state_next;
 reg [1:0] grant, grant_next;
 
@@ -60,50 +60,54 @@ begin
   case (map)
     2'b11:
       if (address >= 32'h00000000 && address <= 32'h00003fff)
-        cs = 10'b0001000000; // 4k x 32 internal RAM
+        cs = 11'b00001000000; // 4k x 32 internal RAM
       else if (address >= 32'h00004000 && address <= 32'h000fffff)
-        cs = 10'b0000000001; // 1M x 32 SSRAM
+        cs = 11'b00000000001; // 1M x 32 SSRAM
       else if (address >= 32'h00800000 && address <= 32'h008007ff)
-        cs = 10'b0000100000; // LED matrix
+        cs = 11'b00000100000; // LED matrix
       else if (address >= 32'h00800800 && address <= 32'h00800807)
-        cs = 10'b0000010000; // UART 0
+        cs = 11'b00000010000; // UART 0
       else if (address >= 32'h00800808 && address <= 32'h0080080f)
-        cs = 10'b0000001000; // UART 1
+        cs = 11'b00000001000; // UART 1
       else if (address >= 32'h00800810 && address <= 32'h00800813)
-        cs = 10'b0000000100; // SW
+        cs = 11'b00000000100; // SW
       else if (address >= 32'h00800814 && address <= 32'h0080081f)
-        cs = 10'b0000000010; // Encoder
+        cs = 11'b00000000010; // Encoder
+      else if (address >= 32'h00800820 && address <= 32'h00800821)
+        cs = 11'b10000000000; // sdcard (SPI)
       else if (address >= 32'h00800c00 && address <= 32'h00800cff)
-        cs = 10'b0100000000; // LCD
+        cs = 11'b00100000000; // LCD
       else if (address >= 32'hffffc000 && address <= 32'hffffffbf)
-        cs = 10'b0010000000; // 4k x 32 internal ROM
+        cs = 11'b00010000000; // 4k x 32 internal ROM
       else if (address >= 32'hffffffc0 && address <= 32'hffffffff)
-        cs = 10'b1000000000; // interrupt vectors
+        cs = 11'b01000000000; // interrupt vectors
       else
-        cs = 10'b0000000000;
+        cs = 11'b00000000000;
     default:
       if (address >= 32'h00000000 && address <= 32'h000fffff)
-        cs = 10'b0000000001; // 1M x 32 SSRAM
+        cs = 11'b00000000001; // 1M x 32 SSRAM
       else if (address >= 32'h00800000 && address <= 32'h008007ff)
-        cs = 10'b0000100000; // LED matrix
+        cs = 11'b00000100000; // LED matrix
       else if (address >= 32'h00800800 && address <= 32'h00800807)
-        cs = 10'b0000010000; // UART 0
+        cs = 11'b00000010000; // UART 0
       else if (address >= 32'h00800808 && address <= 32'h0080080f)
-        cs = 10'b0000001000; // UART 1
+        cs = 11'b00000001000; // UART 1
       else if (address >= 32'h00800810 && address <= 32'h00800813)
-        cs = 10'b0000000100; // SW
+        cs = 11'b00000000100; // SW
       else if (address >= 32'h00800814 && address <= 32'h0080081f)
-        cs = 10'b0000000010; // Encoder
+        cs = 11'b00000000010; // Encoder
+      else if (address >= 32'h00800820 && address <= 32'h00800821)
+        cs = 11'b10000000000; // sdcard (SPI)
       else if (address >= 32'h00800c00 && address <= 32'h00800cff)
-        cs = 10'b0100000000; // LCD
+        cs = 11'b00100000000; // LCD
       else if (address >= 32'hffff8000 && address <= 32'hffffbfff)
-        cs = 10'b0001000000; // 4k x 32 internal RAM
+        cs = 11'b00001000000; // 4k x 32 internal RAM
       else if (address >= 32'hffffc000 && address <= 32'hffffffbf)
-        cs = 10'b0010000000; // 4k x 32 internal ROM
+        cs = 11'b00010000000; // 4k x 32 internal ROM
       else if (address >= 32'hffffffc0 && address <= 32'hffffffff)
-        cs = 10'b1000000000; // interrupt vectors
+        cs = 11'b01000000000; // interrupt vectors
       else
-        cs = 10'b0000000000;
+        cs = 11'b00000000000;
   endcase
 end
 

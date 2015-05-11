@@ -69,8 +69,9 @@ module soc(
   input enet_rx_dv,
   input enet_rx_er,
   input enet_tx_clk,
-  inout [3:0] sd_dat,
-  inout sd_cmd,
+  input sd_miso,
+  output sd_mosi,
+  output sd_ss,
   output sd_clk,
   input sd_wp_n,
   output fan_ctrl, 
@@ -103,11 +104,6 @@ assign enet_tx_er = 1'b0;
 assign enet_mdc = 1'bz;
 assign enet_mdio = 1'bz;
 assign enet_rst_n = 1'b1;
-
-// SDcard stubs
-assign sd_dat = 4'hz;
-assign sd_cmd = 1'bz;
-assign sd_clk = 1'b0;
 
 // LCD handling
 assign lcd_data = (lcd_rw ? 8'hzz : lcd_dataout);
@@ -160,16 +156,17 @@ hexdisp d0(.out(HEX0), .in(bm_address[3:0]));
 assign LEDR = { enet_rx_clk, 7'h0, chipselect };
 assign LEDG = { locked, 8'b00000000 };
 
-wire [9:0] chipselect;
+wire [10:0] chipselect;
 wire [31:0] cpu_address, bm_address, vga_address;
 wire [31:0] cpu_readdata, bm_writedata, bm_readdata, cpu_writedata, mon_readdata, ram_readdata, matrix_readdata, rom_readdata;
-wire [31:0] uart0_readdata, uart1_readdata, vect_readdata, lcd_readdata;
+wire [31:0] uart0_readdata, uart1_readdata, vect_readdata, lcd_readdata, sd_readdata;
 wire [23:0] vga_readdata;
 wire [3:0] cpu_be, bm_be;
 wire [7:0] lcd_dataout;
 wire cpu_write, cpu_read, cpu_wait, bm_read, bm_write, bm_wait, ram_write, ram_read, rom_read;
 wire uart0_write, uart0_read, uart1_write, uart1_read, vga_wait, vga_read, vect_read, lcd_read;
 wire matrix_read, matrix_write, ssram_read, ssram_write, bm_start, bm_burst, bm_burst_adv, lcd_write;
+wire sd_read, sd_write;
 wire [1:0] bus_grant;
 
 // quadrature encoder outputs 0-23
@@ -179,7 +176,8 @@ wire [1:0] bus_grant;
 assign cpu_readdata = bm_readdata;
 assign vga_readdata = bm_readdata[23:0];
 
-assign bm_readdata = (chipselect[9] ? vect_readdata : 32'h0) |
+assign bm_readdata = (chipselect[10] ? sd_readdata : 32'h0) |
+                     (chipselect[9] ? vect_readdata : 32'h0) |
                      (chipselect[8] ? lcd_readdata : 32'h0) |
                      (chipselect[7] ? rom_readdata : 32'h0) |
                      (chipselect[6] ? ram_readdata : 32'h0) |
@@ -188,6 +186,8 @@ assign bm_readdata = (chipselect[9] ? vect_readdata : 32'h0) |
                      (chipselect[3] ? uart1_readdata : 32'h0) |
                      (chipselect[0] ? fs_databus : 32'h0);
 
+assign sd_read = (chipselect[10] ? bm_read : 1'b0);
+assign sd_write = (chipselect[10] ? bm_write: 1'b0);
 assign vect_read = (chipselect[9] ? bm_read : 1'b0);
 assign lcd_read = (chipselect[8] ? bm_read : 1'b0);
 assign lcd_write = (chipselect[8] ? bm_write : 1'b0);
@@ -218,11 +218,13 @@ uart #(.baud(115200)) uart0(.clk(clock_50), .rst_n(rst_n), .rx(serial0_rx), .tx(
   .data_out(uart0_readdata), .select(uart0_read|uart0_write), .write(uart0_write), .address(bm_address[2]));
 uart uart1(.clk(clock_50), .rst_n(rst_n), .rx(1'b0), .tx(serial1_tx), .data_in(bm_writedata), .be(bm_be),
   .data_out(uart1_readdata), .select(uart1_read|uart1_write), .write(uart1_write), .address(bm_address[2]));
+sdcard sdcard0(.clk(clock_50), .rst_n(rst_n), .miso(sd_miso), .mosi(sd_mosi), .sclk(sd_clk), .ss(sd_ss), .wp_n(sd_wp_n),
+  .be(bm_be), .data_in(bm_writedata), .data_out(sd_readdata), .read(sd_read), .write(sd_write), .address(bm_address[2]));
 buscontroller bc0(.clock(clock_50), .reset_n(rst_n),
   .address(bm_address), .cpu_address(cpu_address), .vga_address(vga_address),
-  .read(bm_read), .cpu_read((SW[17] ? cpu_read : 1'b0)), .vga_read((SW[16] ? vga_read : 1'b0)), 
+  .read(bm_read), .cpu_read(cpu_read), .vga_read(vga_read), 
   .start(bm_start), .chipselect(chipselect),
-  .write(bm_write), .cpu_write((SW[17] ? cpu_write : 1'b0)),
+  .write(bm_write), .cpu_write(cpu_write),
   .cpu_writedata(cpu_writedata), .writedata(bm_writedata), .be(bm_be), .cpu_be(cpu_be),
   .burst(bm_burst), .burst_adv(bm_burst_adv),
   .cpu_wait(cpu_wait), .vga_wait(vga_wait), .map(SW[15:14]));
