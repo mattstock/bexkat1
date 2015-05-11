@@ -116,6 +116,7 @@ void main(void) {
   int *ref;
 
   addr = 0x00c00000;
+  matrix_put(0,0, 0xff00);
   while (1) {
     serial_print(0, "\nBexkat1 [");
     serial_printhex(0, addr);

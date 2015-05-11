@@ -83,6 +83,6 @@ void main(void) {
         break;
     }  
     matrix_put(x,y, val);
-    delay(0x500);
+    delay(0x8000);
   }
 }

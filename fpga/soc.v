@@ -68,7 +68,8 @@ module soc(
   input enet_rx_crs,
   input enet_rx_dv,
   input enet_rx_er,
-  input enet_tx_clk, 
+  input enet_tx_clk,
+  output fan_ctrl, 
   output [2:0] rgb0,
   output [2:0] rgb1,
   output rgb_clk,
@@ -86,9 +87,17 @@ module soc(
   output serial1_tx,
   output serial0_rts);
 
-wire rst_n, clock_100, clock_200, clock_50, clock_25, locked;
+wire rst_n, clock_10, clock_50, clock_25, locked;
 
 assign rgb = 3'b000;
+
+// ethernet stubs
+assign enet_tx_data = 4'hz;
+assign enet_gtx_clk = 1'bz;
+assign enet_tx_en = 1'b0;
+assign enet_tx_er = 1'b0;
+assign enet_mdc = 1'bz;
+assign enet_rst_n = 1'b1;
 
 // LCD handling
 assign lcd_data = (lcd_rw ? 8'hzz : lcd_dataout);
@@ -184,8 +193,6 @@ assign uart1_write = (chipselect[3] ? bm_write : 1'b0);
 assign ssram_read = (chipselect[0] ? bm_read : 1'b0);
 assign ssram_write = (chipselect[0] ? bm_write : 1'b0);
 
-//bexkat1 bexkat0(.csi_clk(clock_50), .rsi_reset_n(rst_n), .avm_m0_address(cpu_address), .avm_m0_read(cpu_read), .avm_m0_readdata(cpu_readdata),
-//  .avm_m0_write(cpu_write), .avm_m0_writedata(cpu_writedata), .avm_m0_byteenable(cpu_be), .avm_m0_waitrequest(cpu_wait));
 bexkat2 bexkat0(.clk(clock_50), .reset_n(rst_n), .address(cpu_address), .read(cpu_read), .readdata(cpu_readdata),
   .write(cpu_write), .writedata(cpu_writedata), .byteenable(cpu_be), .waitrequest(cpu_wait));
 vectors rom1(.clock(clock_50), .q(vect_readdata), .rden(vect_read), .address(bm_address[6:2]));
@@ -194,9 +201,9 @@ scratch ram0(.clock(clock_50), .data(bm_writedata), .q(ram_readdata), .wren(ram_
   .byteena(bm_be));
 lcd_module lcd0(.clk(clock_50), .rst_n(rst_n), .read(lcd_read), .write(lcd_write), .writedata(bm_writedata), .readdata(lcd_readdata), .be(bm_be), .address(bm_address[8:2]),
   .e(lcd_e), .data_out(lcd_dataout), .rs(lcd_rs), .on(lcd_on), .rw(lcd_rw));
-led_matrix matrix0(.csi_clk(clock_50), .rsi_reset_n(rst_n), .avs_s0_writedata(bm_writedata), .avs_s0_readdata(matrix_readdata),
+led_matrix matrix0(.csi_clk(clock_50), .led_clk(clock_25), .rsi_reset_n(rst_n), .avs_s0_writedata(bm_writedata), .avs_s0_readdata(matrix_readdata),
   .avs_s0_address(bm_address[11:2]), .avs_s0_byteenable(bm_be), .avs_s0_write(matrix_write), .avs_s0_read(matrix_read),
-  .rgb_a(rgb_a), .rgb_b(rgb_b), .rgb_c(rgb_c), .rgb0(rgb0), .rgb1(rgb1), .rgb_stb(rgb_stb), .rgb_clk(rgb_clk), .oe_n(rgb_oe_n));
+  .demux({rgb_a, rgb_b, rgb_c}), .rgb0(rgb0), .rgb1(rgb1), .rgb_stb(rgb_stb), .rgb_clk(rgb_clk), .oe_n(rgb_oe_n));
 uart #(.baud(115200)) uart0(.clk(clock_50), .rst_n(rst_n), .rx(serial0_rx), .tx(serial0_tx), .data_in(bm_writedata), .be(bm_be),
   .data_out(uart0_readdata), .select(uart0_read|uart0_write), .write(uart0_write), .address(bm_address[2]));
 uart uart1(.clk(clock_50), .rst_n(rst_n), .rx(1'b0), .tx(serial1_tx), .data_in(bm_writedata), .be(bm_be),
@@ -212,6 +219,7 @@ buscontroller bc0(.clock(clock_50), .reset_n(rst_n),
 vga_framebuffer vga0(.vs(vga_vs), .hs(vga_hs), .sys_clock(clock_50), .vga_clock(clock_25), .reset_n(rst_n),
   .r(vga_r), .g(vga_g), .b(vga_b), .data(vga_readdata), .bus_read(vga_read), 
   .bus_wait(vga_wait), .address(vga_address), .blank_n(vga_blank_n));
-sysclock pll0(.inclk0(raw_clock_50), .c0(clock_100), .c1(clock_25), .c2(clock_50), .c3(clock_200), .areset(~KEY[0]), .locked(locked));
+sysclock pll0(.inclk0(raw_clock_50), .c0(clock_10), .c1(clock_25), .c2(clock_50), .areset(~KEY[0]), .locked(locked));
+fan_ctrl fan0(.clk(clock_25), .rst_n(rst_n), .fan_pwm(fan_ctrl));
 
 endmodule

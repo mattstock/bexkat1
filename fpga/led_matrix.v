@@ -1,65 +1,68 @@
 module led_matrix(
   input csi_clk,
+  input led_clk,
   input rsi_reset_n,
-  input [31:0] avs_s0_writedata,
-  output [31:0] avs_s0_readdata,
+  input [23:0] avs_s0_writedata,
+  output [23:0] avs_s0_readdata,
   input [8:0] avs_s0_address,
   input [3:0] avs_s0_byteenable,
   input avs_s0_write,
   input avs_s0_read,
-  output rgb_a,
-  output rgb_b,
-  output rgb_c,
+  output [2:0] demux,
   output reg [2:0] rgb0,
   output reg [2:0] rgb1,
   output rgb_stb,
   output rgb_clk,
   output oe_n);
-
-wire [2:0] lp = phase[2:0]-1'b1;
+  
 wire r,g,b;
-wire [31:0] buffer;
-wire ab;
+wire [23:0] buffer;
 
-assign r = (phase[9:2] < buffer[23:16]);
-assign g = (phase[9:2] < buffer[15:8]);
-assign b = (phase[9:2] < buffer[7:0]);
-assign ab = (state == STATE_READ1);
+wire [7:0] r_level, g_level, b_level;
 
-assign rgb_a = lp[0];
-assign rgb_b = lp[1];
-assign rgb_c = lp[2];
+assign r_level = buffer[23:16];
+assign g_level = buffer[15:8];
+assign b_level = buffer[7:0];
+
+assign r = r_level[pwmval];
+assign g = g_level[pwmval];
+assign b = b_level[pwmval];
 assign rgb_stb = (state == STATE_LATCH);
 assign rgb_clk = (state == STATE_CLOCK);
-assign oe_n = (state == STATE_LATCH || state == STATE_BLANK1 || state == STATE_BLANK2);
+assign oe_n = ~(state == STATE_DELAY);
 
+localparam STATE_IDLE = 3'h0, STATE_READ1 = 3'h1, STATE_READ2 = 3'h2, STATE_CLOCK = 3'h3, STATE_LATCH = 3'h4, STATE_DELAY = 3'h5;
 
-parameter [7:0] DELAY_VAL = 8'h20;
-
-localparam STATE_IDLE = 3'b000, STATE_READ1 = 3'b001, STATE_READ2 = 3'b010, STATE_CLOCK = 3'b011, STATE_LATCH = 3'b100, STATE_BLANK1 = 3'b101, STATE_BLANK2 = 3'b111;
-
-reg [9:0] phase, phase_next;
 reg [2:0] rgb0_next, rgb1_next;
-reg [4:0] colpos, colpos_next;
 reg [2:0] state, state_next;
+reg ab, ab_next;
+reg [4:0] colpos, colpos_next;
+reg [2:0] rowpos, rowpos_next;
+reg [2:0] pwmval, pwmval_next; 
 reg [7:0] delay, delay_next;
 
-always @(posedge csi_clk or negedge rsi_reset_n)
+assign demux = rowpos;
+  
+always @(posedge led_clk or negedge rsi_reset_n)
 begin
   if (!rsi_reset_n) begin
     rgb0 <= 1'b0;
     rgb1 <= 1'b0;
-    delay <= 8'h00;
     state <= STATE_IDLE;
-    phase <= 10'h0;
-    colpos <= 4'h0;
+    colpos <= 5'h0;
+    rowpos <= 3'h0;
+    ab <= 1'b0;
+    pwmval <= 3'h7;
+    delay <= 8'h00;
   end else begin
-    phase <= phase_next;
     state <= state_next;
-    delay <= delay_next;
     rgb0 <= rgb0_next;
     rgb1 <= rgb1_next;
     colpos <= colpos_next;
+    rowpos <= rowpos_next;
+    ab <= ab_next;
+    pwmval <= pwmval_next;
+    delay <= delay_next;
   end
 end
 
@@ -68,49 +71,57 @@ begin
   state_next = state;
   rgb0_next = rgb0;
   rgb1_next = rgb1;
-  phase_next = phase;
   colpos_next = colpos;
+  rowpos_next = rowpos;
+  ab_next = ab;
+  pwmval_next = pwmval;
   delay_next = delay;
   case (state)
     STATE_IDLE: begin
       state_next = STATE_READ1;
+      ab_next = ~ab;
     end
     STATE_READ1: begin
-      rgb0_next = {r,g,b};
       state_next = STATE_READ2;
+      ab_next = ~ab;
+      rgb0_next = {r,g,b};      
     end
     STATE_READ2: begin
       rgb1_next = {r,g,b};
       state_next = STATE_CLOCK;
+      colpos_next = colpos + 1'b1;
     end
     STATE_CLOCK: begin
-      colpos_next = colpos + 1'b1;
-      if (colpos == 5'b11111) begin
-        state_next = STATE_BLANK1;
-        delay_next = DELAY_VAL;
-      end else
-        state_next = STATE_IDLE;
-    end
-    STATE_BLANK1: begin
-      if (delay == 8'h00)
+      if (colpos == 5'h00)
         state_next = STATE_LATCH;
       else
-        delay_next = delay - 1'b1;
+        state_next = STATE_IDLE;
     end
     STATE_LATCH: begin
-      state_next = STATE_BLANK2;
-      phase_next = phase + 1'b1;
-      delay_next = DELAY_VAL;
+      state_next = STATE_DELAY;
+      pwmval_next = pwmval - 1'b1;
+      case (pwmval)
+        3'h7: delay_next = 8'hff;
+        3'h6: delay_next = 8'h80;
+        3'h5: delay_next = 8'h40;
+        3'h4: delay_next = 8'h20;
+        3'h3: delay_next = 8'h10;
+        3'h2: delay_next = 8'h08;
+        3'h1: delay_next = 8'h04;
+        3'h0: delay_next = 8'h02;
+      endcase
     end
-    STATE_BLANK2: begin
-      if (delay == 8'h00)
+    STATE_DELAY: begin
+      if (delay == 8'h00) begin
+        if (pwmval == 3'h0)
+          rowpos_next = rowpos + 1'b1;
         state_next = STATE_IDLE;
-      else
-        delay_next = delay - 1'b1;
+      end else
+        delay_next = delay - 1'h1;
     end
   endcase
 end
 
-matrixmem m0(.clock(csi_clk), .data_b(avs_s0_writedata), .wren_b(avs_s0_write), .address_b(avs_s0_address), .byteena_b(avs_s0_byteenable),
-  .q_b(avs_s0_readdata), .wren_a(1'b0), .q_a(buffer), .address_a({ab, phase[2:0], colpos}));
+matrixmem m0(.clock_a(led_clk), .clock_b(csi_clk), .data_b(avs_s0_writedata), .wren_b(avs_s0_write), .address_b(avs_s0_address), .byteena_b(avs_s0_byteenable[2:0]),
+  .q_b(avs_s0_readdata), .wren_a(1'b0), .q_a(buffer), .address_a({ab, rowpos, colpos}));
 endmodule
