@@ -33,8 +33,6 @@ testbench/
 *.summary
 *.cmp
 *.eqn
-*.html
-*.jpg
 *.qar
 *.spoc_builder
 *example*
