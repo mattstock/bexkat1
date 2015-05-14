@@ -73,7 +73,7 @@ begin
         cs = 11'b00000000100; // SW
       else if (address >= 32'h00800814 && address <= 32'h0080081f)
         cs = 11'b00000000010; // Encoder
-      else if (address >= 32'h00800820 && address <= 32'h00800821)
+      else if (address >= 32'h00800820 && address <= 32'h00800827)
         cs = 11'b10000000000; // sdcard (SPI)
       else if (address >= 32'h00800c00 && address <= 32'h00800cff)
         cs = 11'b00100000000; // LCD
@@ -96,7 +96,7 @@ begin
         cs = 11'b00000000100; // SW
       else if (address >= 32'h00800814 && address <= 32'h0080081f)
         cs = 11'b00000000010; // Encoder
-      else if (address >= 32'h00800820 && address <= 32'h00800821)
+      else if (address >= 32'h00800820 && address <= 32'h00800827)
         cs = 11'b10000000000; // sdcard (SPI)
       else if (address >= 32'h00800c00 && address <= 32'h00800cff)
         cs = 11'b00100000000; // LCD
