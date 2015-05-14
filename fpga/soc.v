@@ -73,6 +73,9 @@ module soc(
   output sd_mosi,
   output sd_ss,
   output sd_clk,
+  output gen_mosi,
+  output gen_ss,
+  output gen_clk,
   input sd_wp_n,
   output fan_ctrl, 
   output [2:0] rgb0,
@@ -95,6 +98,9 @@ module soc(
 wire rst_n, clock_5, clock_50, clock_25, locked;
 
 assign rgb = 3'b000;
+assign gen_mosi = sd_mosi;
+assign gen_ss = sd_ss;
+assign gen_clk = sd_clk;
 
 // ethernet stubs
 assign enet_tx_data = 4'hz;
@@ -153,7 +159,7 @@ hexdisp d2(.out(HEX2), .in(bm_address[11:8]));
 hexdisp d1(.out(HEX1), .in(bm_address[7:4]));
 hexdisp d0(.out(HEX0), .in(bm_address[3:0]));
 // Blinknlights
-assign LEDR = { enet_rx_clk, 7'h0, chipselect };
+assign LEDR = { enet_rx_clk, sd_wp_n, 5'h0, chipselect };
 assign LEDG = { locked, 8'b00000000 };
 
 wire [10:0] chipselect;
@@ -218,7 +224,7 @@ uart #(.baud(115200)) uart0(.clk(clock_50), .rst_n(rst_n), .rx(serial0_rx), .tx(
   .data_out(uart0_readdata), .select(uart0_read|uart0_write), .write(uart0_write), .address(bm_address[2]));
 uart uart1(.clk(clock_50), .rst_n(rst_n), .rx(1'b0), .tx(serial1_tx), .data_in(bm_writedata), .be(bm_be),
   .data_out(uart1_readdata), .select(uart1_read|uart1_write), .write(uart1_write), .address(bm_address[2]));
-sdcard sdcard0(.clk(clock_50), .rst_n(rst_n), .miso(sd_miso), .mosi(sd_mosi), .sclk(sd_clk), .ss(sd_ss), .wp_n(sd_wp_n),
+spi_master spi0(.clk(clock_50), .rst_n(rst_n), .miso(sd_miso), .mosi(sd_mosi), .sclk(sd_clk), .ss(sd_ss), .wp_n(sd_wp_n),
   .be(bm_be), .data_in(bm_writedata), .data_out(sd_readdata), .read(sd_read), .write(sd_write), .address(bm_address[2]));
 buscontroller bc0(.clock(clock_50), .reset_n(rst_n),
   .address(bm_address), .cpu_address(cpu_address), .vga_address(vga_address),
