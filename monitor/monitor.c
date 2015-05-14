@@ -1,6 +1,7 @@
 #include "misc.h"
 #include "matrix.h"
 #include "serial.h"
+#include "sdcard.h"
 
 unsigned int addr;
 unsigned short data;
@@ -10,7 +11,7 @@ volatile unsigned int *vga = (unsigned int *)0x00c00000;
 void serial_srec(unsigned port);
 void vga_test();
 
-char helpmsg[] = "\n? = help\np hhhh = set high address page\nr llll xx = read xx bytes of page hhhh llll and display\nw llll xx = write byte xx to location hhhh llll\ns = s-record upload\n\n";
+char helpmsg[] = "\n? = help\na aaaaaaaa = set address\nr = read page of mem and display\nw dddddddd = write word current address\nv = vga test\nc = SDcard test\nm = led matrix init\ns = s-record upload\n\n";
 
 void vga_test() {
   unsigned x,y;
@@ -111,8 +112,6 @@ void main(void) {
   int *ref;
 
   addr = 0x00800004;
-  matrix_put(0,0, 0x1000);
-  matrix_put(3,0, 0x80);
   while (1) {
     serial_print(0, "\nBexkat1 [");
     serial_printhex(0, addr);
@@ -134,6 +133,10 @@ void main(void) {
       serial_print(0, "\nVGA test starting...\n");
       vga_test();
       break;
+    case 'c':
+      serial_print(0, "\nSDCard test...\n");
+      sdcard_init();
+      break;
     case 's':
       serial_print(0, "\nstart srec upload...\n");
       serial_srec(0);
@@ -151,10 +154,13 @@ void main(void) {
       *ref = val;
       serial_print(0, "\n");
       break;
+    case 'm':
+      matrix_init();
+      break;
     default:
       serial_print(0, "\nunknown commmand: ");
       serial_print(0, msg);
-      serial_print(0, buf);
+      serial_print(0, "\n");
     }
   }
 }
