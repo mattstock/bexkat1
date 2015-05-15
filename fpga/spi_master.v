@@ -4,7 +4,7 @@ module spi_master(
   input miso,
   output mosi,
   output sclk,
-  output ss,
+  output reg [7:0] selects,
   input wp_n,
   input [3:0] be,
   input [31:0] data_in,
@@ -16,8 +16,13 @@ module spi_master(
 parameter clkfreq = 50000000;
 parameter speed = 500000; // 500kHz for now
 
-// config register handles both the slave select and the cpol and cpha
-assign ss = conf[24];
+// write
+// 'h0: xxxxxxdd : spi byte out
+// 'h1: sscfxxxx : ss = selects, cf = config byte (cpol, cpha)
+// read
+// 'h0: xxxxxxdd : spi byte in (clears ready flag)
+// 'h1: sscfxxtr : ss = selects, cf = config byte, t = transmit ready, r = recv ready
+
 
 reg tx_start;
 wire tx_done;
@@ -25,7 +30,8 @@ wire [7:0] rx_in;
 
 reg [7:0] tx_byte, tx_byte_next;
 reg [7:0] rx_byte, rx_byte_next;
-reg [31:0] conf, conf_next;
+reg [7:0] selects_next;
+reg [7:0] conf, conf_next;
 reg [1:0] state, state_next;
 
 localparam STATE_IDLE = 2'b00, STATE_BUSY = 2'b01, STATE_COMPLETE = 2'b10, STATE_RELEASE = 2'b11;
@@ -35,11 +41,13 @@ begin
   if (!rst_n) begin
     tx_byte <= 8'h00;
     rx_byte <= 8'h00;
-    conf <= 'h01000000;
+    selects <= 'hf;
+    conf <= 'h00;
     state <= STATE_IDLE;
   end else begin
     tx_byte <= tx_byte_next;
     rx_byte <= rx_byte_next;
+    selects <= selects_next;
     conf <= conf_next;
     state <= state_next;
   end
@@ -50,6 +58,7 @@ begin
   tx_byte_next = tx_byte;
   rx_byte_next = rx_byte;
   conf_next = conf;
+  selects_next = selects;
   state_next = state;
   tx_start = 1'b0;
   case ({read, write})
@@ -57,24 +66,29 @@ begin
       data_out = 'h0;
       case (address)
         'h0: begin
-          if (state == STATE_IDLE) begin
+          if (state == STATE_IDLE && be[0]) begin
             state_next = STATE_BUSY;
             tx_start = 1'b1;
             tx_byte_next = data_in[7:0];
           end
         end
-        'h1: conf_next = data_in;
+        'h1: begin
+          if (be[3])
+            selects_next = data_in[31:24];
+          if (be[2])
+            conf_next = data_in[23:16];
+        end 
         default: begin end
       endcase
     end
     'b10: begin
       case (address)
         'h0: begin
-          data_out = {16'h0000, state, 6'h00, rx_byte};
+          data_out = {24'h000000, rx_byte};
           if (state == STATE_COMPLETE)
             state_next = STATE_RELEASE;
         end
-        'h1: data_out = conf;
+        'h1: data_out = { selects, conf, 14'h000, (state != STATE_BUSY), (state == STATE_COMPLETE) };
         default: data_out = 'h0;
       endcase
     end
