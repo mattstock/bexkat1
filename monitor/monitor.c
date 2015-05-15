@@ -1,7 +1,7 @@
 #include "misc.h"
 #include "matrix.h"
 #include "serial.h"
-#include "sdcard.h"
+#include "ff.h"
 
 unsigned int addr;
 unsigned short data;
@@ -102,6 +102,14 @@ void serial_dumpmem(unsigned port,
     serial_printhex(port, pos[i+3]);
     serial_print(port, "\n");
   }
+}
+
+void sdcard_init() {
+  FATFS f;
+  FRESULT foo;
+  foo = f_mount(&f, "", 1);
+  if (foo == FR_OK)
+    serial_print(0, "we mounted it!\n");
 }
 
 void main(void) {

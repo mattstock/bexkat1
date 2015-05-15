@@ -94,10 +94,11 @@ BYTE xchg_spi (		/* Returns received data */
 	unsigned int res;
 
 	sdcard[0] = dat;
-	res = sdcard[0];
-	while ((res & 0x0000c000) != 0x0000c000) {
-		res = sdcard[0];
+	res = sdcard[1];
+	while ((res & 0x00000001) != 0x00000001) {
+		res = sdcard[1];
 	}
+        res = sdcard[0];
 	return (res & 0xff);
 }
 
@@ -112,14 +113,14 @@ void xmit_spi_multi (
 
 	do {
 		sdcard[0] = *p++;
-		res = sdcard[0];
-		while ((res & 0x0000c000) != 0x0000c000) {
-			res = sdcard[0];
+		res = sdcard[1];
+		while ((res & 0x00000001) != 0x00000001) {
+			res = sdcard[1];
 		}
 		sdcard[0] = *p++;
-		res = sdcard[0];
-		while ((res & 0x0000c000) != 0x0000c000) {
-			res = sdcard[0];
+		res = sdcard[1];
+		while ((res & 0x00000001) != 0x00000001) {
+			res = sdcard[1];
 		}
 	} while (cnt -= 2);
 }
@@ -134,16 +135,18 @@ void rcvr_spi_multi (
 	unsigned int res;
 	do {
 		sdcard[0] = 0xff;
-		res = sdcard[0];
-		while ((res & 0x0000c000) != 0x0000c000) {
-			res = sdcard[0];
+		res = sdcard[1];
+		while ((res & 0x00000001) != 0x00000001) {
+			res = sdcard[1];
 		}
+		res = sdcard[0];
 		*p++ = (res & 0xff);
 		sdcard[0] = 0xff;
-		res = sdcard[0];
-		while ((res & 0x0000c000) != 0x0000c000) {
-			res = sdcard[0];
+		res = sdcard[1];
+		while ((res & 0x00000001) != 0x00000001) {
+			res = sdcard[1];
 		}
+		res = sdcard[0];
 		*p++ = (res & 0xff);
 	} while (cnt -= 2);
 }
