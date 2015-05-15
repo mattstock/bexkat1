@@ -19,5 +19,5 @@ clean:
 %.o: %.s
 	$(AS) -EB -o $@ $^
 
-libsupport.a: serial.o misc.o matrix.o lcd.o sdcard.o
+libsupport.a: serial.o misc.o matrix.o lcd.o mmc.o ff.o
 	$(AR) rcs -o $@ $^
