@@ -14,14 +14,14 @@ module spi_master(
   input address);
 
 parameter clkfreq = 50000000;
-parameter speed = 500000; // 500kHz for now
+parameter speed = 200000; // 200kHz for now
 
 // write
 // 'h0: xxxxxxdd : spi byte out
 // 'h1: sscfxxxx : ss = selects, cf = config byte (cpol, cpha)
 // read
 // 'h0: xxxxxxdd : spi byte in (clears ready flag)
-// 'h1: sscfxxtr : ss = selects, cf = config byte, t = transmit ready, r = recv ready
+// 'h1: sscfxxptr : ss = selects, cf = config byte, p = write protect, t = transmit ready, r = recv ready
 
 
 reg tx_start;
@@ -88,7 +88,7 @@ begin
           if (state == STATE_COMPLETE)
             state_next = STATE_RELEASE;
         end
-        'h1: data_out = { selects, conf, 14'h000, (state != STATE_BUSY), (state == STATE_COMPLETE) };
+        'h1: data_out = { selects, conf, 13'h000, ~wp_n, (state != STATE_BUSY), (state == STATE_COMPLETE) };
         default: data_out = 'h0;
       endcase
     end

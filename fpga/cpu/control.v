@@ -256,6 +256,16 @@ begin
           reg_write = REG_WRITE_DW;          
           state_next = STATE_FETCHIR;
         end
+        {MODE_REG, 8'h08}: begin // com
+          regsel = 4'h3; // ~reg_data_out2
+          reg_write = REG_WRITE_DW;          
+          state_next = STATE_FETCHIR;
+        end
+        {MODE_REG, 8'h09}: begin // neg
+          regsel = 4'h2; // -reg_data_out2
+          reg_write = REG_WRITE_DW;          
+          state_next = STATE_FETCHIR;
+        end
         {MODE_REG, 8'h15}: begin // mov to sp
           spsel = 3'h4; // SP <= reg_data_out1
           state_next = STATE_FETCHIR;
@@ -265,13 +275,13 @@ begin
           reg_write = REG_WRITE_DW;
           state_next = STATE_FETCHIR;
         end
-        {MODE_REG, 8'h08}: begin // com
-          regsel = 4'h3; // ~reg_data_out2
+        {MODE_REG, 8'h17}: begin // ext.b
+          regsel = 4'h9; // reg_data_out2[7:0] + extend
           reg_write = REG_WRITE_DW;          
           state_next = STATE_FETCHIR;
         end
-        {MODE_REG, 8'h09}: begin // neg
-          regsel = 4'h2; // -reg_data_out2
+        {MODE_REG, 8'h18}: begin // ext
+          regsel = 4'ha; // reg_data_out2[15:0] + extend
           reg_write = REG_WRITE_DW;          
           state_next = STATE_FETCHIR;
         end

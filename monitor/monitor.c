@@ -107,9 +107,30 @@ void serial_dumpmem(unsigned port,
 void sdcard_init() {
   FATFS f;
   FRESULT foo;
-  foo = f_mount(&f, "", 1);
-  if (foo == FR_OK)
-    serial_print(0, "we mounted it!\n");
+  FILINFO fno;
+  DIR dp;
+  char *fn;
+  if (f_mount(&f, "", 1) != FR_OK) return;
+  if (f_opendir(&dp, "/") != FR_OK) {
+    serial_print(0, "opendir failed\n");
+    return;
+  }
+  for (;;) {
+    foo = f_readdir(&dp, &fno);
+    if (foo != FR_OK || fno.fname[0] == 0) break;
+    if (fno.fname[0] == '.') continue;
+    fn = fno.fname;
+    if (fno.fattrib & AM_DIR) {
+      serial_print(0, "directory found: ");
+      serial_print(0, fn);
+      serial_print(0, "\n");
+    } else {
+      serial_print(0, "file found: ");
+      serial_print(0, "/");
+      serial_print(0, fn);
+      serial_print(0, "\n");
+    }
+  }
 }
 
 void main(void) {

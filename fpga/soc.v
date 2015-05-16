@@ -216,7 +216,7 @@ assign ssram_write = (chipselect[0] ? bm_write : 1'b0);
 bexkat2 bexkat0(.clk(clock_50), .reset_n(rst_n), .address(cpu_address), .read(cpu_read), .readdata(cpu_readdata),
   .write(cpu_write), .writedata(cpu_writedata), .byteenable(cpu_be), .waitrequest(cpu_wait));
 vectors rom1(.clock(clock_50), .q(vect_readdata), .rden(vect_read), .address(bm_address[6:2]));
-monitor rom0(.clock(clock_50), .q(rom_readdata), .rden(rom_read), .address(bm_address[13:2]));
+monitor rom0(.clock(clock_50), .q(rom_readdata), .rden(rom_read), .address(bm_address[15:2]));
 scratch ram0(.clock(clock_50), .data(bm_writedata), .q(ram_readdata), .wren(ram_write), .rden(ram_read), .address(bm_address[13:2]),
   .byteena(bm_be));
 lcd_module lcd0(.clk(clock_50), .rst_n(rst_n), .read(lcd_read), .write(lcd_write), .writedata(bm_writedata), .readdata(lcd_readdata), .be(bm_be), .address(bm_address[8:2]),

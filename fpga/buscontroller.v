@@ -77,8 +77,8 @@ begin
         cs = 11'b10000000000; // sdcard (SPI)
       else if (address >= 32'h00800c00 && address <= 32'h00800cff)
         cs = 11'b00100000000; // LCD
-      else if (address >= 32'hffffc000 && address <= 32'hffffffbf)
-        cs = 11'b00010000000; // 4k x 32 internal ROM
+      else if (address >= 32'hffff0000 && address <= 32'hffffffbf)
+        cs = 11'b00010000000; // 16k x 32 internal ROM
       else if (address >= 32'hffffffc0 && address <= 32'hffffffff)
         cs = 11'b01000000000; // interrupt vectors
       else
@@ -102,8 +102,8 @@ begin
         cs = 11'b00100000000; // LCD
       else if (address >= 32'hffff8000 && address <= 32'hffffbfff)
         cs = 11'b00001000000; // 4k x 32 internal RAM
-      else if (address >= 32'hffffc000 && address <= 32'hffffffbf)
-        cs = 11'b00010000000; // 4k x 32 internal ROM
+      else if (address >= 32'hffff0000 && address <= 32'hffffffbf)
+        cs = 11'b00010000000; // 16k x 32 internal ROM
       else if (address >= 32'hffffffc0 && address <= 32'hffffffff)
         cs = 11'b01000000000; // interrupt vectors
       else

@@ -1,5 +1,5 @@
 CC = ~/lcc/lcc
-#CFLAGS = -Wf-d
+CFLAGS = -Wf-d -Iinclude
 CFLAGS = -Iinclude
 LDFLAGS = -Llib -lsupport
 OBJCOPY = bexkat1-elf-objcopy
@@ -50,7 +50,7 @@ conditionals: conditionals.o
 conditionals-simple: conditionals-simple.o
 	$(LD) -o $@ $^ -T $(LD_SCRIPT)
 types: types.o
-	$(LD) -o $@ $^ -T $(LD_SCRIPT)
+	$(LD) -o $@ $^ -T $(LD_SCRIPT) $(LDFLAGS)
 multiply: multiply.o
 	$(LD) -o $@ $^ -T $(LD_SCRIPT)
 multiply-simple: multiply-simple.o

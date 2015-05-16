@@ -1,27 +1,24 @@
-unsigned gui1;
-int gi1;
-unsigned short gus1;
-short gs2;
-char gc1;
-unsigned char guc1;
-
-void main(void);
+#include "serial.h"
+#include "misc.h"
 
 void main(void) {
-  unsigned ui1;
   int i1;
-  unsigned short us1;
   short s1;
+  unsigned short us1;
   char c1;
   unsigned char uc1;
 
-  gc1 = (char)-4;
-  guc1 = 'a';
-  s1 = -1024;
-  gus1 = 1024;
-  gui1 = 0x00010000;
-  ui1 = gui1;
-  gi1 = -2;
-  gui1 = gi1;
-  
+  s1 = -1;
+  c1 = 0xff;
+  uc1 = 0xff;
+  us1 = 0xff;
+  us1 = c1;
+  s1 = uc1;
+  serial_printhex(0, us1);
+  serial_print(0, "\n");
+  serial_printhex(0, s1);
+  serial_print(0, "\n");
+  s1 = c1;
+  serial_printhex(0, s1);
+  serial_print(0, "\n");
 }

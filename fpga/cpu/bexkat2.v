@@ -123,27 +123,27 @@ always @* begin
     end
     4'b0011: begin
       writedata = mdr;
-      busin_be = { {16{readdata[15]}}, readdata[15:0] };
+      busin_be = { 16'h0000, readdata[15:0] };
     end 
     4'b1100: begin
       writedata = { mdr[15:0], 16'h0000 };
-      busin_be = { {16{readdata[31]}}, readdata[31:16] };
+      busin_be = { 16'h0000, readdata[31:16] };
     end
     4'b0001: begin
       writedata = mdr;
-      busin_be = { {24{readdata[7]}}, readdata[7:0] };
+      busin_be = { 24'h000000, readdata[7:0] };
     end
     4'b0010: begin
       writedata = { 16'h0000, mdr[7:0], 8'h00 };
-      busin_be = { {24{readdata[15]}}, readdata[15:8] };
+      busin_be = { 24'h000000, readdata[15:8] };
     end
     4'b0100: begin
       writedata = { 8'h00, mdr[7:0], 16'h0000 };
-      busin_be = { {24{readdata[23]}}, readdata[23:16] };
+      busin_be = { 24'h000000, readdata[23:16] };
     end
     4'b1000: begin
       writedata = { mdr[7:0], 24'h000000 };
-      busin_be = { {24{readdata[31]}}, readdata[31:24] };
+      busin_be = { 24'h000000, readdata[31:24] };
     end
     default: begin // really these are invalid
       writedata = mdr;
@@ -170,6 +170,8 @@ always @* begin
     4'h6: reg_data_in = { 16'h0000, ir[15:0] }; // no sign ext
     4'h7: reg_data_in = sp;
     4'h8: reg_data_in = ssp;
+    4'h9: reg_data_in = { {24{reg_data_out2[7]}}, reg_data_out2[7:0] };
+    4'ha: reg_data_in = { {16{reg_data_out2[15]}}, reg_data_out2[15:0] };
     default: reg_data_in = 0;
   endcase
   case (alu1sel)

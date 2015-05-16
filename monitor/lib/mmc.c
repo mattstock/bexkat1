@@ -16,12 +16,12 @@
 volatile unsigned int *sdcard = (unsigned int *)0x00800820;
 
 /* Port controls  (Platform dependent) */
-#define CS_LOW()	sdcard[1] = 0x00000000		/* CS=low */
-#define	CS_HIGH()	sdcard[1] = 0x01000000		/* CS=high */
+#define CS_LOW()	sdcard[1] = 0xfe000000		/* CS=low */
+#define	CS_HIGH()	sdcard[1] = 0xff000000		/* CS=high */
 #define MMC_CD		1                               /* Card detected.   yes:true, no:false, default:true */
-#define MMC_WP		0				/* Write protected. yes:true, no:false, default:false */
-#define	FCLK_SLOW()	sdcard[1] |= 0x10000000		/* Set slow clock (F_CPU / 64) */
-#define	FCLK_FAST()	sdcard[1] |= 0x10000000		/* Set fast clock (F_CPU / 2) */
+#define MMC_WP		(sdcard[1] & 0x00000004)	/* Write protected. yes:true, no:false, default:false */
+#define	FCLK_SLOW()	1		/* Set slow clock (F_CPU / 64) */
+#define	FCLK_FAST()	1		/* Set fast clock (F_CPU / 2) */
 
 
 /*--------------------------------------------------------------------------
