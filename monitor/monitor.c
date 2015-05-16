@@ -2,6 +2,7 @@
 #include "matrix.h"
 #include "serial.h"
 #include "ff.h"
+#include "lcd.h"
 
 unsigned int addr;
 unsigned short data;
@@ -141,6 +142,10 @@ void main(void) {
   int *ref;
 
   addr = 0x00800004;
+  lcd_init();
+  lcd_print("Bexkat 1000");
+  lcd_pos(0,1);
+  lcd_print("Monitor Mode");
   while (1) {
     serial_print(0, "\nBexkat1 [");
     serial_printhex(0, addr);
