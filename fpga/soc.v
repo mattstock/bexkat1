@@ -72,10 +72,11 @@ module soc(
   input sd_miso,
   output sd_mosi,
   output sd_ss,
-  output sd_clk,
+  output sd_sclk,
+  input gen_miso,
   output gen_mosi,
   output gen_ss,
-  output gen_clk,
+  output gen_sclk,
   input sd_wp_n,
   output fan_ctrl, 
   output [2:0] rgb0,
@@ -96,15 +97,19 @@ module soc(
   output serial0_rts);
 
 wire rst_n, clock_5, clock_50, clock_25, locked;
-wire [7:0] sd_selects;
-
+wire [7:0] spi_selects;
+wire miso, mosi, sclk;
 assign rgb = 3'b000;
 
-// some SPI breakouts
-assign sd_ss = sd_selects[0];
-assign gen_ss = sd_selects[1];
-assign gen_mosi = sd_mosi;
-assign gen_clk = sd_clk;
+// some SPI wiring
+assign sd_ss = spi_selects[0];
+assign gen_ss = spi_selects[1];
+assign gen_mosi = mosi;
+assign sd_mosi = mosi;
+assign miso = (~spi_selects[0] ? sd_miso : 1'b0) |
+              (~spi_selects[1] ? gen_miso : 1'b0);
+assign gen_sclk = sclk;
+assign sd_sclk = sclk;
 
 // ethernet stubs
 assign enet_tx_data = 4'hz;
@@ -163,20 +168,19 @@ hexdisp d2(.out(HEX2), .in(bm_address[11:8]));
 hexdisp d1(.out(HEX1), .in(bm_address[7:4]));
 hexdisp d0(.out(HEX0), .in(bm_address[3:0]));
 // Blinknlights
-assign LEDR = { enet_rx_clk, sd_wp_n, 5'h0, chipselect };
+assign LEDR = { 7'h0, chipselect };
 assign LEDG = { locked, 8'b00000000 };
 
-wire [10:0] chipselect;
+wire [7:0] chipselect;
 wire [31:0] cpu_address, bm_address, vga_address;
 wire [31:0] cpu_readdata, bm_writedata, bm_readdata, cpu_writedata, mon_readdata, ram_readdata, matrix_readdata, rom_readdata;
-wire [31:0] uart0_readdata, uart1_readdata, vect_readdata, lcd_readdata, sd_readdata;
+wire [31:0] vect_readdata, io_readdata;
 wire [23:0] vga_readdata;
 wire [3:0] cpu_be, bm_be;
 wire [7:0] lcd_dataout;
 wire cpu_write, cpu_read, cpu_wait, bm_read, bm_write, bm_wait, ram_write, ram_read, rom_read;
-wire uart0_write, uart0_read, uart1_write, uart1_read, vga_wait, vga_read, vect_read, lcd_read;
-wire matrix_read, matrix_write, ssram_read, ssram_write, bm_start, bm_burst, bm_burst_adv, lcd_write;
-wire sd_read, sd_write;
+wire io_write, io_read, vga_wait, vga_read, vect_read;
+wire matrix_read, matrix_write, ssram_read, ssram_write, bm_start, bm_burst, bm_burst_adv;
 wire [1:0] bus_grant;
 
 // quadrature encoder outputs 0-23
@@ -186,32 +190,23 @@ wire [1:0] bus_grant;
 assign cpu_readdata = bm_readdata;
 assign vga_readdata = bm_readdata[23:0];
 
-assign bm_readdata = (chipselect[10] ? sd_readdata : 32'h0) |
-                     (chipselect[9] ? vect_readdata : 32'h0) |
-                     (chipselect[8] ? lcd_readdata : 32'h0) |
-                     (chipselect[7] ? rom_readdata : 32'h0) |
-                     (chipselect[6] ? ram_readdata : 32'h0) |
-                     (chipselect[5] ? matrix_readdata : 32'h0) |
-                     (chipselect[4] ? uart0_readdata : 32'h0) |
-                     (chipselect[3] ? uart1_readdata : 32'h0) |
-                     (chipselect[0] ? fs_databus : 32'h0);
+assign bm_readdata = (chipselect == 4'h1 ? vect_readdata : 32'h0) |
+                     (chipselect == 4'h2 ? rom_readdata : 32'h0) |
+                     (chipselect == 4'h3 ? ram_readdata : 32'h0) |
+                     (chipselect == 4'h5 ? matrix_readdata : 32'h0) |
+                     (chipselect == 4'h4 ? io_readdata : 32'h0) |
+                     (chipselect == 4'h6 ? fs_databus : 32'h0);
 
-assign sd_read = (chipselect[10] ? bm_read : 1'b0);
-assign sd_write = (chipselect[10] ? bm_write: 1'b0);
-assign vect_read = (chipselect[9] ? bm_read : 1'b0);
-assign lcd_read = (chipselect[8] ? bm_read : 1'b0);
-assign lcd_write = (chipselect[8] ? bm_write : 1'b0);
-assign rom_read = (chipselect[7] ? bm_read : 1'b0);
-assign ram_read = (chipselect[6] ? bm_read : 1'b0);
-assign ram_write = (chipselect[6] ? bm_write : 1'b0);
-assign matrix_read = (chipselect[5] ? bm_read : 1'b0);
-assign matrix_write = (chipselect[5] ? bm_write : 1'b0);
-assign uart0_read = (chipselect[4] ? bm_read : 1'b0);
-assign uart0_write = (chipselect[4] ? bm_write : 1'b0);
-assign uart1_read = (chipselect[3] ? bm_read : 1'b0);
-assign uart1_write = (chipselect[3] ? bm_write : 1'b0);
-assign ssram_read = (chipselect[0] ? bm_read : 1'b0);
-assign ssram_write = (chipselect[0] ? bm_write : 1'b0);
+assign vect_read = (chipselect == 4'h1 ? bm_read : 1'b0);
+assign rom_read = (chipselect == 4'h2 ? bm_read : 1'b0);
+assign ram_read = (chipselect == 4'h3 ? bm_read : 1'b0);
+assign ram_write = (chipselect == 4'h3 ? bm_write : 1'b0);
+assign matrix_read = (chipselect == 4'h5 ? bm_read : 1'b0);
+assign matrix_write = (chipselect == 4'h5 ? bm_write : 1'b0);
+assign io_read = (chipselect == 4'h4 ? bm_read : 1'b0);
+assign io_write = (chipselect == 4'h4 ? bm_write : 1'b0);
+assign ssram_read = (chipselect == 4'h6 ? bm_read : 1'b0);
+assign ssram_write = (chipselect == 4'h6 ? bm_write : 1'b0);
 
 bexkat2 bexkat0(.clk(clock_50), .reset_n(rst_n), .address(cpu_address), .read(cpu_read), .readdata(cpu_readdata),
   .write(cpu_write), .writedata(cpu_writedata), .byteenable(cpu_be), .waitrequest(cpu_wait));
@@ -219,17 +214,15 @@ vectors rom1(.clock(clock_50), .q(vect_readdata), .rden(vect_read), .address(bm_
 monitor rom0(.clock(clock_50), .q(rom_readdata), .rden(rom_read), .address(bm_address[15:2]));
 scratch ram0(.clock(clock_50), .data(bm_writedata), .q(ram_readdata), .wren(ram_write), .rden(ram_read), .address(bm_address[13:2]),
   .byteena(bm_be));
-lcd_module lcd0(.clk(clock_50), .rst_n(rst_n), .read(lcd_read), .write(lcd_write), .writedata(bm_writedata), .readdata(lcd_readdata), .be(bm_be), .address(bm_address[8:2]),
-  .e(lcd_e), .data_out(lcd_dataout), .rs(lcd_rs), .on(lcd_on), .rw(lcd_rw));
 led_matrix matrix0(.csi_clk(clock_50), .led_clk(clock_5), .rsi_reset_n(rst_n), .avs_s0_writedata(bm_writedata), .avs_s0_readdata(matrix_readdata),
   .avs_s0_address(bm_address[11:2]), .avs_s0_byteenable(bm_be), .avs_s0_write(matrix_write), .avs_s0_read(matrix_read),
   .demux({rgb_a, rgb_b, rgb_c}), .rgb0(rgb0), .rgb1(rgb1), .rgb_stb(rgb_stb), .rgb_clk(rgb_clk), .oe_n(rgb_oe_n));
-uart #(.baud(115200)) uart0(.clk(clock_50), .rst_n(rst_n), .rx(serial0_rx), .tx(serial0_tx), .data_in(bm_writedata), .be(bm_be),
-  .data_out(uart0_readdata), .select(uart0_read|uart0_write), .write(uart0_write), .address(bm_address[2]));
-uart uart1(.clk(clock_50), .rst_n(rst_n), .rx(1'b0), .tx(serial1_tx), .data_in(bm_writedata), .be(bm_be),
-  .data_out(uart1_readdata), .select(uart1_read|uart1_write), .write(uart1_write), .address(bm_address[2]));
-spi_master spi0(.clk(clock_50), .rst_n(rst_n), .miso(sd_miso), .mosi(sd_mosi), .sclk(sd_clk), .selects(sd_selects), .wp_n(sd_wp_n),
-  .be(bm_be), .data_in(bm_writedata), .data_out(sd_readdata), .read(sd_read), .write(sd_write), .address(bm_address[2]));
+
+iocontroller io0(.clk(clock_50), .rst_n(rst_n), .miso(miso), .mosi(mosi), .sclk(sclk), .spi_selects(spi_selects), .sd_wp_n(sd_wp_n),
+  .be(bm_be), .data_in(bm_writedata), .data_out(io_readdata), .read(io_read), .write(io_write), .address(bm_address),
+  .lcd_e(lcd_e), .lcd_data(lcd_dataout), .lcd_rs(lcd_rs), .lcd_on(lcd_on), .lcd_rw(lcd_rw),
+  .rx0(serial0_rx), .tx0(serial0_tx), .tx1(serial1_tx), .sw(SW[15:0]));
+
 buscontroller bc0(.clock(clock_50), .reset_n(rst_n),
   .address(bm_address), .cpu_address(cpu_address), .vga_address(vga_address),
   .read(bm_read), .cpu_read(cpu_read), .vga_read(vga_read), 
@@ -237,7 +230,7 @@ buscontroller bc0(.clock(clock_50), .reset_n(rst_n),
   .write(bm_write), .cpu_write(cpu_write),
   .cpu_writedata(cpu_writedata), .writedata(bm_writedata), .be(bm_be), .cpu_be(cpu_be),
   .burst(bm_burst), .burst_adv(bm_burst_adv),
-  .cpu_wait(cpu_wait), .vga_wait(vga_wait), .map(SW[15:14]));
+  .cpu_wait(cpu_wait), .vga_wait(vga_wait), .map(SW[17:16]));
 vga_framebuffer vga0(.vs(vga_vs), .hs(vga_hs), .sys_clock(clock_50), .vga_clock(clock_25), .reset_n(rst_n),
   .r(vga_r), .g(vga_g), .b(vga_b), .data(vga_readdata), .bus_read(vga_read), 
   .bus_wait(vga_wait), .address(vga_address), .blank_n(vga_blank_n));

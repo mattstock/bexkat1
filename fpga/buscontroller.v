@@ -19,10 +19,10 @@ module buscontroller(
   output burst_adv,
   output [3:0] be,
   output [31:0] writedata,
-  output [10:0] chipselect);
+  output [3:0] chipselect);
   
 reg [3:0] delay, delay_next;
-reg [10:0] cs;
+reg [3:0] cs;
 reg [1:0] state, state_next;
 reg [1:0] grant, grant_next;
 
@@ -39,7 +39,7 @@ assign writedata = (grant[MASTER_CPU] ? cpu_writedata : 0);
 assign address = (grant[MASTER_CPU] ? cpu_address : 0) | (grant[MASTER_VGA] ? vga_address : 0);
 assign cpu_wait = (grant[MASTER_CPU] ? (state != STATE_POST) : 1'b1);
 assign vga_wait = (grant[MASTER_VGA] ? (state != STATE_POST) : 1'b1);
-assign chipselect = (state != STATE_IDLE ? cs : 10'h00);
+assign chipselect = (state != STATE_IDLE ? cs : 8'h00);
 assign start = (state == STATE_START);
 
 always @(posedge clock or negedge reset_n)
@@ -60,54 +60,34 @@ begin
   case (map)
     2'b11:
       if (address >= 32'h00000000 && address <= 32'h00003fff)
-        cs = 11'b00001000000; // 4k x 32 internal RAM
+        cs = 4'h3; // 4k x 32 internal RAM
       else if (address >= 32'h00004000 && address <= 32'h000fffff)
-        cs = 11'b00000000001; // 1M x 32 SSRAM
+        cs = 4'h6; // 1M x 32 SSRAM
       else if (address >= 32'h00800000 && address <= 32'h008007ff)
-        cs = 11'b00000100000; // LED matrix
-      else if (address >= 32'h00800800 && address <= 32'h00800807)
-        cs = 11'b00000010000; // UART 0
-      else if (address >= 32'h00800808 && address <= 32'h0080080f)
-        cs = 11'b00000001000; // UART 1
-      else if (address >= 32'h00800810 && address <= 32'h00800813)
-        cs = 11'b00000000100; // SW
-      else if (address >= 32'h00800814 && address <= 32'h0080081f)
-        cs = 11'b00000000010; // Encoder
-      else if (address >= 32'h00800820 && address <= 32'h00800827)
-        cs = 11'b10000000000; // sdcard (SPI)
-      else if (address >= 32'h00800c00 && address <= 32'h00800cff)
-        cs = 11'b00100000000; // LCD
+        cs = 4'h5; // LED matrix
+      else if (address >= 32'h00800800 && address <= 32'h00800fff)
+        cs = 4'h4; // IO
       else if (address >= 32'hffff0000 && address <= 32'hffffffbf)
-        cs = 11'b00010000000; // 16k x 32 internal ROM
+        cs = 4'h2; // 16k x 32 internal ROM
       else if (address >= 32'hffffffc0 && address <= 32'hffffffff)
-        cs = 11'b01000000000; // interrupt vectors
+        cs = 4'h1; // interrupt vectors
       else
-        cs = 11'b00000000000;
+        cs = 4'h0;
     default:
       if (address >= 32'h00000000 && address <= 32'h000fffff)
-        cs = 11'b00000000001; // 1M x 32 SSRAM
+        cs = 4'h6; // 1M x 32 SSRAM
       else if (address >= 32'h00800000 && address <= 32'h008007ff)
-        cs = 11'b00000100000; // LED matrix
-      else if (address >= 32'h00800800 && address <= 32'h00800807)
-        cs = 11'b00000010000; // UART 0
-      else if (address >= 32'h00800808 && address <= 32'h0080080f)
-        cs = 11'b00000001000; // UART 1
-      else if (address >= 32'h00800810 && address <= 32'h00800813)
-        cs = 11'b00000000100; // SW
-      else if (address >= 32'h00800814 && address <= 32'h0080081f)
-        cs = 11'b00000000010; // Encoder
-      else if (address >= 32'h00800820 && address <= 32'h00800827)
-        cs = 11'b10000000000; // sdcard (SPI)
-      else if (address >= 32'h00800c00 && address <= 32'h00800cff)
-        cs = 11'b00100000000; // LCD
+        cs = 4'h5; // LED matrix
+      else if (address >= 32'h00800800 && address <= 32'h00800fff)
+        cs = 4'h4; // IO
       else if (address >= 32'hffff8000 && address <= 32'hffffbfff)
-        cs = 11'b00001000000; // 4k x 32 internal RAM
+        cs = 4'h3; // 4k x 32 internal RAM
       else if (address >= 32'hffff0000 && address <= 32'hffffffbf)
-        cs = 11'b00010000000; // 16k x 32 internal ROM
+        cs = 4'h2; // 16k x 32 internal ROM
       else if (address >= 32'hffffffc0 && address <= 32'hffffffff)
-        cs = 11'b01000000000; // interrupt vectors
+        cs = 4'h1; // interrupt vectors
       else
-        cs = 11'b00000000000;
+        cs = 4'h0;
   endcase
 end
 
