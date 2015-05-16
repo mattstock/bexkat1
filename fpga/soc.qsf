@@ -551,7 +551,6 @@ set_global_assignment -name VERILOG_FILE cpu/intsdiv.v
 set_global_assignment -name QIP_FILE cpu/intsdiv.qip
 set_global_assignment -name QIP_FILE cpu/intmult.qip
 set_global_assignment -name VERILOG_FILE cpu/intcalc.v
-set_global_assignment -name VERILOG_FILE cpu/bexkat1.v
 set_global_assignment -name VERILOG_FILE cpu/alu.v
 set_global_assignment -name VERILOG_FILE matrixmem.v
 set_global_assignment -name QIP_FILE matrixmem.qip
