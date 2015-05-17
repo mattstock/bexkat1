@@ -4,6 +4,12 @@
 volatile unsigned int *serial0 = (unsigned int *)0x00800800;
 volatile unsigned int *serial1 = (unsigned int *)0x00800808;
 
+void serial_printf(unsigned port, const char *format, ...) {
+  serial_print(port, format);
+  serial_print(port, "\n");
+}
+
+
 char serial_getchar(unsigned port) {
   unsigned result;
   volatile unsigned *p;
@@ -48,8 +54,8 @@ void serial_printhex(unsigned port, unsigned val) {
   serial_print(port, x);
 }
 
-void serial_print(unsigned port, char *str) {
-  char *c = str;
+void serial_print(unsigned port, const char *str) {
+  const char *c = str;
 
   while (*c != '\0') {
     serial_putchar(port, *c);
