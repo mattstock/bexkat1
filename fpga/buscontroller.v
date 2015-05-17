@@ -39,7 +39,7 @@ assign writedata = (grant[MASTER_CPU] ? cpu_writedata : 0);
 assign address = (grant[MASTER_CPU] ? cpu_address : 0) | (grant[MASTER_VGA] ? vga_address : 0);
 assign cpu_wait = (grant[MASTER_CPU] ? (state != STATE_POST) : 1'b1);
 assign vga_wait = (grant[MASTER_VGA] ? (state != STATE_POST) : 1'b1);
-assign chipselect = (state != STATE_IDLE ? cs : 8'h00);
+assign chipselect = (state != STATE_IDLE ? cs : 4'h00);
 assign start = (state == STATE_START);
 
 always @(posedge clock or negedge reset_n)
