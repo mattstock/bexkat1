@@ -1,9 +1,9 @@
-CC = ~/lcc/lcc
-CFLAGS = -I../include
+#CC = ~/lcc/lcc
+CC = ~/projects/gcc-build/gcc/xgcc
+CFLAGS = -I../include -B/home/mstock/projects/gcc-build/gcc -B/usr/local/bexkat1-elf/bin/ -B/usr/local/bexkat1-elf/lib/
 AS = bexkat1-elf-as
 AR = bexkat1-elf-ar
 
-CCTARGET=bexkat1/bexkat1000
 TEMP := $(shell mktemp)
 
 .PHONY: all clean
@@ -14,7 +14,7 @@ clean:
 	rm -f *.o *.a *.s
 
 %.s: %.c
-	$(CC) -S $(CFLAGS) -Wf-target=$(CCTARGET) -o $@ $^
+	$(CC) -S $(CFLAGS) -o $@ $^
 
 %.o: %.s
 	$(AS) -EB -o $@ $^

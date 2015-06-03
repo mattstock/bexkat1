@@ -2,10 +2,10 @@
 .align 4
 .type main,@function
 main:
-ldsp 0x00004000
-ldi %30, 0xabcdef12
+ldiu %sp, 0x4000
+ldi %fp, 0xabcdef12
 ldi %14, 0x01234567
-push %30
+push %fp
 push %14
 jsrd foo
 pop %27
@@ -18,7 +18,7 @@ rts
 .align 4
 .type foo,@function
 foo:
-push %30
+push %fp
 pop %29
 rts
 .Lf7:

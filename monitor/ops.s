@@ -29,7 +29,8 @@ ldd %30, 0x00000000
 ldd %30, 0x00000002
 ldd.l %30, 0x00000004
 ldd.l %30, 0x00000008
-ldis %29, 0xf000
+ldiu %29, 0xf000
+ext %29, %29
 ldiu %30, 0xa000
 or %28, %30, %29
 and %28, %30, %29
@@ -74,7 +75,8 @@ bra bar
 nop
 nop
 bar:
-ldis %29, 0xf234
+ldiu %29, 0xf234
+ext %29, %29
 addi %29, %29, 0x10
 muli %30, %29, 0x12345678
 jsrd fooble

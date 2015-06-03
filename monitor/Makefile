@@ -1,29 +1,33 @@
-CC = ~/lcc/lcc
-CFLAGS = -Wf-d -Iinclude
-CFLAGS = -Iinclude
+#CC = ~/lcc/lcc
+#CFLAGS = -Wf-d -Iinclude
+CC = ~/projects/gcc-build/gcc/xgcc
+CFLAGS = -Iinclude -B/home/mstock/projects/gcc-build/gcc -B/usr/local/bexkat1-elf/bin/ -B/usr/local/bexkat1-elf/lib/
 LDFLAGS = -Llib -lsupport
 OBJCOPY = bexkat1-elf-objcopy
 OBJDUMP = bexkat1-elf-objdump
 AS = bexkat1-elf-as
 LD = bexkat1-elf-ld
 
-CCTARGET=bexkat1/bexkat1000
 LD_SCRIPT = profile.ld
 TEMP := $(shell mktemp)
 
-.PHONY: all clean lib
+.PHONY: all clean lib gcctests
 
-all: lib boot.o lcd.s lcd.hex monitor.s monitor.hex frametests.s frametests.hex memtests.s memtests.hex stacktests.hex conditionals.s conditionals.hex conditionals-simple.hex types.s types.hex multiply.s multiply.hex multiply-simple.hex fib.s fib.hex structures.s structures.hex fp.s fp.hex pretty.s pretty.hex memtests-simple.hex serial.s serial.hex random.s random.hex serial-simple.hex vga.s vga.hex ops.s ops.hex matrix.s matrix.hex vararg.s vararg.hex
+all: lib gcctests boot.o lcd.s lcd.hex monitor.s monitor.hex frametests.s frametests.hex memtests.s memtests.hex stacktests.hex conditionals-simple.hex multiply.s multiply.hex multiply-simple.hex fib.s fib.hex structures.s structures.hex pretty.s pretty.hex memtests-simple.hex serial.s serial.hex random.s random.hex serial-simple.hex vga.s vga.hex ops.s ops.hex matrix.s matrix.hex vararg.s vararg.hex
 
 clean:
 	cd lib; make clean
-	rm -f *.o *.srec *.hex memtests stacktests monitor monitor.s frametests frametests.s memtests.s conditionals conditionals.s conditionals-simple types.s types multiply.s multiply multiply-simple fib.s fib spi.s spi spi-simple structures.s structures fp.s fp pretty.s pretty memtests-simple serial serial.s random random.s serial-simple vga.s vga ops lcd lcd.s matrix matrix.s vararg.s vararg
+	cd gcctests; make clean
+	rm -f *.o *.srec *.hex memtests stacktests monitor monitor.s frametests frametests.s memtests.s conditionals-simple multiply.s multiply multiply-simple fib.s fib spi.s spi spi-simple structures.s structures fp.s fp pretty.s pretty memtests-simple serial serial.s random random.s serial-simple vga.s vga ops lcd lcd.s matrix matrix.s vararg.s vararg *.gkd *.expand
 
 lib:
 	cd lib; make
 
+gcctests:
+	cd gcctests; make
+
 %.s: %.c
-	$(CC) -S $(CFLAGS) -Wf-target=$(CCTARGET) -o $@ $^
+	$(CC) -S $(CFLAGS) -o $@ $^
 
 %.o: %.s
 	$(AS) -EB -o $@ $^
@@ -45,12 +49,8 @@ stacktests: stacktests.o
 	$(LD) -o $@ $^ -T $(LD_SCRIPT)
 frametests: frametests.o
 	$(LD) -o $@ $^ -T $(LD_SCRIPT)
-conditionals: conditionals.o
-	$(LD) -o $@ $^ -T $(LD_SCRIPT) $(LDFLAGS)
 conditionals-simple: conditionals-simple.o
 	$(LD) -o $@ $^ -T $(LD_SCRIPT)
-types: types.o
-	$(LD) -o $@ $^ -T $(LD_SCRIPT) $(LDFLAGS)
 multiply: multiply.o
 	$(LD) -o $@ $^ -T $(LD_SCRIPT)
 multiply-simple: multiply-simple.o

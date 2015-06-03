@@ -19,7 +19,6 @@ void testing(int a, char *b, ...) {
   serial_print(0, "\nfoo: ");
   serial_printhex(0, (unsigned int)foo);
   serial_print(0, "\nint1 vararg value (should be 0x1234): ");
-  _asm("halt\n");
   i = va_arg(foo, int);
   serial_printhex(0, i);
   serial_print(0, "\nint1 foo: ");

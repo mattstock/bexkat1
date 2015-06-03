@@ -1,5 +1,6 @@
 .globl main
 main:
+st.l %0, (%20)
 ldi %29,0x00000000
 std.l %29, 0x00000000
 std.l %29, 0x00000004

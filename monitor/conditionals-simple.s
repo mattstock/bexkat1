@@ -11,6 +11,7 @@ bgt foo
 bgtu foo
 blt foo
 bltu foo
+bltu .+8
 test2:
 cmp %0, %1
 beq foo

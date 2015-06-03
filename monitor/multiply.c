@@ -7,6 +7,8 @@ void main(void);
 void main(void) {
   int a;
   unsigned b;
+  a = 3;
+  a = a * a;
   matrixptr[0] = 0x0000ff00;
   while (1) {
     b = swptr[0] * 31;
