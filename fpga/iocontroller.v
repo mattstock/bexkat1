@@ -45,7 +45,7 @@ begin
     uart1_read = read;
     uart1_write = write;
     data_out = uart1_readdata;
-  end else if (address >= 11'h010 && address <= 11'h03) begin
+  end else if (address >= 11'h010 && address <= 11'h013) begin
     data_out = { 16'h0000, sw }; // Trivial, so just do it.  Should it be synced?  Maybe.
   end else if (address >= 11'h020 && address <= 11'h027) begin
     spi_read = read;
