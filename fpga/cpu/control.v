@@ -129,7 +129,7 @@ begin
     end
     STATE_EVALIR: begin
       casex ({ir_mode, ir_op})
-        {MODE_REG, 8'h00}: state_next = STATE_FAULT; // nop
+        {MODE_REG, 8'h50}: state_next = STATE_FETCHIR; // nop
         {MODE_REG, 8'h01}: begin // rts
           case (seq)
             3'h0: begin
@@ -164,12 +164,11 @@ begin
               alu2sel = 3'h4; // aluout <= SP - 'h4
               alu_func = 3'h3; // -
               reg_read_addr1 = 5'd31; // SP
-              reg_read_addr2 = ir_ra;
-              mdrsel = 3'h2; // mdr <= rA
               seq_next = 3'h1;
             end
             3'h1: begin
               marsel = 2'h2; // mar <= aluout
+              mdrsel = 3'h3; // mdr <= rA
               reg_write_addr = 5'd31; // SP <= aluout
               reg_write = REG_WRITE_DW;
               addrsel = 1'b1; // MAR
