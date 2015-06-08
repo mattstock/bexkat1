@@ -1,7 +1,7 @@
 .globl _start
 _start:
 ldiu %31, 0x4000
-ldi %13, _etext
+ldi %13, _erodata
 ldi %14, _data
 jmpd .LC3
 .LC2:
