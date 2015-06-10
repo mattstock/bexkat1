@@ -385,7 +385,7 @@ begin
           reg_write = REG_WRITE_DW;
           state_next = STATE_FETCHIR;
         end
-        {MODE_REGIND, 8'h0a}: begin // lda
+        {MODE_REGIND, 8'hxa}: begin // lda
           case (seq)
             3'h0: begin
               reg_read_addr1 = ir_rb;
@@ -400,7 +400,7 @@ begin
             default: state_next = STATE_FAULT;
           endcase
         end
-        {MODE_REGIND, 8'h00}: begin // st.l
+        {MODE_REGIND, 8'hx0}: begin // st.l
           addrsel = 1'b1; // MAR
           case (seq)
             3'h0: begin
@@ -425,7 +425,7 @@ begin
             default: state_next = STATE_FAULT;
           endcase
         end
-        {MODE_REGIND, 8'h02}: begin // st
+        {MODE_REGIND, 8'hx2}: begin // st
           addrsel = 1'b1; // MAR
           case (seq)
             3'h0: begin
@@ -451,7 +451,7 @@ begin
             default: state_next = STATE_FAULT;
           endcase
         end
-        {MODE_REGIND, 8'h04}: begin // st.b
+        {MODE_REGIND, 8'hx4}: begin // st.b
           addrsel = 1'b1; // MAR
           case (seq)
             3'h0: begin
@@ -482,7 +482,7 @@ begin
             default: state_next = STATE_FAULT;
           endcase
         end
-        {MODE_REGIND, 8'h01}: begin // ld.l
+        {MODE_REGIND, 8'hx1}: begin // ld.l
           addrsel = 1'b1; // MAR
           case (seq)
             3'h0: begin
@@ -509,7 +509,7 @@ begin
             default: state_next = STATE_FAULT;
           endcase
         end
-        {MODE_REGIND, 8'h03}: begin // ld
+        {MODE_REGIND, 8'hx3}: begin // ld
           addrsel = 1'b1; // MAR
           case (seq)
             3'h0: begin
@@ -537,7 +537,7 @@ begin
             default: state_next = STATE_FAULT;
           endcase
         end
-        {MODE_REGIND, 8'h05}: begin // ld.b
+        {MODE_REGIND, 8'hx5}: begin // ld.b
           addrsel = 1'b1; // MAR
           case (seq)
             3'h0: begin
@@ -570,7 +570,7 @@ begin
             default: state_next = STATE_FAULT;
           endcase
         end
-        {MODE_REGIND, 8'h0b}: begin // jmp
+        {MODE_REGIND, 8'hxb}: begin // jmp
           case (seq)
             3'h0: begin
               reg_read_addr1 = ir_rb;

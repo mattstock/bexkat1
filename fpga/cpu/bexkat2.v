@@ -36,7 +36,7 @@ reg [3:0] ccr;
 reg [3:0] status, status_next;
 
 // opcode format
-wire [31:0] ir_ind = { {21{ir[10]}}, ir[10:0] };
+wire [31:0] ir_ind = { {17{ir[28]}}, ir[28:25], ir[10:0] };
 wire [31:0] ir_bra = { {16{ir[15]}}, ir[15:0] };
 
 // Convenience mappings
