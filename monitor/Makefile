@@ -1,15 +1,13 @@
-#CC = ~/lcc/lcc
-#LCCDEBUG = -Wf-d
-#CFLAGS = -Iinclude $(LCCDEBUG)
 CC = bexkat1-elf-gcc
 CFLAGS = -Iinclude
-LDFLAGS = -Llib -lnosys -lsupport
+LDSCRIPT = -T de2.ld
+LDFLAGS = -Llib $(LDSCRIPT)
+LIBS = -lsupport
 OBJCOPY = bexkat1-elf-objcopy
 OBJDUMP = bexkat1-elf-objdump
 AS = bexkat1-elf-as
 LD = bexkat1-elf-ld
 
-LD_SCRIPT = profile.ld
 TEMP := $(shell mktemp)
 
 .PHONY: all clean lib gcctests
@@ -30,12 +28,70 @@ gcctests:
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $^
 
-%: %.o
-	$(CC) $(LDFLAGS) -o $@ $^
-
 %.srec: %
 	$(OBJCOPY) -O srec $< $@
 
 %.hex: %
 	$(OBJCOPY) -O ihex $< $(TEMP)
 	egrep -v "^:02000004" $(TEMP) | egrep -v "^:04000005" > $@	
+
+lcd: lcd.o
+	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
+
+monitor: monitor.o
+	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
+
+frametests: frametests.o
+	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
+
+memtests: memtests.o
+	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
+
+stacktests: stacktests.o
+	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
+
+conditionals-simple: conditionals-simple.o
+	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
+
+multiply: multiply.o
+	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
+
+multiply-simple: multiply-simple.o
+	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
+
+memtests-simple: memtests-simple.o
+	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
+
+serial-simple: serial-simple.o
+	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
+
+fib: fib.o
+	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
+
+structures: structures.o
+	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
+
+pretty: pretty.o
+	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
+
+serial: serial.o
+	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
+
+random: random.o
+	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
+
+vga: vga.o
+	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
+
+ops: ops.o
+	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
+
+matrix: matrix.o
+	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
+
+vararg: vararg.o
+	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
+
+conditionals: conditionals.o
+	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
+
