@@ -1,7 +1,7 @@
 #CC = ~/lcc/lcc
 #CFLAGS = -I../include
-CC = ~/projects/bexkat1/gcc-build/gcc/xgcc
-CFLAGS = -I../include -B/home/mstock/projects/bexkat1/gcc-build/gcc -B/usr/local/bexkat1-elf/bin/ -B/usr/local/bexkat1-elf/lib/
+CC = bexkat1-elf-gcc
+CFLAGS = -I../include
 AS = bexkat1-elf-as
 AR = bexkat1-elf-ar
 

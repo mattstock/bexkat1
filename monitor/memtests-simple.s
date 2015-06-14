@@ -1,6 +1,10 @@
 .globl main
 main:
 ldi %0, 0x11223344
+ldi %1, 0x00010000
+st.l %0, (%1) 
+st.l %0, 3(%1) 
+st.l %0, -3(%1) 
 ldi %1, 0x55667788
 ldi %2, 0x99aabbcc
 ldi %3, 0xddeeff00

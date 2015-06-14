@@ -1,9 +1,9 @@
-CC = ~/projects/bexkat1/gcc-build/gcc/xgcc
+CC = bexkat1-elf-gcc
 LCC = ~/lcc/lcc
 MCC = ~/projects/moxie/gcc-build/gcc/xgcc
 MCFLAGS = -B/home/mstock/projects/moxie/gcc-build/gcc -B/usr/local/moxie-elf/bin -B/usr/local/moxie-elf/lib -dP
 CFLAGS = -I../include
-GCCFLAGS = -B/home/mstock/projects/bexkat1/gcc-build/gcc -B/usr/local/bexkat1-elf/bin/ -B/usr/local/bexkat1-elf/lib/ -dP
+GCCFLAGS = -dP
 #CFLAGS = -I../include -B/home/mstock/projects/gcc-build/gcc -B/usr/local/bexkat1-elf/bin/ -B/usr/local/bexkat1-elf/lib/
 
 .PHONY: all clean
