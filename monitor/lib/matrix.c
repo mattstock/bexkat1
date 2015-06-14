@@ -14,3 +14,19 @@ void matrix_init() {
   for (i=0; i < 16*32; i++)
     matrix[i] = 0;
 }
+
+void matrix_bitprint(unsigned row, unsigned val) {
+  unsigned int i=0;
+
+  while (i < 32) {
+    matrix[row*32+i] = 0x00000000;
+    i++;
+  }
+  i = 31;
+  while (val) {
+    if (val & 0x1)
+      matrix[row*32+i] = 0x00ff0000;
+    val = val >> 1;
+    i--;
+  }
+}
