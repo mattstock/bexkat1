@@ -76,7 +76,13 @@ module soc(
   input gen_miso,
   output gen_mosi,
   output gen_ss,
+  output touch_ss,
+  output extsd_ss,
   output gen_sclk,
+  input touch_irq,
+  output itd_backlight,
+  output itd_dc,
+  output rst_n,
   input sd_wp_n,
   output fan_ctrl, 
   output [2:0] rgb0,
@@ -96,7 +102,7 @@ module soc(
   output serial1_tx,
   output serial0_rts);
 
-wire rst_n, clock_5, clock_50, clock_25, locked;
+wire clock_5, clock_50, clock_25, locked;
 wire [7:0] spi_selects;
 wire miso, mosi, sclk;
 assign rgb = 3'b000;
@@ -104,12 +110,18 @@ assign rgb = 3'b000;
 // some SPI wiring
 assign sd_ss = spi_selects[0];
 assign gen_ss = spi_selects[1];
+assign touch_ss = spi_selects[2];
+assign extsd_ss = spi_selects[3];
 assign gen_mosi = mosi;
 assign sd_mosi = mosi;
 assign miso = (~spi_selects[0] ? sd_miso : 1'b0) |
-              (~spi_selects[1] ? gen_miso : 1'b0);
+              (~spi_selects[1] ? gen_miso : 1'b0) |
+              (~spi_selects[2] ? gen_miso : 1'b0) |
+              (~spi_selects[3] ? gen_miso : 1'b0);
 assign gen_sclk = sclk;
 assign sd_sclk = sclk;
+
+assign itd_backlight = SW[0];
 
 // ethernet stubs
 assign enet_tx_data = 4'hz;
