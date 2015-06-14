@@ -1,6 +1,7 @@
 CC = bexkat1-elf-gcc
 CFLAGS = -Iinclude
-LDSCRIPT = -T de2.ld
+#LDSCRIPT = -T de2.ld
+LDSCRIPT = -T profile.ld -nostartfiles
 LDFLAGS = -Llib $(LDSCRIPT)
 LIBS = -lsupport
 OBJCOPY = bexkat1-elf-objcopy
@@ -12,7 +13,7 @@ TEMP := $(shell mktemp)
 
 .PHONY: all clean lib gcctests
 
-all: lib gcctests lcd.hex monitor.hex frametests.hex memtests.hex stacktests.hex conditionals-simple.hex multiply.hex multiply-simple.hex fib.hex structures.hex pretty.hex memtests-simple.hex serial.hex random.hex serial-simple.hex vga.hex ops.hex matrix.hex vararg.hex conditionals.hex
+all: lib gcctests boot.o lcd.hex monitor.hex frametests.hex memtests.hex stacktests.hex conditionals-simple.hex multiply.hex multiply-simple.hex fib.hex structures.hex pretty.hex memtests-simple.hex serial.hex random.hex serial-simple.hex vga.hex ops.hex matrix.hex vararg.hex conditionals.hex
 
 clean:
 	cd lib; make clean
