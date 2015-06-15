@@ -1,6 +1,10 @@
 #ifndef _MISC_H
 #define _MISC_H
 
+// helpers
+#define SET_BIT(x,b) x |= (1 << (b))
+#define CLEAR_BIT(x,b) x &= ~(1 << (b))
+
 // misc functions
 extern void delay(unsigned int limit);
 extern unsigned char random(unsigned int);

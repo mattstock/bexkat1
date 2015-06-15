@@ -3,6 +3,7 @@
 #include "serial.h"
 #include "ff.h"
 #include "lcd.h"
+#include "itd.h"
 
 unsigned int addr;
 unsigned short data;
@@ -163,20 +164,27 @@ void main(void) {
 	msg++;
       }
       break;
-    case 'v':
-      serial_print(0, "\nVGA test starting...\n");
-      vga_test();
+    case 'b':
+      serial_print(0, "\nturning on backlight...\n");
+      itd_backlight(1);
       break;
     case 'c':
       serial_print(0, "\nSDCard test...\n");
       sdcard_init();
       break;
+    case 'm':
+      matrix_init();
+      break;
+    case 'r':
+      serial_dumpmem(0, addr, 32);
+      break;
     case 's':
       serial_print(0, "\nstart srec upload...\n");
       serial_srec(0);
       break;
-    case 'r':
-      serial_dumpmem(0, addr, 32);
+    case 'v':
+      serial_print(0, "\nVGA test starting...\n");
+      vga_test();
       break;
     case 'w':
       msg++;
@@ -187,9 +195,6 @@ void main(void) {
       ref = (int *)addr;
       *ref = val;
       serial_print(0, "\n");
-      break;
-    case 'm':
-      matrix_init();
       break;
     default:
       serial_print(0, "\nunknown commmand: ");

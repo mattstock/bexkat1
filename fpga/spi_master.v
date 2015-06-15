@@ -19,7 +19,7 @@ parameter speed = 200000; // 200kHz for now
 
 // write
 // 'h0: xxxxxxdd : spi byte out
-// 'h1: sscfxxxi : ss = selects, cf = config byte (cpol, cpha), i = xxbd, backlight, d/c mode
+// 'h1: sscfxixx : ss = selects, cf = config byte (cpol, cpha), i = xxbd, backlight, d/c mode
 // read
 // 'h0: xxxxxxdd : spi byte in (clears ready flag)
 // 'h1: sscfxiptr : ss = selects, cf = config byte, p = write protect, t = transmit ready, r = recv ready
@@ -82,7 +82,7 @@ begin
             selects_next = data_in[31:24];
           if (be[2])
             conf_next = data_in[23:16];
-          if (be[0])
+          if (be[1])
             itd_next = data_in[1:0];
         end 
         default: begin end
@@ -95,7 +95,7 @@ begin
           if (state == STATE_COMPLETE)
             state_next = STATE_RELEASE;
         end
-        'h1: data_out = { selects, conf, 11'h000, itd, ~wp_n, (state != STATE_BUSY), (state == STATE_COMPLETE) };
+        'h1: data_out = { selects, conf, 2'h00, itd, 9'h00, ~wp_n, (state != STATE_BUSY), (state == STATE_COMPLETE) };
         default: data_out = 'h0;
       endcase
     end
