@@ -8,7 +8,7 @@ module buscontroller(
   input cpu_write,
   input [3:0] cpu_be,
   input [31:0] cpu_writedata,
-  input [1:0] map,
+  input map,
   output [31:0] address,
   output read,
   output write,
@@ -57,38 +57,37 @@ end
 
 always @*
 begin
-  case (map)
-    2'b11:
-      if (address >= 32'h00000000 && address <= 32'h00003fff)
-        cs = 4'h3; // 4k x 32 internal RAM
-      else if (address >= 32'h00004000 && address <= 32'h000fffff)
-        cs = 4'h6; // 1M x 32 SSRAM
-      else if (address >= 32'h00800000 && address <= 32'h008007ff)
-        cs = 4'h5; // LED matrix
-      else if (address >= 32'h00800800 && address <= 32'h00800fff)
-        cs = 4'h4; // IO
-      else if (address >= 32'hffff0000 && address <= 32'hffffffbf)
-        cs = 4'h2; // 16k x 32 internal ROM
-      else if (address >= 32'hffffffc0 && address <= 32'hffffffff)
-        cs = 4'h1; // interrupt vectors
-      else
-        cs = 4'h0;
-    default:
-      if (address >= 32'h00000000 && address <= 32'h000fffff)
-        cs = 4'h6; // 1M x 32 SSRAM
-      else if (address >= 32'h00800000 && address <= 32'h008007ff)
-        cs = 4'h5; // LED matrix
-      else if (address >= 32'h00800800 && address <= 32'h00800fff)
-        cs = 4'h4; // IO
-      else if (address >= 32'hffff8000 && address <= 32'hffffbfff)
-        cs = 4'h3; // 4k x 32 internal RAM
-      else if (address >= 32'hffff0000 && address <= 32'hffffffbf)
-        cs = 4'h2; // 16k x 32 internal ROM
-      else if (address >= 32'hffffffc0 && address <= 32'hffffffff)
-        cs = 4'h1; // interrupt vectors
-      else
-        cs = 4'h0;
-  endcase
+  if (!map) begin
+    if (address >= 32'h00000000 && address <= 32'h00003fff)
+      cs = 4'h3; // 4k x 32 internal RAM
+    else if (address >= 32'h00004000 && address <= 32'h000fffff)
+      cs = 4'h6; // 1M x 32 SSRAM
+    else if (address >= 32'h00800000 && address <= 32'h008007ff)
+      cs = 4'h5; // LED matrix
+    else if (address >= 32'h00800800 && address <= 32'h00800fff)
+      cs = 4'h4; // IO
+    else if (address >= 32'hffff0000 && address <= 32'hffffffbf)
+      cs = 4'h2; // 16k x 32 internal ROM
+    else if (address >= 32'hffffffc0 && address <= 32'hffffffff)
+      cs = 4'h1; // interrupt vectors
+    else
+      cs = 4'h0;
+  end else begin
+    if (address >= 32'h00000000 && address <= 32'h000fffff)
+      cs = 4'h6; // 1M x 32 SSRAM
+    else if (address >= 32'h00800000 && address <= 32'h008007ff)
+      cs = 4'h5; // LED matrix
+    else if (address >= 32'h00800800 && address <= 32'h00800fff)
+      cs = 4'h4; // IO
+    else if (address >= 32'hffff8000 && address <= 32'hffffbfff) 
+      cs = 4'h3; // 4k x 32 internal RAM
+    else if (address >= 32'hffff0000 && address <= 32'hffffffbf)
+      cs = 4'h2; // 16k x 32 internal ROM
+    else if (address >= 32'hffffffc0 && address <= 32'hffffffff)
+      cs = 4'h1; // interrupt vectors
+    else
+      cs = 4'h0;
+  end
 end
 
 always @*

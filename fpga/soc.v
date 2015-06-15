@@ -121,8 +121,6 @@ assign miso = (~spi_selects[0] ? sd_miso : 1'b0) |
 assign gen_sclk = sclk;
 assign sd_sclk = sclk;
 
-assign itd_backlight = SW[0];
-
 // ethernet stubs
 assign enet_tx_data = 4'hz;
 assign enet_gtx_clk = 1'bz;
@@ -170,6 +168,8 @@ assign ssram1_ce_n = ~(chipselect[0] && bm_address[22]);
 assign fs_addrbus = bm_address[26:0];
 assign fs_databus = (ssram_oe_n ? bm_writedata : 32'hzzzzzzzz);
 
+assign rgb_oe_n = (matrix_oe_n | SW[17]);
+
 // visualization stuff
 hexdisp d7(.out(HEX7), .in(bm_address[31:28]));
 hexdisp d6(.out(HEX6), .in(bm_address[27:24]));
@@ -192,6 +192,7 @@ wire [3:0] cpu_be, bm_be;
 wire [7:0] lcd_dataout;
 wire cpu_write, cpu_read, cpu_wait, bm_read, bm_write, bm_wait, ram_write, ram_read, rom_read;
 wire io_write, io_read, vga_wait, vga_read, vect_read;
+wire matrix_oe_n;
 wire matrix_read, matrix_write, ssram_read, ssram_write, bm_start, bm_burst, bm_burst_adv;
 wire [1:0] bus_grant;
 
@@ -228,12 +229,12 @@ scratch ram0(.clock(clock_50), .data(bm_writedata), .q(ram_readdata), .wren(ram_
   .byteena(bm_be));
 led_matrix matrix0(.csi_clk(clock_50), .led_clk(clock_5), .rsi_reset_n(rst_n), .avs_s0_writedata(bm_writedata), .avs_s0_readdata(matrix_readdata),
   .avs_s0_address(bm_address[11:2]), .avs_s0_byteenable(bm_be), .avs_s0_write(matrix_write), .avs_s0_read(matrix_read),
-  .demux({rgb_a, rgb_b, rgb_c}), .rgb0(rgb0), .rgb1(rgb1), .rgb_stb(rgb_stb), .rgb_clk(rgb_clk), .oe_n(rgb_oe_n));
+  .demux({rgb_a, rgb_b, rgb_c}), .rgb0(rgb0), .rgb1(rgb1), .rgb_stb(rgb_stb), .rgb_clk(rgb_clk), .oe_n(matrix_oe_n));
 
 iocontroller io0(.clk(clock_50), .rst_n(rst_n), .miso(miso), .mosi(mosi), .sclk(sclk), .spi_selects(spi_selects), .sd_wp_n(sd_wp_n),
   .be(bm_be), .data_in(bm_writedata), .data_out(io_readdata), .read(io_read), .write(io_write), .address(bm_address),
   .lcd_e(lcd_e), .lcd_data(lcd_dataout), .lcd_rs(lcd_rs), .lcd_on(lcd_on), .lcd_rw(lcd_rw),
-  .rx0(serial0_rx), .tx0(serial0_tx), .tx1(serial1_tx), .sw(SW[15:0]));
+  .rx0(serial0_rx), .tx0(serial0_tx), .tx1(serial1_tx), .sw(SW[15:0]), .itd_backlight(itd_backlight), .itd_dc(itd_dc));
 
 buscontroller bc0(.clock(clock_50), .reset_n(rst_n),
   .address(bm_address), .cpu_address(cpu_address), .vga_address(vga_address),
@@ -242,7 +243,7 @@ buscontroller bc0(.clock(clock_50), .reset_n(rst_n),
   .write(bm_write), .cpu_write(cpu_write),
   .cpu_writedata(cpu_writedata), .writedata(bm_writedata), .be(bm_be), .cpu_be(cpu_be),
   .burst(bm_burst), .burst_adv(bm_burst_adv),
-  .cpu_wait(cpu_wait), .vga_wait(vga_wait), .map(SW[17:16]));
+  .cpu_wait(cpu_wait), .vga_wait(vga_wait), .map(SW[16]));
 vga_framebuffer vga0(.vs(vga_vs), .hs(vga_hs), .sys_clock(clock_50), .vga_clock(clock_25), .reset_n(rst_n),
   .r(vga_r), .g(vga_g), .b(vga_b), .data(vga_readdata), .bus_read(vga_read), 
   .bus_wait(vga_wait), .address(vga_address), .blank_n(vga_blank_n));

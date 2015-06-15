@@ -5,6 +5,7 @@ module spi_master(
   output mosi,
   output sclk,
   output reg [7:0] selects,
+  output reg [1:0] itd,
   input wp_n,
   input [3:0] be,
   input [31:0] data_in,
@@ -18,10 +19,10 @@ parameter speed = 200000; // 200kHz for now
 
 // write
 // 'h0: xxxxxxdd : spi byte out
-// 'h1: sscfxxxx : ss = selects, cf = config byte (cpol, cpha)
+// 'h1: sscfxxxi : ss = selects, cf = config byte (cpol, cpha), i = xxbd, backlight, d/c mode
 // read
 // 'h0: xxxxxxdd : spi byte in (clears ready flag)
-// 'h1: sscfxxptr : ss = selects, cf = config byte, p = write protect, t = transmit ready, r = recv ready
+// 'h1: sscfxiptr : ss = selects, cf = config byte, p = write protect, t = transmit ready, r = recv ready
 
 
 reg tx_start;
@@ -33,6 +34,7 @@ reg [7:0] rx_byte, rx_byte_next;
 reg [7:0] selects_next;
 reg [7:0] conf, conf_next;
 reg [1:0] state, state_next;
+reg [1:0] itd_next;
 
 localparam STATE_IDLE = 2'b00, STATE_BUSY = 2'b01, STATE_COMPLETE = 2'b10, STATE_RELEASE = 2'b11;
 
@@ -43,12 +45,14 @@ begin
     rx_byte <= 8'h00;
     selects <= 'hf;
     conf <= 'h00;
+    itd <= 2'h0;
     state <= STATE_IDLE;
   end else begin
     tx_byte <= tx_byte_next;
     rx_byte <= rx_byte_next;
     selects <= selects_next;
     conf <= conf_next;
+    itd <= itd_next;
     state <= state_next;
   end
 end
@@ -58,6 +62,7 @@ begin
   tx_byte_next = tx_byte;
   rx_byte_next = rx_byte;
   conf_next = conf;
+  itd_next = itd;
   selects_next = selects;
   state_next = state;
   tx_start = 1'b0;
@@ -77,6 +82,8 @@ begin
             selects_next = data_in[31:24];
           if (be[2])
             conf_next = data_in[23:16];
+          if (be[0])
+            itd_next = data_in[1:0];
         end 
         default: begin end
       endcase
@@ -88,7 +95,7 @@ begin
           if (state == STATE_COMPLETE)
             state_next = STATE_RELEASE;
         end
-        'h1: data_out = { selects, conf, 13'h000, ~wp_n, (state != STATE_BUSY), (state == STATE_COMPLETE) };
+        'h1: data_out = { selects, conf, 11'h000, itd, ~wp_n, (state != STATE_BUSY), (state == STATE_COMPLETE) };
         default: data_out = 'h0;
       endcase
     end

@@ -21,6 +21,8 @@ module iocontroller(
   input sd_wp_n,
   output reg [7:0] spi_selects,
   input wp_n,
+  output itd_backlight,
+  output itd_dc,
   input [15:0] sw);
 
 reg lcd_read, lcd_write, uart1_read, uart0_read, uart1_write, uart0_write, spi_read, spi_write;
@@ -66,6 +68,6 @@ uart #(.baud(115200)) uart0(.clk(clk), .rst_n(rst_n), .rx(rx0), .tx(tx0), .data_
 uart uart1(.clk(clk), .rst_n(rst_n), .rx(1'b0), .tx(tx1), .data_in(data_in), .be(be),
   .data_out(uart1_readdata), .select(uart1_read|uart1_write), .write(uart1_write), .address(address[2]));
 spi_master spi0(.clk(clk), .rst_n(rst_n), .miso(miso), .mosi(mosi), .sclk(sclk), .selects(spi_selects), .wp_n(sd_wp_n),
-  .be(be), .data_in(data_in), .data_out(spi_readdata), .read(spi_read), .write(spi_write), .address(address[2]));
+  .be(be), .data_in(data_in), .data_out(spi_readdata), .read(spi_read), .write(spi_write), .address(address[2]), .itd({itd_backlight, itd_dc}));
 
 endmodule
