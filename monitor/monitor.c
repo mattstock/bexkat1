@@ -165,7 +165,15 @@ void main(void) {
       }
       break;
     case 'b':
-      serial_print(0, "\nturning on backlight...\n");
+      serial_print(0, "\nstarting up lcd...\n");
+      itd_init();
+      serial_print(0, "making a red rect\n");
+      itd_rect(10,10,20,20,color565(0xff,0,0));
+      serial_print(0, "making a blue rect\n");
+      itd_rect(100,130,110,150,color565(0,0,0xff));
+      serial_print(0, "making a random rect\n");
+      itd_rect(50,75,100,120,color565(0x10,0x10,0x30));
+      serial_print(0, "turning on backlight...\n");
       itd_backlight(1);
       break;
     case 'c':

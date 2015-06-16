@@ -43,7 +43,7 @@ begin
   if (!rst_n) begin
     tx_byte <= 8'h00;
     rx_byte <= 8'h00;
-    selects <= 'hf;
+    selects <= 'hff;
     conf <= 'h00;
     itd <= 2'h0;
     state <= STATE_IDLE;
@@ -83,7 +83,7 @@ begin
           if (be[2])
             conf_next = data_in[23:16];
           if (be[1])
-            itd_next = data_in[1:0];
+            itd_next = data_in[9:8];
         end 
         default: begin end
       endcase
@@ -95,7 +95,7 @@ begin
           if (state == STATE_COMPLETE)
             state_next = STATE_RELEASE;
         end
-        'h1: data_out = { selects, conf, 2'h00, itd, 9'h00, ~wp_n, (state != STATE_BUSY), (state == STATE_COMPLETE) };
+        'h1: data_out = { selects, conf, 6'h00, itd, 5'h00, ~wp_n, (state != STATE_BUSY), (state == STATE_COMPLETE) };
         default: data_out = 'h0;
       endcase
     end
