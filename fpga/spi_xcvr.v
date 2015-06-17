@@ -1,7 +1,7 @@
 module spi_xcvr(clk, rst_n, conf, start, rx, done, tx, miso, mosi, sclk);
 
 parameter clkfreq = 50000000;
-parameter speed = 500000; // 500kHz for now
+parameter speed = 500000; // 500kHz default
 
 input clk;
 input rst_n;

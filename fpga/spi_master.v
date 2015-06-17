@@ -15,7 +15,7 @@ module spi_master(
   input address);
 
 parameter clkfreq = 50000000;
-parameter speed = 200000; // 200kHz for now
+parameter speed =    8000000; // 8MHz
 
 // write
 // 'h0: xxxxxxdd : spi byte out
