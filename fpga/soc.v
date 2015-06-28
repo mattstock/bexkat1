@@ -102,7 +102,7 @@ module soc(
   output serial1_tx,
   output serial0_rts);
 
-wire clock_5, clock_50, clock_25, locked;
+wire clock_5, clock_50, clock_25, clock_50p, locked;
 wire [7:0] spi_selects;
 wire miso, mosi, sclk;
 assign rgb = 3'b000;
@@ -156,19 +156,19 @@ assign fl_rst_n = rst_n;
 assign fl_wp_n = 1'b1;
 
 assign ssram_gw_n = 1'b1;
-assign ssram_adv_n = ~(chipselect[0] && bm_burst_adv);
-assign ssram_clk = clock_50;
-assign ssram_adsc_n = ~(chipselect[0] && bm_burst);
-assign ssram_adsp_n = ~(chipselect[0] && bm_start);
+assign ssram_adv_n = 1'b1; // ~(chipselect == 4'h6 && bm_burst_adv);
+assign ssram_clk = clock_50p;
+assign ssram_adsc_n = 1'b1; // ~(chipselect == 4'h6 && bm_burst);
+assign ssram_adsp_n = ~(chipselect == 4'h6 && bm_start);
 assign ssram_we_n = ~ssram_write;
 assign ssram_be = (ssram_write ? ~bm_be : 4'b1111);
 assign ssram_oe_n = ~ssram_read;
-assign ssram0_ce_n = ~(chipselect[0] && ~bm_address[22]);
-assign ssram1_ce_n = ~(chipselect[0] && bm_address[22]);
+assign ssram0_ce_n = ~(chipselect == 4'h6 && ~bm_address[22]);
+assign ssram1_ce_n = ~(chipselect == 4'h6 && bm_address[22]);
 assign fs_addrbus = bm_address[26:0];
 assign fs_databus = (ssram_oe_n ? bm_writedata : 32'hzzzzzzzz);
 
-assign rgb_oe_n = (matrix_oe_n | SW[17]);
+assign rgb_oe_n = matrix_oe_n;
 
 // visualization stuff
 hexdisp d7(.out(HEX7), .in(bm_address[31:28]));
@@ -247,7 +247,7 @@ buscontroller bc0(.clock(clock_50), .reset_n(rst_n),
 vga_framebuffer vga0(.vs(vga_vs), .hs(vga_hs), .sys_clock(clock_50), .vga_clock(clock_25), .reset_n(rst_n),
   .r(vga_r), .g(vga_g), .b(vga_b), .data(vga_readdata), .bus_read(vga_read), 
   .bus_wait(vga_wait), .address(vga_address), .blank_n(vga_blank_n));
-sysclock pll0(.inclk0(raw_clock_50), .c0(clock_5), .c1(clock_25), .c2(clock_50), .areset(~KEY[0]), .locked(locked));
+sysclock pll0(.inclk0(raw_clock_50), .c0(clock_5), .c1(clock_25), .c2(clock_50), .c3(clock_50p), .areset(~KEY[0]), .locked(locked));
 fan_ctrl fan0(.clk(clock_25), .rst_n(rst_n), .fan_pwm(fan_ctrl));
 
 endmodule

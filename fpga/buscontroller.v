@@ -32,7 +32,7 @@ localparam MASTER_CPU = 1'b0, MASTER_VGA = 1'b1;
 assign burst = 1'b0;
 assign burst_adv = 1'b0;
 
-assign write = (grant[MASTER_CPU] ? cpu_write : 1'b0);
+assign write = (grant[MASTER_CPU] ? cpu_write && (state == STATE_PRE) : 1'b0);
 assign read = (grant[MASTER_CPU] ? cpu_read : 1'b0) | (grant[MASTER_VGA] ? vga_read : 1'b0);
 assign be = (grant[MASTER_CPU] ? cpu_be : 4'b0000) | (grant[MASTER_VGA] ? 4'b1111 : 4'b0000);
 assign writedata = (grant[MASTER_CPU] ? cpu_writedata : 0);
@@ -105,7 +105,7 @@ begin
         grant_next[MASTER_VGA] = 1'b1;
       end
     end
-    STATE_START: begin
+    STATE_START: begin // Address latching
       delay_next = 4'h0;
       if (grant[MASTER_CPU] && (cpu_read || cpu_write))
         state_next = STATE_PRE;
@@ -116,7 +116,7 @@ begin
         state_next = STATE_IDLE;
       end
     end
-    STATE_PRE: begin
+    STATE_PRE: begin // write or read cycle
       if (delay == 4'h0)
         state_next = STATE_POST;
       else begin
@@ -132,7 +132,7 @@ begin
           delay_next = delay - 1'b1;
       end
     end
-    STATE_POST: begin
+    STATE_POST: begin // data visible
       if (grant[MASTER_CPU] && ~(cpu_read | cpu_write)) begin
         grant_next = 2'b00;
         state_next = STATE_IDLE;
