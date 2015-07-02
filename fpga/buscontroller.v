@@ -60,7 +60,7 @@ begin
   if (!map) begin
     if (address >= 32'h00000000 && address <= 32'h00003fff)
       cs = 4'h3; // 4k x 32 internal RAM
-    else if (address >= 32'h00004000 && address <= 32'h000fffff)
+    else if (address >= 32'h00004000 && address <= 32'h007fffff)
       cs = 4'h6; // 1M x 32 SSRAM
     else if (address >= 32'h00800000 && address <= 32'h008007ff)
       cs = 4'h5; // LED matrix
@@ -73,7 +73,7 @@ begin
     else
       cs = 4'h0;
   end else begin
-    if (address >= 32'h00000000 && address <= 32'h000fffff)
+    if (address >= 32'h00000000 && address <= 32'h007fffff)
       cs = 4'h6; // 1M x 32 SSRAM
     else if (address >= 32'h00800000 && address <= 32'h008007ff)
       cs = 4'h5; // LED matrix

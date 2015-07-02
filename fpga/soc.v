@@ -102,7 +102,7 @@ module soc(
   output serial1_tx,
   output serial0_rts);
 
-wire clock_5, clock_50, clock_25, clock_50p, locked;
+wire clock_2p7, clock_50, clock_25, clock_50p, clock_200, locked;
 wire [7:0] spi_selects;
 wire miso, mosi, sclk;
 assign rgb = 3'b000;
@@ -149,7 +149,7 @@ assign sdram_ras_n = 1'b1;
 assign sdram_dqm = 4'b0000;
 assign sdram_ba = 2'b00;
 assign sdram_addrbus = 13'h0000;
-assign fl_oe_n = ~fl_we_n;
+assign fl_oe_n = 1'b1;
 assign fl_we_n = 1'b1;
 assign fl_ce_n = 1'b1;
 assign fl_rst_n = rst_n;
@@ -160,13 +160,13 @@ assign ssram_adv_n = 1'b1; // ~(chipselect == 4'h6 && bm_burst_adv);
 assign ssram_clk = clock_50p;
 assign ssram_adsc_n = 1'b1; // ~(chipselect == 4'h6 && bm_burst);
 assign ssram_adsp_n = ~(chipselect == 4'h6 && bm_start);
-assign ssram_we_n = ~ssram_write;
-assign ssram_be = (ssram_write ? ~bm_be : 4'b1111);
+assign ssram_we_n = ~(ssram_write & SW[1]);
+assign ssram_be = 4'h0; // (ssram_write & SW[0] ? ~bm_be : 4'b1111);
 assign ssram_oe_n = ~ssram_read;
-assign ssram0_ce_n = ~(chipselect == 4'h6 && ~bm_address[22]);
-assign ssram1_ce_n = ~(chipselect == 4'h6 && bm_address[22]);
+assign ssram0_ce_n = 1'b0; //~(chipselect == 4'h6 && ~bm_address[22]);
+assign ssram1_ce_n = 1'b1; //~(chipselect == 4'h6 && bm_address[22]);
 assign fs_addrbus = bm_address[26:0];
-assign fs_databus = (ssram_oe_n ? bm_writedata : 32'hzzzzzzzz);
+assign fs_databus = (ssram_write & SW[0] ? bm_writedata : 32'hzzzzzzzz);
 
 assign rgb_oe_n = matrix_oe_n;
 
@@ -227,7 +227,7 @@ vectors rom1(.clock(clock_50), .q(vect_readdata), .rden(vect_read), .address(bm_
 monitor rom0(.clock(clock_50), .q(rom_readdata), .rden(rom_read), .address(bm_address[15:2]));
 scratch ram0(.clock(clock_50), .data(bm_writedata), .q(ram_readdata), .wren(ram_write), .rden(ram_read), .address(bm_address[13:2]),
   .byteena(bm_be));
-led_matrix matrix0(.csi_clk(clock_50), .led_clk(clock_5), .rsi_reset_n(rst_n), .avs_s0_writedata(bm_writedata), .avs_s0_readdata(matrix_readdata),
+led_matrix matrix0(.csi_clk(clock_50), .led_clk(clock_2p7), .rsi_reset_n(rst_n), .avs_s0_writedata(bm_writedata), .avs_s0_readdata(matrix_readdata),
   .avs_s0_address(bm_address[11:2]), .avs_s0_byteenable(bm_be), .avs_s0_write(matrix_write), .avs_s0_read(matrix_read),
   .demux({rgb_a, rgb_b, rgb_c}), .rgb0(rgb0), .rgb1(rgb1), .rgb_stb(rgb_stb), .rgb_clk(rgb_clk), .oe_n(matrix_oe_n));
 
@@ -247,7 +247,8 @@ buscontroller bc0(.clock(clock_50), .reset_n(rst_n),
 vga_framebuffer vga0(.vs(vga_vs), .hs(vga_hs), .sys_clock(clock_50), .vga_clock(clock_25), .reset_n(rst_n),
   .r(vga_r), .g(vga_g), .b(vga_b), .data(vga_readdata), .bus_read(vga_read), 
   .bus_wait(vga_wait), .address(vga_address), .blank_n(vga_blank_n));
-sysclock pll0(.inclk0(raw_clock_50), .c0(clock_5), .c1(clock_25), .c2(clock_50), .c3(clock_50p), .areset(~KEY[0]), .locked(locked));
+sysclock pll0(.inclk0(raw_clock_50), .c0(clock_200), .c1(clock_25), .c2(clock_50), .c3(clock_50p), .areset(~KEY[0]), .locked(locked));
+matrixpll pll1(.inclk0(raw_clock_50), .c0(clock_2p7));
 fan_ctrl fan0(.clk(clock_25), .rst_n(rst_n), .fan_pwm(fan_ctrl));
 
 endmodule

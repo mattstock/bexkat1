@@ -146,7 +146,7 @@ void main(void) {
   lcd_init();
   lcd_print("Bexkat 1000");
   lcd_pos(0,1);
-  lcd_print("Monitor Mode");
+  lcd_print("v1.0");
   while (1) {
     serial_print(0, "\nBexkat1 [");
     serial_printhex(0, addr);
@@ -184,7 +184,7 @@ void main(void) {
       matrix_init();
       break;
     case 'r':
-      serial_dumpmem(0, addr, 32);
+      serial_dumpmem(0, addr, 64);
       break;
     case 's':
       serial_print(0, "\nstart srec upload...\n");
@@ -193,6 +193,12 @@ void main(void) {
     case 'v':
       serial_print(0, "\nVGA test starting...\n");
       vga_test();
+      break;
+    case '.':
+      addr += 4;
+      break;
+    case ',':
+      addr -= 4;
       break;
     case 'w':
       msg++;

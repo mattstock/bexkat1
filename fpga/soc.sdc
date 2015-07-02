@@ -11,9 +11,10 @@ create_generated_clock -name sd_sclk_pin -source [get_registers {iocontroller:io
 create_generated_clock -name gen_sclk_pin -source [get_registers {iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|sclk}] [get_ports {gen_sclk}]
 create_generated_clock -name ssram_clk_pin -source pll0|altpll_component|auto_generated|pll1|clk[3] -add [get_ports ssram_clk]
 
-# 0 - 10MHz
+# 0 - 200MHz
 # 1 - 25MHz
 # 2 - 50MHz
+# 3 - 50MHz w/-90 deg phase shift
  
 set_clock_groups -asynchronous -group { \
   pll0|altpll_component|auto_generated|pll1|clk[3] \
@@ -81,26 +82,14 @@ set_output_delay -clock vga_clk -min 0ns [get_ports {vga_vs}]
 set_output_delay -clock vga_clk -max 0ns [get_ports {vga_clock}]
 set_output_delay -clock vga_clk -min 0ns [get_ports {vga_clock}]
 
-set_input_delay -clock ssram_clk_pin -max 0ns [get_ports {fs_databus*}]
-set_input_delay -clock ssram_clk_pin -min 0ns [get_ports {fs_databus*}]
-set_output_delay -clock ssram_clk_pin -max 0ns [get_ports {fs_databus*}]
-set_output_delay -clock ssram_clk_pin -min 0ns [get_ports {fs_databus*}]
-set_output_delay -clock ssram_clk_pin -max 0ns [get_ports {fs_addrbus*}]
-set_output_delay -clock ssram_clk_pin -min 0ns [get_ports {fs_addrbus*}]
-set_output_delay -clock ssram_clk_pin -max 0ns [get_ports {ssram*}]
-set_output_delay -clock ssram_clk_pin -min 0ns [get_ports {ssram*}]
-#set_output_delay -clock ssram_clk_pin -max 1.4ns [get_ports ssram1_ce_n]
-#set_output_delay -clock ssram_clk_pin -min -0.4ns [get_ports ssram1_ce_n]
-#set_output_delay -clock ssram_clk_pin -max 1.4ns [get_ports ssram_we_n]
-#set_output_delay -clock ssram_clk_pin -min -0.4ns [get_ports ssram_we_n]
-#set_output_delay -clock ssram_clk_pin -max 1.4ns [get_ports ssram_gw_n]
-#set_output_delay -clock ssram_clk_pin -min -0.4ns [get_ports ssram_gw_n]
-#set_output_delay -clock ssram_clk_pin -max 1.4ns [get_ports {ssram_be*}]
-#set_output_delay -clock ssram_clk_pin -min -0.4ns [get_ports {ssram_be*}]
-#set_output_delay -clock ssram_clk_pin -max 1.4ns [get_ports ssram_oe_n]
-#set_output_delay -clock ssram_clk_pin -min -0.4ns [get_ports ssram_oe_n]
-#set_output_delay -clock ssram_clk_pin -max 1.4ns [get_ports ssram_adsp_n]
-#set_output_delay -clock ssram_clk_pin -min -0.4ns [get_ports ssram_adsp_n]
+set_input_delay -clock ssram_clk_pin -max 1.4ns [get_ports {fs_databus*}]
+set_input_delay -clock ssram_clk_pin -min -0.4ns [get_ports {fs_databus*}]
+set_output_delay -clock ssram_clk_pin -max 1.4ns [get_ports {fs_databus*}]
+set_output_delay -clock ssram_clk_pin -min -0.4ns [get_ports {fs_databus*}]
+set_output_delay -clock ssram_clk_pin -max 1.4ns [get_ports {fs_addrbus*}]
+set_output_delay -clock ssram_clk_pin -min -0.4ns [get_ports {fs_addrbus*}]
+set_output_delay -clock ssram_clk_pin -max 1.4ns [get_ports {ssram*}]
+set_output_delay -clock ssram_clk_pin -min -0.4ns [get_ports {ssram*}]
 
 set_output_delay -clock led_clk -max 0ns [get_ports {rgb0[*]}]
 set_output_delay -clock led_clk -min 0ns [get_ports {rgb0[*]}]

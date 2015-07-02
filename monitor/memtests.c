@@ -1,8 +1,11 @@
-unsigned *swptr = (unsigned *)0xff400040;
-unsigned *rgbptr = (unsigned *)0xff400000;
+unsigned *mem = (unsigned *)0x00004000;
 
 void main(void) {
-  while (1) {
-    rgbptr[0] = (swptr[0] << 24);
-  }
+  int i,f;
+
+  for (i=0; i < 32; i++)
+    mem[i] = i;
+  for (i=0; i < 32; i++)
+    f = mem[i];
+  while (1);
 }
