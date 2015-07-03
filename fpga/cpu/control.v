@@ -23,13 +23,15 @@ module control(
   output [3:0] byteenable,
   output bus_read,
   output bus_write,
+  output fault,
   output vectoff_write,
   input supervisor,
   input bus_wait,
   input [1:0] bus_align);
 
 assign vectoff_write = 1'b0; // hardcode interrupt vector offset
-  
+assign fault = (state == STATE_FAULT);
+
 wire [2:0] ir_mode = ir[31:29];
 wire [7:0] ir_op   = ir[28:21];
 wire [4:0] ir_ra   = ir[20:16];
