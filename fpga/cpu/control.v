@@ -412,10 +412,10 @@ begin
             end
             3'h1: begin
               marsel = 2'h2; // mar <= aluval
+              mdrsel = 3'h3; // MDR <= rA
               seq_next = 3'h2;
             end
             3'h2: begin
-              mdrsel = 3'h3; // MDR <= rA
               bus_write = 1'b1; //  addrbus <= MAR
               if (bus_wait == 1'b0)
                 seq_next = 3'h3;
@@ -429,6 +429,7 @@ begin
         end
         {MODE_REGIND, 8'hx2}: begin // st
           addrsel = 1'b1; // MAR
+          byteenable = (bus_align[1] ? 4'b0011 : 4'b1100);
           case (seq)
             3'h0: begin
               reg_read_addr1 = ir_rb;
@@ -437,12 +438,11 @@ begin
             end
             3'h1: begin
               marsel = 2'h2; // mar <= aluval
+              mdrsel = 3'h3; // MDR <= rA (with bytelanes)
               seq_next = 3'h2;
             end
             3'h2: begin
               bus_write = 1'b1;
-              byteenable = (bus_align[1] ? 4'b0011 : 4'b1100);
-              mdrsel = 3'h3; // MDR <= rA (with bytelanes)
               if (bus_wait == 1'b0)
                 seq_next = 3'h3;
             end
@@ -455,6 +455,12 @@ begin
         end
         {MODE_REGIND, 8'hx4}: begin // st.b
           addrsel = 1'b1; // MAR
+          case (bus_align[1:0])
+            2'b00: byteenable = 4'b1000;
+            2'b01: byteenable = 4'b0100;
+            2'b10: byteenable = 4'b0010;
+            2'b11: byteenable = 4'b0001;
+          endcase
           case (seq)
             3'h0: begin
               reg_read_addr1 = ir_rb;
@@ -463,17 +469,11 @@ begin
             end
             3'h1: begin
               marsel = 2'h2; // mar <= aluval
+              mdrsel = 3'h3; // MDR <= rA
               seq_next = 3'h2;
             end
             3'h2: begin
               bus_write = 1'b1; // addrbus <= MAR
-              mdrsel = 3'h3; // MDR <= rA
-              case (bus_align[1:0])
-                2'b00: byteenable = 4'b1000;
-                2'b01: byteenable = 4'b0100;
-                2'b10: byteenable = 4'b0010;
-                2'b11: byteenable = 4'b0001;
-              endcase
               if (bus_wait == 1'b0)
                 seq_next = 3'h3;
             end
@@ -667,11 +667,14 @@ begin
           case (seq)
             3'h0: begin
               mdrsel = 3'h3; // MDR <= rA
-              bus_write = 1'b1; //  addrbus <= MAR
-              if (bus_wait == 1'b0)
-                seq_next = 3'h1;
+              seq_next = 3'h1;
             end
             3'h1: begin
+              bus_write = 1'b1; //  addrbus <= MAR
+              if (bus_wait == 1'b0)
+                seq_next = 3'h2;
+            end
+            3'h2: begin
               state_next = STATE_FETCHIR;
               seq_next = 3'h0;
             end
@@ -680,15 +683,18 @@ begin
         end
         8'h32: begin // std
           addrsel = 1'b1; // MAR
+          byteenable = (bus_align[1] ? 4'b0011 : 4'b1100);
           case (seq)
             3'h0: begin
-              bus_write = 1'b1;
-              byteenable = (bus_align[1] ? 4'b0011 : 4'b1100);
               mdrsel = 3'h3; // MDR <= rA (with bytelanes)
-              if (bus_wait == 1'b0)
-                seq_next = 3'h1;
+              seq_next = 3'h1;
             end
             3'h1: begin
+              bus_write = 1'b1;
+              if (bus_wait == 1'b0)
+                seq_next = 3'h2;
+            end
+            3'h2: begin
               state_next = STATE_FETCHIR;
               seq_next = 3'h0;
             end
@@ -697,20 +703,23 @@ begin
         end
         8'h34: begin // std.b
           addrsel = 1'b1; // MAR
+          case (bus_align[1:0])
+            2'b00: byteenable = 4'b1000;
+            2'b01: byteenable = 4'b0100;
+            2'b10: byteenable = 4'b0010;
+            2'b11: byteenable = 4'b0001;
+          endcase
           case (seq)
             3'h0: begin
-              bus_write = 1'b1; // addrbus <= MAR
               mdrsel = 3'h3; // MDR <= rA
-              case (bus_align[1:0])
-                2'b00: byteenable = 4'b1000;
-                2'b01: byteenable = 4'b0100;
-                2'b10: byteenable = 4'b0010;
-                2'b11: byteenable = 4'b0001;
-              endcase
-              if (bus_wait == 1'b0)
-                seq_next = 3'h1;
+              seq_next = 3'h1;
             end
             3'h1: begin
+              bus_write = 1'b1; // addrbus <= MAR
+              if (bus_wait == 1'b0)
+                seq_next = 3'h2;
+            end
+            3'h2: begin
               state_next = STATE_FETCHIR;
               seq_next = 3'h0;
             end
