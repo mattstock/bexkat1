@@ -8,7 +8,7 @@ create_clock -period 200ns -name led_clk
 create_generated_clock -name spi_sclk_reg -source pll0|altpll_component|auto_generated|pll1|clk[2] -divide_by 2 [get_registers {iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|sclk}]
 create_generated_clock -name sd_sclk_pin -source [get_registers {iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|sclk}] [get_ports {sd_sclk}]
 create_generated_clock -name gen_sclk_pin -source [get_registers {iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|sclk}] [get_ports {gen_sclk}]
-create_generated_clock -name ssram_clk_pin -source pll0|altpll_component|auto_generated|pll1|clk[3] -add [get_ports ssram_clk]
+create_generated_clock -name ssram_clk_pin -source pll0|altpll_component|auto_generated|pll1|clk[2] -add [get_ports ssram_clk]
 
 # 0 - 200MHz
 # 1 - 25MHz
@@ -76,6 +76,8 @@ set_output_delay -clock ssram_clk_pin -max 1.4ns [get_ports {fs_addrbus*}]
 set_output_delay -clock ssram_clk_pin -min -0.4ns [get_ports {fs_addrbus*}]
 set_output_delay -clock ssram_clk_pin -max 1.4ns [get_ports {ssram*}]
 set_output_delay -clock ssram_clk_pin -min -0.4ns [get_ports {ssram*}]
+set_output_delay -clock ssram_clk_pin -max 0ns [get_ports {fl_*}]
+set_output_delay -clock ssram_clk_pin -min 0ns [get_ports {fl_*}]
 
 set_output_delay -clock led_clk -max 0ns [get_ports {rgb0[*]}]
 set_output_delay -clock led_clk -min 0ns [get_ports {rgb0[*]}]
@@ -113,13 +115,5 @@ set_output_delay -clock led_clk -min 0ns [get_ports rgb_clk]
 #set_output_delay -clock dram_clk -min 0ns [get_ports {dram_*}]
 #set_input_delay -clock dram_clk -max 0ns [get_ports {dram_dq[*]}]
 #set_input_delay -clock dram_clk -min 0ns [get_ports {dram_dq[*]}]
-
-#create_clock -name flash_clk -period 20ns
-#set_output_delay -clock flash_clk -max 0ns [get_ports {fl_*}]
-#set_output_delay -clock flash_clk -min 0ns [get_ports {fl_*}]
-#set_input_delay -clock flash_clk -max 0ns [get_ports {fl_databus[*]}]
-#set_input_delay -clock flash_clk -min 0ns [get_ports {fl_databus[*]}]
-#set_multicycle_path -setup -to [get_ports {fl_addrbus[*] fl_databus[*]}] 3
-#set_multicycle_path -hold -to [get_ports {fl_addrbus[*] fl_databus[*]}] 2
 
 

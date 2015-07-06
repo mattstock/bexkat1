@@ -14,7 +14,7 @@ reg [1:0] state, state_next;
 
 localparam [1:0] STATE_IDLE = 2'b00, STATE_START = 2'b01, STATE_PRE = 2'b10, STATE_POST = 2'b11;
 
-assign chipselect = cs;
+assign chipselect = (read || write ? cs : 4'h0);
 assign start = (state == STATE_START);
 assign buswait = (state != STATE_POST);
 
@@ -38,6 +38,10 @@ begin
       cs = 4'h5; // LED matrix
     else if (address >= 32'h00800800 && address <= 32'h00800fff)
       cs = 4'h4; // IO
+    else if (address >= 32'h08000000 && address <= 32'h0fffffff)
+      cs = 4'h8; // FLASH
+    else if (address >= 32'h10000000 && address <= 32'h17ffffff)
+      cs = 4'h7; // SDRAM
     else if (address >= 32'hffff0000 && address <= 32'hffffffbf)
       cs = 4'h2; // 16k x 32 internal ROM
     else if (address >= 32'hffffffc0 && address <= 32'hffffffff)
@@ -51,6 +55,10 @@ begin
       cs = 4'h5; // LED matrix
     else if (address >= 32'h00800800 && address <= 32'h00800fff)
       cs = 4'h4; // IO
+    else if (address >= 32'h08000000 && address <= 32'h0fffffff)
+      cs = 4'h8; // FLASH
+    else if (address >= 32'h10000000 && address <= 32'h17ffffff)
+      cs = 4'h7; // SDRAM
     else if (address >= 32'hffff8000 && address <= 32'hffffbfff) 
       cs = 4'h3; // 4k x 32 internal RAM
     else if (address >= 32'hffff0000 && address <= 32'hffffffbf)
