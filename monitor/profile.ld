@@ -17,17 +17,20 @@ SECTIONS
     { 
       *(.text)
       _etext = . ;
+      . = ALIGN(0x10);
     } > rom
   .rodata : AT ( LOADADDR(.text) + SIZEOF(.text))
     { 
       _rodata = . ;
       *(.rodata)
+      . = ALIGN(0x10);
       _erodata = . ;
     } > rom
   .data : AT ( LOADADDR(.rodata) + SIZEOF(.rodata))
     { 
       _data = . ;
       *(.data)
+      . = ALIGN(0x10);
       _edata = . ;
     } > ram
   .bss :
