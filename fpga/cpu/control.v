@@ -137,20 +137,23 @@ begin
             3'h0: begin
               reg_read_addr1 = 5'd31; // SP
               marsel = 2'h3; // mar <= SP
-              addrsel = 1'b1; // MAR
-              bus_read = 1'b1;
-              if (bus_wait == 1'b0)
-                seq_next = 3'h1;
+              seq_next = 3'h1;
             end
             3'h1: begin
               addrsel = 1'b1; // MAR
               bus_read = 1'b1;
-              marsel = 2'h1; // mar <= busread
-              alu2sel = 3'h4; // aluout <= SP + 'h4
-              reg_read_addr1 = 5'd31; // SP
-              seq_next = 3'h2;
+              if (bus_wait == 1'b0)
+                seq_next = 3'h2;
             end
             3'h2: begin
+              addrsel = 1'b1; // MAR
+              bus_read = 1'b1;
+              marsel = 2'h1; // mar <= databus
+              alu2sel = 3'h4; // aluout <= SP + 'h4
+              reg_read_addr1 = 5'd31; // SP
+              seq_next = 3'h3;
+            end
+            3'h3: begin
               pcsel = 3'h2; // PC <= mar 
               reg_write = REG_WRITE_DW; // SP <= aluout 
               reg_write_addr = 5'd31;
@@ -729,13 +732,16 @@ begin
         8'h31: begin // ldd.l
           addrsel = 1'b1; // MAR
           case (seq)
-            3'h0: begin
+            3'h0: begin // allow address to settle
+              seq_next = 3'h1;
+            end
+            3'h1: begin
               bus_read = 1'b1;
               mdrsel = 3'h1; // MDR <= databus
               if (bus_wait == 1'b0)
-                seq_next = 3'h1;
+                seq_next = 3'h2;
             end
-            3'h1: begin
+            3'h2: begin
               regsel = 4'h1; // rA <= MDR
               reg_write = REG_WRITE_DW;
               seq_next = 3'h0;

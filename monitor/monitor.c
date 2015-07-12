@@ -25,6 +25,31 @@ void vga_test() {
   }
 }
 
+void memtest(void) {
+  unsigned int *ref = (unsigned int *)0x00004000;
+  int val, i;
+
+  ref[0x80001] = 0;
+  for (i=0; i < 0x100000-0x1000; i++)
+    ref[i] = 0;
+  for (i=0; i < 0x100000-0x1000; i++) {
+    if (ref[i] != 0) {
+      serial_print(0, "\nclear failure at ");
+      serial_printhex(0, i);
+      return;
+    }
+    ref[i] = i;
+  }
+  for (i=0; i < 0x100000-0x1000; i++) {
+    if (ref[i] != i) {
+      serial_print(0, "\nassign failure at ");
+      serial_printhex(0, i*4+0x00004000);
+      return;
+    }
+  }
+  serial_print(0, "\ntest successful\n");
+}
+
 void flash_erase(void) {
   unsigned short *fm, *fm2;
 
@@ -213,11 +238,14 @@ void main(void) {
       matrix_init();
       break;
     case 'r':
-      serial_dumpmem(0, addr, 64);
+      serial_dumpmem(0, addr, 128);
       break;
     case 's':
       serial_print(0, "\nstart srec upload...\n");
       serial_srec(0);
+      break;
+    case 't':
+      memtest();
       break;
     case 'v':
       serial_print(0, "\nVGA test starting...\n");

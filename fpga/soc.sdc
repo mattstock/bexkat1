@@ -41,11 +41,6 @@ set_false_path -from * -to [get_ports {fan_ctrl lcd_data[*] lcd_e lcd_on lcd_rs 
 set_multicycle_path -from * -to [get_registers {*bexkat0|ccr[*]}] -setup -start 2
 set_multicycle_path -from * -to [get_registers {*bexkat0|ccr[*]}] -hold -start 1
 
-#set_multicycle_path -from * -to [get_ports {ssram*} {fs_databus*} {fs_addrbus*}] -setup -start 2
-#set_multicycle_path -from * -to [get_ports {ssram*} {fs_databus*} {fs_addrbus*}] -hold -start 1
-#set_multicycle_path -from [get_ports {ssram*} {fs_databus*} {fs_addrbus*}] -to * -setup -start 2
-#set_multicycle_path -from [get_ports {ssram*} {fs_databus*} {fs_addrbus*}] -to * -hold -start 1
-
 set_multicycle_path -through [get_pins -compatibility_mode {*intcalc*}] -setup -start 8
 set_multicycle_path -through [get_pins -compatibility_mode {*intcalc*}] -hold -start 7
 
@@ -76,8 +71,8 @@ set_output_delay -clock ssram_clk_pin -max 1.4ns [get_ports {fs_addrbus*}]
 set_output_delay -clock ssram_clk_pin -min -0.4ns [get_ports {fs_addrbus*}]
 set_output_delay -clock ssram_clk_pin -max 1.4ns [get_ports {ssram*}]
 set_output_delay -clock ssram_clk_pin -min -0.4ns [get_ports {ssram*}]
-set_output_delay -clock ssram_clk_pin -max 0ns [get_ports {fl_*}]
-set_output_delay -clock ssram_clk_pin -min 0ns [get_ports {fl_*}]
+set_output_delay -clock ssram_clk_pin -max 1.4ns [get_ports {fl_*}]
+set_output_delay -clock ssram_clk_pin -min -0.4ns [get_ports {fl_*}]
 
 set_output_delay -clock led_clk -max 0ns [get_ports {rgb0[*]}]
 set_output_delay -clock led_clk -min 0ns [get_ports {rgb0[*]}]
