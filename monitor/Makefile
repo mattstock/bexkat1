@@ -13,12 +13,12 @@ TEMP := $(shell mktemp)
 
 .PHONY: all clean lib gcctests
 
-all: lib gcctests boot.o lcd.hex monitor.hex frametests.hex memtests.hex stacktests.hex conditionals-simple.hex multiply.hex multiply-simple.hex fib.hex structures.hex pretty.hex memtests-simple.hex serial.hex random.hex serial-simple.hex vga.hex ops.hex matrix.hex vararg.hex conditionals.hex
+all: lib gcctests boot.o lcd.hex monitor.hex frametests.hex memtests.hex stacktests.hex conditionals-simple.hex multiply.hex multiply-simple.hex fib.hex structures.hex pretty.hex memtests-simple.hex serial.hex random.hex serial-simple.hex vga.hex ops.hex matrix.hex vararg.hex conditionals.hex vectors.hex
 
 clean:
 	cd lib; make clean
 	cd gcctests; make clean
-	rm -f *.o *.srec *.hex memtests stacktests monitor monitor.s frametests frametests.s memtests.s conditionals-simple multiply.s multiply multiply-simple fib.s fib spi.s spi spi-simple structures.s structures fp.s fp pretty.s pretty memtests-simple serial serial.s random random.s serial-simple vga.s vga ops lcd lcd.s matrix matrix.s vararg.s vararg *.gkd *.expand conditionals conditionals.s
+	rm -f *.o *.srec *.hex memtests stacktests monitor monitor.s frametests frametests.s memtests.s conditionals-simple multiply.s multiply multiply-simple fib.s fib spi.s spi spi-simple structures.s structures fp.s fp pretty.s pretty memtests-simple serial serial.s random random.s serial-simple vga.s vga ops lcd lcd.s matrix matrix.s vararg.s vararg *.gkd *.expand conditionals conditionals.s vectors vectors.s
 
 lib:
 	cd lib; make
@@ -94,5 +94,8 @@ vararg: vararg.o
 	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
 
 conditionals: conditionals.o
+	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
+
+vectors: vectors.o
 	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
 
