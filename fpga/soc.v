@@ -168,7 +168,7 @@ hexdisp d0(.out(HEX0), .in(addrdisp[3:0]));
 
 // Blinknlights
 assign LEDR = { 7'h0, chipselect };
-assign LEDG = { cpu_fault, sdram_ready, flash_ready, 6'b0000000 };
+assign LEDG = { cpu_halt, sdram_ready, flash_ready, 6'b0000000 };
 
 wire [7:0] chipselect;
 wire [31:0] cpu_address;
@@ -176,9 +176,9 @@ wire [31:0] cpu_readdata, cpu_writedata, mon_readdata, ram_readdata, matrix_read
 wire [31:0] vect_readdata, io_readdata, sdram_readdata, sdram_dataout;
 wire [3:0] cpu_be, bm_be;
 wire [7:0] lcd_dataout;
-wire cpu_write, cpu_read, cpu_wait, ram_write, ram_read, rom_read, cpu_fault;
+wire cpu_write, cpu_read, cpu_wait, ram_write, ram_read, rom_read, cpu_halt;
 wire io_write, io_read, vect_read, sdram_read, sdram_write, sdram_ready, flash_ready, flash_read, flash_write;
-wire matrix_oe_n, bus_start, mmu_buswrite;
+wire matrix_oe_n, bus_start, mmu_buswrite, mmu_busfault;
 wire matrix_read, matrix_write, ssram_read, ssram_write;
 
 // quadrature encoder outputs 0-23
@@ -218,7 +218,7 @@ begin
 end
 
 bexkat2 bexkat0(.clk(clock_50), .reset_n(rst_n), .address(cpu_address), .read(cpu_read), .readdata(cpu_readdata),
-  .write(cpu_write), .writedata(cpu_writedata), .byteenable(cpu_be), .waitrequest(cpu_wait), .fault(cpu_fault));
+  .write(cpu_write), .writedata(cpu_writedata), .byteenable(cpu_be), .waitrequest(cpu_wait), .halt(cpu_halt), .busfault(mmu_busfault));
 vectors rom1(.clock(clock_50), .q(vect_readdata), .rden(vect_read), .address(cpu_address[6:2]));
 monitor rom0(.clock(clock_50), .q(rom_readdata), .rden(rom_read), .address(cpu_address[15:2]));
 scratch ram0(.clock(clock_50), .data(cpu_writedata), .q(ram_readdata), .wren(ram_write), .rden(ram_read), .address(cpu_address[13:2]),
@@ -241,7 +241,7 @@ iocontroller io0(.clk(clock_50), .rst_n(rst_n), .miso(miso), .mosi(mosi), .sclk(
   .rx0(serial0_rx), .tx0(serial0_tx), .tx1(serial1_tx), .sw(SW[15:0]), .itd_backlight(itd_backlight), .itd_dc(itd_dc));
 mmu mmu0(.clock(clock_50), .reset_n(rst_n), .address(cpu_address),
   .read(cpu_read), .start(bus_start), .chipselect(chipselect), .write(cpu_write),
-  .buswait(cpu_wait), .buswrite(mmu_buswrite), .map(SW[17]));
+  .buswait(cpu_wait), .buswrite(mmu_buswrite), .map(SW[17]), .busfault(mmu_busfault));
 sysclock pll0(.inclk0(raw_clock_50), .c0(clock_200), .c1(clock_25), .c2(clock_50), .c3(clock_50p), .areset(~KEY[0]), .locked(locked));
 matrixpll pll1(.inclk0(raw_clock_50), .c0(clock_2p7));
 fan_ctrl fan0(.clk(clock_25), .rst_n(rst_n), .fan_pwm(fan_ctrl));
