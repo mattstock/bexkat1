@@ -638,6 +638,50 @@ begin
             default: state_next = STATE_HALT;
           endcase
         end
+        {MODE_REGIND, 8'hxc}: begin // jsr
+          case (seq)
+            3'h0: begin
+              reg_read_addr1 = ir_rb;
+              alu2sel = 3'h1; // aluval <= rB + ir_ind
+              seq_next = 3'h1;
+            end
+            3'h1: begin
+              alu2sel = 3'h4; // aluout <= SP - 'h4
+              alu_func = 3'h3; // -
+              reg_read_addr1 = 5'd31; // SP
+              mdrsel = 3'h6; // MDR <= PC
+              pcsel = 3'h4; // PC <= aluval
+              seq_next = 3'h2;
+            end
+            3'h2: begin
+              marsel = 2'h2; // mar <= aluout
+              reg_write_addr = 5'd31; // SP <= aluout
+              reg_write = REG_WRITE_DW;
+              addrsel = 1'b1; // MAR
+              bus_write = 1'b1;
+              seq_next = 3'h3;
+            end
+            3'h3: begin
+              addrsel = 1'b1; // MAR
+              bus_write = 1'b1;            
+              if (busfault) begin
+                state_next = STATE_EXCEPTION;
+                exception_next = 4'h1;
+              end else
+                if (bus_wait == 1'b0)
+                  seq_next = 3'h4;
+            end
+            3'h4: begin
+              addrsel = 1'b1;
+              seq_next = 3'h5;
+            end
+            3'h5: begin
+              state_next = STATE_FETCHIR;
+              seq_next = 3'h0;
+            end
+            default: state_next = STATE_HALT;
+          endcase
+        end
         {MODE_DIR, 8'hxx}: state_next = STATE_FETCHARG;
         default: state_next = STATE_HALT;
       endcase
@@ -913,6 +957,7 @@ begin
     end
     STATE_HALT: state_next = STATE_HALT;
     STATE_EXCEPTION: begin
+      state_next = STATE_HALT;
       // check exception_next type
       // mark that we're in an exception_next in the CPU state
       // up priv mode if needed (supervisor stack)
