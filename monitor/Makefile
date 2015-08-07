@@ -2,8 +2,8 @@ CC = bexkat1-elf-gcc
 CFLAGS = -Iinclude
 #LDSCRIPT = -T de2.ld
 LDSCRIPT = -T profile.ld -nostartfiles
-LDFLAGS = -Llib $(LDSCRIPT)
-LIBS = -lsupport
+LDFLAGS = $(LDSCRIPT)
+LIBS = -Llib -lsupport
 OBJCOPY = bexkat1-elf-objcopy
 OBJDUMP = bexkat1-elf-objdump
 AS = bexkat1-elf-as
@@ -13,7 +13,7 @@ TEMP := $(shell mktemp)
 
 .PHONY: all clean lib gcctests
 
-all: lib gcctests boot.o lcd.hex monitor.hex frametests.hex memtests.hex stacktests.hex conditionals-simple.hex multiply.hex multiply-simple.hex fib.hex structures.hex pretty.hex memtests-simple.hex serial.hex random.hex serial-simple.hex vga.hex ops.hex matrix.hex vararg.hex conditionals.hex vectors.hex
+all: lib gcctests boot.o lcd.hex monitor.hex frametests.hex memtests.hex stacktests.hex conditionals-simple.hex multiply.hex multiply-simple.hex fib.hex structures.hex pretty memtests-simple.hex serial.hex random.hex serial-simple.hex vga.hex ops.hex matrix.hex vararg.hex conditionals.hex vectors.hex
 
 clean:
 	cd lib; make clean
@@ -73,7 +73,7 @@ structures: structures.o
 	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
 
 pretty: pretty.o
-	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
+	$(CC) -specs=de2.specs -o $@ $^ $(LIBS)
 
 serial: serial.o
 	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
