@@ -241,7 +241,7 @@ iocontroller io0(.clk(clock_50), .rst_n(rst_n), .miso(miso), .mosi(mosi), .sclk(
   .rx0(serial0_rx), .tx0(serial0_tx), .tx1(serial1_tx), .sw(SW[15:0]), .itd_backlight(itd_backlight), .itd_dc(itd_dc));
 mmu mmu0(.clock(clock_50), .reset_n(rst_n), .address(cpu_address),
   .read(cpu_read), .start(bus_start), .chipselect(chipselect), .write(cpu_write),
-  .buswait(cpu_wait), .buswrite(mmu_buswrite), .map(SW[17]), .busfault(mmu_busfault));
+  .buswait(cpu_wait), .buswrite(mmu_buswrite), .busfault(mmu_busfault));
 sysclock pll0(.inclk0(raw_clock_50), .c0(clock_200), .c1(clock_25), .c2(clock_50), .c3(clock_50p), .areset(~KEY[0]), .locked(locked));
 matrixpll pll1(.inclk0(raw_clock_50), .c0(clock_2p7));
 fan_ctrl fan0(.clk(clock_25), .rst_n(rst_n), .fan_pwm(fan_ctrl));
