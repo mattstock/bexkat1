@@ -1,8 +1,7 @@
+#include <stdarg.h>
 #include "misc.h"
 #include "matrix.h"
-#include "serial.h"
-
-void matrix_fade(void);
+#include <stdio.h>
 
 void main(void);
 
@@ -43,12 +42,10 @@ void main(void) {
   x = 16;
   y = 8;
   val = 0x00808080;
-//  serial_putbin(1, katherine, 6);
-//  delay(0x15000);
-//  serial_putbin(1, rebecca, 6);
+  printf("\ntesting a simple string\n");
   while (1) {
     matrix_fade();
-    c = random(2010);
+    c = random(1034);
     switch (c % 4) {
       case 0:
         if (x > 0)
@@ -67,7 +64,7 @@ void main(void) {
          y++;
        break;
     }  
-    c = random(2000);
+    c = random(2034);
     switch (c % 4) {
       case 0:
         val += 0x0f;
@@ -83,6 +80,6 @@ void main(void) {
         break;
     }  
     matrix_put(x,y, val);
-    delay(0x1000);
+    delay(0x500);
   }
 }
