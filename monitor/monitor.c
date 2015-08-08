@@ -4,25 +4,37 @@
 #include "ff.h"
 #include "lcd.h"
 #include "itd.h"
+#include "elf32.h"
+#include <string.h>
 
 unsigned int addr;
 unsigned short data;
 
-volatile unsigned int *vga = (unsigned int *)0x00c00000;
+char helpmsg[] = "\n? = help\na aaaaaaaa = set address\nr = read page of mem and display\nw dddddddd = write word current address\nc = SDcard test\nm = led matrix init\nl = lcd test\nb filename = boot file\n\n";
 
-void serial_srec(unsigned port);
-void vga_test();
+void memtest(void) {
+  unsigned int *ref = (unsigned int *)0x00004000;
+  int val, i;
 
-char helpmsg[] = "\n? = help\na aaaaaaaa = set address\nr = read page of mem and display\nw dddddddd = write word current address\nv = vga test\nc = SDcard test\nm = led matrix init\ns = s-record upload\n\n";
-
-void vga_test() {
-  unsigned x,y;
-
-  for (x=0; x < 640; x++) {
-    for (y=0; y < 480; y++) {
-      vga[(y*640)+x] = 0x800000 + x;
+  ref[0x80001] = 0;
+  for (i=0; i < 0x100000-0x1000; i++)
+    ref[i] = 0;
+  for (i=0; i < 0x100000-0x1000; i++) {
+    if (ref[i] != 0) {
+      serial_print(0, "\nclear failure at ");
+      serial_printhex(0, i);
+      return;
+    }
+    ref[i] = i;
+  }
+  for (i=0; i < 0x100000-0x1000; i++) {
+    if (ref[i] != i) {
+      serial_print(0, "\nassign failure at ");
+      serial_printhex(0, i*4+0x00004000);
+      return;
     }
   }
+  serial_print(0, "\ntest successful\n");
 }
 
 void flash_erase(void) {
@@ -50,66 +62,6 @@ void flash_write(unsigned int addr, unsigned short val) {
   *fm = val;
 }
 
-void serial_srec(unsigned port) {
-  unsigned short done = 0;
-  char c;
-  unsigned char len;
-  char type;
-  unsigned char sum;
-  unsigned short pos;
-  char *s;
-
-  while (!done && (serial_getchar(port) == 'S')) {
-    type = serial_getchar(port);
-    switch (type) {
-    case '0':
-      len = hextoi(serial_getchar(port));
-      len = (len << 4) + hextoi(serial_getchar(port));
-      sum = len;
-      while (len != 0) {
-	c = hextoi(serial_getchar(port));
-	c = (c << 4) + hextoi(serial_getchar(port));
-	sum += c;
-	serial_printhex(port, sum);
-	serial_putchar(port, '\n');
-	len--;
-      }
-      if (sum != 0xff) {
-	done = 1;
-	serial_print(0, "checksum fail!?\n");
-        matrix[pos++] = 0xff0000;
-      } else {
-  	matrix[pos++] = 0xff00;
-      }
-    break;
-    case '1':
-      len = hextoi(serial_getchar(port));
-      len = (len << 4) + hextoi(serial_getchar(port));
-      sum = 0;
-      break;
-    case '2':
-      len = hextoi(serial_getchar(port));
-      len = (len << 4) + hextoi(serial_getchar(port));
-      sum = 0;
-      break;
-    case '3':
-      len = hextoi(serial_getchar(port));
-      len = (len << 4) + hextoi(serial_getchar(port));
-      sum = 0;
-      break;
-    case '9':
-      done = 1;
-      break;
-    case '8':
-      done = 1;
-      break;
-    case '7':
-      done = 1;
-      break;
-    }
-  }
-}
-
 void serial_dumpmem(unsigned port,
 		    unsigned addr, 
 		    unsigned short len) {
@@ -131,7 +83,89 @@ void serial_dumpmem(unsigned port,
   }
 }
 
-void sdcard_init() {
+void sdcard_exec(char *name) {
+  FATFS f;
+  FRESULT foo;
+  FIL fp;
+  elf32_hdr header;
+  elf32_phdr prog_header;
+  int count, hidx, segidx;
+  unsigned int memidx;
+  unsigned int buffer[1024];
+  void (*execptr)(void);
+
+  if (f_mount(&f, "", 1) != FR_OK) return;
+  foo = f_open(&fp, name, FA_READ);
+  if (foo != FR_OK) {
+    serial_print(0, "file error\n");
+    return;
+  }
+
+  foo = f_read(&fp, &header, sizeof(elf32_hdr), &count);
+  if (foo != FR_OK) {
+    serial_print(0, "read error\n");
+  }
+  if (count != sizeof(elf32_hdr)) {
+    serial_print(0, "partial read of header!\n");
+  }
+  // iterate over program headers and do copies
+  for (hidx=0; hidx < header.e_phnum; hidx++) {
+    serial_print(0, "moving to ph_off\n");
+    foo = f_lseek(&fp, header.e_phoff+hidx*header.e_phentsize);
+    if (foo != FR_OK) {
+      serial_print(0, "seek error\n");
+    }
+    serial_print(0, "copying program header\n");
+    foo = f_read(&fp, &prog_header, sizeof(elf32_phdr), &count);
+    if (foo != FR_OK) {
+      serial_print(0, "read error\n");
+    }
+    if (count != sizeof(elf32_phdr)) {
+      serial_print(0, "partial read of program header!\n");
+    }
+    serial_printhex(0, prog_header.p_paddr);
+    serial_print(0, ": ");
+    serial_printhex(0, prog_header.p_filesz);
+    serial_print(0, "\n");
+
+    foo = f_lseek(&fp, prog_header.p_offset);
+    if (foo != FR_OK) {
+      serial_print(0, "seek error\n");
+    }
+
+    segidx = prog_header.p_filesz;
+    memidx = prog_header.p_paddr;
+    while (segidx > 1024) {
+      serial_print(0, "block copy\n");
+      foo = f_read(&fp, &buffer, 1024, &count);
+      if (foo != FR_OK) {
+	serial_print(0, "read error\n");
+      }
+      if (count != 1024) {
+      serial_print(0, "partial read of 1k block?!\n");
+      }
+      memcpy((unsigned int *)memidx, &buffer , 1024);
+      segidx -= 1024;
+      memidx += 1024;
+    }
+    foo = f_read(&fp, &buffer, segidx, &count);
+    if (foo != FR_OK) {
+      serial_print(0, "read error\n");
+    }
+    if (count != segidx) {
+      serial_print(0, "partial read of segidx block?!\n");
+    }
+    memcpy((unsigned int *)memidx, &buffer , segidx);
+  }
+  serial_print(0, "would exec to: ");
+  serial_printhex(0, header.e_entry);
+  execptr = (void *)header.e_entry;
+  f_close(&fp);
+  f_mount((void *)0, "", 0);
+  (*execptr)();
+}
+
+void sdcard_ls() {
   FATFS f;
   FRESULT foo;
   FILINFO fno;
@@ -158,6 +192,8 @@ void sdcard_init() {
       serial_print(0, "\n");
     }
   }
+  f_closedir(&dp);
+  f_mount((void *)0, "", 0);
 }
 
 void main(void) {
@@ -190,6 +226,19 @@ void main(void) {
       }
       break;
     case 'b':
+      serial_print(0, "\n attempt to exec file....\n");
+      msg += 2;
+      sdcard_exec(msg);
+      break;
+    case 'c':
+      serial_print(0, "\nSDCard test...\n");
+      sdcard_ls();
+      break;
+    case 'e':
+      serial_print(0, "\nerasing flash...\n");
+      flash_erase();
+      break;
+    case 'l':
       serial_print(0, "\nstarting up lcd...\n");
       itd_init();
       serial_print(0, "making a red rect\n");
@@ -201,27 +250,14 @@ void main(void) {
       serial_print(0, "turning on backlight...\n");
       itd_backlight(1);
       break;
-    case 'c':
-      serial_print(0, "\nSDCard test...\n");
-      sdcard_init();
-      break;
-    case 'e':
-      serial_print(0, "\nerasing flash...\n");
-      flash_erase();
-      break;
     case 'm':
       matrix_init();
       break;
     case 'r':
-      serial_dumpmem(0, addr, 64);
+      serial_dumpmem(0, addr, 128);
       break;
-    case 's':
-      serial_print(0, "\nstart srec upload...\n");
-      serial_srec(0);
-      break;
-    case 'v':
-      serial_print(0, "\nVGA test starting...\n");
-      vga_test();
+    case 't':
+      memtest();
       break;
     case '.':
       addr += 4;

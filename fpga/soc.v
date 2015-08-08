@@ -141,13 +141,13 @@ assign fl_wp_n = 1'b1;
 assign ssram_gw_n = 1'b1;
 assign ssram_adv_n = 1'b1; // ~(chipselect == 4'h6 && bm_burst_adv);
 assign ssram_clk = clock_50;
-assign ssram_adsc_n = 1'b1; // ~(chipselect == 4'h6 && bm_burst);
-assign ssram_adsp_n = ~(chipselect == 4'h6 && bus_start);
-assign ssram_we_n = ~(ssram_write & SW[16]);
-assign ssram_be = 4'h0; // (ssram_write & SW[0] ? ~bm_be : 4'b1111);
+assign ssram_adsp_n = 1'b1; // ~(chipselect == 4'h6 && bm_burst);
+assign ssram_adsc_n = ~(chipselect == 4'h6 && bus_start);
+assign ssram_we_n = ~ssram_write;
+assign ssram_be = (ssram_write ? ~cpu_be : 4'b1111);
 assign ssram_oe_n = ~ssram_read;
-assign ssram0_ce_n = 1'b0; //~(chipselect == 4'h6 && ~bm_address[22]);
-assign ssram1_ce_n = 1'b1; //~(chipselect == 4'h6 && bm_address[22]);
+assign ssram0_ce_n = ~(chipselect == 4'h6 && ~cpu_address[21]);
+assign ssram1_ce_n = ~(chipselect == 4'h6 && cpu_address[21]);
 assign fs_addrbus = cpu_address[26:0];
 assign fs_databus = (ssram_write ? cpu_writedata : (flash_write ? (cpu_address[1] ? cpu_writedata[15:0] : cpu_writedata[31:16]) : 32'hzzzzzzzz));
 assign sdram_databus = (sdram_we_n ? 32'hzzzzzzzz : sdram_dataout);
@@ -168,7 +168,7 @@ hexdisp d0(.out(HEX0), .in(addrdisp[3:0]));
 
 // Blinknlights
 assign LEDR = { 7'h0, chipselect };
-assign LEDG = { cpu_fault, sdram_ready, flash_ready, 6'b0000000 };
+assign LEDG = { cpu_halt, sdram_ready, flash_ready, 6'b0000000 };
 
 wire [7:0] chipselect;
 wire [31:0] cpu_address;
@@ -176,9 +176,9 @@ wire [31:0] cpu_readdata, cpu_writedata, mon_readdata, ram_readdata, matrix_read
 wire [31:0] vect_readdata, io_readdata, sdram_readdata, sdram_dataout;
 wire [3:0] cpu_be, bm_be;
 wire [7:0] lcd_dataout;
-wire cpu_write, cpu_read, cpu_wait, ram_write, ram_read, rom_read, cpu_fault;
+wire cpu_write, cpu_read, cpu_wait, ram_write, ram_read, rom_read, cpu_halt;
 wire io_write, io_read, vect_read, sdram_read, sdram_write, sdram_ready, flash_ready, flash_read, flash_write;
-wire matrix_oe_n, bus_start;
+wire matrix_oe_n, bus_start, mmu_buswrite, mmu_busfault;
 wire matrix_read, matrix_write, ssram_read, ssram_write;
 
 // quadrature encoder outputs 0-23
@@ -203,7 +203,7 @@ assign matrix_write = (chipselect == 4'h5 ? cpu_write : 1'b0);
 assign io_read = (chipselect == 4'h4 ? cpu_read : 1'b0);
 assign io_write = (chipselect == 4'h4 ? cpu_write : 1'b0);
 assign ssram_read = (chipselect == 4'h6 ? cpu_read : 1'b0);
-assign ssram_write = (chipselect == 4'h6 ? cpu_write : 1'b0);
+assign ssram_write = (chipselect == 4'h6 ? mmu_buswrite : 1'b0);
 assign sdram_read = (chipselect == 4'h7 ? cpu_read : 1'b0);
 assign sdram_write = (chipselect == 4'h7 ? cpu_write : 1'b0);
 assign flash_read = (chipselect == 4'h8 ? cpu_read : 1'b0);
@@ -218,7 +218,7 @@ begin
 end
 
 bexkat2 bexkat0(.clk(clock_50), .reset_n(rst_n), .address(cpu_address), .read(cpu_read), .readdata(cpu_readdata),
-  .write(cpu_write), .writedata(cpu_writedata), .byteenable(cpu_be), .waitrequest(cpu_wait), .fault(cpu_fault));
+  .write(cpu_write), .writedata(cpu_writedata), .byteenable(cpu_be), .waitrequest(cpu_wait), .halt(cpu_halt), .busfault(mmu_busfault));
 vectors rom1(.clock(clock_50), .q(vect_readdata), .rden(vect_read), .address(cpu_address[6:2]));
 monitor rom0(.clock(clock_50), .q(rom_readdata), .rden(rom_read), .address(cpu_address[15:2]));
 scratch ram0(.clock(clock_50), .data(cpu_writedata), .q(ram_readdata), .wren(ram_write), .rden(ram_read), .address(cpu_address[13:2]),
@@ -241,7 +241,7 @@ iocontroller io0(.clk(clock_50), .rst_n(rst_n), .miso(miso), .mosi(mosi), .sclk(
   .rx0(serial0_rx), .tx0(serial0_tx), .tx1(serial1_tx), .sw(SW[15:0]), .itd_backlight(itd_backlight), .itd_dc(itd_dc));
 mmu mmu0(.clock(clock_50), .reset_n(rst_n), .address(cpu_address),
   .read(cpu_read), .start(bus_start), .chipselect(chipselect), .write(cpu_write),
-  .buswait(cpu_wait), .map(SW[17]));
+  .buswait(cpu_wait), .buswrite(mmu_buswrite), .busfault(mmu_busfault));
 sysclock pll0(.inclk0(raw_clock_50), .c0(clock_200), .c1(clock_25), .c2(clock_50), .c3(clock_50p), .areset(~KEY[0]), .locked(locked));
 matrixpll pll1(.inclk0(raw_clock_50), .c0(clock_2p7));
 fan_ctrl fan0(.clk(clock_25), .rst_n(rst_n), .fan_pwm(fan_ctrl));
