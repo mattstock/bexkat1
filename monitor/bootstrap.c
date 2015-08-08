@@ -10,6 +10,8 @@
 unsigned int addr;
 unsigned short data;
 
+unsigned int *sw = (unsigned int *)0x00800810;
+
 char helpmsg[] = "\n? = help\na aaaaaaaa = set address\nr = read page of mem and display\nw dddddddd = write word current address\nc = SDcard test\nm = led matrix init\nl = lcd test\nb filename = boot file\n\n";
 
 void memtest(void) {
@@ -110,12 +112,10 @@ void sdcard_exec(char *name) {
   }
   // iterate over program headers and do copies
   for (hidx=0; hidx < header.e_phnum; hidx++) {
-    serial_print(0, "moving to ph_off\n");
     foo = f_lseek(&fp, header.e_phoff+hidx*header.e_phentsize);
     if (foo != FR_OK) {
       serial_print(0, "seek error\n");
     }
-    serial_print(0, "copying program header\n");
     foo = f_read(&fp, &prog_header, sizeof(elf32_phdr), &count);
     if (foo != FR_OK) {
       serial_print(0, "read error\n");
@@ -123,11 +123,6 @@ void sdcard_exec(char *name) {
     if (count != sizeof(elf32_phdr)) {
       serial_print(0, "partial read of program header!\n");
     }
-    serial_printhex(0, prog_header.p_paddr);
-    serial_print(0, ": ");
-    serial_printhex(0, prog_header.p_filesz);
-    serial_print(0, "\n");
-
     foo = f_lseek(&fp, prog_header.p_offset);
     if (foo != FR_OK) {
       serial_print(0, "seek error\n");
@@ -136,7 +131,6 @@ void sdcard_exec(char *name) {
     segidx = prog_header.p_filesz;
     memidx = prog_header.p_paddr;
     while (segidx > 1024) {
-      serial_print(0, "block copy\n");
       foo = f_read(&fp, &buffer, 1024, &count);
       if (foo != FR_OK) {
 	serial_print(0, "read error\n");
@@ -157,11 +151,11 @@ void sdcard_exec(char *name) {
     }
     memcpy((unsigned int *)memidx, &buffer , segidx);
   }
-  serial_print(0, "would exec to: ");
-  serial_printhex(0, header.e_entry);
-  execptr = (void *)header.e_entry;
+  // Cleanly unmount sdcard
   f_close(&fp);
   f_mount((void *)0, "", 0);
+  // Bootstrap kernel
+  execptr = (void *)header.e_entry;
   (*execptr)();
 }
 
@@ -207,7 +201,11 @@ void main(void) {
   lcd_init();
   lcd_print("Bexkat 1000");
   lcd_pos(0,1);
-  lcd_print("v1.0");
+  lcd_print("v2.0");
+  if (sw[0] && 0x1) {
+    sdcard_exec("/kernel");
+    serial_print(0, "\nautoboot failed\n");
+  }
   while (1) {
     serial_print(0, "\nBexkat1 [");
     serial_printhex(0, addr);
