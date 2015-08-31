@@ -22,11 +22,13 @@ void bitprint(short row, unsigned val) {
 }
 
 unsigned fib(unsigned short x) {
+  char a[1024];
+  a[x % 1024] = 'a';
   if (x == 0)
     return 0;
   if (x == 1)
     return 1;
-  return fib(x-1) + fib(x-2);
+  return fib(x-1) + fib(x-2) + a[(x+3)%1024];
 }
 
 void main(void) {

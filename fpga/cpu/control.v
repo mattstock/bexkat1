@@ -727,6 +727,9 @@ begin
             default: state_next = STATE_HALT;
           endcase
         end
+        8'h10: begin // trap
+          state_next = STATE_EXCEPTION;
+        end
         8'h2x: begin // [un]signed rA <= rB * / % 0x12345678
           case (ir_op)
             'h21: int_func = 'b001;
