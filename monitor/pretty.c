@@ -2,6 +2,7 @@
 #include "misc.h"
 #include "matrix.h"
 #include <stdio.h>
+#include <stdlib.h>
 
 void main(void);
 
@@ -38,11 +39,15 @@ void main(void) {
   char c;
   unsigned val;
   unsigned short x, y;
+  int *foo;
 
   x = 16;
   y = 8;
   val = 0x00808080;
   printf("\ntesting a simple string\n");
+  printf("\ntesting another simple string\n");
+  printf("\ntesting number %d\n", x);
+
   while (1) {
     matrix_fade();
     c = random(1034);

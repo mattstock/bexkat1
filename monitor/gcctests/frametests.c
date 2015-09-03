@@ -1,15 +1,23 @@
-int n(int j) {
-  return j * 34 + 17;
-}
+int x;
 
-int a(int x, int y, int z, int b, int c, int d, int e, int f) {
-/*  unsigned int h = 32;
-  char few[400];
-  few[x%400] = '0'; */
-  return n(f) + x + y + z + b + c + d + e;
+int ordering(int a, int b, int c, int d, int e, int f, int g) {
+  int m, n, o, p;
+
+  m = 1;
+  n = 2;
+  o = 3;
+  p = 4;
+  a = 100;
+  b = 200;
+  c = 300;
+  d = 400;
+  e = 500;
+  f = 600;
+  g = 700;
+  return a;
 }
 
 void main(void) {
-  a(0,1,2,3,4,5,6,7); 
+  ordering(10,20,30,40,50,60,70);
   while (1);
 }
