@@ -21,7 +21,7 @@ clean:
 	cd lib; make clean
 	cd gcctests; make clean
 	cd kernel; make clean
-	rm -f *.o *.srec *.hex bootstrap bootstrap.s pretty.s pretty *.gkd *.expand
+	rm -f *.o *.srec *.hex bootstrap bootstrap.s matrix pretty.s pretty *.gkd *.expand
 
 lib:
 	cd lib; make
