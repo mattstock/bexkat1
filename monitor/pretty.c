@@ -44,11 +44,9 @@ void main(void) {
   x = 16;
   y = 8;
   val = 0x00808080;
-  printf("\ntesting a simple string\n");
-  printf("\ntesting another simple string\n");
-  printf("\ntesting number %d\n", x);
 
   while (1) {
+    iprintf("(%d, %d)\n", x,y);
     matrix_fade();
     c = random(1034);
     switch (c % 4) {
@@ -85,6 +83,5 @@ void main(void) {
         break;
     }  
     matrix_put(x,y, val);
-    delay(0x500);
   }
 }

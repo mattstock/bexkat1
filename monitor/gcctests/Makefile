@@ -7,7 +7,7 @@ CFLAGS = -I../include
 
 .PHONY: all clean
 
-all: types.s conditionals.s types-lcc.s types-moxie.s fib.s fib-moxie.s fib-lcc.s frametests.s frametests-moxie.s frametests-lcc.s
+all: types.s conditionals.s types-moxie.s fib.s fib-moxie.s fib-lcc.s frametests.s frametests-moxie.s frametests-lcc.s
 
 clean:
 	rm -f *.o *.s *.expand *.gkd types.c.* conditionals.c.*
