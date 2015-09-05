@@ -17,5 +17,5 @@ clean:
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $^
 
-kernel: kernel.o
+kernel: kernel.o font.o
 	$(CC) -specs=de2.specs -o $@ $^ $(LIBS)
