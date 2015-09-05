@@ -56,11 +56,11 @@ begin
   if (!reset_n) begin
     state <= STATE_RESET;
     seq <= 3'h0;
-    exception_next <= 4'h0;
+    exception <= 4'h0;
   end else begin
     seq <= seq_next;
     state <= state_next;
-    exception_next <= exception_next;
+    exception <= exception_next;
   end
 end
 

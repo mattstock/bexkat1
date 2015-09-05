@@ -177,7 +177,7 @@ wire [31:0] vect_readdata, io_readdata, sdram_readdata, sdram_dataout;
 wire [3:0] cpu_be, bm_be;
 wire [7:0] lcd_dataout;
 wire cpu_write, cpu_read, cpu_wait, ram_write, ram_read, rom_read, cpu_halt;
-wire io_write, io_read, vect_read, sdram_read, sdram_write, sdram_ready, flash_ready, flash_read, flash_write;
+wire io_write, io_read, vect_read, vect_write, sdram_read, sdram_write, sdram_ready, flash_ready, flash_read, flash_write;
 wire matrix_oe_n, bus_start, mmu_buswrite, mmu_busfault;
 wire matrix_read, matrix_write, ssram_read, ssram_write;
 
@@ -195,6 +195,7 @@ assign cpu_readdata = (chipselect == 4'h1 ? vect_readdata : 32'h0) |
                       (chipselect == 4'h8 ? { 16'h0000, fs_databus[15:0] } : 32'h0);
 
 assign vect_read = (chipselect == 4'h1 ? cpu_read : 1'b0);
+assign vect_write = (chipselect == 4'h1 ? cpu_write : 1'b0);
 assign rom_read = (chipselect == 4'h2 ? cpu_read : 1'b0);
 assign ram_read = (chipselect == 4'h3 ? cpu_read : 1'b0);
 assign ram_write = (chipselect == 4'h3 ? cpu_write : 1'b0);
@@ -219,7 +220,7 @@ end
 
 bexkat2 bexkat0(.clk(clock_50), .reset_n(rst_n), .address(cpu_address), .read(cpu_read), .readdata(cpu_readdata),
   .write(cpu_write), .writedata(cpu_writedata), .byteenable(cpu_be), .waitrequest(cpu_wait), .halt(cpu_halt), .busfault(mmu_busfault));
-vectors rom1(.clock(clock_50), .q(vect_readdata), .rden(vect_read), .address(cpu_address[6:2]));
+vectors vecram0(.clock(clock_50), .data(cpu_writedata), .q(vect_readdata), .rden(vect_read), .wren(vect_write), .address(cpu_address[6:2]));
 monitor rom0(.clock(clock_50), .q(rom_readdata), .rden(rom_read), .address(cpu_address[15:2]));
 scratch ram0(.clock(clock_50), .data(cpu_writedata), .q(ram_readdata), .wren(ram_write), .rden(ram_read), .address(cpu_address[13:2]),
   .byteena(cpu_be));
