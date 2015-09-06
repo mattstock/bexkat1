@@ -15,15 +15,13 @@ void drawchar(int x, int y, char c) {
   int a, b, v, w, on;
   unsigned bitmap;
 
-  itd_init();
-  itd_backlight(1);
   bitmap = font88[2*c];
   for (int b=0; b < 32; b++) {
       v = x+(b%8);
       w = y+(b/8);
       on = (bitmap & (1 << (31-b)) ? 0xff : 0x00);
       matrix_put(v,w,on);
-      itd_rect(v,w,v,w,color565(on,0,0));
+      itd_rect(v,w,v+1,w+1,color565(on,0,0));
   }
   bitmap = font88[2*c+1];
   for (int b=0; b < 32; b++) {
@@ -31,7 +29,7 @@ void drawchar(int x, int y, char c) {
       w = y+4+(b/8);
       on = (bitmap & (1 << (31-b)) ? 0xff : 0x00);
       matrix_put(v,w,on);
-      itd_rect(v,w,v,w,color565(on,0,0));
+      itd_rect(v,w,v+1,w+1,color565(on,0,0));
   }
 }
 
@@ -42,6 +40,9 @@ void main(void) {
 
   x = 0;
   y = 0;
+  itd_init();
+  itd_backlight(1);
+  itd_rotation(3);
   while (1) {
     read(0, buf, 1);
     iprintf("%c\n", buf[0]);
