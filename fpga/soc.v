@@ -195,7 +195,7 @@ assign cpu_readdata = (chipselect == 4'h1 ? vect_readdata : 32'h0) |
                       (chipselect == 4'h8 ? { 16'h0000, fs_databus[15:0] } : 32'h0);
 
 assign vect_read = (chipselect == 4'h1 ? cpu_read : 1'b0);
-assign vect_write = (chipselect == 4'h1 ? cpu_write : 1'b0);
+assign vect_write = (chipselect == 4'h1 ? cpu_write & SW[17] : 1'b0);
 assign rom_read = (chipselect == 4'h2 ? cpu_read : 1'b0);
 assign ram_read = (chipselect == 4'h3 ? cpu_read : 1'b0);
 assign ram_write = (chipselect == 4'h3 ? cpu_write : 1'b0);
