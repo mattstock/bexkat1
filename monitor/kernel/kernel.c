@@ -33,19 +33,57 @@ void drawchar(int x, int y, char c) {
   }
 }
 
+void mandelbrot(float cx, float cy, float scale) {
+  float limit = 4.0;
+  int x,y,lp;
+  float ax,ay;
+  float a1,b1,a2,b2;
+  float res,asq,bsq;
+
+  for (x=-120; x < 120; x++) {
+    ax = cx+x*scale;
+    for (y=-160; y < 160; y++) {
+      printf("(%d,%d): ", x+120, y+160);
+      ay = cy+y*scale;
+      a1 = ax;
+      b1 = ay;
+      lp = 0; 
+      do {
+        lp++;
+        asq = a1*a1;
+        bsq = b1*b1;
+        a2 = asq - bsq + ax;
+        b2 = 2.0*a1*b1+ay;
+        a1 = a2;
+        b1 = b2;
+        res = a1*a1 + b1*b1;
+      } while ((lp <= 255) && (res <= limit));
+      printf("lp = %d, res = %f ab = (%f,%f)\n", lp, res, a1, b1);
+      if (lp > 255)
+        itd_rect(x+120,y+160,x+120,y+160,color565(0,0,0));
+      else
+        itd_rect(x+120,y+160,x+120,y+160,color565(0,0,lp));
+    }
+  }
+}
+
 void main(void) {
   int i;
   char buf[10];
   int x,y;
+  float a,b;
 
   x = 0;
   y = 0;
   itd_init();
   itd_backlight(1);
-  itd_rotation(3);
+  a = 3.0;
+  b = 2.0;
+  printf("%f * %f = %f\n", a, b, a*b);
+//  mandelbrot(0.36,0.1,0.0001);
   while (1) {
     read(0, buf, 1);
-    iprintf("%c\n", buf[0]);
+    printf("%c\n", buf[0]);
     drawchar(x,y,buf[0]);
     x += 8;
     if (x == 32) {
@@ -56,7 +94,7 @@ void main(void) {
     }
   }
   for (i=0; i < 128; i++) {
-    iprintf("%x\n", i);
+    printf("%x\n", i);
     drawchar(0,0, (char)i);
     delay(0x10000);
   }

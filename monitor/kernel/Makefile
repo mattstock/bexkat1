@@ -1,5 +1,5 @@
 CC = bexkat1-elf-gcc
-CFLAGS = -I../include
+CFLAGS = -O2 -I../include
 LIBS = -L../lib -lsupport
 OBJDUMP = bexkat1-elf-objdump
 AS = bexkat1-elf-as
