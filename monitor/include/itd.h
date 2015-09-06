@@ -3,15 +3,16 @@
 
 extern volatile unsigned int *spi;
 
-extern void itd_backlight(int s);
-extern void itd_init();
-extern void itd_rect(unsigned short x0,
-		     unsigned short y0,
-		     unsigned short x1,
-		     unsigned short y1,
-		     unsigned short color);
-extern unsigned short color565(unsigned char r,
-			       unsigned char g,
-			       unsigned char b);
+void itd_rotation(int r);
+void itd_backlight(int s);
+void itd_init();
+void itd_rect(unsigned short x0,
+  unsigned short y0,
+  unsigned short x1,
+  unsigned short y1,
+  unsigned short color);
+unsigned short color565(unsigned char r,
+  unsigned char g,
+  unsigned char b);
 
 #endif

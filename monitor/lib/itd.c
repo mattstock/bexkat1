@@ -15,7 +15,9 @@ volatile unsigned int *spi = (unsigned int *)0x00800820;
 #define PASET 0x2b
 #define RAMWR 0x2c
 #define MADCTL 0x36
+#define MADCTL_MY 0x80
 #define MADCTL_MX 0x40
+#define MADCTL_MV 0x20
 #define MADCTL_BGR 0x08
 #define PIXFMT 0x3a
 #define FRMCTR1 0xb1
@@ -70,6 +72,24 @@ void itd_data(unsigned char tx) {
   CLEAR_BIT(SPI_CTL, LCD_SEL);
   spi_xfer(tx);
   SET_BIT(SPI_CTL, LCD_SEL);
+}
+
+void itd_rotation(int r) {
+  itd_command(MADCTL);
+  switch (r % 4) {
+    case 0:
+      itd_data(MADCTL_MX|MADCTL_BGR);
+      break;
+    case 1:
+      itd_data(MADCTL_MV|MADCTL_BGR);
+      break;
+    case 2:
+      itd_data(MADCTL_MY|MADCTL_BGR);
+      break;
+    case 3:
+      itd_data(MADCTL_MX|MADCTL_MY|MADCTL_MV|MADCTL_BGR);
+      break;
+  }
 }
 
 void itd_init() {
