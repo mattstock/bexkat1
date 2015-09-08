@@ -16,8 +16,8 @@ reg [WIDTH-1:0] regfile [COUNT-1:0];
 reg [WIDTH-1:0] regfile_next [COUNT-1:0];
 reg [WIDTH-1:0] ssp, ssp_next;
 
-assign data1 = (supervisor && read1 == 5'd31 ? ssp : regfile[read1]);
-assign data2 = (supervisor && read2 == 5'd31 ? ssp : regfile[read2]);
+assign data1 = (supervisor && read1 == 5'd15 ? ssp : regfile[read1]);
+assign data2 = (supervisor && read2 == 5'd15 ? ssp : regfile[read2]);
 
 always @(posedge clk or negedge rst_n)
 begin
@@ -38,7 +38,7 @@ begin
     regfile_next[i] = regfile[i];
   ssp_next = ssp;
   if (write_en) begin
-    if (write_addr == 5'd31 && supervisor)
+    if (write_addr == 5'd15 && supervisor)
       ssp_next = write_data;
     else
       regfile_next[write_addr] = write_data;

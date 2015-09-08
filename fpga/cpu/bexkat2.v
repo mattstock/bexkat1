@@ -17,7 +17,7 @@ module bexkat2(
 wire reg_write;
 wire [2:0] alu_func, int_func;
 wire addrsel, ir_write, ccr_write, vectoff_write;
-wire [4:0] reg_read_addr1, reg_read_addr2, reg_write_addr;
+wire [3:0] reg_read_addr1, reg_read_addr2, reg_write_addr;
 wire [1:0] marsel, int1sel, int2sel;
 wire [2:0] pcsel, mdrsel, alu1sel, alu2sel;
 wire [3:0] regsel;
@@ -38,8 +38,8 @@ reg [3:0] ccr;
 reg [3:0] status, status_next;
 
 // opcode format
-wire [31:0] ir_ind = { {17{ir[28]}}, ir[28:25], ir[10:0] };
-wire [31:0] ir_bra = { {16{ir[15]}}, ir[15:0] };
+wire [31:0] ir_sval = { {16{ir[23]}}, ir[23:20], ir[11:0] };
+wire [31:0] ir_uval = { 16'h0000, ir[23:20], ir[11:0] };
 
 // Convenience mappings
 wire super_mode = status[3];
@@ -83,7 +83,7 @@ always @* begin
     3'h0: pc_next = pc;
     3'h1: pc_next = pc + 'h4;
     3'h2: pc_next = { 1'b0, mar };
-    3'h3: pc_next = { 1'b0, pc } + ir_bra;  // relative branching
+    3'h3: pc_next = { 1'b0, pc } + ir_sval;  // relative branching
     3'h4: pc_next = { 1'b0, aluval }; // reg offset
     3'h5: pc_next = { 1'b0, vectoff } + mdr[7:0]; // exception vectors 
     default: pc_next = pc;
@@ -131,7 +131,7 @@ always @* begin
   endcase
   case (mdrsel)
     3'h0: mdr_next = mdr;
-    3'h1: mdr_next = busin_be; // byte aligned and sign extended
+    3'h1: mdr_next = busin_be; // byte aligned
     3'h2: mdr_next = aluval;
     3'h3: mdr_next = reg_data_out1;
     3'h4: mdr_next = intval[31:0];
@@ -145,8 +145,7 @@ always @* begin
     4'h2: reg_data_in = -reg_data_out2;
     4'h3: reg_data_in = ~reg_data_out2;
     4'h4: reg_data_in = reg_data_out2;
-    4'h5: reg_data_in = {{16{ir[15]}}, ir[15:0] }; // sign ext
-    4'h6: reg_data_in = { 16'h0000, ir[15:0] }; // no sign ext
+    4'h6: reg_data_in = ir_uval; // no sign ext
     4'h9: reg_data_in = { {24{reg_data_out2[7]}}, reg_data_out2[7:0] };
     4'ha: reg_data_in = { {16{reg_data_out2[15]}}, reg_data_out2[15:0] };
     default: reg_data_in = 0;
@@ -159,9 +158,9 @@ always @* begin
   endcase
   case (alu2sel)
     3'h0: alu_in2 = reg_data_out2;
-    3'h1: alu_in2 = ir_ind;
+    3'h1: alu_in2 = ir_sval;
     3'h2: alu_in2 = 1;
-    3'h3: alu_in2 = ir_bra;
+    3'h3: alu_in2 = ir_uval; // prob can remove
     3'h4: alu_in2 = 4;
     3'h5: alu_in2 = mdr;
     default: alu_in2 = 0;
@@ -172,7 +171,7 @@ always @* begin
   endcase
   case (int2sel)
     3'h0: int_in2 = reg_data_out2;
-    3'h1: int_in2 = mdr;
+    3'h1: int_in2 = ir_sval;
     default: int_in2 = reg_data_out2;
   endcase  
 end
@@ -185,7 +184,7 @@ control con0(.clock(clk), .reset_n(reset_n), .ir(ir), .ir_write(ir_write), .ccr(
 
 alu alu0(.in1(alu_in1), .in2(alu_in2), .func(alu_func), .out(alu_out), .c_out(alu_carry), .n_out(alu_negative), .v_out(alu_overflow), .z_out(alu_zero));
 intcalc int0(.clock(clk), .func(int_func), .in1(int_in1), .in2(int_in2), .out(int_out));
-registerfile intreg(.clk(clk), .rst_n(reset_n), .read1(reg_read_addr1), .read2(reg_read_addr2), .write_addr(reg_write_addr),
+registerfile intreg(.clk(clk), .rst_n(reset_n), .read1({ 1'b0, reg_read_addr1 }), .read2({ 1'b0, reg_read_addr2 }), .write_addr({ 1'b0, reg_write_addr }),
   .write_data(reg_data_in), .write_en(reg_write), .data1(reg_data_out1), .data2(reg_data_out2), .supervisor(super_mode));
 
 endmodule

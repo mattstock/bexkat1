@@ -1727,5 +1727,142 @@ set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[17] -
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[19] -to cpu|gnd -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[27] -to cpu|vcc -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[30] -to cpu|vcc -section_id cpu
-set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
+set_global_assignment -name SLD_NODE_CREATOR_ID 110 -section_id serial
+set_global_assignment -name SLD_NODE_ENTITY_NAME sld_signaltap -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_clk -to "iocontroller:io0|clk" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[0] -to "iocontroller:io0|uart:uart0|rx_byte[0]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[1] -to "iocontroller:io0|uart:uart0|rx_byte[1]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[2] -to "iocontroller:io0|uart:uart0|rx_byte[2]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[3] -to "iocontroller:io0|uart:uart0|rx_byte[3]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[4] -to "iocontroller:io0|uart:uart0|rx_byte[4]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[5] -to "iocontroller:io0|uart:uart0|rx_byte[5]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[6] -to "iocontroller:io0|uart:uart0|rx_byte[6]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[7] -to "iocontroller:io0|uart:uart0|rx_byte[7]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[8] -to "iocontroller:io0|uart:uart0|rx_queue[0]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[9] -to "iocontroller:io0|uart:uart0|rx_queue[1]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[10] -to "iocontroller:io0|uart:uart0|select" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[11] -to "iocontroller:io0|uart:uart0|tx_queue" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[12] -to "iocontroller:io0|uart:uart0|tx_start" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[13] -to "iocontroller:io0|uart:uart0|uart_rx:rx0|state[0]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[14] -to "iocontroller:io0|uart:uart0|uart_rx:rx0|state[1]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[15] -to "iocontroller:io0|uart:uart0|uart_rx:rx0|state[2]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[16] -to "iocontroller:io0|uart:uart0|uart_rx:rx0|state[3]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[17] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|data[0]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[18] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|data[1]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[19] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|data[2]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[20] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|data[3]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[21] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|data[4]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[22] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|data[5]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[23] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|data[6]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[24] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|data[7]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[25] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|ready" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[26] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|serial_out" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[27] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|state[0]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[28] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|state[1]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[29] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|state[2]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[30] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|state[3]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[31] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|tx_byte[0]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[32] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|tx_byte[1]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[33] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|tx_byte[2]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[34] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|tx_byte[3]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[35] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|tx_byte[4]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[36] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|tx_byte[5]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[37] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|tx_byte[6]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[38] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|tx_byte[7]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[39] -to serial0_tx -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[0] -to "iocontroller:io0|uart:uart0|rx_byte[0]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[1] -to "iocontroller:io0|uart:uart0|rx_byte[1]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[2] -to "iocontroller:io0|uart:uart0|rx_byte[2]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[3] -to "iocontroller:io0|uart:uart0|rx_byte[3]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[4] -to "iocontroller:io0|uart:uart0|rx_byte[4]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[5] -to "iocontroller:io0|uart:uart0|rx_byte[5]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[6] -to "iocontroller:io0|uart:uart0|rx_byte[6]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[7] -to "iocontroller:io0|uart:uart0|rx_byte[7]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[8] -to "iocontroller:io0|uart:uart0|rx_queue[0]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[9] -to "iocontroller:io0|uart:uart0|rx_queue[1]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[10] -to "iocontroller:io0|uart:uart0|select" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[11] -to "iocontroller:io0|uart:uart0|tx_queue" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[12] -to "iocontroller:io0|uart:uart0|tx_start" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[13] -to "iocontroller:io0|uart:uart0|uart_rx:rx0|state[0]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[14] -to "iocontroller:io0|uart:uart0|uart_rx:rx0|state[1]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[15] -to "iocontroller:io0|uart:uart0|uart_rx:rx0|state[2]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[16] -to "iocontroller:io0|uart:uart0|uart_rx:rx0|state[3]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[17] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|data[0]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[18] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|data[1]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[19] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|data[2]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[20] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|data[3]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[21] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|data[4]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[22] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|data[5]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[23] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|data[6]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[24] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|data[7]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[25] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|ready" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[26] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|serial_out" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[27] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|state[0]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[28] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|state[1]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[29] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|state[2]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[30] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|state[3]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[31] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|tx_byte[0]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[32] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|tx_byte[1]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[33] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|tx_byte[2]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[34] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|tx_byte[3]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[35] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|tx_byte[4]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[36] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|tx_byte[5]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[37] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|tx_byte[6]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[38] -to "iocontroller:io0|uart:uart0|uart_tx:tx0|tx_byte[7]" -section_id serial
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[39] -to serial0_tx -section_id serial
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_RAM_BLOCK_TYPE=AUTO" -section_id serial
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_DATA_BITS=40" -section_id serial
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_BITS=40" -section_id serial
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STORAGE_QUALIFIER_BITS=40" -section_id serial
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_NODE_INFO=805334535" -section_id serial
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_POWER_UP_TRIGGER=0" -section_id serial
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK=000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" -section_id serial
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK_LENGTH=147" -section_id serial
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STORAGE_QUALIFIER_INVERSION_MASK_LENGTH=0" -section_id serial
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SEGMENT_SIZE=8192" -section_id serial
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ATTRIBUTE_MEM_MODE=OFF" -section_id serial
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STATE_FLOW_USE_GENERATED=0" -section_id serial
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STATE_BITS=11" -section_id serial
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_BUFFER_FULL_STOP=1" -section_id serial
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_CURRENT_RESOURCE_WIDTH=1" -section_id serial
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INCREMENTAL_ROUTING=1" -section_id serial
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[0] -to serial|gnd -section_id serial
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[1] -to serial|gnd -section_id serial
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[2] -to serial|gnd -section_id serial
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[3] -to serial|gnd -section_id serial
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[4] -to serial|gnd -section_id serial
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[5] -to serial|vcc -section_id serial
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[6] -to serial|gnd -section_id serial
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[7] -to serial|gnd -section_id serial
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[8] -to serial|gnd -section_id serial
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[9] -to serial|gnd -section_id serial
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[10] -to serial|vcc -section_id serial
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[11] -to serial|vcc -section_id serial
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[12] -to serial|vcc -section_id serial
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[13] -to serial|gnd -section_id serial
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[14] -to serial|vcc -section_id serial
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[15] -to serial|vcc -section_id serial
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[16] -to serial|gnd -section_id serial
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[17] -to serial|gnd -section_id serial
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[18] -to serial|vcc -section_id serial
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[19] -to serial|vcc -section_id serial
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[20] -to serial|gnd -section_id serial
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[21] -to serial|vcc -section_id serial
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[22] -to serial|gnd -section_id serial
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[23] -to serial|vcc -section_id serial
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[24] -to serial|gnd -section_id serial
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[25] -to serial|gnd -section_id serial
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[26] -to serial|vcc -section_id serial
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[27] -to serial|gnd -section_id serial
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[28] -to serial|vcc -section_id serial
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[29] -to serial|gnd -section_id serial
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[30] -to serial|vcc -section_id serial
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[31] -to serial|gnd -section_id serial
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_LEVEL=1" -section_id serial
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SAMPLE_DEPTH=8192" -section_id serial
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_IN_ENABLED=0" -section_id serial
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ADVANCED_TRIGGER_ENTITY=basic,1," -section_id serial
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_LEVEL_PIPELINE=1" -section_id serial
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ENABLE_ADVANCED_TRIGGER=0" -section_id serial
 set_global_assignment -name SLD_FILE db/stp1_auto_stripped.stp
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
