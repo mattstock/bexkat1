@@ -21,6 +21,6 @@ clean:
 %.o: %.s
 	$(AS) -EB -o $@ $^
 
-libsupport.a: serial.o misc.o matrix.o lcd.o mmc.o ff.o gettime.o itd.o
+libsupport.a: serial.o misc.o matrix.o lcd.o mmc.o ff.o gettime.o itd.o vectors.o
 	$(AR) rcs -o $@ $^
 	$(RANLIB) $@

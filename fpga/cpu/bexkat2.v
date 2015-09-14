@@ -8,7 +8,7 @@ module bexkat2(
   output reg read,
   output reg write,
   output halt,
-  input busfault,
+  input [3:0] interrupt,
   input [31:0] readdata,
   output [31:0] writedata,
   output [3:0] byteenable);
@@ -43,13 +43,15 @@ wire [31:0] ir_uval = { 16'h0000, ir[23:20], ir[11:0] };
 
 // Convenience mappings
 wire super_mode = status[3];
+// current exception
+wire [3:0] exception;
 //wire [3:0] imask = status[2:0];
 
 // Data switching logic
 assign address = (addrsel ? mar : pc);
 assign ir_next = (ir_write ? readdata : ir);
 assign ccr_next = (ccr_write ? {alu_carry, alu_negative, alu_overflow, alu_zero} : ccr);
-assign vectoff_next = (vectoff_write ? readdata : vectoff);
+assign vectoff_next = (vectoff_write ? mdr : vectoff);
 
 always @(posedge clk or negedge reset_n)
 begin
@@ -85,7 +87,7 @@ always @* begin
     3'h2: pc_next = { 1'b0, mar };
     3'h3: pc_next = { 1'b0, pc } + ir_sval;  // relative branching
     3'h4: pc_next = { 1'b0, aluval }; // reg offset
-    3'h5: pc_next = { 1'b0, vectoff } + mdr[7:0]; // exception vectors 
+    3'h5: pc_next = { 1'b0, vectoff } + { exception, 2'b00 }; // exception vectors 
     default: pc_next = pc;
   endcase  
   case (marsel)
@@ -180,7 +182,7 @@ control con0(.clock(clk), .reset_n(reset_n), .ir(ir), .ir_write(ir_write), .ccr(
   .regsel(regsel), .reg_read_addr1(reg_read_addr1), .reg_read_addr2(reg_read_addr2), .reg_write_addr(reg_write_addr), .reg_write(reg_write),
   .mdrsel(mdrsel), .marsel(marsel), .pcsel(pcsel), .int1sel(int1sel), .int2sel(int2sel), .int_func(int_func), .supervisor(super_mode),
   .addrsel(addrsel), .byteenable(byteenable), .bus_read(read), .bus_write(write), .bus_wait(waitrequest), .bus_align(address[1:0]),
-  .vectoff_write(vectoff_write), .halt(halt), .busfault(busfault));
+  .vectoff_write(vectoff_write), .halt(halt), .exception(exception), .interrupt(interrupt));
 
 alu alu0(.in1(alu_in1), .in2(alu_in2), .func(alu_func), .out(alu_out), .c_out(alu_carry), .n_out(alu_negative), .v_out(alu_overflow), .z_out(alu_zero));
 intcalc int0(.clock(clk), .func(int_func), .in1(int_in1), .in2(int_in2), .out(int_out));

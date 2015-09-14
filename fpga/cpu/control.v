@@ -27,10 +27,10 @@ module control(
   output vectoff_write,
   input supervisor,
   input bus_wait,
-  input busfault,
+  output reg [3:0] exception,
+  input [3:0] interrupt,
   input [1:0] bus_align);
 
-assign vectoff_write = 1'b0; // hardcode interrupt vector offset
 assign halt = (state == STATE_HALT);
 
 wire [1:0] ir_mode = ir[31:30];
@@ -44,7 +44,7 @@ assign {carry, negative, overflow, zero} = ccr;
 
 reg [3:0] state, state_next;
 reg [2:0] seq, seq_next;
-reg [3:0] exception, exception_next;
+reg [3:0] exception_next;
 
 localparam [3:0] STATE_FETCHIR = 4'h0, STATE_EVALIR = 4'h1, STATE_FETCHARG = 4'h2, STATE_EVALARG = 4'h3, STATE_HALT = 4'h4, STATE_EXCEPTION = 4'h5, STATE_RESET = 4'h6;
 localparam MODE_REG = 2'h0, MODE_REGIND = 2'h1, MODE_IMM = 2'h2, MODE_DIR = 2'h3;
@@ -59,6 +59,9 @@ case (ir_mode)
   MODE_IMM:    ir_op = { 3'b000, ir[29:26] };
   MODE_DIR:    ir_op = { 1'b0, ir[29:24] };
 endcase
+
+// tacky to peek at this, but need it for trap
+wire [31:0] ir_uval = { 16'h0000, ir[23:20], ir[11:0] };
 
 always @(posedge clock or negedge reset_n)
 begin
@@ -99,26 +102,56 @@ begin
   bus_write = 1'b0;
   ir_write = 1'b0;
   byteenable = 4'b1111;
+  vectoff_write = 1'b0;
   
   case (state)
     STATE_RESET: begin
+      exception_next = 4'h0;
+      state_next = STATE_EXCEPTION;
+    end
+    STATE_EXCEPTION: begin
+      // for everyone except reset, we need to push the PC onto the stack, just like jsr
       case (seq)
         3'h0: begin
-          pcsel = 3'h5; // load exception_next handler address into PC
-          bus_read = 1'b1;
-          if (busfault) begin
-            state_next = STATE_EXCEPTION;
-            exception_next = 4'h1;
-          end else
-            if (bus_wait == 1'b0)
-              seq_next = 3'h1;
+          if (exception == 4'h0)
+            seq_next = 3'h3;
+          else begin
+            alu2sel = 3'h4; // aluout <= SP - 'h4
+            alu_func = 3'h3; // -
+            reg_read_addr1 = REG_SP; // SP
+            seq_next = 3'h1;
+            mdrsel = 3'h6; // MDR <= PC
+          end
         end
         3'h1: begin
-          bus_read = 1'b1;
-          marsel = 2'h1; // MAR <= vector address
+          marsel = 2'h2; // mar <= aluout
+          reg_write_addr = REG_SP; // SP <= aluout
+          reg_write = REG_WRITE_DW;
+          addrsel = 1'b1; // MAR
+          bus_write = 1'b1;
           seq_next = 3'h2;
         end
         3'h2: begin
+          addrsel = 1'b1; // MAR
+          bus_write = 1'b1;            
+          if (bus_wait == 1'b0)
+            seq_next = 3'h3;
+        end
+        3'h3: begin
+          pcsel = 3'h5; // load exception_next handler address into PC
+          seq_next = 3'h4;
+        end
+        3'h4: begin
+          bus_read = 1'b1;
+          if (bus_wait == 1'b0)
+            seq_next = 3'h5;
+        end
+        3'h5: begin
+          bus_read = 1'b1;
+          marsel = 2'h1; // MAR <= vector address
+          seq_next = 3'h6;
+        end
+        3'h6: begin
           pcsel = 3'h2; // PC <= MAR
           seq_next = 3'h0;
           state_next = STATE_FETCHIR;
@@ -130,9 +163,9 @@ begin
       case (seq)
         3'h0: begin
           bus_read = 1'b1;
-          if (busfault) begin
+          if (|interrupt) begin
             state_next = STATE_EXCEPTION;
-            exception_next = 4'h1;
+            exception_next = interrupt;
           end else
             if (bus_wait == 1'b0) // wait until we get control of bus
               seq_next = 3'h1;
@@ -154,10 +187,6 @@ begin
       casex ({ir_mode, ir_op})
         {MODE_REG, 7'h00}: state_next = STATE_FETCHIR; // nop
         {MODE_REG, 7'h01}: begin // rts
-          // evaulate if we are leaving an exception_next state
-          // pop other content off of stack
-          // pop return point
-          // revert priv mode to original
           case (seq)
             3'h0: begin
               reg_read_addr1 = REG_SP; // SP
@@ -167,12 +196,8 @@ begin
             3'h1: begin
               addrsel = 1'b1; // MAR
               bus_read = 1'b1;
-              if (busfault) begin
-                state_next = STATE_EXCEPTION;
-                exception_next = 4'h1;
-              end else
-                if (bus_wait == 1'b0)
-                  seq_next = 3'h2;
+              if (bus_wait == 1'b0)
+                seq_next = 3'h2;
             end
             3'h2: begin
               addrsel = 1'b1; // MAR
@@ -192,6 +217,38 @@ begin
             default: state_next = STATE_HALT;
           endcase
         end
+        {MODE_REG, 7'h02}: begin // rti
+          // for now, exactly the same as rts
+          case (seq)
+            3'h0: begin
+              reg_read_addr1 = REG_SP; // SP
+              marsel = 2'h3; // mar <= SP
+              seq_next = 3'h1;
+            end
+            3'h1: begin
+              addrsel = 1'b1; // MAR
+              bus_read = 1'b1;
+              if (bus_wait == 1'b0)
+                seq_next = 3'h2;
+            end
+            3'h2: begin
+              addrsel = 1'b1; // MAR
+              bus_read = 1'b1;
+              marsel = 2'h1; // mar <= databus
+              alu2sel = 3'h4; // aluout <= SP + 'h4
+              reg_read_addr1 = REG_SP; // SP
+              seq_next = 3'h3;
+            end
+            3'h3: begin
+              pcsel = 3'h2; // PC <= mar 
+              reg_write = REG_WRITE_DW; // SP <= aluout 
+              reg_write_addr = REG_SP;
+              seq_next = 3'h0;
+              state_next = STATE_FETCHIR;
+            end
+            default: state_next = STATE_HALT;
+          endcase
+        end          
         {MODE_REG, 7'h03}: begin // inc rA
           case (seq)
             3'h0: begin
@@ -271,12 +328,8 @@ begin
             end
             3'h2: begin
               bus_read = 1'b1;
-              if (busfault) begin
-                state_next = STATE_EXCEPTION;
-                exception_next = 4'h1;
-              end else
-                if (bus_wait == 1'b0)
-                  seq_next = 3'h3;
+              if (bus_wait == 1'b0)
+                seq_next = 3'h3;
             end
             3'h3: begin
               bus_read = 1'b1;
@@ -343,6 +396,8 @@ begin
             'h33: int_func = 'b100;
             'h34: int_func = 'b101;
             'h35: int_func = 'b110;
+            'h36: int_func = 'b000;
+            'h37: int_func = 'b100;
             default: int_func = 'b000;
           endcase
           reg_read_addr1 = ir_rb;
@@ -350,7 +405,10 @@ begin
           case (seq)
             'h6: begin
               seq_next = 3'h7;
-              mdrsel = 3'h4; // MDR <= intout[31:0]
+              if (ir_op == 'h36 || ir_op == 'h37)
+                mdrsel = 3'h5; // MDR <= intout[63:32]
+              else
+                mdrsel = 3'h4; // MDR <= intout[31:0]
             end
             'h7: begin
               seq_next = 3'h0;
@@ -438,12 +496,8 @@ begin
             end
             3'h2: begin
               bus_write = 1'b1; //  addrbus <= MAR
-              if (busfault) begin
-                state_next = STATE_EXCEPTION;
-                exception_next = 4'h1;
-              end else
-                if (bus_wait == 1'b0)
-                  seq_next = 3'h3;
+              if (bus_wait == 1'b0)
+                seq_next = 3'h3;
             end
             3'h3: begin
               state_next = STATE_FETCHIR;
@@ -468,12 +522,8 @@ begin
             end
             3'h2: begin
               bus_write = 1'b1;
-              if (busfault) begin
-                state_next = STATE_EXCEPTION;
-                exception_next = 4'h1;
-              end else
-                if (bus_wait == 1'b0)
-                  seq_next = 3'h3;
+              if (bus_wait == 1'b0)
+                seq_next = 3'h3;
             end
             3'h3: begin
               state_next = STATE_FETCHIR;
@@ -503,12 +553,8 @@ begin
             end
             3'h2: begin
               bus_write = 1'b1; // addrbus <= MAR
-              if (busfault) begin
-                state_next = STATE_EXCEPTION;
-                exception_next = 4'h1;
-              end else
-                if (bus_wait == 1'b0)
-                  seq_next = 3'h3;
+              if (bus_wait == 1'b0)
+                seq_next = 3'h3;
             end
             3'h3: begin
               state_next = STATE_FETCHIR;
@@ -532,12 +578,8 @@ begin
             3'h2: begin
               bus_read = 1'b1;
               mdrsel = 3'h1; // MDR <= databus
-              if (busfault) begin
-                state_next = STATE_EXCEPTION;
-                exception_next = 4'h1;
-              end else
-                if (bus_wait == 1'b0)
-                  seq_next = 3'h3;
+              if (bus_wait == 1'b0)
+                seq_next = 3'h3;
             end
             3'h3: begin
               regsel = 4'h1; // rA <= MDR
@@ -564,12 +606,8 @@ begin
               bus_read = 1'b1;
               byteenable = (bus_align[1] ? 4'b0011 : 4'b1100);
               mdrsel = 3'h1; // MDR <= databus
-              if (busfault) begin
-                state_next = STATE_EXCEPTION;
-                exception_next = 4'h1;
-              end else
-                if (bus_wait == 1'b0)
-                  seq_next = 3'h3;
+              if (bus_wait == 1'b0)
+                seq_next = 3'h3;
             end
             3'h3: begin
               regsel = 4'h1; // rA <= MDR
@@ -601,12 +639,8 @@ begin
                 2'b11: byteenable = 4'b0001;
               endcase
               mdrsel = 3'h1; // MDR <= databus
-              if (busfault) begin
-                state_next = STATE_EXCEPTION;
-                exception_next = 4'h1;
-              end else
-                if (bus_wait == 1'b0)
-                  seq_next = 3'h3;
+              if (bus_wait == 1'b0)
+                seq_next = 3'h3;
             end
             3'h3: begin
               regsel = 4'h1; // rA <= MDR
@@ -658,12 +692,8 @@ begin
             3'h3: begin
               addrsel = 1'b1; // MAR
               bus_write = 1'b1;            
-              if (busfault) begin
-                state_next = STATE_EXCEPTION;
-                exception_next = 4'h1;
-              end else
-                if (bus_wait == 1'b0)
-                  seq_next = 3'h4;
+              if (bus_wait == 1'b0)
+                seq_next = 3'h4;
             end
             3'h4: begin
               addrsel = 1'b1;
@@ -698,6 +728,8 @@ begin
             'h23: int_func = 'b100;
             'h24: int_func = 'b101;
             'h25: int_func = 'b110;
+            'h26: int_func = 'b000;
+            'h27: int_func = 'b100;
             default: int_func = 'b000;
           endcase
           reg_read_addr1 = ir_rb;
@@ -705,7 +737,10 @@ begin
           case (seq)
             'h6: begin
               seq_next = 3'h7;
-              mdrsel = 3'h4; // MDR <= intout[31:0]
+              if (ir_op == 'h26 || ir_op == 'h27)
+                mdrsel = 3'h5; // MDR <= intout[63:32]
+              else
+                mdrsel = 3'h4; // MDR <= intout[31:0]
             end
             'h7: begin
               seq_next = 3'h0;
@@ -719,21 +754,22 @@ begin
         {MODE_DIR, 7'h30}: state_next = STATE_FETCHARG;
         {MODE_DIR, 7'h31}: state_next = STATE_FETCHARG;
         {MODE_DIR, 7'h32}: begin // trap
-          state_next = STATE_EXCEPTION; // TODO
+          exception_next = { 1'b1, ir_uval[2:0] }; // upper 8 are swi
+          state_next = STATE_EXCEPTION;
         end
-        default: state_next = STATE_HALT;
+        {MODE_DIR, 7'h33}: state_next = STATE_FETCHARG; // setint
+        default: begin
+          exception_next = 4'h3; // bad opcode
+          state_next = STATE_EXCEPTION;
+        end
       endcase
     end
     STATE_FETCHARG: begin
       case (seq)
         3'h0: begin
           bus_read = 1'b1;
-          if (busfault) begin
-            state_next = STATE_EXCEPTION;
-            exception_next = 4'h1;
-          end else
-            if (bus_wait == 1'b0) // wait until we get control of bus
-              seq_next = 3'h1;
+          if (bus_wait == 1'b0) // wait until we get control of bus
+            seq_next = 3'h1;
         end
         3'h1: begin
           bus_read = 1'b1; // still assert bus control
@@ -760,12 +796,8 @@ begin
             end
             3'h1: begin
               bus_write = 1'b1; //  addrbus <= MAR
-              if (busfault) begin
-                state_next = STATE_EXCEPTION;
-                exception_next = 4'h1;
-              end else
-                if (bus_wait == 1'b0)
-                  seq_next = 3'h2;
+              if (bus_wait == 1'b0)
+                seq_next = 3'h2;
             end
             3'h2: begin
               state_next = STATE_FETCHIR;
@@ -783,12 +815,8 @@ begin
             3'h1: begin
               bus_read = 1'b1;
               mdrsel = 3'h1; // MDR <= databus
-              if (busfault) begin
-                state_next = STATE_EXCEPTION;
-                exception_next = 4'h1;
-              end else
-                if (bus_wait == 1'b0)
-                  seq_next = 3'h2;
+              if (bus_wait == 1'b0)
+                seq_next = 3'h2;
             end
             3'h2: begin
               regsel = 4'h1; // rA <= MDR
@@ -809,12 +837,8 @@ begin
             end
             3'h1: begin
               bus_write = 1'b1;
-              if (busfault) begin
-                state_next = STATE_EXCEPTION;
-                exception_next = 4'h1;
-              end else
-                if (bus_wait == 1'b0)
-                  seq_next = 3'h2;
+              if (bus_wait == 1'b0)
+                seq_next = 3'h2;
             end
             3'h2: begin
               state_next = STATE_FETCHIR;
@@ -830,12 +854,8 @@ begin
               bus_read = 1'b1;
               byteenable = (bus_align[1] ? 4'b0011 : 4'b1100);
               mdrsel = 3'h1; // MDR <= databus
-              if (busfault) begin
-                state_next = STATE_EXCEPTION;
-                exception_next = 4'h1;
-              end else
-                if (bus_wait == 1'b0)
-                  seq_next = 3'h1;
+              if (bus_wait == 1'b0)
+                seq_next = 3'h1;
             end
             3'h1: begin
               regsel = 4'h1; // rA <= MDR
@@ -861,12 +881,8 @@ begin
             end
             3'h1: begin
               bus_write = 1'b1; // addrbus <= MAR
-              if (busfault) begin
-                state_next = STATE_EXCEPTION;
-                exception_next = 4'h1;
-              end else
-                if (bus_wait == 1'b0)
-                  seq_next = 3'h2;
+              if (bus_wait == 1'b0)
+                seq_next = 3'h2;
             end
             3'h2: begin
               state_next = STATE_FETCHIR;
@@ -887,12 +903,8 @@ begin
                 2'b11: byteenable = 4'b0001;
               endcase
               mdrsel = 3'h1; // MDR <= databus
-              if (busfault) begin
-                state_next = STATE_EXCEPTION;
-                exception_next = 4'h1;
-              end else
-                if (bus_wait == 1'b0)
-                  seq_next = 3'h1;
+              if (bus_wait == 1'b0)
+                seq_next = 3'h1;
             end
             // std.s
             // ldd.s
@@ -935,12 +947,8 @@ begin
             3'h2: begin
               addrsel = 1'b1; // MAR
               bus_write = 1'b1;            
-              if (busfault) begin
-                state_next = STATE_EXCEPTION;
-                exception_next = 4'h1;
-              end else
-                if (bus_wait == 1'b0)
-                  seq_next = 3'h3;
+              if (bus_wait == 1'b0)
+                seq_next = 3'h3;
             end
             3'h3: begin
               addrsel = 1'b1;
@@ -953,18 +961,17 @@ begin
             default: state_next = STATE_HALT;
           endcase
         end
-        default: state_next = STATE_HALT;
+        7'h33: begin // setint
+          vectoff_write = 1'b1;
+          state_next = STATE_FETCHIR;  
+        end
+        default: begin
+          exception_next = 4'h3; // bad opcode
+          state_next = STATE_EXCEPTION;
+        end
       endcase
     end
     STATE_HALT: state_next = STATE_HALT;
-    STATE_EXCEPTION: begin
-      state_next = STATE_HALT;
-      // check exception_next type
-      // mark that we're in an exception_next in the CPU state
-      // up priv mode if needed (supervisor stack)
-      // put info onto stack
-      // call exception_next handler code
-    end
     default: state_next = STATE_HALT;
   endcase
 end
