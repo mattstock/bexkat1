@@ -23,6 +23,7 @@ module iocontroller(
   input wp_n,
   output itd_backlight,
   output itd_dc,
+  output [1:0] interrupt,
   input [15:0] sw);
 
 reg lcd_read, lcd_write, uart1_read, uart0_read, uart1_write, uart0_write, spi_read, spi_write;
@@ -64,7 +65,7 @@ lcd_module lcd0(.clk(clk), .rst_n(rst_n), .read(lcd_read), .write(lcd_write), .w
   .readdata(lcd_readdata), .be(be), .address(address[8:2]),
   .e(lcd_e), .data_out(lcd_data), .rs(lcd_rs), .on(lcd_on), .rw(lcd_rw));  
 uart #(.baud(115200)) uart0(.clk(clk), .rst_n(rst_n), .rx(rx0), .tx(tx0), .data_in(data_in), .be(be),
-  .data_out(uart0_readdata), .select(uart0_read|uart0_write), .write(uart0_write), .address(address[2]));
+  .data_out(uart0_readdata), .select(uart0_read|uart0_write), .write(uart0_write), .address(address[2]), .interrupt(interrupt));
 uart uart1(.clk(clk), .rst_n(rst_n), .rx(1'b0), .tx(tx1), .data_in(data_in), .be(be),
   .data_out(uart1_readdata), .select(uart1_read|uart1_write), .write(uart1_write), .address(address[2]));
 spi_master spi0(.clk(clk), .rst_n(rst_n), .miso(miso), .mosi(mosi), .sclk(sclk), .selects(spi_selects), .wp_n(sd_wp_n),

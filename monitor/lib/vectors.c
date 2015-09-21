@@ -11,7 +11,7 @@ isr _vectors_start[16] = {
   dummy, /* invalid opcode */
   dummy, /* write fault */
   dummy, /* halt */
-  dummy, /* debug */
+  dummy, /* recv */
   dummy, /* interrupt */
   dummy, /* trap 0 */
   dummy, /* trap 1 */

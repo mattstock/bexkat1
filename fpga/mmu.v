@@ -7,7 +7,7 @@ module mmu(
   input map,
   output buswait,
   output buswrite,
-  output [3:0] fault,
+  output [1:0] fault,
   output start,
   output [3:0] chipselect);
   
@@ -17,7 +17,7 @@ reg [1:0] state, state_next;
 localparam [1:0] STATE_IDLE = 2'b00, STATE_START = 2'b01, STATE_PRE = 2'b10, STATE_POST = 2'b11;
 
 // fault can be bus (alignment), page (unused for now?), 
-assign fault = 4'h0;
+assign fault = 2'h0;
 // priv (access not in supervisor mode), write (write to RO page)
 
 assign chipselect = (read || write ? cs : 4'h0);

@@ -24,14 +24,16 @@ module control(
   output bus_read,
   output bus_write,
   output halt,
+  output int_en,
   output vectoff_write,
   input supervisor,
   input bus_wait,
   output reg [3:0] exception,
-  input [3:0] interrupt,
+  input [2:0] interrupt,
   input [1:0] bus_align);
 
 assign halt = (state == STATE_HALT);
+assign int_en = interrupts_enabled;
 
 wire [1:0] ir_mode = ir[31:30];
 wire [6:0] ir_op;
@@ -44,6 +46,7 @@ assign {carry, negative, overflow, zero} = ccr;
 
 reg [3:0] state, state_next;
 reg [2:0] seq, seq_next;
+reg interrupts_enabled, interrupts_enabled_next;
 reg [3:0] exception_next;
 
 localparam [3:0] STATE_FETCHIR = 4'h0, STATE_EVALIR = 4'h1, STATE_FETCHARG = 4'h2, STATE_EVALARG = 4'h3, STATE_HALT = 4'h4, STATE_EXCEPTION = 4'h5, STATE_RESET = 4'h6;
@@ -68,10 +71,12 @@ begin
   if (!reset_n) begin
     state <= STATE_RESET;
     seq <= 3'h0;
+    interrupts_enabled = 1'b0;
     exception <= 4'h0;
   end else begin
     seq <= seq_next;
     state <= state_next;
+    interrupts_enabled <= interrupts_enabled_next;
     exception <= exception_next;
   end
 end
@@ -80,6 +85,7 @@ always @(*)
 begin
   state_next = state;
   seq_next = seq;
+  interrupts_enabled_next = interrupts_enabled;
   exception_next = exception;
   ir_write = 1'b0;
   alu_func = 3'h2; // add
@@ -163,9 +169,10 @@ begin
       case (seq)
         3'h0: begin
           bus_read = 1'b1;
-          if (|interrupt) begin
+          if (|interrupt && interrupts_enabled) begin
             state_next = STATE_EXCEPTION;
-            exception_next = interrupt;
+            interrupts_enabled_next = 1'b0;
+            exception_next = { 1'b0, interrupt};
           end else
             if (bus_wait == 1'b0) // wait until we get control of bus
               seq_next = 3'h1;
@@ -218,9 +225,11 @@ begin
           endcase
         end
         {MODE_REG, 7'h02}: begin // rti
-          // for now, exactly the same as rts
+          // almost the same as rts, but reenable interrupts
           case (seq)
             3'h0: begin
+              interrupts_enabled_next = 1'b1;
+              exception_next = 4'h0;
               reg_read_addr1 = REG_SP; // SP
               marsel = 2'h3; // mar <= SP
               seq_next = 3'h1;
@@ -373,6 +382,14 @@ begin
         {MODE_REG, 7'h13}: begin // ext
           regsel = 4'ha; // reg_data_out2[15:0] + extend
           reg_write = REG_WRITE_DW;          
+          state_next = STATE_FETCHIR;
+        end
+        {MODE_REG, 7'h14}: begin // cli
+          interrupts_enabled_next = 1'b0;
+          state_next = STATE_FETCHIR;
+        end
+        {MODE_REG, 7'h15}: begin // sti
+          interrupts_enabled_next = 1'b1;
           state_next = STATE_FETCHIR;
         end
         {MODE_REG, 7'h2x}: begin // alu rA <= rB + rC

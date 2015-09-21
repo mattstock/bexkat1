@@ -8,7 +8,9 @@ module bexkat2(
   output reg read,
   output reg write,
   output halt,
-  input [3:0] interrupt,
+  input [2:0] interrupt,
+  output int_en,
+  output [3:0] exception,
   input [31:0] readdata,
   output [31:0] writedata,
   output [3:0] byteenable);
@@ -43,9 +45,6 @@ wire [31:0] ir_uval = { 16'h0000, ir[23:20], ir[11:0] };
 
 // Convenience mappings
 wire super_mode = status[3];
-// current exception
-wire [3:0] exception;
-//wire [3:0] imask = status[2:0];
 
 // Data switching logic
 assign address = (addrsel ? mar : pc);
@@ -58,7 +57,7 @@ begin
   if (!reset_n) begin
     pc <= 'h0;
     ir <= 0;
-    mdr <= 'h3c; // exception vector for reset
+    mdr <= 0;
     mar <= 0;
     aluval <= 0;
     intval <= 0;
@@ -182,7 +181,7 @@ control con0(.clock(clk), .reset_n(reset_n), .ir(ir), .ir_write(ir_write), .ccr(
   .regsel(regsel), .reg_read_addr1(reg_read_addr1), .reg_read_addr2(reg_read_addr2), .reg_write_addr(reg_write_addr), .reg_write(reg_write),
   .mdrsel(mdrsel), .marsel(marsel), .pcsel(pcsel), .int1sel(int1sel), .int2sel(int2sel), .int_func(int_func), .supervisor(super_mode),
   .addrsel(addrsel), .byteenable(byteenable), .bus_read(read), .bus_write(write), .bus_wait(waitrequest), .bus_align(address[1:0]),
-  .vectoff_write(vectoff_write), .halt(halt), .exception(exception), .interrupt(interrupt));
+  .vectoff_write(vectoff_write), .halt(halt), .exception(exception), .interrupt(interrupt), .int_en(int_en));
 
 alu alu0(.in1(alu_in1), .in2(alu_in2), .func(alu_func), .out(alu_out), .c_out(alu_carry), .n_out(alu_negative), .v_out(alu_overflow), .z_out(alu_zero));
 intcalc int0(.clock(clk), .func(int_func), .in1(int_in1), .in2(int_in2), .out(int_out));

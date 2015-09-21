@@ -168,18 +168,21 @@ hexdisp d0(.out(HEX0), .in(addrdisp[3:0]));
 
 // Blinknlights
 assign LEDR = { 7'h0, chipselect };
-assign LEDG = { cpu_halt, sdram_ready, flash_ready, 6'b0000000 };
+assign LEDG = { cpu_halt, sdram_ready, flash_ready, 1'b0, int_en, exception };
 
 wire [7:0] chipselect;
 wire [31:0] cpu_address;
 wire [31:0] cpu_readdata, cpu_writedata, mon_readdata, ram_readdata, matrix_readdata, rom_readdata;
 wire [31:0] vect_readdata, io_readdata, sdram_readdata, sdram_dataout;
-wire [3:0] cpu_be, bm_be, mmu_fault;
+wire [3:0] cpu_be, bm_be, exception;
+wire [1:0] mmu_interrupt, io_interrupt;
+wire [2:0] cpu_interrupt;
 wire [7:0] lcd_dataout;
 wire cpu_write, cpu_read, cpu_wait, ram_write, ram_read, rom_read, cpu_halt;
 wire io_write, io_read, vect_read, sdram_read, sdram_write, sdram_ready, flash_ready, flash_read, flash_write;
 wire matrix_oe_n, bus_start, mmu_buswrite;
 wire matrix_read, matrix_write, ssram_read, ssram_write;
+wire int_en;
 
 // quadrature encoder outputs 0-23
 // rgb_enc io0(.clk(clock_50), .rst_n(rst_n), .quad(quad), .button(pb), .rgb_out(rgb),
@@ -217,8 +220,20 @@ begin
   end
 end
 
+// interrupt hierarchy
+always @(*)
+begin
+  if (|mmu_interrupt)
+    cpu_interrupt = { 1'b0, mmu_interrupt };
+  else if (|io_interrupt)
+    cpu_interrupt = { 1'b1, io_interrupt };
+  else
+    cpu_interrupt = 3'h0;
+end
+
 bexkat2 bexkat0(.clk(clock_50), .reset_n(rst_n), .address(cpu_address), .read(cpu_read), .readdata(cpu_readdata),
-  .write(cpu_write), .writedata(cpu_writedata), .byteenable(cpu_be), .waitrequest(cpu_wait), .halt(cpu_halt), .interrupt(mmu_fault));
+  .write(cpu_write), .writedata(cpu_writedata), .byteenable(cpu_be), .waitrequest(cpu_wait), .halt(cpu_halt), .interrupt(cpu_interrupt),
+  .exception(exception), .int_en(int_en));
 vectors vecram0(.clock(clock_50), .q(vect_readdata), .rden(vect_read), .address(cpu_address[6:2]));
 monitor rom0(.clock(clock_50), .q(rom_readdata), .rden(rom_read), .address(cpu_address[15:2]));
 scratch ram0(.clock(clock_50), .data(cpu_writedata), .q(ram_readdata), .wren(ram_write), .rden(ram_read), .address(cpu_address[13:2]),
@@ -232,11 +247,11 @@ led_matrix matrix0(.csi_clk(clock_50), .led_clk(clock_2p7), .rsi_reset_n(rst_n),
   .demux({rgb_a, rgb_b, rgb_c}), .rgb0(rgb0), .rgb1(rgb1), .rgb_stb(rgb_stb), .rgb_clk(rgb_clk), .oe_n(matrix_oe_n));
 iocontroller io0(.clk(clock_50), .rst_n(rst_n), .miso(miso), .mosi(mosi), .sclk(sclk), .spi_selects(spi_selects), .sd_wp_n(sd_wp_n),
   .be(cpu_be), .data_in(cpu_writedata), .data_out(io_readdata), .read(io_read), .write(io_write), .address(cpu_address),
-  .lcd_e(lcd_e), .lcd_data(lcd_dataout), .lcd_rs(lcd_rs), .lcd_on(lcd_on), .lcd_rw(lcd_rw),
+  .lcd_e(lcd_e), .lcd_data(lcd_dataout), .lcd_rs(lcd_rs), .lcd_on(lcd_on), .lcd_rw(lcd_rw), .interrupt(io_interrupt),
   .rx0(serial0_rx), .tx0(serial0_tx), .tx1(serial1_tx), .sw(SW[15:0]), .itd_backlight(itd_backlight), .itd_dc(itd_dc));
 mmu mmu0(.clock(clock_50), .reset_n(rst_n), .address(cpu_address),
   .read(cpu_read), .start(bus_start), .chipselect(chipselect), .write(cpu_write),
-  .buswait(cpu_wait), .buswrite(mmu_buswrite), .fault(mmu_fault));
+  .buswait(cpu_wait), .buswrite(mmu_buswrite), .fault(mmu_interrupt));
 sysclock pll0(.inclk0(raw_clock_50), .c0(clock_200), .c1(clock_25), .c2(clock_50), .c3(clock_50p), .areset(~KEY[0]), .locked(locked));
 matrixpll pll1(.inclk0(raw_clock_50), .c0(clock_2p7));
 fan_ctrl fan0(.clk(clock_25), .rst_n(rst_n), .fan_pwm(fan_ctrl));

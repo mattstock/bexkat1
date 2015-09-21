@@ -1,4 +1,4 @@
-module uart(clk, rst_n, rx, tx, be, data_in, data_out, select, write, address);
+module uart(clk, rst_n, rx, tx, be, data_in, data_out, select, write, address, interrupt);
 
 parameter clkfreq = 50000000;
 parameter baud = 9600;
@@ -13,11 +13,13 @@ input [31:0] data_in;
 output [31:0] data_out;
 input write;
 input address;
+output [1:0] interrupt;
 
 wire tx_ready, rx_ready, tx_start;
 wire [7:0] rx_in, tx_byte;
 
 assign tx_byte = data_in[7:0];
+assign interrupt = { rx_queue[0], 1'b0 };
 
 reg [7:0] rx_byte, rx_byte_next;
 reg [1:0] rx_queue, rx_queue_next;
