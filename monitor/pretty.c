@@ -1,10 +1,18 @@
 #include <stdarg.h>
 #include "misc.h"
 #include "matrix.h"
+#include "serial.h"
 #include <stdio.h>
 #include <stdlib.h>
+#include "vectors.h"
 
 void main(void);
+
+void ping(void) {
+  serial_getchar(0);
+  matrix_put(0,0,0xffffff);
+  asm("rti");
+}
 
 void matrix_fade(void) {
   unsigned short i;
@@ -44,6 +52,9 @@ void main(void) {
   x = 16;
   y = 8;
   val = 0x00808080;
+
+  _vectors_start[6] = ping;
+  asm("sti");
 
   while (1) {
     iprintf("(%d, %d)\n", x,y);

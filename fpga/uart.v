@@ -24,6 +24,7 @@ assign interrupt = { rx_queue[0], 1'b0 };
 reg [7:0] rx_byte, rx_byte_next;
 reg [1:0] rx_queue, rx_queue_next;
 reg tx_queue, tx_queue_next;
+reg tx_dequeue, tx_d
 
 // memory logic
 always @(posedge clk or negedge rst_n)
@@ -89,7 +90,7 @@ end
 uart_tx #(.clkfreq(clkfreq), .baud(baud)) tx0(.clk(clk), .data(tx_byte), .start(tx_start), .ready(tx_ready), .serial_out(tx));
 uart_rx #(.clkfreq(clkfreq), .baud(baud)) rx0(.clk(clk), .data(rx_in), .ready(rx_ready), .serial_in(rx));
 
-//uart_fifo tx_fifo0(.q(tx_byte), .rdempty(), .wrfull(tx_full), .data(data_in[7:0]), .wrclk(clk), .rdclk(), .aclr(~rst_n), .wrreq(), .rdreq());
-//uart_fifo rx_fifo0(.q(rx_top), .rdempty(), .wrfull(), .data(rx_byte), .wrclk(clk), .rdclk(), .aclr(~rst_n), .wrreq(rx_ready), .rdreq());
+uart_fifo tx_fifo0(.q(tx_byte), .empty(tx_empty), .full(tx_full), .data(tx_byte), .clock(clk), .aclr(~rst_n), .wrreq(tx_queue), .rdreq(tx_dequeue));
+//uart_fifo rx_fifo0(.q(rx_top), .rdempty(), .wrfull(), .data(rx_byte), .clock(clk), .aclr(~rst_n), .wrreq(rx_ready), .rdreq());
 
 endmodule

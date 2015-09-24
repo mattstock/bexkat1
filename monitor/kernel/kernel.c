@@ -80,7 +80,7 @@ void main(void) {
   a = 3.0;
   b = 2.0;
   printf("%f * %f = %f\n", a, b, a*b);
-//  mandelbrot(0.36,0.1,0.0001);
+  mandelbrot(0.36,0.1,0.0001);
   while (1) {
     read(0, buf, 1);
     printf("%c\n", buf[0]);
