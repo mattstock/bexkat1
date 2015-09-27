@@ -18,17 +18,19 @@ module bexkat2(
 // Control signals
 wire reg_write;
 wire [2:0] alu_func, int_func;
-wire addrsel, ir_write, ccr_write, vectoff_write;
-wire [3:0] reg_read_addr1, reg_read_addr2, reg_write_addr;
-wire [1:0] marsel, int1sel, int2sel;
-wire [2:0] pcsel, mdrsel, alu1sel, alu2sel;
-wire [3:0] regsel;
+wire addrsel, ir_write, vectoff_write;
+wire [4:0] reg_read_addr1, reg_read_addr2, reg_write_addr;
+wire [1:0] marsel, int1sel, int2sel, ccrsel;
+wire [2:0] pcsel, alu1sel, alu2sel;
+wire [3:0] regsel, mdrsel;
+wire fp_aeb, fp_agb, fp_alb;
 
 // Data paths
 wire [31:0] alu_out, reg_data_out1, reg_data_out2;
-wire [31:0] ir_next, vectoff_next;
+wire [31:0] ir_next, vectoff_next, fp_cvtis_out;
+wire [31:0] fp_cvtsi_out;
 wire [63:0] int_out;
-wire [3:0] ccr_next;
+wire [4:0] ccr_next;
 wire alu_carry, alu_negative, alu_overflow, alu_zero;
 
 // Special registers
@@ -36,7 +38,7 @@ reg [31:0] mdr, mdr_next, mar, pc, aluval, ir, busin_be, vectoff;
 reg [32:0] pc_next, mar_next;
 reg [31:0] reg_data_in, alu_in1, alu_in2, int_in1, int_in2;
 reg [63:0] intval;
-reg [3:0] ccr;
+reg [4:0] ccr;
 reg [3:0] status, status_next;
 
 // opcode format
@@ -49,7 +51,6 @@ wire super_mode = status[3];
 // Data switching logic
 assign address = (addrsel ? mar : pc);
 assign ir_next = (ir_write ? readdata : ir);
-assign ccr_next = (ccr_write ? {alu_carry, alu_negative, alu_overflow, alu_zero} : ccr);
 assign vectoff_next = (vectoff_write ? mdr : vectoff);
 
 always @(posedge clk or negedge reset_n)
@@ -61,7 +62,7 @@ begin
     mar <= 0;
     aluval <= 0;
     intval <= 0;
-    ccr <= 4'b0000;
+    ccr <= 5'h0;
     vectoff <= 'hffffffc0;
     status <= 4'b1000; // start in supervisor mode
   end else begin
@@ -131,13 +132,15 @@ always @* begin
     end
   endcase
   case (mdrsel)
-    3'h0: mdr_next = mdr;
-    3'h1: mdr_next = busin_be; // byte aligned
-    3'h2: mdr_next = aluval;
-    3'h3: mdr_next = reg_data_out1;
-    3'h4: mdr_next = intval[31:0];
-    3'h5: mdr_next = intval[63:32];
-    3'h6: mdr_next = pc;
+    4'h0: mdr_next = mdr;
+    4'h1: mdr_next = busin_be; // byte aligned
+    4'h2: mdr_next = aluval;
+    4'h3: mdr_next = reg_data_out1;
+    4'h4: mdr_next = intval[31:0];
+    4'h5: mdr_next = intval[63:32];
+    4'h6: mdr_next = pc;
+    4'h7: mdr_next = fp_cvtis_out;
+    4'h8: mdr_next = fp_cvtsi_out;
     default: mdr_next = mdr;
   endcase
   case (regsel)
@@ -174,10 +177,20 @@ always @* begin
     3'h0: int_in2 = reg_data_out2;
     3'h1: int_in2 = ir_sval;
     default: int_in2 = reg_data_out2;
-  endcase  
+  endcase
+  case (ccrsel)
+    2'h0: ccr_next = ccr;
+    2'h1: ccr_next = { alu_carry , 
+                       ~(alu_zero | alu_carry),
+                       alu_negative ^ alu_overflow,
+                       ~(alu_zero | (alu_negative ^ alu_overflow)),
+                       alu_zero };
+    2'h2: ccr_next = { fp_alb, fp_agb, fp_alb, fp_agb, fp_aeb };
+    default: ccr_next = ccr;
+  endcase
 end
 
-control con0(.clock(clk), .reset_n(reset_n), .ir(ir), .ir_write(ir_write), .ccr(ccr), .ccr_write(ccr_write), .alu_func(alu_func), .alu1sel(alu1sel), .alu2sel(alu2sel),
+control con0(.clock(clk), .reset_n(reset_n), .ir(ir), .ir_write(ir_write), .ccr(ccr), .ccrsel(ccrsel), .alu_func(alu_func), .alu1sel(alu1sel), .alu2sel(alu2sel),
   .regsel(regsel), .reg_read_addr1(reg_read_addr1), .reg_read_addr2(reg_read_addr2), .reg_write_addr(reg_write_addr), .reg_write(reg_write),
   .mdrsel(mdrsel), .marsel(marsel), .pcsel(pcsel), .int1sel(int1sel), .int2sel(int2sel), .int_func(int_func), .supervisor(super_mode),
   .addrsel(addrsel), .byteenable(byteenable), .bus_read(read), .bus_write(write), .bus_wait(waitrequest), .bus_align(address[1:0]),
@@ -185,7 +198,10 @@ control con0(.clock(clk), .reset_n(reset_n), .ir(ir), .ir_write(ir_write), .ccr(
 
 alu alu0(.in1(alu_in1), .in2(alu_in2), .func(alu_func), .out(alu_out), .c_out(alu_carry), .n_out(alu_negative), .v_out(alu_overflow), .z_out(alu_zero));
 intcalc int0(.clock(clk), .func(int_func), .in1(int_in1), .in2(int_in2), .out(int_out));
-registerfile intreg(.clk(clk), .rst_n(reset_n), .read1({ 1'b0, reg_read_addr1 }), .read2({ 1'b0, reg_read_addr2 }), .write_addr({ 1'b0, reg_write_addr }),
+fp_cvtis fp_cvtis0(.clock(clk), .dataa(reg_data_out2), .result(fp_cvtis_out));
+fp_cvtsi fp_cvtsi0(.clock(clk), .dataa(reg_data_out2), .result(fp_cvtsi_out));
+fp_cmp fp_cmp0(.clock(clk), .dataa(reg_data_out1), .datab(reg_data_out2), .aeb(fp_aeb), .agb(fp_agb), .alb(fp_alb));
+registerfile intreg(.clk(clk), .rst_n(reset_n), .read1(reg_read_addr1), .read2(reg_read_addr2), .write_addr(reg_write_addr),
   .write_data(reg_data_in), .write_en(reg_write), .data1(reg_data_out1), .data2(reg_data_out2), .supervisor(super_mode));
 
 endmodule
