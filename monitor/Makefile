@@ -12,7 +12,7 @@ TEMP := $(shell mktemp)
 
 .PHONY: all clean lib gcctests kernel install
 
-all: lib gcctests boot.o bootstrap.hex pretty kernel matrix floaters multiply
+all: lib gcctests boot.o bootstrap.hex pretty kernel matrix floaters multiply serial.hex
 
 install: kernel pretty
 	cp kernel/kernel pretty multiply floaters /media/mstock/19D5-2529/
@@ -21,7 +21,7 @@ clean:
 	cd lib; make clean
 	cd gcctests; make clean
 	cd kernel; make clean
-	rm -f *.o *.srec *.hex bootstrap bootstrap.s matrix pretty.s pretty multiply floaters *.gkd *.expand
+	rm -f *.o *.srec *.hex bootstrap bootstrap.s matrix pretty.s pretty multiply floaters serial *.gkd *.expand
 
 lib:
 	cd lib; make
@@ -43,6 +43,9 @@ kernel:
 	egrep -v "^:02000004" $(TEMP) | egrep -v "^:04000005" > $@	
 
 bootstrap: bootstrap.o
+	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
+
+serial: serial.o
 	$(CC) $(LDFLAGS) -o $@ $^ $(LIBS)
 
 pretty: pretty.o
