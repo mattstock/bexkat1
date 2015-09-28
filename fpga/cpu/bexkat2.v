@@ -30,7 +30,7 @@ wire [31:0] alu_out, reg_data_out1, reg_data_out2;
 wire [31:0] ir_next, vectoff_next, fp_cvtis_out;
 wire [31:0] fp_cvtsi_out;
 wire [63:0] int_out;
-wire [4:0] ccr_next;
+wire [2:0] ccr_next;
 wire alu_carry, alu_negative, alu_overflow, alu_zero;
 
 // Special registers
@@ -38,7 +38,7 @@ reg [31:0] mdr, mdr_next, mar, pc, aluval, ir, busin_be, vectoff;
 reg [32:0] pc_next, mar_next;
 reg [31:0] reg_data_in, alu_in1, alu_in2, int_in1, int_in2;
 reg [63:0] intval;
-reg [4:0] ccr;
+reg [2:0] ccr;
 reg [3:0] status, status_next;
 
 // opcode format
@@ -62,7 +62,7 @@ begin
     mar <= 0;
     aluval <= 0;
     intval <= 0;
-    ccr <= 5'h0;
+    ccr <= 3'h0;
     vectoff <= 'hffffffc0;
     status <= 4'b1000; // start in supervisor mode
   end else begin
@@ -180,12 +180,8 @@ always @* begin
   endcase
   case (ccrsel)
     2'h0: ccr_next = ccr;
-    2'h1: ccr_next = { alu_carry , 
-                       ~(alu_zero | alu_carry),
-                       alu_negative ^ alu_overflow,
-                       ~(alu_zero | (alu_negative ^ alu_overflow)),
-                       alu_zero };
-    2'h2: ccr_next = { fp_alb, fp_agb, fp_alb, fp_agb, fp_aeb };
+    2'h1: ccr_next = { alu_carry, alu_negative ^ alu_overflow, alu_zero };
+    2'h2: ccr_next = { fp_alb, fp_alb, fp_aeb };
     default: ccr_next = ccr;
   endcase
 end

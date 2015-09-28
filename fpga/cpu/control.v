@@ -3,7 +3,7 @@ module control(
   input reset_n,
   input [31:0] ir,
   output ir_write,
-  input [3:0] ccr,
+  input [2:0] ccr,
   output [1:0] ccrsel,
   output [2:0] alu_func,
   output [2:0] alu1sel,
@@ -41,8 +41,8 @@ wire [4:0] ir_ra   = { fp_ra, ir[19:16] };
 wire [4:0] ir_rb   = { fp_rb, ir[15:12] };
 wire [4:0] ir_rc   = { fp_rc, ir[11:8] };
 
-wire ccr_ltu, ccr_gtu, ccr_lt, ccr_gt, ccr_eq;
-assign { ccr_ltu, ccr_gtu, ccr_lt, ccr_gt, ccr_eq } = ccr;
+wire ccr_ltu, ccr_lt, ccr_eq;
+assign { ccr_ltu, ccr_lt, ccr_eq } = ccr;
 
 reg [3:0] state, state_next;
 reg [2:0] seq, seq_next;
@@ -574,19 +574,14 @@ begin
           if (~ccr_eq)
             pcsel = 3'h3;
         end
-        {MODE_IMM, 7'h03}: begin // bgtu
-          state_next = STATE_FETCHIR;
-          if (ccr_gtu)
-            pcsel = 3'h3;
-        end
         {MODE_IMM, 7'h04}: begin // bgt
           state_next = STATE_FETCHIR;
-          if (ccr_gt)
+          if (~(ccr_lt | ccr_eq))
             pcsel = 3'h3;
         end
         {MODE_IMM, 7'h05}: begin // bge
           state_next = STATE_FETCHIR;
-          if (ccr_gt | ccr_eq)
+          if (~ccr_lt)
             pcsel = 3'h3;
         end
         {MODE_IMM, 7'h06}: begin // ble
@@ -599,9 +594,14 @@ begin
           if (ccr_lt)
             pcsel = 3'h3;
         end
+        {MODE_IMM, 7'h03}: begin // bgtu
+          state_next = STATE_FETCHIR;
+          if (~(ccr_ltu | ccr_eq))
+            pcsel = 3'h3;
+        end
         {MODE_IMM, 7'h08}: begin // bgeu
           state_next = STATE_FETCHIR;
-          if (ccr_gtu | ccr_eq)
+          if (~ccr_ltu)
             pcsel = 3'h3;
         end
         {MODE_IMM, 7'h09}: begin // bltu
