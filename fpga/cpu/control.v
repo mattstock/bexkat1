@@ -29,6 +29,7 @@ module control(
   input supervisor,
   input bus_wait,
   output reg [3:0] exception,
+  output fp_addsub,
   input [2:0] interrupt,
   input [1:0] bus_align);
 
@@ -44,8 +45,7 @@ wire [4:0] ir_rc   = { fp_rc, ir[11:8] };
 wire ccr_ltu, ccr_lt, ccr_eq;
 assign { ccr_ltu, ccr_lt, ccr_eq } = ccr;
 
-reg [3:0] state, state_next;
-reg [2:0] seq, seq_next;
+reg [3:0] state, state_next, seq, seq_next;
 reg interrupts_enabled, interrupts_enabled_next;
 reg [3:0] exception_next;
 wire fp_ra, fp_rb, fp_rc;
@@ -71,7 +71,7 @@ always @(posedge clock or negedge reset_n)
 begin
   if (!reset_n) begin
     state <= STATE_RESET;
-    seq <= 3'h0;
+    seq <= 4'h0;
     interrupts_enabled = 1'b0;
     exception <= 4'h0;
   end else begin
@@ -97,6 +97,7 @@ begin
   fp_ra = 1'b0; // all int registers by default
   fp_rb = 1'b0;
   fp_rc = 1'b0;
+  fp_addsub = 1'b0;
   reg_read_addr1 = ir_ra;
   reg_read_addr2 = ir_rb;
   reg_write_addr = ir_ra;
@@ -555,6 +556,33 @@ begin
               seq_next = 3'h0;
               regsel = 4'h1; // rA <= MDR
               reg_write = REG_WRITE_DW;              
+              state_next = STATE_FETCHIR;
+            end
+            default: seq_next = seq + 1'b1;
+          endcase
+        end
+        {MODE_REG, 7'h4x}: begin // fp math
+          fp_ra = 1'b1;
+          fp_rb = 1'b1;
+          fp_rc = 1'b1;
+          fp_addsub =  (ir_op == 7'h40);
+          reg_read_addr1 = ir_rb;
+          reg_read_addr2 = ir_rc;
+          case (seq)
+            'h7: begin
+              seq_next = 4'h8;
+              case (ir_op)
+                7'h40: mdrsel = 4'h9; // MDR <= fp_addsub
+                7'h41: mdrsel = 4'h9; // MDR <= fp_addsub
+                7'h42: mdrsel = 4'ha; // MDR <= fp_mult
+                7'h43: mdrsel = 4'hb; // MDR <= fp_div
+                default: mdrsel = 4'h0;
+              endcase
+            end
+            'h8: begin
+              seq_next = 4'h0;
+              regsel = 4'h1; // fp_rA <= MDR
+              reg_write = REG_WRITE_DW;
               state_next = STATE_FETCHIR;
             end
             default: seq_next = seq + 1'b1;

@@ -34,26 +34,24 @@
 //agreement for further details.
 
 
-//altfp_compare CBX_AUTO_BLACKBOX="ALL" DEVICE_FAMILY="Cyclone IV GX" PIPELINE=3 WIDTH_EXP=8 WIDTH_MAN=23 aeb agb alb clock dataa datab
+//altfp_compare CBX_AUTO_BLACKBOX="ALL" DEVICE_FAMILY="Cyclone IV GX" PIPELINE=3 WIDTH_EXP=8 WIDTH_MAN=23 aeb alb clock dataa datab
 //VERSION_BEGIN 14.0 cbx_altfp_compare 2014:09:17:18:41:02:SJ cbx_cycloneii 2014:09:17:18:41:02:SJ cbx_lpm_add_sub 2014:09:17:18:41:02:SJ cbx_lpm_compare 2014:09:17:18:41:02:SJ cbx_mgl 2014:09:17:20:49:57:SJ cbx_stratix 2014:09:17:18:41:02:SJ cbx_stratixii 2014:09:17:18:41:02:SJ  VERSION_END
 // synthesis VERILOG_INPUT_VERSION VERILOG_2001
 // altera message_off 10463
 
 
-//synthesis_resources = lpm_compare 4 reg 21 
+//synthesis_resources = lpm_compare 4 reg 20 
 //synopsys translate_off
 `timescale 1 ps / 1 ps
 //synopsys translate_on
-module  fp_cmp_altfp_compare_m0c
+module  fp_cmp_altfp_compare_cmb
 	( 
 	aeb,
-	agb,
 	alb,
 	clock,
 	dataa,
 	datab) ;
 	output   aeb;
-	output   agb;
 	output   alb;
 	input   clock;
 	input   [31:0]  dataa;
@@ -76,7 +74,6 @@ module  fp_cmp_altfp_compare_m0c
 	reg	[1:0]	man_a_not_zero_w_dffe1;
 	reg	[1:0]	man_b_not_zero_w_dffe1;
 	reg	out_aeb_w_dffe3;
-	reg	out_agb_w_dffe3;
 	reg	out_alb_w_dffe3;
 	wire  wire_cmpr1_aeb;
 	wire  wire_cmpr1_agb;
@@ -151,8 +148,6 @@ module  fp_cmp_altfp_compare_m0c
 	wire  out_aeb_dffe3_wi;
 	wire  out_aeb_dffe3_wo;
 	wire  out_aeb_w;
-	wire  out_agb_dffe3_wi;
-	wire  out_agb_dffe3_wo;
 	wire  out_agb_w;
 	wire  out_alb_dffe3_wi;
 	wire  out_alb_dffe3_wo;
@@ -280,13 +275,6 @@ module  fp_cmp_altfp_compare_m0c
 		else if  (clk_en == 1'b1)   out_aeb_w_dffe3 <= out_aeb_dffe3_wi;
 	// synopsys translate_off
 	initial
-		out_agb_w_dffe3 = 0;
-	// synopsys translate_on
-	always @ ( posedge clock or  posedge aclr)
-		if (aclr == 1'b1) out_agb_w_dffe3 <= 1'b0;
-		else if  (clk_en == 1'b1)   out_agb_w_dffe3 <= out_agb_dffe3_wi;
-	// synopsys translate_off
-	initial
 		out_alb_w_dffe3 = 0;
 	// synopsys translate_on
 	always @ ( posedge clock or  posedge aclr)
@@ -367,7 +355,6 @@ module  fp_cmp_altfp_compare_m0c
 	assign
 		aclr = 1'b0,
 		aeb = out_aeb_dffe3_wo,
-		agb = out_agb_dffe3_wo,
 		alb = out_alb_dffe3_wo,
 		aligned_dataa_sign_adjusted_dffe2_wi = aligned_dataa_sign_adjusted_w,
 		aligned_dataa_sign_adjusted_dffe2_wo = aligned_dataa_sign_adjusted_w_dffe2,
@@ -433,14 +420,12 @@ module  fp_cmp_altfp_compare_m0c
 		out_aeb_dffe3_wi = out_aeb_w,
 		out_aeb_dffe3_wo = out_aeb_w_dffe3,
 		out_aeb_w = ((((~ (aligned_dataa_sign_adjusted_dffe2_wo ^ aligned_datab_sign_adjusted_dffe2_wo)) & exp_aeb_w_dffe2_wo) | both_inputs_zero_dffe2_wo) & (~ out_unordered_w)),
-		out_agb_dffe3_wi = out_agb_w,
-		out_agb_dffe3_wo = out_agb_w_dffe3,
 		out_agb_w = (((((~ aligned_dataa_sign_adjusted_dffe2_wo) & aligned_datab_sign_adjusted_dffe2_wo) | ((exp_agb_w_dffe2_wo & (~ aligned_dataa_sign_adjusted_dffe2_wo)) & (~ both_inputs_zero_dffe2_wo))) | ((flip_outputs_dffe2_wo & (~ exp_agb_w_dffe2_wo)) & (~ out_aeb_w))) & (~ out_unordered_w)),
 		out_alb_dffe3_wi = out_alb_w,
 		out_alb_dffe3_wo = out_alb_w_dffe3,
 		out_alb_w = (((~ out_agb_w) & (~ out_aeb_w)) & (~ out_unordered_w)),
 		out_unordered_w = (input_dataa_nan_dffe2_wo | input_datab_nan_dffe2_wo);
-endmodule //fp_cmp_altfp_compare_m0c
+endmodule //fp_cmp_altfp_compare_cmb
 //VALID FILE
 
 
@@ -452,30 +437,25 @@ module fp_cmp (
 	dataa,
 	datab,
 	aeb,
-	agb,
 	alb);
 
 	input	  clock;
 	input	[31:0]  dataa;
 	input	[31:0]  datab;
 	output	  aeb;
-	output	  agb;
 	output	  alb;
 
 	wire  sub_wire0;
 	wire  sub_wire1;
-	wire  sub_wire2;
 	wire  aeb = sub_wire0;
-	wire  agb = sub_wire1;
-	wire  alb = sub_wire2;
+	wire  alb = sub_wire1;
 
-	fp_cmp_altfp_compare_m0c	fp_cmp_altfp_compare_m0c_component (
+	fp_cmp_altfp_compare_cmb	fp_cmp_altfp_compare_cmb_component (
 				.clock (clock),
 				.dataa (dataa),
 				.datab (datab),
 				.aeb (sub_wire0),
-				.agb (sub_wire1),
-				.alb (sub_wire2));
+				.alb (sub_wire1));
 
 endmodule
 
@@ -491,7 +471,6 @@ endmodule
 // Retrieval info: CONSTANT: WIDTH_EXP NUMERIC "8"
 // Retrieval info: CONSTANT: WIDTH_MAN NUMERIC "23"
 // Retrieval info: USED_PORT: aeb 0 0 0 0 OUTPUT NODEFVAL "aeb"
-// Retrieval info: USED_PORT: agb 0 0 0 0 OUTPUT NODEFVAL "agb"
 // Retrieval info: USED_PORT: alb 0 0 0 0 OUTPUT NODEFVAL "alb"
 // Retrieval info: USED_PORT: clock 0 0 0 0 INPUT NODEFVAL "clock"
 // Retrieval info: USED_PORT: dataa 0 0 32 0 INPUT NODEFVAL "dataa[31..0]"
@@ -500,7 +479,6 @@ endmodule
 // Retrieval info: CONNECT: @dataa 0 0 32 0 dataa 0 0 32 0
 // Retrieval info: CONNECT: @datab 0 0 32 0 datab 0 0 32 0
 // Retrieval info: CONNECT: aeb 0 0 0 0 @aeb 0 0 0 0
-// Retrieval info: CONNECT: agb 0 0 0 0 @agb 0 0 0 0
 // Retrieval info: CONNECT: alb 0 0 0 0 @alb 0 0 0 0
 // Retrieval info: GEN_FILE: TYPE_NORMAL fp_cmp.v TRUE
 // Retrieval info: GEN_FILE: TYPE_NORMAL fp_cmp.inc FALSE

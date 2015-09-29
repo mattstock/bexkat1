@@ -5,6 +5,7 @@
 *.ses
 *.bck
 *-bak
+*.log
 output/
 Debug/
 output_files/

@@ -23,15 +23,16 @@ wire [4:0] reg_read_addr1, reg_read_addr2, reg_write_addr;
 wire [1:0] marsel, int1sel, int2sel, ccrsel;
 wire [2:0] pcsel, alu1sel, alu2sel;
 wire [3:0] regsel, mdrsel;
-wire fp_aeb, fp_agb, fp_alb;
+wire fp_aeb, fp_alb;
 
 // Data paths
 wire [31:0] alu_out, reg_data_out1, reg_data_out2;
 wire [31:0] ir_next, vectoff_next, fp_cvtis_out;
-wire [31:0] fp_cvtsi_out;
+wire [31:0] fp_cvtsi_out, fp_addsub_out, fp_div_out, fp_mult_out;
 wire [63:0] int_out;
 wire [2:0] ccr_next;
 wire alu_carry, alu_negative, alu_overflow, alu_zero;
+wire fp_addsub;
 
 // Special registers
 reg [31:0] mdr, mdr_next, mar, pc, aluval, ir, busin_be, vectoff;
@@ -141,6 +142,9 @@ always @* begin
     4'h6: mdr_next = pc;
     4'h7: mdr_next = fp_cvtis_out;
     4'h8: mdr_next = fp_cvtsi_out;
+    4'h9: mdr_next = fp_addsub_out;
+    4'ha: mdr_next = fp_mult_out;
+    4'hb: mdr_next = fp_div_out;
     default: mdr_next = mdr;
   endcase
   case (regsel)
@@ -190,13 +194,17 @@ control con0(.clock(clk), .reset_n(reset_n), .ir(ir), .ir_write(ir_write), .ccr(
   .regsel(regsel), .reg_read_addr1(reg_read_addr1), .reg_read_addr2(reg_read_addr2), .reg_write_addr(reg_write_addr), .reg_write(reg_write),
   .mdrsel(mdrsel), .marsel(marsel), .pcsel(pcsel), .int1sel(int1sel), .int2sel(int2sel), .int_func(int_func), .supervisor(super_mode),
   .addrsel(addrsel), .byteenable(byteenable), .bus_read(read), .bus_write(write), .bus_wait(waitrequest), .bus_align(address[1:0]),
-  .vectoff_write(vectoff_write), .halt(halt), .exception(exception), .interrupt(interrupt), .int_en(int_en));
+  .vectoff_write(vectoff_write), .halt(halt), .exception(exception), .interrupt(interrupt), .int_en(int_en),
+  .fp_addsub(fp_addsub));
 
 alu alu0(.in1(alu_in1), .in2(alu_in2), .func(alu_func), .out(alu_out), .c_out(alu_carry), .n_out(alu_negative), .v_out(alu_overflow), .z_out(alu_zero));
 intcalc int0(.clock(clk), .func(int_func), .in1(int_in1), .in2(int_in2), .out(int_out));
 fp_cvtis fp_cvtis0(.clock(clk), .dataa(reg_data_out2), .result(fp_cvtis_out));
 fp_cvtsi fp_cvtsi0(.clock(clk), .dataa(reg_data_out2), .result(fp_cvtsi_out));
-fp_cmp fp_cmp0(.clock(clk), .dataa(reg_data_out1), .datab(reg_data_out2), .aeb(fp_aeb), .agb(fp_agb), .alb(fp_alb));
+fp_cmp fp_cmp0(.clock(clk), .dataa(reg_data_out1), .datab(reg_data_out2), .aeb(fp_aeb), .alb(fp_alb));
+fp_addsub fp_addsub0(.clock(clk), .dataa(reg_data_out1), .datab(reg_data_out2), .add_sub(fp_addsub), .result(fp_addsub_out));
+fp_mult fp_mult0(.clock(clk), .dataa(reg_data_out1), .datab(reg_data_out2), .result(fp_mult_out));
+fp_div fp_div0(.clock(clk), .dataa(reg_data_out1), .datab(reg_data_out2), .result(fp_div_out));
 registerfile intreg(.clk(clk), .rst_n(reset_n), .read1(reg_read_addr1), .read2(reg_read_addr2), .write_addr(reg_write_addr),
   .write_data(reg_data_in), .write_en(reg_write), .data1(reg_data_out1), .data2(reg_data_out2), .supervisor(super_mode));
 
