@@ -2,6 +2,7 @@
 main:
 ldi %0, 10
 ldi %1, 20
+ldd.s %0, testnum
 cvtis %0, %0
 cvtis %1, %1
 mul.s %2, %0, %1
