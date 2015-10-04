@@ -12,10 +12,10 @@ TEMP := $(shell mktemp)
 
 .PHONY: all clean lib gcctests kernel install
 
-all: lib gcctests boot.o bootstrap.hex pretty kernel matrix floaters multiply fp-simple serial.hex 
+all: lib gcctests boot.o bootstrap.hex pretty kernel matrix floaters multiply fp-simple serial.hex
 
-install: kernel pretty fp-simple
-	cp kernel/kernel pretty fp-simple /media/mstock/19D5-2529/
+install: kernel pretty floaters
+	cp kernel/kernel pretty floaters /media/mstock/19D5-2529/
 
 clean:
 	cd lib; make clean

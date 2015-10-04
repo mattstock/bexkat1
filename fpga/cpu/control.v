@@ -449,8 +449,6 @@ begin
           state_next = STATE_FETCHIR;
         end
         {MODE_REG, 7'h0d}: begin // cmp.s
-          fp_ra = 1'b1;
-          fp_rb = 1'b1;
           case (seq)
             'h3: begin
               seq_next = 3'h0;
@@ -468,7 +466,6 @@ begin
           state_next = STATE_FETCHIR;
         end
         {MODE_REG, 7'h10}: begin // cvtis
-          fp_ra = 1'b1;
           case (seq)
             'h6: begin
               seq_next = 3'h7;
@@ -484,7 +481,6 @@ begin
           endcase
         end
         {MODE_REG, 7'h11}: begin // cvtsi
-          fp_rb = 1'b1;
           case (seq)
             'h6: begin
               seq_next = 3'h7;
@@ -562,9 +558,6 @@ begin
           endcase
         end
         {MODE_REG, 7'h4x}: begin // fp math
-          fp_ra = 1'b1;
-          fp_rb = 1'b1;
-          fp_rc = 1'b1;
           fp_addsub =  (ir_op == 7'h40);
           reg_read_addr1 = ir_rb;
           reg_read_addr2 = ir_rc;
