@@ -19,7 +19,7 @@ module bexkat2(
 wire reg_write;
 wire [2:0] alu_func, int_func;
 wire addrsel, ir_write, vectoff_write;
-wire [4:0] reg_read_addr1, reg_read_addr2, reg_write_addr;
+wire [3:0] reg_read_addr1, reg_read_addr2, reg_write_addr;
 wire [1:0] marsel, int1sel, int2sel, ccrsel;
 wire [2:0] pcsel, alu1sel, alu2sel;
 wire [3:0] regsel, mdrsel;
