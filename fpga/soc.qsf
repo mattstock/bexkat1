@@ -697,8 +697,6 @@ set_global_assignment -name QIP_FILE cpu/dp_addsub.qip
 set_global_assignment -name QIP_FILE cpu/dp_cmp.qip
 set_global_assignment -name QIP_FILE cpu/dp_div.qip
 set_global_assignment -name QIP_FILE cpu/dp_mult.qip
-set_global_assignment -name QIP_FILE dp_cvtsd.qip
-set_global_assignment -name QIP_FILE cpu/cvtsd.qip
 set_global_assignment -name QIP_FILE cpu/dp_cvtds.qip
 set_global_assignment -name QIP_FILE cpu/dp_cvtsd.qip
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[32] -to "bexkat2:bexkat0|aluval[0]" -section_id cpu
