@@ -20,15 +20,16 @@ wire reg_write;
 wire [2:0] alu_func, int_func;
 wire addrsel, ir_write, vectoff_write;
 wire [3:0] reg_read_addr1, reg_read_addr2, reg_write_addr;
-wire [1:0] marsel, int1sel, int2sel, ccrsel;
+wire [1:0] marsel, int1sel, int2sel, ccrsel, fpccrsel;
 wire [2:0] pcsel, alu1sel, alu2sel;
 wire [3:0] regsel, mdrsel;
-wire fp_aeb, fp_alb;
+wire fp_aeb, fp_alb, fp_divzero;
+wire [3:0] fp_nan, fp_overflow, fp_underflow;
 
 // Data paths
 wire [31:0] alu_out, reg_data_out1, reg_data_out2;
 wire [31:0] ir_next, vectoff_next, fp_cvtis_out;
-wire [31:0] fp_cvtsi_out, fp_addsub_out, fp_div_out, fp_mult_out;
+wire [31:0] fp_cvtsi_out, fp_addsub_out, fp_div_out, fp_mult_out, fp_sqrt_out;
 wire [63:0] int_out;
 wire [2:0] ccr_next;
 wire alu_carry, alu_negative, alu_overflow, alu_zero;
@@ -41,6 +42,7 @@ reg [31:0] reg_data_in, alu_in1, alu_in2, int_in1, int_in2;
 reg [63:0] intval;
 reg [2:0] ccr;
 reg [3:0] status, status_next;
+reg [3:0] fpccr, fpccr_next;
 
 // opcode format
 wire [31:0] ir_sval = { {16{ir[23]}}, ir[23:20], ir[11:0] };
@@ -64,6 +66,7 @@ begin
     aluval <= 0;
     intval <= 0;
     ccr <= 3'h0;
+    fpccr <= 4'h0;
     vectoff <= 'hffffffc0;
     status <= 4'b1000; // start in supervisor mode
   end else begin
@@ -73,6 +76,7 @@ begin
     mar <= mar_next[31:0];
     aluval <= alu_out;
     intval <= int_out;
+    fpccr <= fpccr_next;
     ccr <= ccr_next;
     vectoff <= vectoff_next;
     status <= status_next;
@@ -145,6 +149,7 @@ always @* begin
     4'h9: mdr_next = fp_addsub_out;
     4'ha: mdr_next = fp_mult_out;
     4'hb: mdr_next = fp_div_out;
+    4'hc: mdr_next = fp_sqrt_out;
     default: mdr_next = mdr;
   endcase
   case (regsel)
@@ -188,6 +193,12 @@ always @* begin
     2'h2: ccr_next = { fp_alb, fp_alb, fp_aeb };
     default: ccr_next = ccr;
   endcase
+  case (fpccrsel)
+    2'h0: fpccr_next = fpccr;
+    2'h1: fpccr_next = { fp_nan[0], fp_overflow[0], fp_underflow[0], 1'b0 };
+    2'h2: fpccr_next = { fp_nan[1], fp_overflow[1], fp_underflow[1], 1'b0 };
+    2'h3: fpccr_next = { fp_nan[2], fp_overflow[2], fp_underflow[2], fp_divzero };
+  endcase
 end
 
 control con0(.clock(clk), .reset_n(reset_n), .ir(ir), .ir_write(ir_write), .ccr(ccr), .ccrsel(ccrsel), .alu_func(alu_func), .alu1sel(alu1sel), .alu2sel(alu2sel),
@@ -195,16 +206,20 @@ control con0(.clock(clk), .reset_n(reset_n), .ir(ir), .ir_write(ir_write), .ccr(
   .mdrsel(mdrsel), .marsel(marsel), .pcsel(pcsel), .int1sel(int1sel), .int2sel(int2sel), .int_func(int_func), .supervisor(super_mode),
   .addrsel(addrsel), .byteenable(byteenable), .bus_read(read), .bus_write(write), .bus_wait(waitrequest), .bus_align(address[1:0]),
   .vectoff_write(vectoff_write), .halt(halt), .exception(exception), .interrupt(interrupt), .int_en(int_en),
-  .fp_addsub(fp_addsub));
+  .fp_addsub(fp_addsub), .fpccrsel(fpccrsel));
 
 alu alu0(.in1(alu_in1), .in2(alu_in2), .func(alu_func), .out(alu_out), .c_out(alu_carry), .n_out(alu_negative), .v_out(alu_overflow), .z_out(alu_zero));
 intcalc int0(.clock(clk), .func(int_func), .in1(int_in1), .in2(int_in2), .out(int_out));
 fp_cvtis fp_cvtis0(.clock(clk), .dataa(reg_data_out2), .result(fp_cvtis_out));
 fp_cvtsi fp_cvtsi0(.clock(clk), .dataa(reg_data_out2), .result(fp_cvtsi_out));
 fp_cmp fp_cmp0(.clock(clk), .dataa(reg_data_out1), .datab(reg_data_out2), .aeb(fp_aeb), .alb(fp_alb));
-fp_addsub fp_addsub0(.clock(clk), .dataa(reg_data_out1), .datab(reg_data_out2), .add_sub(fp_addsub), .result(fp_addsub_out));
-fp_mult fp_mult0(.clock(clk), .dataa(reg_data_out1), .datab(reg_data_out2), .result(fp_mult_out));
-fp_div fp_div0(.clock(clk), .dataa(reg_data_out1), .datab(reg_data_out2), .result(fp_div_out));
+fp_addsub fp_addsub0(.clock(clk), .aclr(~reset_n), .dataa(reg_data_out1), .datab(reg_data_out2), .add_sub(fp_addsub), .result(fp_addsub_out),
+  .nan(fp_nan[0]), .overflow(fp_overflow[0]), .underflow(fp_underflow[0]));
+fp_mult fp_mult0(.clock(clk), .aclr(~reset_n), .dataa(reg_data_out1), .datab(reg_data_out2), .result(fp_mult_out),
+  .nan(fp_nan[1]), .overflow(fp_overflow[1]), .underflow(fp_underflow[1]));
+fp_div fp_div0(.clock(clk), .aclr(~reset_n), .dataa(reg_data_out1), .datab(reg_data_out2), .result(fp_div_out),
+  .nan(fp_nan[2]), .overflow(fp_overflow[2]), .underflow(fp_underflow[2]), .division_by_zero(fp_divzero));
+fp_sqrt fp_sqrt0(.clock(clk), .aclr(~rst_n), .data(reg_data_out2), .result(fp_sqrt_out), .overflow(fp_overflow[3]));
 registerfile intreg(.clk(clk), .rst_n(reset_n), .read1(reg_read_addr1), .read2(reg_read_addr2), .write_addr(reg_write_addr),
   .write_data(reg_data_in), .write_en(reg_write), .data1(reg_data_out1), .data2(reg_data_out2), .supervisor(super_mode));
 

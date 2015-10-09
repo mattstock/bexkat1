@@ -20,6 +20,7 @@ module control(
   output [2:0] int_func,
   output [2:0] pcsel,
   output addrsel,
+  output [1:0] fpccrsel,
   output [3:0] byteenable,
   output bus_read,
   output bus_write,
@@ -45,7 +46,8 @@ wire [3:0] ir_rc   = ir[11:8];
 wire ccr_ltu, ccr_lt, ccr_eq;
 assign { ccr_ltu, ccr_lt, ccr_eq } = ccr;
 
-reg [3:0] state, state_next, seq, seq_next;
+reg [3:0] state, state_next;
+reg [4:0] seq, seq_next;
 reg interrupts_enabled, interrupts_enabled_next;
 reg [3:0] exception_next;
 
@@ -70,7 +72,7 @@ always @(posedge clock or negedge reset_n)
 begin
   if (!reset_n) begin
     state <= STATE_RESET;
-    seq <= 4'h0;
+    seq <= 5'h0;
     interrupts_enabled = 1'b0;
     exception <= 4'h0;
   end else begin
@@ -103,6 +105,7 @@ begin
   int1sel = 2'b0;
   int2sel = 2'b0;
   int_func = 3'b0;
+  fpccrsel = 2'b0;
   addrsel = 1'b0; // PC
   pcsel = 3'b0;
   bus_read = 1'b0;
@@ -377,24 +380,22 @@ begin
         end
         {MODE_REG, 7'h0d}: begin // cmp.s
           case (seq)
-            'h3: begin
-              seq_next = 3'h0;
+            4'h3: begin
+              seq_next = 4'h0;
               ccrsel = 2'h3;
               state_next = STATE_FETCHIR;
             end
             default: seq_next = seq + 1'b1;
           endcase
         end
-//        {MODE_REG, 7'h0f}: begin // mov.x
-//        end
         {MODE_REG, 7'h10}: begin // cvtis
           case (seq)
-            'h6: begin
-              seq_next = 3'h7;
+            4'ha: begin
+              seq_next = 4'hb;
               mdrsel = 4'h7;
             end
-            'h7: begin
-              seq_next = 3'h0;
+            4'hb: begin
+              seq_next = 4'h0;
               regsel = 4'h1; // rA <= MDR
               reg_write = REG_WRITE_DW;              
               state_next = STATE_FETCHIR;
@@ -404,12 +405,12 @@ begin
         end
         {MODE_REG, 7'h11}: begin // cvtsi
           case (seq)
-            'h6: begin
-              seq_next = 3'h7;
+            4'ha: begin
+              seq_next = 4'hb;
               mdrsel = 4'h8;
             end
-            'h7: begin
-              seq_next = 3'h0;
+            4'hb: begin
+              seq_next = 4'h0;
               regsel = 4'h1; // rA <= MDR
               reg_write = REG_WRITE_DW;              
               state_next = STATE_FETCHIR;
@@ -434,6 +435,21 @@ begin
         {MODE_REG, 7'h15}: begin // sti
           interrupts_enabled_next = 1'b1;
           state_next = STATE_FETCHIR;
+        end
+        {MODE_REG, 7'h1c}: begin // sqrt.s
+          case (seq)
+            5'h11: begin
+              seq_next = 5'h12;
+              mdrsel = 4'hc; // MDR <= fp_sqrt
+            end
+            5'h12: begin
+              seq_next = 5'h0;
+              regsel = 4'h1; // rA <= MDR
+              reg_write = REG_WRITE_DW;              
+              state_next = STATE_FETCHIR;
+            end
+            default: seq_next = seq + 1'b1;
+          endcase
         end
         {MODE_REG, 7'h2x}: begin // alu rA <= rB + rC
           alu_func = ir_op[2:0];
@@ -463,15 +479,15 @@ begin
           reg_read_addr1 = ir_rb;
           reg_read_addr2 = ir_rc;
           case (seq)
-            'h6: begin
+            4'hc: begin
               if (ir_op == 'h36 || ir_op == 'h37)
                 mdrsel = 4'h5; // MDR <= intout[63:32]
               else
                 mdrsel = 4'h4; // MDR <= intout[31:0]
-              seq_next = 3'h7;
+              seq_next = 4'hd;
             end
-            'h7: begin
-              seq_next = 3'h0;
+            4'hd: begin
+              seq_next = 4'h0;
               regsel = 4'h1; // rA <= MDR
               reg_write = REG_WRITE_DW;              
               state_next = STATE_FETCHIR;
@@ -484,23 +500,44 @@ begin
           reg_read_addr1 = ir_rb;
           reg_read_addr2 = ir_rc;
           case (seq)
-            'h7: begin
-              seq_next = 4'h8;
+            5'h0: begin
               case (ir_op)
-                7'h40: mdrsel = 4'h9; // MDR <= fp_addsub
-                7'h41: mdrsel = 4'h9; // MDR <= fp_addsub
-                7'h42: mdrsel = 4'ha; // MDR <= fp_mult
-                7'h43: mdrsel = 4'hb; // MDR <= fp_div
+                7'h40: seq_next = 5'ha;
+                7'h41: seq_next = 5'ha;
+                7'h42: seq_next = 5'h8;
+                7'h43: seq_next = 5'h9;
+                default: seq_next = 5'h0;
+              endcase
+            end
+            5'h2: begin
+              seq_next = 5'h1;
+              case (ir_op)
+                7'h40: begin
+                  mdrsel = 4'h9; // MDR <= fp_addsub
+                  fpccrsel = 2'h1;
+                end
+                7'h41: begin
+                  mdrsel = 4'h9; // MDR <= fp_addsub
+                  fpccrsel = 2'h1;
+                end
+                7'h42: begin
+                  mdrsel = 4'ha; // MDR <= fp_mult
+                  fpccrsel = 2'h2;
+                end
+                7'h43: begin
+                  mdrsel = 4'hb; // MDR <= fp_div
+                  fpccrsel = 2'h3;
+                end
                 default: mdrsel = 4'h0;
               endcase
             end
-            'h8: begin
-              seq_next = 4'h0;
+            5'h1: begin
+              seq_next = 5'h0;
               regsel = 4'h1; // fp_rA <= MDR
               reg_write = REG_WRITE_DW;
               state_next = STATE_FETCHIR;
             end
-            default: seq_next = seq + 1'b1;
+            default: seq_next = seq - 1'b1;
           endcase
         end
         {MODE_IMM, 7'h00}: begin // bra
@@ -990,8 +1027,6 @@ begin
               if (bus_wait == 1'b0)
                 seq_next = 3'h1;
             end
-            // std.s
-            // ldd.s
             3'h1: begin
               regsel = 4'h1; // rA <= MDR
               reg_write = REG_WRITE_DW;

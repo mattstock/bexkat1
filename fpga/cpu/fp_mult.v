@@ -34,7 +34,7 @@
 //agreement for further details.
 
 
-//altfp_mult CBX_AUTO_BLACKBOX="ALL" DEDICATED_MULTIPLIER_CIRCUITRY="YES" DENORMAL_SUPPORT="NO" DEVICE_FAMILY="Cyclone IV GX" EXCEPTION_HANDLING="NO" PIPELINE=5 REDUCED_FUNCTIONALITY="NO" ROUNDING="TO_NEAREST" WIDTH_EXP=8 WIDTH_MAN=23 clock dataa datab nan overflow result underflow
+//altfp_mult CBX_AUTO_BLACKBOX="ALL" DEDICATED_MULTIPLIER_CIRCUITRY="YES" DENORMAL_SUPPORT="NO" DEVICE_FAMILY="Cyclone IV GX" EXCEPTION_HANDLING="NO" PIPELINE=5 REDUCED_FUNCTIONALITY="NO" ROUNDING="TO_NEAREST" WIDTH_EXP=8 WIDTH_MAN=23 aclr clock dataa datab nan overflow result underflow
 //VERSION_BEGIN 14.0 cbx_alt_ded_mult_y 2014:09:17:18:41:02:SJ cbx_altbarrel_shift 2014:09:17:18:41:02:SJ cbx_altera_mult_add 2014:09:17:18:41:02:SJ cbx_altera_mult_add_rtl 2014:09:17:18:41:02:SJ cbx_altfp_mult 2014:09:17:18:41:02:SJ cbx_altmult_add 2014:09:17:18:41:02:SJ cbx_cycloneii 2014:09:17:18:41:02:SJ cbx_lpm_add_sub 2014:09:17:18:41:02:SJ cbx_lpm_compare 2014:09:17:18:41:02:SJ cbx_lpm_mult 2014:09:17:18:41:02:SJ cbx_mgl 2014:09:17:20:49:57:SJ cbx_padd 2014:09:17:18:41:02:SJ cbx_parallel_add 2014:09:17:18:41:02:SJ cbx_stratix 2014:09:17:18:41:02:SJ cbx_stratixii 2014:09:17:18:41:02:SJ cbx_util_mgl 2014:09:17:18:41:02:SJ  VERSION_END
 // synthesis VERILOG_INPUT_VERSION VERILOG_2001
 // altera message_off 10463
@@ -44,8 +44,9 @@
 //synopsys translate_off
 `timescale 1 ps / 1 ps
 //synopsys translate_on
-module  fp_mult_altfp_mult_u6q
+module  fp_mult_altfp_mult_0lq
 	( 
+	aclr,
 	clock,
 	dataa,
 	datab,
@@ -53,6 +54,7 @@ module  fp_mult_altfp_mult_u6q
 	overflow,
 	result,
 	underflow) ;
+	input   aclr;
 	input   clock;
 	input   [31:0]  dataa;
 	input   [31:0]  datab;
@@ -60,6 +62,13 @@ module  fp_mult_altfp_mult_u6q
 	output   overflow;
 	output   [31:0]  result;
 	output   underflow;
+`ifndef ALTERA_RESERVED_QIS
+// synopsys translate_off
+`endif
+	tri0   aclr;
+`ifndef ALTERA_RESERVED_QIS
+// synopsys translate_on
+`endif
 
 	reg	dataa_exp_all_one_ff_p1;
 	reg	dataa_exp_not_zero_ff_p1;
@@ -103,7 +112,6 @@ module  fp_mult_altfp_mult_u6q
 	wire  [9:0]   wire_exp_bias_subtr_result;
 	wire  [24:0]   wire_man_round_adder_result;
 	wire  [47:0]   wire_man_product2_mult_result;
-	wire aclr;
 	wire  [9:0]  bias;
 	wire clk_en;
 	wire  [7:0]  dataa_exp_all_one;
@@ -508,7 +516,6 @@ module  fp_mult_altfp_mult_u6q
 		man_product2_mult.lpm_type = "lpm_mult",
 		man_product2_mult.lpm_hint = "DEDICATED_MULTIPLIER_CIRCUITRY=YES";
 	assign
-		aclr = 1'b0,
 		bias = {{3{1'b0}}, {7{1'b1}}},
 		clk_en = 1'b1,
 		dataa_exp_all_one = {(dataa[30] & dataa_exp_all_one[6]), (dataa[29] & dataa_exp_all_one[5]), (dataa[28] & dataa_exp_all_one[4]), (dataa[27] & dataa_exp_all_one[3]), (dataa[26] & dataa_exp_all_one[2]), (dataa[25] & dataa_exp_all_one[1]), (dataa[24] & dataa_exp_all_one[0]), dataa[23]},
@@ -533,7 +540,7 @@ module  fp_mult_altfp_mult_u6q
 		round_carry = (round_dffe & (lsb_dffe | sticky_dffe)),
 		sticky_bit = {(sticky_bit[21] | (wire_man_product2_mult_result[47] & wire_man_product2_mult_result[22])), (sticky_bit[20] | wire_man_product2_mult_result[21]), (sticky_bit[19] | wire_man_product2_mult_result[20]), (sticky_bit[18] | wire_man_product2_mult_result[19]), (sticky_bit[17] | wire_man_product2_mult_result[18]), (sticky_bit[16] | wire_man_product2_mult_result[17]), (sticky_bit[15] | wire_man_product2_mult_result[16]), (sticky_bit[14] | wire_man_product2_mult_result[15]), (sticky_bit[13] | wire_man_product2_mult_result[14]), (sticky_bit[12] | wire_man_product2_mult_result[13]), (sticky_bit[11] | wire_man_product2_mult_result[12]), (sticky_bit[10] | wire_man_product2_mult_result[11]), (sticky_bit[9] | wire_man_product2_mult_result[10]), (sticky_bit[8] | wire_man_product2_mult_result[9]), (sticky_bit[7] | wire_man_product2_mult_result[8]), (sticky_bit[6] | wire_man_product2_mult_result[7]), (sticky_bit[5] | wire_man_product2_mult_result[6]), (sticky_bit[4] | wire_man_product2_mult_result[5]), (sticky_bit[3] | wire_man_product2_mult_result[4]), (sticky_bit[2] | wire_man_product2_mult_result[3]), (sticky_bit[1] | wire_man_product2_mult_result[2]), (sticky_bit[0] | wire_man_product2_mult_result[1]), wire_man_product2_mult_result[0]},
 		underflow = underflow_ff;
-endmodule //fp_mult_altfp_mult_u6q
+endmodule //fp_mult_altfp_mult_0lq
 //VALID FILE
 
 
@@ -541,6 +548,7 @@ endmodule //fp_mult_altfp_mult_u6q
 `timescale 1 ps / 1 ps
 // synopsys translate_on
 module fp_mult (
+	aclr,
 	clock,
 	dataa,
 	datab,
@@ -549,6 +557,7 @@ module fp_mult (
 	result,
 	underflow);
 
+	input	  aclr;
 	input	  clock;
 	input	[31:0]  dataa;
 	input	[31:0]  datab;
@@ -566,7 +575,8 @@ module fp_mult (
 	wire [31:0] result = sub_wire2[31:0];
 	wire  underflow = sub_wire3;
 
-	fp_mult_altfp_mult_u6q	fp_mult_altfp_mult_u6q_component (
+	fp_mult_altfp_mult_0lq	fp_mult_altfp_mult_0lq_component (
+				.aclr (aclr),
 				.clock (clock),
 				.dataa (dataa),
 				.datab (datab),
@@ -594,6 +604,8 @@ endmodule
 // Retrieval info: CONSTANT: ROUNDING STRING "TO_NEAREST"
 // Retrieval info: CONSTANT: WIDTH_EXP NUMERIC "8"
 // Retrieval info: CONSTANT: WIDTH_MAN NUMERIC "23"
+// Retrieval info: USED_PORT: aclr 0 0 0 0 INPUT NODEFVAL "aclr"
+// Retrieval info: CONNECT: @aclr 0 0 0 0 aclr 0 0 0 0
 // Retrieval info: USED_PORT: clock 0 0 0 0 INPUT NODEFVAL "clock"
 // Retrieval info: CONNECT: @clock 0 0 0 0 clock 0 0 0 0
 // Retrieval info: USED_PORT: dataa 0 0 32 0 INPUT NODEFVAL "dataa[31..0]"

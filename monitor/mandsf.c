@@ -3,6 +3,7 @@
 #include <string.h>
 #include <stdarg.h>
 #include <unistd.h>
+#include <math.h>
 #include "itd.h"
 #include "matrix.h"
 #include "misc.h"
@@ -17,7 +18,6 @@ void mandelbrot(float cx, float cy, float scale) {
   for (x=-120; x < 120; x++) {
     ax = cx+x*scale;
     for (y=-160; y < 160; y++) {
-      printf("(%d,%d): ", x+120, y+160);
       ay = cy+y*scale;
       a1 = ax;
       b1 = ay;
@@ -31,12 +31,11 @@ void mandelbrot(float cx, float cy, float scale) {
         a1 = a2;
         b1 = b2;
         res = a1*a1 + b1*b1;
-      } while ((lp <= 255) && (res <= limit));
-      printf("lp = %d, res = %f ab = (%f,%f)\n", lp, res, a1, b1);
-      if (lp > 255)
+      } while ((lp <= 200) && (res <= limit) && (fpclassify(res) != FP_INFINITE));
+      if (lp > 200)
         itd_rect(x+120,y+160,x+120,y+160,color565(0,0,0));
       else
-        itd_rect(x+120,y+160,x+120,y+160,color565(0,0,lp));
+        itd_rect(x+120,y+160,x+120,y+160,color565(lp+30, lp+50, lp));
     }
   }
 }

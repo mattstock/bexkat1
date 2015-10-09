@@ -34,7 +34,7 @@
 //agreement for further details.
 
 
-//altfp_div CBX_AUTO_BLACKBOX="ALL" DENORMAL_SUPPORT="NO" DEVICE_FAMILY="Cyclone IV GX" OPTIMIZE="SPEED" PIPELINE=6 REDUCED_FUNCTIONALITY="NO" WIDTH_EXP=8 WIDTH_MAN=23 clock dataa datab division_by_zero nan overflow result underflow
+//altfp_div CBX_AUTO_BLACKBOX="ALL" DENORMAL_SUPPORT="NO" DEVICE_FAMILY="Cyclone IV GX" OPTIMIZE="SPEED" PIPELINE=6 REDUCED_FUNCTIONALITY="NO" WIDTH_EXP=8 WIDTH_MAN=23 aclr clock dataa datab division_by_zero nan overflow result underflow
 //VERSION_BEGIN 14.0 cbx_altbarrel_shift 2014:09:17:18:41:02:SJ cbx_altfp_div 2014:09:17:18:41:02:SJ cbx_altsyncram 2014:09:17:18:41:02:SJ cbx_cycloneii 2014:09:17:18:41:02:SJ cbx_lpm_abs 2014:09:17:18:41:02:SJ cbx_lpm_add_sub 2014:09:17:18:41:02:SJ cbx_lpm_compare 2014:09:17:18:41:02:SJ cbx_lpm_decode 2014:09:17:18:41:02:SJ cbx_lpm_divide 2014:09:17:18:41:02:SJ cbx_lpm_mult 2014:09:17:18:41:02:SJ cbx_lpm_mux 2014:09:17:18:41:02:SJ cbx_mgl 2014:09:17:20:49:57:SJ cbx_padd 2014:09:17:18:41:02:SJ cbx_stratix 2014:09:17:18:41:02:SJ cbx_stratixii 2014:09:17:18:41:02:SJ cbx_stratixiii 2014:09:17:18:41:03:SJ cbx_stratixv 2014:09:17:18:41:03:SJ cbx_util_mgl 2014:09:17:18:41:02:SJ  VERSION_END
 // synthesis VERILOG_INPUT_VERSION VERILOG_2001
 // altera message_off 10463
@@ -974,8 +974,9 @@ endmodule //fp_div_altfp_div_pst_koi
 //synopsys translate_off
 `timescale 1 ps / 1 ps
 //synopsys translate_on
-module  fp_div_altfp_div_9el
+module  fp_div_altfp_div_bsl
 	( 
+	aclr,
 	clock,
 	dataa,
 	datab,
@@ -984,6 +985,7 @@ module  fp_div_altfp_div_9el
 	overflow,
 	result,
 	underflow) ;
+	input   aclr;
 	input   clock;
 	input   [31:0]  dataa;
 	input   [31:0]  datab;
@@ -992,13 +994,19 @@ module  fp_div_altfp_div_9el
 	output   overflow;
 	output   [31:0]  result;
 	output   underflow;
+`ifndef ALTERA_RESERVED_QIS
+// synopsys translate_off
+`endif
+	tri0   aclr;
+`ifndef ALTERA_RESERVED_QIS
+// synopsys translate_on
+`endif
 
 	wire  wire_altfp_div_pst1_division_by_zero;
 	wire  wire_altfp_div_pst1_nan;
 	wire  wire_altfp_div_pst1_overflow;
 	wire  [31:0]   wire_altfp_div_pst1_result;
 	wire  wire_altfp_div_pst1_underflow;
-	wire aclr;
 	wire clk_en;
 
 	fp_div_altfp_div_pst_koi   altfp_div_pst1
@@ -1014,14 +1022,13 @@ module  fp_div_altfp_div_9el
 	.result(wire_altfp_div_pst1_result),
 	.underflow(wire_altfp_div_pst1_underflow));
 	assign
-		aclr = 1'b0,
 		clk_en = 1'b1,
 		division_by_zero = wire_altfp_div_pst1_division_by_zero,
 		nan = wire_altfp_div_pst1_nan,
 		overflow = wire_altfp_div_pst1_overflow,
 		result = wire_altfp_div_pst1_result,
 		underflow = wire_altfp_div_pst1_underflow;
-endmodule //fp_div_altfp_div_9el
+endmodule //fp_div_altfp_div_bsl
 //VALID FILE
 
 
@@ -1029,6 +1036,7 @@ endmodule //fp_div_altfp_div_9el
 `timescale 1 ps / 1 ps
 // synopsys translate_on
 module fp_div (
+	aclr,
 	clock,
 	dataa,
 	datab,
@@ -1038,6 +1046,7 @@ module fp_div (
 	result,
 	underflow);
 
+	input	  aclr;
 	input	  clock;
 	input	[31:0]  dataa;
 	input	[31:0]  datab;
@@ -1058,7 +1067,8 @@ module fp_div (
 	wire [31:0] result = sub_wire3[31:0];
 	wire  underflow = sub_wire4;
 
-	fp_div_altfp_div_9el	fp_div_altfp_div_9el_component (
+	fp_div_altfp_div_bsl	fp_div_altfp_div_bsl_component (
+				.aclr (aclr),
 				.clock (clock),
 				.dataa (dataa),
 				.datab (datab),
@@ -1083,6 +1093,7 @@ endmodule
 // Retrieval info: CONSTANT: REDUCED_FUNCTIONALITY STRING "NO"
 // Retrieval info: CONSTANT: WIDTH_EXP NUMERIC "8"
 // Retrieval info: CONSTANT: WIDTH_MAN NUMERIC "23"
+// Retrieval info: USED_PORT: aclr 0 0 0 0 INPUT NODEFVAL "aclr"
 // Retrieval info: USED_PORT: clock 0 0 0 0 INPUT NODEFVAL "clock"
 // Retrieval info: USED_PORT: dataa 0 0 32 0 INPUT NODEFVAL "dataa[31..0]"
 // Retrieval info: USED_PORT: datab 0 0 32 0 INPUT NODEFVAL "datab[31..0]"
@@ -1091,6 +1102,7 @@ endmodule
 // Retrieval info: USED_PORT: overflow 0 0 0 0 OUTPUT NODEFVAL "overflow"
 // Retrieval info: USED_PORT: result 0 0 32 0 OUTPUT NODEFVAL "result[31..0]"
 // Retrieval info: USED_PORT: underflow 0 0 0 0 OUTPUT NODEFVAL "underflow"
+// Retrieval info: CONNECT: @aclr 0 0 0 0 aclr 0 0 0 0
 // Retrieval info: CONNECT: @clock 0 0 0 0 clock 0 0 0 0
 // Retrieval info: CONNECT: @dataa 0 0 32 0 dataa 0 0 32 0
 // Retrieval info: CONNECT: @datab 0 0 32 0 datab 0 0 32 0
