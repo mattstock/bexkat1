@@ -2,7 +2,7 @@ CC = bexkat1-elf-gcc
 CFLAGS = -Iinclude
 LDSCRIPT = -T profile.ld -nostartfiles
 LDFLAGS = $(LDSCRIPT)
-LIBS = -Llib -lsupport
+LIBS = -Llib -lsupport -lm
 OBJCOPY = bexkat1-elf-objcopy
 OBJDUMP = bexkat1-elf-objdump
 AS = bexkat1-elf-as
@@ -12,16 +12,16 @@ TEMP := $(shell mktemp)
 
 .PHONY: all clean lib gcctests kernel install
 
-all: lib gcctests boot.o bootstrap.hex pretty kernel matrix floaters multiply fp-simple serial.hex
+all: lib gcctests boot.o bootstrap.hex pretty kernel matrix floaters multiply fps serial.hex mandsf manddf basic
 
-install: kernel pretty floaters
-	cp kernel/kernel pretty floaters /media/mstock/19D5-2529/
+install: kernel pretty floaters mandsf manddf basic fps
+	cp kernel/kernel pretty floaters mandsf manddf basic fps /media/mstock/19D5-2529/
 
 clean:
 	cd lib; make clean
 	cd gcctests; make clean
 	cd kernel; make clean
-	rm -f *.o *.srec *.hex bootstrap bootstrap.s matrix pretty.s pretty multiply fp-simple floaters serial *.gkd *.expand
+	rm -f *.o *.srec *.hex bootstrap bootstrap.s mandsf basic matrix pretty.s pretty multiply fp-simple floaters serial *.gkd *.expand manddf fps
 
 lib:
 	cd lib; make
@@ -60,5 +60,14 @@ multiply: multiply.o
 floaters: floaters.o
 	$(CC) -specs=de2.specs -o $@ $^ $(LIBS)
 
-fp-simple: fp-simple.o
+mandsf: mandsf.o
+	$(CC) -specs=de2.specs -o $@ $^ $(LIBS)
+
+manddf: manddf.o
+	$(CC) -specs=de2.specs -o $@ $^ $(LIBS)
+
+basic: basic.o
+	$(CC) -specs=de2.specs -o $@ $^ $(LIBS)
+
+fps: fps.o
 	$(CC) -specs=de2.specs -o $@ $^ $(LIBS)

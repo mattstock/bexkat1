@@ -34,17 +34,17 @@
 //agreement for further details.
 
 
-//altfp_compare CBX_AUTO_BLACKBOX="ALL" DEVICE_FAMILY="Cyclone IV GX" PIPELINE=3 WIDTH_EXP=8 WIDTH_MAN=23 aeb alb clock dataa datab
+//altfp_compare CBX_AUTO_BLACKBOX="ALL" DEVICE_FAMILY="Cyclone IV GX" PIPELINE=1 WIDTH_EXP=8 WIDTH_MAN=23 aeb alb clock dataa datab
 //VERSION_BEGIN 14.0 cbx_altfp_compare 2014:09:17:18:41:02:SJ cbx_cycloneii 2014:09:17:18:41:02:SJ cbx_lpm_add_sub 2014:09:17:18:41:02:SJ cbx_lpm_compare 2014:09:17:18:41:02:SJ cbx_mgl 2014:09:17:20:49:57:SJ cbx_stratix 2014:09:17:18:41:02:SJ cbx_stratixii 2014:09:17:18:41:02:SJ  VERSION_END
 // synthesis VERILOG_INPUT_VERSION VERILOG_2001
 // altera message_off 10463
 
 
-//synthesis_resources = lpm_compare 4 reg 20 
+//synthesis_resources = lpm_compare 4 reg 2 
 //synopsys translate_off
 `timescale 1 ps / 1 ps
 //synopsys translate_on
-module  fp_cmp_altfp_compare_cmb
+module  fp_cmp_altfp_compare_amb
 	( 
 	aeb,
 	alb,
@@ -57,22 +57,6 @@ module  fp_cmp_altfp_compare_cmb
 	input   [31:0]  dataa;
 	input   [31:0]  datab;
 
-	reg	aligned_dataa_sign_adjusted_w_dffe2;
-	reg	aligned_dataa_sign_dffe1;
-	reg	aligned_datab_sign_adjusted_w_dffe2;
-	reg	aligned_datab_sign_dffe1;
-	reg	both_inputs_zero_dffe2;
-	reg	exp_a_all_one_w_dffe1;
-	reg	exp_a_not_zero_w_dffe1;
-	reg	exp_aeb_w_dffe2;
-	reg	exp_agb_w_dffe2;
-	reg	exp_b_all_one_w_dffe1;
-	reg	exp_b_not_zero_w_dffe1;
-	reg	flip_outputs_dffe2;
-	reg	input_dataa_nan_dffe2;
-	reg	input_datab_nan_dffe2;
-	reg	[1:0]	man_a_not_zero_w_dffe1;
-	reg	[1:0]	man_b_not_zero_w_dffe1;
 	reg	out_aeb_w_dffe3;
 	reg	out_alb_w_dffe3;
 	wire  wire_cmpr1_aeb;
@@ -156,118 +140,6 @@ module  fp_cmp_altfp_compare_cmb
 
 	// synopsys translate_off
 	initial
-		aligned_dataa_sign_adjusted_w_dffe2 = 0;
-	// synopsys translate_on
-	always @ ( posedge clock or  posedge aclr)
-		if (aclr == 1'b1) aligned_dataa_sign_adjusted_w_dffe2 <= 1'b0;
-		else if  (clk_en == 1'b1)   aligned_dataa_sign_adjusted_w_dffe2 <= aligned_dataa_sign_adjusted_dffe2_wi;
-	// synopsys translate_off
-	initial
-		aligned_dataa_sign_dffe1 = 0;
-	// synopsys translate_on
-	always @ ( posedge clock or  posedge aclr)
-		if (aclr == 1'b1) aligned_dataa_sign_dffe1 <= 1'b0;
-		else if  (clk_en == 1'b1)   aligned_dataa_sign_dffe1 <= aligned_dataa_sign_dffe1_wi;
-	// synopsys translate_off
-	initial
-		aligned_datab_sign_adjusted_w_dffe2 = 0;
-	// synopsys translate_on
-	always @ ( posedge clock or  posedge aclr)
-		if (aclr == 1'b1) aligned_datab_sign_adjusted_w_dffe2 <= 1'b0;
-		else if  (clk_en == 1'b1)   aligned_datab_sign_adjusted_w_dffe2 <= aligned_datab_sign_adjusted_dffe2_wi;
-	// synopsys translate_off
-	initial
-		aligned_datab_sign_dffe1 = 0;
-	// synopsys translate_on
-	always @ ( posedge clock or  posedge aclr)
-		if (aclr == 1'b1) aligned_datab_sign_dffe1 <= 1'b0;
-		else if  (clk_en == 1'b1)   aligned_datab_sign_dffe1 <= aligned_datab_sign_dffe1_wi;
-	// synopsys translate_off
-	initial
-		both_inputs_zero_dffe2 = 0;
-	// synopsys translate_on
-	always @ ( posedge clock or  posedge aclr)
-		if (aclr == 1'b1) both_inputs_zero_dffe2 <= 1'b0;
-		else if  (clk_en == 1'b1)   both_inputs_zero_dffe2 <= both_inputs_zero_dffe2_wi;
-	// synopsys translate_off
-	initial
-		exp_a_all_one_w_dffe1 = 0;
-	// synopsys translate_on
-	always @ ( posedge clock or  posedge aclr)
-		if (aclr == 1'b1) exp_a_all_one_w_dffe1 <= 1'b0;
-		else if  (clk_en == 1'b1)   exp_a_all_one_w_dffe1 <= exp_a_all_one_dffe1_wi;
-	// synopsys translate_off
-	initial
-		exp_a_not_zero_w_dffe1 = 0;
-	// synopsys translate_on
-	always @ ( posedge clock or  posedge aclr)
-		if (aclr == 1'b1) exp_a_not_zero_w_dffe1 <= 1'b0;
-		else if  (clk_en == 1'b1)   exp_a_not_zero_w_dffe1 <= exp_a_not_zero_dffe1_wi;
-	// synopsys translate_off
-	initial
-		exp_aeb_w_dffe2 = 0;
-	// synopsys translate_on
-	always @ ( posedge clock or  posedge aclr)
-		if (aclr == 1'b1) exp_aeb_w_dffe2 <= 1'b0;
-		else if  (clk_en == 1'b1)   exp_aeb_w_dffe2 <= exp_aeb_w_dffe2_wi;
-	// synopsys translate_off
-	initial
-		exp_agb_w_dffe2 = 0;
-	// synopsys translate_on
-	always @ ( posedge clock or  posedge aclr)
-		if (aclr == 1'b1) exp_agb_w_dffe2 <= 1'b0;
-		else if  (clk_en == 1'b1)   exp_agb_w_dffe2 <= exp_agb_w_dffe2_wi;
-	// synopsys translate_off
-	initial
-		exp_b_all_one_w_dffe1 = 0;
-	// synopsys translate_on
-	always @ ( posedge clock or  posedge aclr)
-		if (aclr == 1'b1) exp_b_all_one_w_dffe1 <= 1'b0;
-		else if  (clk_en == 1'b1)   exp_b_all_one_w_dffe1 <= exp_b_all_one_dffe1_wi;
-	// synopsys translate_off
-	initial
-		exp_b_not_zero_w_dffe1 = 0;
-	// synopsys translate_on
-	always @ ( posedge clock or  posedge aclr)
-		if (aclr == 1'b1) exp_b_not_zero_w_dffe1 <= 1'b0;
-		else if  (clk_en == 1'b1)   exp_b_not_zero_w_dffe1 <= exp_b_not_zero_dffe1_wi;
-	// synopsys translate_off
-	initial
-		flip_outputs_dffe2 = 0;
-	// synopsys translate_on
-	always @ ( posedge clock or  posedge aclr)
-		if (aclr == 1'b1) flip_outputs_dffe2 <= 1'b0;
-		else if  (clk_en == 1'b1)   flip_outputs_dffe2 <= flip_outputs_dffe2_wi;
-	// synopsys translate_off
-	initial
-		input_dataa_nan_dffe2 = 0;
-	// synopsys translate_on
-	always @ ( posedge clock or  posedge aclr)
-		if (aclr == 1'b1) input_dataa_nan_dffe2 <= 1'b0;
-		else if  (clk_en == 1'b1)   input_dataa_nan_dffe2 <= input_dataa_nan_dffe2_wi;
-	// synopsys translate_off
-	initial
-		input_datab_nan_dffe2 = 0;
-	// synopsys translate_on
-	always @ ( posedge clock or  posedge aclr)
-		if (aclr == 1'b1) input_datab_nan_dffe2 <= 1'b0;
-		else if  (clk_en == 1'b1)   input_datab_nan_dffe2 <= input_datab_nan_dffe2_wi;
-	// synopsys translate_off
-	initial
-		man_a_not_zero_w_dffe1 = 0;
-	// synopsys translate_on
-	always @ ( posedge clock or  posedge aclr)
-		if (aclr == 1'b1) man_a_not_zero_w_dffe1 <= 2'b0;
-		else if  (clk_en == 1'b1)   man_a_not_zero_w_dffe1 <= man_a_not_zero_dffe1_wi;
-	// synopsys translate_off
-	initial
-		man_b_not_zero_w_dffe1 = 0;
-	// synopsys translate_on
-	always @ ( posedge clock or  posedge aclr)
-		if (aclr == 1'b1) man_b_not_zero_w_dffe1 <= 2'b0;
-		else if  (clk_en == 1'b1)   man_b_not_zero_w_dffe1 <= man_b_not_zero_dffe1_wi;
-	// synopsys translate_off
-	initial
 		out_aeb_w_dffe3 = 0;
 	// synopsys translate_on
 	always @ ( posedge clock or  posedge aclr)
@@ -282,73 +154,101 @@ module  fp_cmp_altfp_compare_cmb
 		else if  (clk_en == 1'b1)   out_alb_w_dffe3 <= out_alb_dffe3_wi;
 	lpm_compare   cmpr1
 	( 
-	.aclr(aclr),
 	.aeb(wire_cmpr1_aeb),
 	.agb(wire_cmpr1_agb),
 	.ageb(),
 	.alb(),
 	.aleb(),
 	.aneb(),
-	.clken(clk_en),
-	.clock(clock),
 	.dataa(aligned_dataa_w[30:23]),
-	.datab(aligned_datab_w[30:23]));
+	.datab(aligned_datab_w[30:23])
+	`ifndef FORMAL_VERIFICATION
+	// synopsys translate_off
+	`endif
+	,
+	.aclr(1'b0),
+	.clken(1'b1),
+	.clock(1'b0)
+	`ifndef FORMAL_VERIFICATION
+	// synopsys translate_on
+	`endif
+	);
 	defparam
-		cmpr1.lpm_pipeline = 1,
 		cmpr1.lpm_representation = "UNSIGNED",
 		cmpr1.lpm_width = 8,
 		cmpr1.lpm_type = "lpm_compare";
 	lpm_compare   cmpr2
 	( 
-	.aclr(aclr),
 	.aeb(wire_cmpr2_aeb),
 	.agb(wire_cmpr2_agb),
 	.ageb(),
 	.alb(),
 	.aleb(),
 	.aneb(),
-	.clken(clk_en),
-	.clock(clock),
 	.dataa(aligned_dataa_w[22:15]),
-	.datab(aligned_datab_w[22:15]));
+	.datab(aligned_datab_w[22:15])
+	`ifndef FORMAL_VERIFICATION
+	// synopsys translate_off
+	`endif
+	,
+	.aclr(1'b0),
+	.clken(1'b1),
+	.clock(1'b0)
+	`ifndef FORMAL_VERIFICATION
+	// synopsys translate_on
+	`endif
+	);
 	defparam
-		cmpr2.lpm_pipeline = 1,
 		cmpr2.lpm_representation = "UNSIGNED",
 		cmpr2.lpm_width = 8,
 		cmpr2.lpm_type = "lpm_compare";
 	lpm_compare   cmpr3
 	( 
-	.aclr(aclr),
 	.aeb(wire_cmpr3_aeb),
 	.agb(wire_cmpr3_agb),
 	.ageb(),
 	.alb(),
 	.aleb(),
 	.aneb(),
-	.clken(clk_en),
-	.clock(clock),
 	.dataa(aligned_dataa_w[14:7]),
-	.datab(aligned_datab_w[14:7]));
+	.datab(aligned_datab_w[14:7])
+	`ifndef FORMAL_VERIFICATION
+	// synopsys translate_off
+	`endif
+	,
+	.aclr(1'b0),
+	.clken(1'b1),
+	.clock(1'b0)
+	`ifndef FORMAL_VERIFICATION
+	// synopsys translate_on
+	`endif
+	);
 	defparam
-		cmpr3.lpm_pipeline = 1,
 		cmpr3.lpm_representation = "UNSIGNED",
 		cmpr3.lpm_width = 8,
 		cmpr3.lpm_type = "lpm_compare";
 	lpm_compare   cmpr4
 	( 
-	.aclr(aclr),
 	.aeb(wire_cmpr4_aeb),
 	.agb(wire_cmpr4_agb),
 	.ageb(),
 	.alb(),
 	.aleb(),
 	.aneb(),
-	.clken(clk_en),
-	.clock(clock),
 	.dataa(aligned_dataa_w[6:0]),
-	.datab(aligned_datab_w[6:0]));
+	.datab(aligned_datab_w[6:0])
+	`ifndef FORMAL_VERIFICATION
+	// synopsys translate_off
+	`endif
+	,
+	.aclr(1'b0),
+	.clken(1'b1),
+	.clock(1'b0)
+	`ifndef FORMAL_VERIFICATION
+	// synopsys translate_on
+	`endif
+	);
 	defparam
-		cmpr4.lpm_pipeline = 1,
 		cmpr4.lpm_representation = "UNSIGNED",
 		cmpr4.lpm_width = 7,
 		cmpr4.lpm_type = "lpm_compare";
@@ -357,64 +257,64 @@ module  fp_cmp_altfp_compare_cmb
 		aeb = out_aeb_dffe3_wo,
 		alb = out_alb_dffe3_wo,
 		aligned_dataa_sign_adjusted_dffe2_wi = aligned_dataa_sign_adjusted_w,
-		aligned_dataa_sign_adjusted_dffe2_wo = aligned_dataa_sign_adjusted_w_dffe2,
+		aligned_dataa_sign_adjusted_dffe2_wo = aligned_dataa_sign_adjusted_dffe2_wi,
 		aligned_dataa_sign_adjusted_w = (aligned_dataa_sign_dffe1_wo & (~ input_dataa_zero_w)),
 		aligned_dataa_sign_dffe1_wi = aligned_dataa_sign_w,
-		aligned_dataa_sign_dffe1_wo = aligned_dataa_sign_dffe1,
+		aligned_dataa_sign_dffe1_wo = aligned_dataa_sign_dffe1_wi,
 		aligned_dataa_sign_w = dataa[31],
 		aligned_dataa_w = {dataa[30:0]},
 		aligned_datab_sign_adjusted_dffe2_wi = aligned_datab_sign_adjusted_w,
-		aligned_datab_sign_adjusted_dffe2_wo = aligned_datab_sign_adjusted_w_dffe2,
+		aligned_datab_sign_adjusted_dffe2_wo = aligned_datab_sign_adjusted_dffe2_wi,
 		aligned_datab_sign_adjusted_w = (aligned_datab_sign_dffe1_wo & (~ input_datab_zero_w)),
 		aligned_datab_sign_dffe1_wi = aligned_datab_sign_w,
-		aligned_datab_sign_dffe1_wo = aligned_datab_sign_dffe1,
+		aligned_datab_sign_dffe1_wo = aligned_datab_sign_dffe1_wi,
 		aligned_datab_sign_w = datab[31],
 		aligned_datab_w = {datab[30:0]},
 		both_inputs_zero = (input_dataa_zero_w & input_datab_zero_w),
 		both_inputs_zero_dffe2_wi = both_inputs_zero,
-		both_inputs_zero_dffe2_wo = both_inputs_zero_dffe2,
+		both_inputs_zero_dffe2_wo = both_inputs_zero_dffe2_wi,
 		clk_en = 1'b1,
 		exp_a_all_one_dffe1_wi = exp_a_all_one_w[7],
-		exp_a_all_one_dffe1_wo = exp_a_all_one_w_dffe1,
+		exp_a_all_one_dffe1_wo = exp_a_all_one_dffe1_wi,
 		exp_a_all_one_w = {(dataa[30] & exp_a_all_one_w[6]), (dataa[29] & exp_a_all_one_w[5]), (dataa[28] & exp_a_all_one_w[4]), (dataa[27] & exp_a_all_one_w[3]), (dataa[26] & exp_a_all_one_w[2]), (dataa[25] & exp_a_all_one_w[1]), (dataa[24] & exp_a_all_one_w[0]), dataa[23]},
 		exp_a_not_zero_dffe1_wi = exp_a_not_zero_w[7],
-		exp_a_not_zero_dffe1_wo = exp_a_not_zero_w_dffe1,
+		exp_a_not_zero_dffe1_wo = exp_a_not_zero_dffe1_wi,
 		exp_a_not_zero_w = {(dataa[30] | exp_a_not_zero_w[6]), (dataa[29] | exp_a_not_zero_w[5]), (dataa[28] | exp_a_not_zero_w[4]), (dataa[27] | exp_a_not_zero_w[3]), (dataa[26] | exp_a_not_zero_w[2]), (dataa[25] | exp_a_not_zero_w[1]), (dataa[24] | exp_a_not_zero_w[0]), dataa[23]},
 		exp_aeb = {wire_cmpr4_aeb, wire_cmpr3_aeb, wire_cmpr2_aeb, wire_cmpr1_aeb},
 		exp_aeb_tmp_w = {(exp_aeb[3] & exp_aeb_tmp_w[2]), (exp_aeb[2] & exp_aeb_tmp_w[1]), (exp_aeb[1] & exp_aeb_tmp_w[0]), exp_aeb[0]},
 		exp_aeb_w = exp_aeb_tmp_w[3],
 		exp_aeb_w_dffe2_wi = exp_aeb_w,
-		exp_aeb_w_dffe2_wo = exp_aeb_w_dffe2,
+		exp_aeb_w_dffe2_wo = exp_aeb_w_dffe2_wi,
 		exp_agb = {wire_cmpr4_agb, wire_cmpr3_agb, wire_cmpr2_agb, wire_cmpr1_agb},
 		exp_agb_tmp_w = {(exp_agb_tmp_w[2] | exp_eq_gt_grp[3]), (exp_agb_tmp_w[1] | exp_eq_gt_grp[2]), (exp_agb_tmp_w[0] | exp_eq_gt_grp[1]), exp_eq_gt_grp[0]},
 		exp_agb_w = exp_agb_tmp_w[3],
 		exp_agb_w_dffe2_wi = exp_agb_w,
-		exp_agb_w_dffe2_wo = exp_agb_w_dffe2,
+		exp_agb_w_dffe2_wo = exp_agb_w_dffe2_wi,
 		exp_b_all_one_dffe1_wi = exp_b_all_one_w[7],
-		exp_b_all_one_dffe1_wo = exp_b_all_one_w_dffe1,
+		exp_b_all_one_dffe1_wo = exp_b_all_one_dffe1_wi,
 		exp_b_all_one_w = {(datab[30] & exp_b_all_one_w[6]), (datab[29] & exp_b_all_one_w[5]), (datab[28] & exp_b_all_one_w[4]), (datab[27] & exp_b_all_one_w[3]), (datab[26] & exp_b_all_one_w[2]), (datab[25] & exp_b_all_one_w[1]), (datab[24] & exp_b_all_one_w[0]), datab[23]},
 		exp_b_not_zero_dffe1_wi = exp_b_not_zero_w[7],
-		exp_b_not_zero_dffe1_wo = exp_b_not_zero_w_dffe1,
+		exp_b_not_zero_dffe1_wo = exp_b_not_zero_dffe1_wi,
 		exp_b_not_zero_w = {(datab[30] | exp_b_not_zero_w[6]), (datab[29] | exp_b_not_zero_w[5]), (datab[28] | exp_b_not_zero_w[4]), (datab[27] | exp_b_not_zero_w[3]), (datab[26] | exp_b_not_zero_w[2]), (datab[25] | exp_b_not_zero_w[1]), (datab[24] | exp_b_not_zero_w[0]), datab[23]},
 		exp_eq_grp = {(exp_eq_grp[1] & exp_aeb[2]), (exp_eq_grp[0] & exp_aeb[1]), exp_aeb[0]},
 		exp_eq_gt_grp = {(exp_eq_grp[2] & exp_agb[3]), (exp_eq_grp[1] & exp_agb[2]), (exp_eq_grp[0] & exp_agb[1]), exp_agb[0]},
 		flip_outputs_dffe2_wi = flip_outputs_w,
-		flip_outputs_dffe2_wo = flip_outputs_dffe2,
+		flip_outputs_dffe2_wo = flip_outputs_dffe2_wi,
 		flip_outputs_w = (aligned_dataa_sign_adjusted_w & aligned_datab_sign_adjusted_w),
 		input_dataa_nan_dffe2_wi = input_dataa_nan_w,
-		input_dataa_nan_dffe2_wo = input_dataa_nan_dffe2,
+		input_dataa_nan_dffe2_wo = input_dataa_nan_dffe2_wi,
 		input_dataa_nan_w = (exp_a_all_one_dffe1_wo & man_a_not_zero_merge_w[1]),
 		input_dataa_zero_w = (~ exp_a_not_zero_dffe1_wo),
 		input_datab_nan_dffe2_wi = input_datab_nan_w,
-		input_datab_nan_dffe2_wo = input_datab_nan_dffe2,
+		input_datab_nan_dffe2_wo = input_datab_nan_dffe2_wi,
 		input_datab_nan_w = (exp_b_all_one_dffe1_wo & man_b_not_zero_merge_w[1]),
 		input_datab_zero_w = (~ exp_b_not_zero_dffe1_wo),
 		man_a_not_zero_dffe1_wi = {man_a_not_zero_w[22], man_a_not_zero_w[11]},
-		man_a_not_zero_dffe1_wo = man_a_not_zero_w_dffe1,
+		man_a_not_zero_dffe1_wo = man_a_not_zero_dffe1_wi,
 		man_a_not_zero_merge_w = {(man_a_not_zero_dffe1_wo[1] | man_a_not_zero_merge_w[0]), man_a_not_zero_dffe1_wo[0]},
 		man_a_not_zero_w = {(dataa[22] | man_a_not_zero_w[21]), (dataa[21] | man_a_not_zero_w[20]), (dataa[20] | man_a_not_zero_w[19]), (dataa[19] | man_a_not_zero_w[18]), (dataa[18] | man_a_not_zero_w[17]), (dataa[17] | man_a_not_zero_w[16]), (dataa[16] | man_a_not_zero_w[15]), (dataa[15] | man_a_not_zero_w[14]), (dataa[14] | man_a_not_zero_w[13]), (dataa[13] | man_a_not_zero_w[12]), dataa[12], (dataa[11] | man_a_not_zero_w[10]), (dataa[10] | man_a_not_zero_w[9]), (dataa[9] | man_a_not_zero_w[8]), (dataa[8] | man_a_not_zero_w[7]), (dataa[7] | man_a_not_zero_w[6]), (dataa[6] | man_a_not_zero_w[5]), (dataa[5] | man_a_not_zero_w[4]), (dataa[4] | man_a_not_zero_w[3]), (dataa[3] | man_a_not_zero_w[2]), (dataa[2] | man_a_not_zero_w[1]), (dataa[1] | man_a_not_zero_w[0]), dataa[0]},
 		man_b_not_zero_dffe1_wi = {man_b_not_zero_w[22], man_b_not_zero_w[11]},
-		man_b_not_zero_dffe1_wo = man_b_not_zero_w_dffe1,
+		man_b_not_zero_dffe1_wo = man_b_not_zero_dffe1_wi,
 		man_b_not_zero_merge_w = {(man_b_not_zero_dffe1_wo[1] | man_b_not_zero_merge_w[0]), man_b_not_zero_dffe1_wo[0]},
 		man_b_not_zero_w = {(datab[22] | man_b_not_zero_w[21]), (datab[21] | man_b_not_zero_w[20]), (datab[20] | man_b_not_zero_w[19]), (datab[19] | man_b_not_zero_w[18]), (datab[18] | man_b_not_zero_w[17]), (datab[17] | man_b_not_zero_w[16]), (datab[16] | man_b_not_zero_w[15]), (datab[15] | man_b_not_zero_w[14]), (datab[14] | man_b_not_zero_w[13]), (datab[13] | man_b_not_zero_w[12]), datab[12], (datab[11] | man_b_not_zero_w[10]), (datab[10] | man_b_not_zero_w[9]), (datab[9] | man_b_not_zero_w[8]), (datab[8] | man_b_not_zero_w[7]), (datab[7] | man_b_not_zero_w[6]), (datab[6] | man_b_not_zero_w[5]), (datab[5] | man_b_not_zero_w[4]), (datab[4] | man_b_not_zero_w[3]), (datab[3] | man_b_not_zero_w[2]), (datab[2] | man_b_not_zero_w[1]), (datab[1] | man_b_not_zero_w[0]), datab[0]},
 		out_aeb_dffe3_wi = out_aeb_w,
@@ -425,7 +325,7 @@ module  fp_cmp_altfp_compare_cmb
 		out_alb_dffe3_wo = out_alb_w_dffe3,
 		out_alb_w = (((~ out_agb_w) & (~ out_aeb_w)) & (~ out_unordered_w)),
 		out_unordered_w = (input_dataa_nan_dffe2_wo | input_datab_nan_dffe2_wo);
-endmodule //fp_cmp_altfp_compare_cmb
+endmodule //fp_cmp_altfp_compare_amb
 //VALID FILE
 
 
@@ -450,7 +350,7 @@ module fp_cmp (
 	wire  aeb = sub_wire0;
 	wire  alb = sub_wire1;
 
-	fp_cmp_altfp_compare_cmb	fp_cmp_altfp_compare_cmb_component (
+	fp_cmp_altfp_compare_amb	fp_cmp_altfp_compare_amb_component (
 				.clock (clock),
 				.dataa (dataa),
 				.datab (datab),
@@ -467,7 +367,7 @@ endmodule
 // Retrieval info: PRIVATE: SYNTH_WRAPPER_GEN_POSTFIX STRING "0"
 // Retrieval info: LIBRARY: altera_mf altera_mf.altera_mf_components.all
 // Retrieval info: CONSTANT: INTENDED_DEVICE_FAMILY STRING "Cyclone IV GX"
-// Retrieval info: CONSTANT: PIPELINE NUMERIC "3"
+// Retrieval info: CONSTANT: PIPELINE NUMERIC "1"
 // Retrieval info: CONSTANT: WIDTH_EXP NUMERIC "8"
 // Retrieval info: CONSTANT: WIDTH_MAN NUMERIC "23"
 // Retrieval info: USED_PORT: aeb 0 0 0 0 OUTPUT NODEFVAL "aeb"

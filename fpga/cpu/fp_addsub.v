@@ -34,7 +34,7 @@
 //agreement for further details.
 
 
-//altfp_add_sub CBX_AUTO_BLACKBOX="ALL" DENORMAL_SUPPORT="NO" DEVICE_FAMILY="Cyclone IV GX" DIRECTION="VARIABLE" OPTIMIZE="SPEED" PIPELINE=7 REDUCED_FUNCTIONALITY="NO" WIDTH_EXP=8 WIDTH_MAN=23 add_sub clock dataa datab nan overflow result underflow
+//altfp_add_sub CBX_AUTO_BLACKBOX="ALL" DENORMAL_SUPPORT="NO" DEVICE_FAMILY="Cyclone IV GX" DIRECTION="VARIABLE" OPTIMIZE="SPEED" PIPELINE=7 REDUCED_FUNCTIONALITY="NO" WIDTH_EXP=8 WIDTH_MAN=23 aclr add_sub clock dataa datab nan overflow result underflow
 //VERSION_BEGIN 14.0 cbx_altbarrel_shift 2014:09:17:18:41:02:SJ cbx_altfp_add_sub 2014:09:17:18:41:02:SJ cbx_altpriority_encoder 2014:09:17:18:41:02:SJ cbx_cycloneii 2014:09:17:18:41:02:SJ cbx_lpm_add_sub 2014:09:17:18:41:02:SJ cbx_lpm_compare 2014:09:17:18:41:02:SJ cbx_mgl 2014:09:17:20:49:57:SJ cbx_stratix 2014:09:17:18:41:02:SJ cbx_stratixii 2014:09:17:18:41:02:SJ  VERSION_END
 // synthesis VERILOG_INPUT_VERSION VERILOG_2001
 // altera message_off 10463
@@ -707,8 +707,9 @@ endmodule //fp_addsub_altpriority_encoder_e48
 //synopsys translate_off
 `timescale 1 ps / 1 ps
 //synopsys translate_on
-module  fp_addsub_altfp_add_sub_lom
+module  fp_addsub_altfp_add_sub_n6n
 	( 
+	aclr,
 	add_sub,
 	clock,
 	dataa,
@@ -717,6 +718,7 @@ module  fp_addsub_altfp_add_sub_lom
 	overflow,
 	result,
 	underflow) ;
+	input   aclr;
 	input   add_sub;
 	input   clock;
 	input   [31:0]  dataa;
@@ -728,6 +730,7 @@ module  fp_addsub_altfp_add_sub_lom
 `ifndef ALTERA_RESERVED_QIS
 // synopsys translate_off
 `endif
+	tri0   aclr;
 	tri1   add_sub;
 `ifndef ALTERA_RESERVED_QIS
 // synopsys translate_on
@@ -823,7 +826,6 @@ module  fp_addsub_altfp_add_sub_lom
 	wire  [12:0]   wire_man_res_rounding_add_sub_lower_result;
 	wire  [12:0]   wire_man_res_rounding_add_sub_upper1_result;
 	wire  wire_trailing_zeros_limit_comparator_agb;
-	wire aclr;
 	wire  add_sub_dffe11_wi;
 	wire  add_sub_dffe11_wo;
 	wire  add_sub_dffe12_wi;
@@ -2179,7 +2181,6 @@ module  fp_addsub_altfp_add_sub_lom
 		trailing_zeros_limit_comparator.lpm_width = 6,
 		trailing_zeros_limit_comparator.lpm_type = "lpm_compare";
 	assign
-		aclr = 1'b0,
 		add_sub_dffe11_wi = add_sub,
 		add_sub_dffe11_wo = add_sub_dffe11_wi,
 		add_sub_dffe12_wi = add_sub_dffe11_wo,
@@ -2705,7 +2706,7 @@ module  fp_addsub_altfp_add_sub_lom
 		zero_man_sign_dffe27_wo = zero_man_sign_dffe27_wi,
 		zero_man_sign_dffe2_wi = (dataa_sign_dffe25_wo & add_sub_dffe25_wo),
 		zero_man_sign_dffe2_wo = zero_man_sign_dffe2;
-endmodule //fp_addsub_altfp_add_sub_lom
+endmodule //fp_addsub_altfp_add_sub_n6n
 //VALID FILE
 
 
@@ -2713,6 +2714,7 @@ endmodule //fp_addsub_altfp_add_sub_lom
 `timescale 1 ps / 1 ps
 // synopsys translate_on
 module fp_addsub (
+	aclr,
 	add_sub,
 	clock,
 	dataa,
@@ -2722,6 +2724,7 @@ module fp_addsub (
 	result,
 	underflow);
 
+	input	  aclr;
 	input	  add_sub;
 	input	  clock;
 	input	[31:0]  dataa;
@@ -2740,7 +2743,8 @@ module fp_addsub (
 	wire [31:0] result = sub_wire2[31:0];
 	wire  underflow = sub_wire3;
 
-	fp_addsub_altfp_add_sub_lom	fp_addsub_altfp_add_sub_lom_component (
+	fp_addsub_altfp_add_sub_n6n	fp_addsub_altfp_add_sub_n6n_component (
+				.aclr (aclr),
 				.add_sub (add_sub),
 				.clock (clock),
 				.dataa (dataa),
@@ -2768,6 +2772,7 @@ endmodule
 // Retrieval info: CONSTANT: REDUCED_FUNCTIONALITY STRING "NO"
 // Retrieval info: CONSTANT: WIDTH_EXP NUMERIC "8"
 // Retrieval info: CONSTANT: WIDTH_MAN NUMERIC "23"
+// Retrieval info: USED_PORT: aclr 0 0 0 0 INPUT NODEFVAL "aclr"
 // Retrieval info: USED_PORT: add_sub 0 0 0 0 INPUT NODEFVAL "add_sub"
 // Retrieval info: USED_PORT: clock 0 0 0 0 INPUT NODEFVAL "clock"
 // Retrieval info: USED_PORT: dataa 0 0 32 0 INPUT NODEFVAL "dataa[31..0]"
@@ -2776,6 +2781,7 @@ endmodule
 // Retrieval info: USED_PORT: overflow 0 0 0 0 OUTPUT NODEFVAL "overflow"
 // Retrieval info: USED_PORT: result 0 0 32 0 OUTPUT NODEFVAL "result[31..0]"
 // Retrieval info: USED_PORT: underflow 0 0 0 0 OUTPUT NODEFVAL "underflow"
+// Retrieval info: CONNECT: @aclr 0 0 0 0 aclr 0 0 0 0
 // Retrieval info: CONNECT: @add_sub 0 0 0 0 add_sub 0 0 0 0
 // Retrieval info: CONNECT: @clock 0 0 0 0 clock 0 0 0 0
 // Retrieval info: CONNECT: @dataa 0 0 32 0 dataa 0 0 32 0

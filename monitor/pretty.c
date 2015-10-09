@@ -6,14 +6,6 @@
 #include <stdlib.h>
 #include "vectors.h"
 
-void main(void);
-
-void ping(void) {
-  serial_getchar(0);
-  matrix_put(0,0,0xffffff);
-  asm("rti");
-}
-
 void matrix_fade(void) {
   unsigned short i;
   unsigned a,b;
@@ -40,21 +32,14 @@ void matrix_fade(void) {
   }
 }
 
-char katherine[] = { 194, 132, 190, 148, 129, 141 }; 
-char rebecca[] = { 148, 131, 172, 131, 196, 131 };
-
 void main(void) {
   char c;
   unsigned val;
   unsigned short x, y;
-  int *foo;
 
   x = 16;
   y = 8;
   val = 0x00808080;
-
-  _vectors_start[6] = ping;
-  asm("sti");
 
   while (1) {
     iprintf("(%d, %d)\n", x,y);

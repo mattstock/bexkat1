@@ -26,9 +26,9 @@ begin
   endcase
 end
 
-intsdiv d0(.numer(in1), .denom(in2), .quotient(divq), .remain(divr));
-intudiv d1(.numer(in1), .denom(in2), .quotient(divuq), .remain(divur));
-intumult m0(.dataa(in1), .datab(in2), .result(mulu_out));
-intsmult m1(.dataa(in1), .datab(in2), .result(mul_out));
+intsdiv d0(.clock(clock), .numer(in1), .denom(in2), .quotient(divq), .remain(divr));
+intudiv d1(.clock(clock), .numer(in1), .denom(in2), .quotient(divuq), .remain(divur));
+intumult m0(.clock(clock), .dataa(in1), .datab(in2), .result(mulu_out));
+intsmult m1(.clock(clock), .dataa(in1), .datab(in2), .result(mul_out));
 
 endmodule

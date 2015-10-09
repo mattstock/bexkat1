@@ -8,7 +8,7 @@ input [WIDTH-1:0] write_data;
 input write_en;
 output [WIDTH-1:0] data1, data2;
 
-parameter WIDTH=64;
+parameter WIDTH=32;
 parameter COUNT=16;
 parameter COUNTP=4;
 
