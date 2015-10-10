@@ -236,8 +236,8 @@ bexkat2 bexkat0(.clk(clock_50), .reset_n(rst_n), .address(cpu_address), .read(cp
   .exception(exception), .int_en(int_en));
 vectors vecram0(.clock(clock_50), .q(vect_readdata), .rden(vect_read), .address(cpu_address[6:2]));
 monitor rom0(.clock(clock_50), .q(rom_readdata), .rden(rom_read), .address(cpu_address[15:2]));
-scratch ram0(.clock(clock_50), .data(cpu_writedata), .q(ram_readdata), .wren(ram_write), .rden(ram_read), .address(cpu_address[13:2]),
-  .byteena(cpu_be));
+mandunit mand0(.clock(clock_50), .rst_n(rst_n), .data_in(cpu_writedata), .data_out(ram_readdata), .write(ram_write), .read(ram_read),
+  .address(cpu_address[18:0]), .be(cpu_be));
 sdram_controller sdram0(.cpu_clk(clock_50), .mem_clk(clock_200), .reset_n(rst_n), .we_n(sdram_we_n), .cs_n(sdram_cs_n), .cke(sdram_cke),
     .cas_n(sdram_cas_n), .ras_n(sdram_ras_n), .dqm(sdram_dqm), .be(cpu_be), .ba(sdram_ba), .addrbus_out(sdram_addrbus),
     .databus_in(sdram_databus), .databus_out(sdram_dataout), .read(sdram_read), .write(sdram_write), .ready(sdram_ready),

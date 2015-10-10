@@ -14,7 +14,7 @@ module control(
   output [3:0] reg_write_addr,
   output reg_write,
   output [3:0] mdrsel,
-  output [2:0] marsel,
+  output [1:0] marsel,
   output [1:0] int1sel,
   output [1:0] int2sel,
   output [2:0] int_func,
@@ -51,8 +51,7 @@ reg [4:0] seq, seq_next;
 reg interrupts_enabled, interrupts_enabled_next;
 reg [3:0] exception_next;
 
-localparam [3:0] STATE_FETCHIR = 4'h0, STATE_EVALIR = 4'h1, STATE_FETCHARG = 4'h2, STATE_EVALARG = 4'h3, STATE_HALT = 4'h4;
-localparam [3:0] STATE_EXCEPTION = 4'h5, STATE_RESET = 4'h6, STATE_FETCHDOUBLE = 4'h7;
+localparam [3:0] STATE_FETCHIR = 4'h0, STATE_EVALIR = 4'h1, STATE_FETCHARG = 4'h2, STATE_EVALARG = 4'h3, STATE_HALT = 4'h4, STATE_EXCEPTION = 4'h5, STATE_RESET = 4'h6;
 localparam MODE_REG = 2'h0, MODE_REGIND = 2'h1, MODE_IMM = 2'h2, MODE_DIR = 2'h3;
 localparam REG_WRITE_NONE = 1'b0, REG_WRITE_DW = 1'b1;
 
@@ -102,7 +101,7 @@ begin
   reg_write_addr = ir_ra;
   reg_write = 1'b0;
   mdrsel = 4'b0;
-  marsel = 3'b0;
+  marsel = 2'b0;
   int1sel = 2'b0;
   int2sel = 2'b0;
   int_func = 3'b0;
@@ -112,7 +111,7 @@ begin
   bus_read = 1'b0;
   bus_write = 1'b0;
   ir_write = 1'b0;
-  byteenable = 5'b01111;
+  byteenable = 4'b1111;
   vectoff_write = 1'b0;
   
   case (state)
@@ -135,7 +134,7 @@ begin
           end
         end
         3'h1: begin
-          marsel = 3'h2; // mar <= aluout
+          marsel = 2'h2; // mar <= aluout
           reg_write_addr = REG_SP; // SP <= aluout
           reg_write = REG_WRITE_DW;
           addrsel = 1'b1; // MAR
@@ -159,7 +158,7 @@ begin
         end
         3'h5: begin
           bus_read = 1'b1;
-          marsel = 3'h1; // MAR <= vector address
+          marsel = 2'h1; // MAR <= vector address
           seq_next = 3'h6;
         end
         3'h6: begin
@@ -202,7 +201,7 @@ begin
           case (seq)
             3'h0: begin
               reg_read_addr1 = REG_SP; // SP
-              marsel = 3'h3; // mar <= SP
+              marsel = 2'h3; // mar <= SP
               seq_next = 3'h1;
             end
             3'h1: begin
@@ -214,7 +213,7 @@ begin
             3'h2: begin
               addrsel = 1'b1; // MAR
               bus_read = 1'b1;
-              marsel = 3'h1; // mar <= databus
+              marsel = 2'h1; // mar <= databus
               alu2sel = 3'h4; // aluout <= SP + 'h4
               reg_read_addr1 = REG_SP; // SP
               seq_next = 3'h3;
@@ -236,7 +235,7 @@ begin
               interrupts_enabled_next = 1'b1;
               exception_next = 4'h0;
               reg_read_addr1 = REG_SP; // SP
-              marsel = 3'h3; // mar <= SP
+              marsel = 2'h3; // mar <= SP
               seq_next = 3'h1;
             end
             3'h1: begin
@@ -248,7 +247,7 @@ begin
             3'h2: begin
               addrsel = 1'b1; // MAR
               bus_read = 1'b1;
-              marsel = 3'h1; // mar <= databus
+              marsel = 2'h1; // mar <= databus
               alu2sel = 3'h4; // aluout <= SP + 'h4
               reg_read_addr1 = REG_SP; // SP
               seq_next = 3'h3;
@@ -301,7 +300,7 @@ begin
               seq_next = 3'h1;
             end
             3'h1: begin
-              marsel = 3'h2; // mar <= aluout
+              marsel = 2'h2; // mar <= aluout
               mdrsel = 4'h3; // mdr <= rA
               reg_write_addr = REG_SP; // SP <= aluout
               reg_write = REG_WRITE_DW;
@@ -330,7 +329,7 @@ begin
           addrsel = 1'b1; // MAR
           case (seq)
             3'h0: begin
-              marsel = 3'h3; // mar <= SP
+              marsel = 2'h3; // mar <= SP
               alu2sel = 3'h4; // aluout <= SP + 'h4
               reg_read_addr1 = REG_SP; // SP
               seq_next = 3'h1;
@@ -473,6 +472,8 @@ begin
             'h33: int_func = 'b100;
             'h34: int_func = 'b101;
             'h35: int_func = 'b110;
+            'h36: int_func = 'b000;
+            'h37: int_func = 'b100;
             default: int_func = 'b000;
           endcase
           reg_read_addr1 = ir_rb;
@@ -495,7 +496,7 @@ begin
           endcase
         end
         {MODE_REG, 7'h4x}: begin // fp math
-          fp_addsub =  (ir_op == 7'h40 || ir_op == 7'h44);
+          fp_addsub =  (ir_op == 7'h40);
           reg_read_addr1 = ir_rb;
           reg_read_addr2 = ir_rc;
           case (seq)
@@ -610,7 +611,7 @@ begin
               seq_next = 3'h1;
             end
             3'h1: begin
-              marsel = 3'h2; // mar <= aluval
+              marsel = 2'h2; // mar <= aluval
               mdrsel = 4'h3; // MDR <= rA
               seq_next = 3'h2;
             end
@@ -628,7 +629,7 @@ begin
         end
         {MODE_REGIND, 7'h02}: begin // st
           addrsel = 1'b1; // MAR
-          byteenable = (bus_align[1] ? 5'b00011 : 5'b01100);
+          byteenable = (bus_align[1] ? 4'b0011 : 4'b1100);
           case (seq)
             3'h0: begin
               reg_read_addr1 = ir_rb;
@@ -636,7 +637,7 @@ begin
               seq_next = 3'h1;
             end
             3'h1: begin
-              marsel = 3'h2; // mar <= aluval
+              marsel = 2'h2; // mar <= aluval
               mdrsel = 4'h3; // MDR <= rA (with bytelanes)
               seq_next = 3'h2;
             end
@@ -655,10 +656,10 @@ begin
         {MODE_REGIND, 7'h04}: begin // st.b
           addrsel = 1'b1; // MAR
           case (bus_align[1:0])
-            2'b00: byteenable = 5'b01000;
-            2'b01: byteenable = 5'b00100;
-            2'b10: byteenable = 5'b00010;
-            2'b11: byteenable = 5'b00001;
+            2'b00: byteenable = 4'b1000;
+            2'b01: byteenable = 4'b0100;
+            2'b10: byteenable = 4'b0010;
+            2'b11: byteenable = 4'b0001;
           endcase
           case (seq)
             3'h0: begin
@@ -667,7 +668,7 @@ begin
               seq_next = 3'h1;
             end
             3'h1: begin
-              marsel = 3'h2; // mar <= aluval
+              marsel = 2'h2; // mar <= aluval
               mdrsel = 4'h3; // MDR <= rA
               seq_next = 3'h2;
             end
@@ -692,7 +693,7 @@ begin
               seq_next = 3'h1;
             end
             3'h1: begin
-              marsel = 3'h2; // mar <= aluval
+              marsel = 2'h2; // mar <= aluval
               seq_next = 3'h2;
             end
             3'h2: begin
@@ -719,12 +720,12 @@ begin
               seq_next = 3'h1;
             end
             3'h1: begin
-              marsel = 3'h2; // mar <= aluval
+              marsel = 2'h2; // mar <= aluval
               seq_next = 3'h2;
             end
             3'h2: begin
               bus_read = 1'b1;
-              byteenable = (bus_align[1] ? 5'b00011 : 5'b01100);
+              byteenable = (bus_align[1] ? 4'b0011 : 4'b1100);
               mdrsel = 4'h1; // MDR <= databus
               if (bus_wait == 1'b0)
                 seq_next = 3'h3;
@@ -747,16 +748,16 @@ begin
               seq_next = 3'h1;
             end
             3'h1: begin
-              marsel = 3'h2; // mar <= aluval
+              marsel = 2'h2; // mar <= aluval
               seq_next = 3'h2;
             end
             3'h2: begin
               bus_read = 1'b1;
               case (bus_align[1:0])
-                2'b00: byteenable = 5'b01000;
-                2'b01: byteenable = 5'b00100;
-                2'b10: byteenable = 5'b00010;
-                2'b11: byteenable = 5'b00001;
+                2'b00: byteenable = 4'b1000;
+                2'b01: byteenable = 4'b0100;
+                2'b10: byteenable = 4'b0010;
+                2'b11: byteenable = 4'b0001;
               endcase
               mdrsel = 4'h1; // MDR <= databus
               if (bus_wait == 1'b0)
@@ -802,7 +803,7 @@ begin
               seq_next = 3'h2;
             end
             3'h2: begin
-              marsel = 3'h2; // mar <= aluout
+              marsel = 2'h2; // mar <= aluout
               reg_write_addr = REG_SP; // SP <= aluout
               reg_write = REG_WRITE_DW;
               addrsel = 1'b1; // MAR
@@ -840,16 +841,7 @@ begin
             default: state_next = STATE_HALT;
           endcase
         end
-        {MODE_DIR, 7'h10}: state_next = STATE_FETCHARG;    // std.l
-        {MODE_DIR, 7'h11}: state_next = STATE_FETCHARG;    // ldd.l
-        {MODE_DIR, 7'h12}: state_next = STATE_FETCHARG;    // std
-        {MODE_DIR, 7'h13}: state_next = STATE_FETCHARG;    // ldd
-        {MODE_DIR, 7'h14}: state_next = STATE_FETCHARG;    // std.b
-        {MODE_DIR, 7'h15}: state_next = STATE_FETCHARG;    // ldd.b
-        {MODE_DIR, 7'h16}: state_next = STATE_FETCHARG;    // std.d
-        {MODE_DIR, 7'h17}: state_next = STATE_FETCHARG;    // ldd.d
-        {MODE_DIR, 7'h18}: state_next = STATE_FETCHARG;    // ldi
-        {MODE_DIR, 7'h19}: state_next = STATE_FETCHDOUBLE; // ldi.d
+        {MODE_DIR, 7'h1x}: state_next = STATE_FETCHARG;
         {MODE_DIR, 7'h2x}: begin // [un]signed rA <= rB * / % 0x1234
           case (ir_op)
             'h21: int_func = 'b001;
@@ -857,6 +849,8 @@ begin
             'h23: int_func = 'b100;
             'h24: int_func = 'b101;
             'h25: int_func = 'b110;
+            'h26: int_func = 'b000;
+            'h27: int_func = 'b100;
             default: int_func = 'b000;
           endcase
           reg_read_addr1 = ir_rb;
@@ -878,8 +872,8 @@ begin
             default: seq_next = seq + 1'b1;
           endcase
         end
-        {MODE_DIR, 7'h30}: state_next = STATE_FETCHARG; // jmpd
-        {MODE_DIR, 7'h31}: state_next = STATE_FETCHARG; // jsrd
+        {MODE_DIR, 7'h30}: state_next = STATE_FETCHARG;
+        {MODE_DIR, 7'h31}: state_next = STATE_FETCHARG;
         {MODE_DIR, 7'h32}: begin // trap
           exception_next = { 1'b1, ir_uval[2:0] }; // upper 8 are swi
           state_next = STATE_EXCEPTION;
@@ -900,49 +894,13 @@ begin
         end
         3'h1: begin
           bus_read = 1'b1; // still assert bus control
-          marsel = 3'h1; // mar <= busdata
+          marsel = 2'h1; // mar <= busdata
           mdrsel = 4'h1 ; // mdr <= busdata
           seq_next = 3'h2;
         end
         3'h2: begin
           pcsel = 2'b1; // move PC forward
           seq_next = 3'b0;
-          state_next = STATE_EVALARG;
-        end
-        default: state_next = STATE_HALT;
-      endcase
-    end
-    STATE_FETCHDOUBLE: begin // two word load
-      case (seq)
-        4'h0: begin
-          byteenable = 5'b11111;
-          bus_read = 1'b1;
-          if (bus_wait == 1'b0) // wait until we get control of bus
-            seq_next = 4'h1;
-        end
-        4'h1: begin
-          byteenable = 5'b11111;
-          bus_read = 1'b1; // still assert bus control
-          mdrsel = 4'h1 ; // mdr <= busdata
-          seq_next = 4'h2;
-        end
-        4'h2: begin
-          pcsel = 2'b1; // move PC forward
-          seq_next = 4'h3;
-        end
-        4'h3: begin
-          bus_read = 1'b1;
-          if (bus_wait == 1'b0) // wait until we get control of bus
-            seq_next = 4'h4;
-        end
-        4'h4: begin
-          bus_read = 1'b1; // still assert bus control
-          mdrsel = 4'h1 ; // mdr <= busdata
-          seq_next = 4'h5;
-        end
-        4'h5: begin
-          pcsel = 2'b1; // move PC forward
-          seq_next = 4'b0;
           state_next = STATE_EVALARG;
         end
         default: state_next = STATE_HALT;
@@ -992,7 +950,7 @@ begin
         end
         7'h12: begin // std
           addrsel = 1'b1; // MAR
-          byteenable = (bus_align[1] ? 5'b00011 : 5'b01100);
+          byteenable = (bus_align[1] ? 4'b0011 : 4'b1100);
           case (seq)
             3'h0: begin
               mdrsel = 4'h3; // MDR <= rA (with bytelanes)
@@ -1015,7 +973,7 @@ begin
           case (seq)
             3'h0: begin
               bus_read = 1'b1;
-              byteenable = (bus_align[1] ? 5'b00011 : 5'b01100);
+              byteenable = (bus_align[1] ? 4'b0011 : 4'b1100);
               mdrsel = 4'h1; // MDR <= databus
               if (bus_wait == 1'b0)
                 seq_next = 3'h1;
@@ -1032,10 +990,10 @@ begin
         7'h14: begin // std.b
           addrsel = 1'b1; // MAR
           case (bus_align[1:0])
-            2'b00: byteenable = 5'b01000;
-            2'b01: byteenable = 5'b00100;
-            2'b10: byteenable = 5'b00010;
-            2'b11: byteenable = 5'b00001;
+            2'b00: byteenable = 4'b1000;
+            2'b01: byteenable = 4'b0100;
+            2'b10: byteenable = 4'b0010;
+            2'b11: byteenable = 4'b0001;
           endcase
           case (seq)
             3'h0: begin
@@ -1060,10 +1018,10 @@ begin
             3'h0: begin
               bus_read = 1'b1;
               case (bus_align[1:0])
-                2'b00: byteenable = 5'b01000;
-                2'b01: byteenable = 5'b00100;
-                2'b10: byteenable = 5'b00010;
-                2'b11: byteenable = 5'b00001;
+                2'b00: byteenable = 4'b1000;
+                2'b01: byteenable = 4'b0100;
+                2'b10: byteenable = 4'b0010;
+                2'b11: byteenable = 4'b0001;
               endcase
               mdrsel = 4'h1; // MDR <= databus
               if (bus_wait == 1'b0)
@@ -1078,16 +1036,7 @@ begin
             default: state_next = STATE_HALT;
           endcase
         end
-        7'h16: begin // std.d
-        end
-        7'h17: begin // ldd.d
-        end
         7'h18: begin // ldi
-          state_next = STATE_FETCHIR;
-          regsel = 4'h1; // rA <= MDR
-          reg_write = REG_WRITE_DW;        
-        end
-        7'h19: begin // ldi.d
           state_next = STATE_FETCHIR;
           regsel = 4'h1; // rA <= MDR
           reg_write = REG_WRITE_DW;        
@@ -1107,7 +1056,7 @@ begin
               pcsel = 3'h2; // PC <= MAR
             end
             3'h1: begin
-              marsel = 3'h2; // mar <= aluout
+              marsel = 2'h2; // mar <= aluout
               reg_write_addr = REG_SP; // SP <= aluout
               reg_write = REG_WRITE_DW;
               addrsel = 1'b1; // MAR

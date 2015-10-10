@@ -41,7 +41,9 @@ begin
   else if (address >= 32'h00800000 && address <= 32'h008007ff)
     cs = 4'h5; // LED matrix
   else if (address >= 32'h00800800 && address <= 32'h00800fff)
-    cs = 4'h4; // IO 
+    cs = 4'h4; // IO
+  else if (address >= 32'hd0000000 && address <= 32'hdfffffff)
+    cs = 4'h3; // mandelbrot
   else if (address >= 32'he0000000 && address <= 32'hefffffff)
     cs = 4'h8; // 32M x 16 FLASH
   else if (address >= 32'hffff0000 && address <= 32'hffffffbf)
