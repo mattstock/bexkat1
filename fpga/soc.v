@@ -129,7 +129,7 @@ assign serial0_rts = serial0_cts; // who needs hardware handshaking?
 assign rst_n = locked;
 
 // Wiring for external SDRAM, SSRAM & flash
-assign sdram_clk = clock_200;
+assign sdram_clk = clock_50;
 
 assign fl_oe_n = ~flash_read;
 assign fl_we_n = ~flash_write;
@@ -172,13 +172,13 @@ assign LEDG = { cpu_halt, sdram_ready, flash_ready, 1'b0, int_en, exception };
 
 wire [7:0] chipselect;
 wire [31:0] cpu_address;
-wire [31:0] cpu_readdata, cpu_writedata, mon_readdata, ram_readdata, matrix_readdata, rom_readdata;
+wire [31:0] cpu_readdata, cpu_writedata, mon_readdata, mandelbrot_readdata, matrix_readdata, rom_readdata;
 wire [31:0] vect_readdata, io_readdata, sdram_readdata, sdram_dataout;
 wire [3:0] cpu_be, bm_be, exception;
 wire [1:0] mmu_interrupt, io_interrupt;
 wire [2:0] cpu_interrupt;
 wire [7:0] lcd_dataout;
-wire cpu_write, cpu_read, cpu_wait, ram_write, ram_read, rom_read, cpu_halt;
+wire cpu_write, cpu_read, cpu_wait, mandelbrot_write, mandelbrot_read, rom_read, cpu_halt;
 wire io_write, io_read, vect_read, sdram_read, sdram_write, sdram_ready, flash_ready, flash_read, flash_write;
 wire matrix_oe_n, bus_start, mmu_buswrite;
 wire matrix_read, matrix_write, ssram_read, ssram_write;
@@ -190,7 +190,7 @@ wire int_en;
 
 assign cpu_readdata = (chipselect == 4'h1 ? vect_readdata : 32'h0) |
                       (chipselect == 4'h2 ? rom_readdata : 32'h0) |
-                      (chipselect == 4'h3 ? ram_readdata : 32'h0) |
+                      (chipselect == 4'h3 ? mandelbrot_readdata : 32'h0) |
                       (chipselect == 4'h5 ? matrix_readdata : 32'h0) |
                       (chipselect == 4'h4 ? io_readdata : 32'h0) |
                       (chipselect == 4'h6 ? fs_databus : 32'h0) |
@@ -199,8 +199,8 @@ assign cpu_readdata = (chipselect == 4'h1 ? vect_readdata : 32'h0) |
 
 assign vect_read = (chipselect == 4'h1 ? cpu_read : 1'b0);
 assign rom_read = (chipselect == 4'h2 ? cpu_read : 1'b0);
-assign ram_read = (chipselect == 4'h3 ? cpu_read : 1'b0);
-assign ram_write = (chipselect == 4'h3 ? cpu_write : 1'b0);
+assign mandelbrot_read = (chipselect == 4'h3 ? cpu_read : 1'b0);
+assign mandelbrot_write = (chipselect == 4'h3 ? cpu_write : 1'b0);
 assign matrix_read = (chipselect == 4'h5 ? cpu_read : 1'b0);
 assign matrix_write = (chipselect == 4'h5 ? cpu_write : 1'b0);
 assign io_read = (chipselect == 4'h4 ? cpu_read : 1'b0);
@@ -236,9 +236,9 @@ bexkat2 bexkat0(.clk(clock_50), .reset_n(rst_n), .address(cpu_address), .read(cp
   .exception(exception), .int_en(int_en));
 vectors vecram0(.clock(clock_50), .q(vect_readdata), .rden(vect_read), .address(cpu_address[6:2]));
 monitor rom0(.clock(clock_50), .q(rom_readdata), .rden(rom_read), .address(cpu_address[15:2]));
-mandunit mand0(.clock(clock_50), .rst_n(rst_n), .data_in(cpu_writedata), .data_out(ram_readdata), .write(ram_write), .read(ram_read),
-  .address(cpu_address[18:0]), .be(cpu_be));
-sdram_controller sdram0(.cpu_clk(clock_50), .mem_clk(clock_200), .reset_n(rst_n), .we_n(sdram_we_n), .cs_n(sdram_cs_n), .cke(sdram_cke),
+mandunit mand0(.clock(clock_50), .rst_n(rst_n), .data_in(cpu_writedata), .data_out(mandelbrot_readdata),
+  .write(mandelbrot_write), .read(mandelbrot_read), .address(cpu_address[18:0]), .be(cpu_be));
+sdram_controller sdram0(.cpu_clk(clock_50), .mem_clk(clock_50), .reset_n(rst_n), .we_n(sdram_we_n), .cs_n(sdram_cs_n), .cke(sdram_cke),
     .cas_n(sdram_cas_n), .ras_n(sdram_ras_n), .dqm(sdram_dqm), .be(cpu_be), .ba(sdram_ba), .addrbus_out(sdram_addrbus),
     .databus_in(sdram_databus), .databus_out(sdram_dataout), .read(sdram_read), .write(sdram_write), .ready(sdram_ready),
     .address(cpu_address[26:2]), .data_in(cpu_writedata), .data_out(sdram_readdata));

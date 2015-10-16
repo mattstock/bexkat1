@@ -42,6 +42,8 @@ begin
     cs = 4'h5; // LED matrix
   else if (address >= 32'h00800800 && address <= 32'h00800fff)
     cs = 4'h4; // IO
+  else if (address >= 32'hc0000000 && address <= 32'hcfffffff)
+    cs = 4'h7; // SDRAM
   else if (address >= 32'hd0000000 && address <= 32'hdfffffff)
     cs = 4'h3; // mandelbrot
   else if (address >= 32'he0000000 && address <= 32'hefffffff)
