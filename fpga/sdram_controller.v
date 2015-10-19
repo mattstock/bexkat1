@@ -7,6 +7,7 @@ module sdram_controller(
   output cke,
   output cas_n,
   output ras_n,
+  output wait_out,
   output reg [3:0] dqm,
   input [3:0] be,
   output reg [1:0] ba,
@@ -25,6 +26,7 @@ assign databus_out = 32'h0;
 assign data_out = data_in;
 assign cke = 1'b1;
 
+assign wait_out = 1'b0;
 assign ready = (state == STATE_IDLE); // not even close
 assign {cs_n, cas_n, ras_n, we_n} = cmd;
 

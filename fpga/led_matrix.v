@@ -1,6 +1,5 @@
 module led_matrix(
   input csi_clk,
-  input led_clk,
   input rsi_reset_n,
   input [23:0] avs_s0_writedata,
   output [23:0] avs_s0_readdata,
@@ -16,6 +15,7 @@ module led_matrix(
   output oe_n);
   
 wire r,g,b;
+wire led_clk;
 wire [23:0] buffer;
 
 wire [7:0] r_level, g_level, b_level;
@@ -124,4 +124,6 @@ end
 
 matrixmem m0(.clock_a(led_clk), .clock_b(csi_clk), .data_b(avs_s0_writedata), .wren_b(avs_s0_write), .address_b(avs_s0_address), .byteena_b(avs_s0_byteenable[2:0]),
   .q_b(avs_s0_readdata), .wren_a(1'b0), .q_a(buffer), .address_a({ab, rowpos, colpos}));
+matrixpll pll1(.inclk0(csi_clk), .c0(led_clk));
+  
 endmodule

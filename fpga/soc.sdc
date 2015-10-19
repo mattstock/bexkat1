@@ -16,7 +16,6 @@ create_generated_clock -name ssram_clk_pin -source pll0|altpll_component|auto_ge
 # 3 - 50MHz w/-90 deg phase shift
  
 set_clock_groups -asynchronous -group { \
-  pll0|altpll_component|auto_generated|pll1|clk[3] \
   pll0|altpll_component|auto_generated|pll1|clk[2] \
   pll0|altpll_component|auto_generated|pll1|clk[1] \
   pll0|altpll_component|auto_generated|pll1|clk[0]} -group { altera_reserved_tck }

@@ -1,29 +1,22 @@
 module mmu(
   input clock,
   input reset_n,
-  input read,
-  input write,
+  input read_in,
+  input write_in,
   input [31:0] address,
-  input map,
-  output buswait,
-  output buswrite,
-  output [1:0] fault,
-  output start,
-  output [3:0] chipselect);
+  input wait_in,
+  output reg wait_out,
+  output reg cache_enable,
+  output reg read_out,
+  output reg write_out,
+  output reg fault,
+  output reg [3:0] chipselect);
   
-reg [3:0] cs;
 reg [1:0] state, state_next;
 
-localparam [1:0] STATE_IDLE = 2'b00, STATE_START = 2'b01, STATE_PRE = 2'b10, STATE_POST = 2'b11;
+localparam STATE_IDLE = 2'h0, STATE_BUSOP = 2'h1, STATE_DONE= 2'h2;
 
-// fault can be bus (alignment), page (unused for now?), 
-assign fault = 2'h0;
-// priv (access not in supervisor mode), write (write to RO page)
-
-assign chipselect = (read || write ? cs : 4'h0);
-assign start = (state == STATE_START);
-assign buswrite = (state == STATE_PRE) & write;
-assign buswait = (state != STATE_POST);
+always wait_out = (state != STATE_DONE);
 
 always @(posedge clock or negedge reset_n)
 begin
@@ -36,48 +29,53 @@ end
 
 always @*
 begin
-  if (address >= 32'h00000000 && address <= 32'h003fffff)
-    cs = 4'h6; // 1M x 32 SSRAM
-  else if (address >= 32'h00800000 && address <= 32'h008007ff)
-    cs = 4'h5; // LED matrix
-  else if (address >= 32'h00800800 && address <= 32'h00800fff)
-    cs = 4'h4; // IO
-  else if (address >= 32'hc0000000 && address <= 32'hcfffffff)
-    cs = 4'h7; // SDRAM
-  else if (address >= 32'hd0000000 && address <= 32'hdfffffff)
-    cs = 4'h3; // mandelbrot
-  else if (address >= 32'he0000000 && address <= 32'hefffffff)
-    cs = 4'h8; // 32M x 16 FLASH
-  else if (address >= 32'hffff0000 && address <= 32'hffffffbf)
-    cs = 4'h2; // 16k x 32 internal ROM
-  else if (address >= 32'hffffffc0 && address <= 32'hffffffff)
-    cs = 4'h1; // interrupt vectors
-  else
-    cs = 4'h0;
-end
-
-always @*
-begin
   state_next = state;
+  fault = 1'b0;
+      if (address >= 32'h00000000 && address <= 32'h003fffff)
+        chipselect = 4'h6; // 1M x 32 SSRAM
+      else if (address >= 32'h00800000 && address <= 32'h008007ff)
+        chipselect = 4'h5; // LED matrix
+      else if (address >= 32'h00800800 && address <= 32'h00800fff) begin
+        chipselect = 4'h4; // IO
+        cache_enable = 1'b0;
+      end else if (address >= 32'hc0000000 && address <= 32'hcfffffff)
+        chipselect = 4'h7; // SDRAM
+      else if (address >= 32'hd0000000 && address <= 32'hdfffffff)
+        chipselect = 4'h3; // mandelbrot
+      else if (address >= 32'he0000000 && address <= 32'hefffffff)
+        chipselect = 4'h8; // 32M x 16 FLASH
+      else if (address >= 32'hffff0000 && address <= 32'hffffffbf)
+        chipselect = 4'h2; // 16k x 32 internal ROM
+      else if (address >= 32'hffffffc0 && address <= 32'hffffffff)
+        chipselect = 4'h1; // interrupt vector
+      else begin
+        fault = 1'b1;
+        chipselect = 4'h0;
+      end
+  read_out = 1'b0;
+  write_out = 1'b0;
+  cache_enable = 1'b1;
   case (state)
     STATE_IDLE: begin
-      if (read || write) begin
-        state_next = STATE_START;
+      if (read_in || write_in) begin
+        state_next = STATE_BUSOP;
       end
     end
-    STATE_START: begin // Address latching
-      if (read || write)
-        state_next = STATE_PRE;
-      else begin
+    STATE_BUSOP: begin
+      read_out = read_in;
+      write_out = write_in;
+      if (!(read_in || write_in))
         state_next = STATE_IDLE;
-      end
+      else if (wait_in == 1'b0)
+        state_next = STATE_DONE;
     end
-    STATE_PRE: state_next = STATE_POST; // read or write cycle
-    STATE_POST: begin // data visible
-      if (!(read || write)) begin
+    STATE_DONE: begin
+      read_out = read_in;
+      write_out = write_in;
+      if (!(read_in || write_in))
         state_next = STATE_IDLE;
-      end
     end
+    default: state_next = STATE_IDLE;
   endcase
 end
 

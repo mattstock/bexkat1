@@ -3,6 +3,7 @@ module mandunit(
   input rst_n,
   input read,
   input write,
+  output wait_out,
   input [3:0] be,
   input [15:0] address,
   input [31:0] data_in,
@@ -20,6 +21,8 @@ wire posx_write, posy_write, mand_write;
 
 reg [13:0] index, index_next;
 reg [2:0] state, state_next;
+
+assign wait_out = (state != 3'h2);
 
 assign data_out = (address[15:14] == 2'b00 ? posx_bus_out : 'h0) |
                   (address[15:14] == 2'b01 ? posy_bus_out : 'h0) |

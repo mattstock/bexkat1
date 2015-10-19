@@ -703,8 +703,12 @@ begin
                 seq_next = 3'h3;
             end
             3'h3: begin
+              bus_read = 1'b1;
               regsel = 4'h1; // rA <= MDR
               reg_write = REG_WRITE_DW;
+              seq_next = 3'h4;
+            end
+            3'h4: begin
               seq_next = 3'h0;
               state_next = STATE_FETCHIR;
             end
@@ -731,8 +735,12 @@ begin
                 seq_next = 3'h3;
             end
             3'h3: begin
+              bus_read = 1'b1;
               regsel = 4'h1; // rA <= MDR
               reg_write = REG_WRITE_DW;
+              seq_next = 3'h4;
+            end
+            3'h4: begin
               seq_next = 3'h0;
               state_next = STATE_FETCHIR;
             end
@@ -764,8 +772,12 @@ begin
                 seq_next = 3'h3;
             end
             3'h3: begin
+              bus_read = 1'b1;
               regsel = 4'h1; // rA <= MDR
               reg_write = REG_WRITE_DW;
+              seq_next = 3'h4;
+            end
+            3'h4: begin
               seq_next = 3'h0;
               state_next = STATE_FETCHIR;
             end
@@ -940,8 +952,12 @@ begin
                 seq_next = 3'h2;
             end
             3'h2: begin
+              bus_read = 1'b1;
               regsel = 4'h1; // rA <= MDR
               reg_write = REG_WRITE_DW;
+              seq_next = 3'h3;
+            end
+            3'h3: begin
               seq_next = 3'h0;
               state_next = STATE_FETCHIR;
             end
@@ -979,8 +995,12 @@ begin
                 seq_next = 3'h1;
             end
             3'h1: begin
+              bus_read = 1'b1;
               regsel = 4'h1; // rA <= MDR
               reg_write = REG_WRITE_DW;
+              seq_next = 3'h2;
+            end
+            3'h2: begin
               seq_next = 3'h0;
               state_next = STATE_FETCHIR;
             end
@@ -1028,8 +1048,12 @@ begin
                 seq_next = 3'h1;
             end
             3'h1: begin
+              bus_read = 1'b1;
               regsel = 4'h1; // rA <= MDR
               reg_write = REG_WRITE_DW;
+              seq_next = 3'h2;
+            end
+            3'h2: begin
               seq_next = 3'h0;
               state_next = STATE_FETCHIR;
             end

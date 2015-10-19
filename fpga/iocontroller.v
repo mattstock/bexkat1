@@ -18,6 +18,7 @@ module iocontroller(
   input miso,
   output mosi,
   output sclk,
+  output wait_out,
   input sd_wp_n,
   output reg [7:0] spi_selects,
   input wp_n,
@@ -28,6 +29,19 @@ module iocontroller(
 
 reg lcd_read, lcd_write, uart1_read, uart0_read, uart1_write, uart0_write, spi_read, spi_write;
 wire [31:0] spi_readdata, uart0_readdata, uart1_readdata, lcd_readdata, sw_readdata;
+
+reg [1:0] iodelay, iodelay_next;
+
+assign wait_out = iodelay[0];
+
+always @(posedge clk or negedge rst_n)
+begin
+  if (!rst_n) begin
+    iodelay <= 2'b11;
+  end else begin
+    iodelay <= iodelay_next;
+  end
+end
 
 always @*
 begin
@@ -40,6 +54,11 @@ begin
   lcd_write = 1'b0;
   spi_write = 1'b0;
   data_out = 'h0;
+  if (read|write)
+    iodelay_next = { iodelay[0], 1'b0 };
+  else
+    iodelay_next = 2'b11;
+  
   if (address >= 11'h000 && address <= 11'h007) begin
     uart0_read = read;
     uart0_write = write;
