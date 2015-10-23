@@ -153,7 +153,7 @@ wire [7:0] chipselect;
 wire [26:0] ssram_addrout, flash_addrout;
 wire [12:0] sdram_addrout;
 wire [31:0] cpu_address, flash_readdata, ssram_readdata, ssram_dataout;
-wire [31:0] flash_dataout;
+wire [15:0] flash_dataout;
 wire [31:0] cpu_readdata, cpu_writedata, mon_readdata, mandelbrot_readdata, matrix_readdata, rom_readdata;
 wire [31:0] vect_readdata, io_readdata, sdram_readdata, sdram_dataout;
 wire [3:0] cpu_be, exception;
@@ -187,7 +187,7 @@ begin
 end
 
 assign fl_rst_n = rst_n;
-assign fs_databus = (~ssram_we_n ? ssram_dataout : (~fl_we_n ? flash_dataout : 32'hzzzzzzzz));
+assign fs_databus = (~ssram_we_n ? ssram_dataout : (~fl_we_n ? { 16'h0000, flash_dataout } : 32'hzzzzzzzz));
 assign sdram_databus = (~sdram_we_n ? sdram_dataout : 32'hzzzzzzzz);
 
 always @*
@@ -297,7 +297,7 @@ ssram_controller ssram0(.clock(clock_50), .reset_n(rst_n), .databus_in(fs_databu
   .gw_n(ssram_gw_n), .adv_n(ssram_adv_n), .adsp_n(ssram_adsp_n), .adsc_n(ssram_adsc_n), .be_out(ssram_be),
   .oe_n(ssram_oe_n), .we_n(ssram_we_n), .ce0_n(ssram0_ce_n), .ce1_n(ssram1_ce_n));
 
-flash_controller flash0(.clock(clock_50), .reset_n(rst_n), .databus_in(fs_databus), .databus_out(flash_dataout),
+flash_controller flash0(.clock(clock_50), .reset_n(rst_n), .databus_in(fs_databus[15:0]), .databus_out(flash_dataout),
   .read(flash_read), .write(flash_write), .wait_out(flash_wait), .data_in(cpu_writedata), .data_out(flash_readdata),
   .be_in(cpu_be), .address_in(cpu_address[26:0]), .address_out(flash_addrout),
   .ready(fl_ry), .wp_n(fl_wp_n), .oe_n(fl_oe_n), .we_n(fl_we_n), .ce_n(fl_ce_n));

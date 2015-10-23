@@ -6,8 +6,8 @@ module flash_controller(
   input read,
   input write,
   output wait_out,
-  input [31:0] data_in,
-  output [31:0] data_out,
+  input [15:0] data_in,
+  output [15:0] data_out,
   input [3:0] be_in,
   input [25:0] address_in,
   output [26:0] address_out,
@@ -17,48 +17,11 @@ module flash_controller(
   output we_n,
   output ce_n);
 
-wire select;
-wire buswrite;
-
-assign buswrite = (state == STATE_WRITE) && write;
-assign select = read | write;
-assign wp_n = 1'b1;
-assign data_out = databus_in;
-assign databus_out = data_in;
-assign ce_n = ~select;
-assign address_out = { 1'b0, address_in};
-assign we_n = ~buswrite;
-assign oe_n = ~read;
-assign wait_out = (state != STATE_POST);
-
-reg [1:0] state, state_next;
-
-localparam [1:0] STATE_IDLE = 2'h0, STATE_ADDRLATCH = 2'h1, STATE_WRITE = 2'h2, STATE_POST = 2'h3;
-
-always @(posedge clock or negedge reset_n)
-begin
-  if (!reset_n) begin
-    state <= STATE_IDLE;
-  end else begin
-    state <= state_next;
-  end
-end
-
-always @*
-begin
-  state_next = state;
-  case (state)
-    STATE_IDLE:
-      if (read || write)
-        state_next = STATE_ADDRLATCH;
-    STATE_ADDRLATCH:
-      if (write)
-        state_next = STATE_WRITE;
-      else
-        state_next = STATE_POST;
-    STATE_WRITE: state_next = STATE_POST;
-    STATE_POST: state_next = STATE_IDLE;
-  endcase
-end
-
+ // This controller will do the work related to page mode reads, etc.
+ // the adapt32to16 will adjust for the bus widths by adding an additional bus cycle.
+ 
+adapt32to16 width0(.clock(clock), .reset_n(reset_n), .read(read), .write(write), .data_in(data_in), .data_out(data_out),
+  .databus_in(databus_in), .databus_out(databus_out), .ready(ready), .wp_n(wp_n), .ce_n(ce_n), .oe_n(oe_n), .we_n(we_n),
+  .address_in(address_in), .address_out(address_out), .wait_out(wait_out), .be_in(be_in));
+  
 endmodule

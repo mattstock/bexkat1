@@ -201,7 +201,7 @@ void main(void) {
   lcd_init();
   lcd_print("Bexkat 1000");
   lcd_pos(0,1);
-  lcd_print("v2.0");
+  lcd_print("v2.2");
   if (sw[0] && 0x1) {
     sdcard_exec("/kernel");
     serial_print(0, "\nautoboot failed\n");
