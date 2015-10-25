@@ -38,6 +38,9 @@ begin
       else if (address >= 32'h00800800 && address <= 32'h00800fff) begin
         chipselect = 4'h4; // IO
         cache_enable = 1'b0;
+      end else if (address >= 32'hb0000000 && address <= 32'hbfffffff) begin
+        chipselect = 4'h9; // VGA
+        cache_enable = 1'b0;
       end else if (address >= 32'hc0000000 && address <= 32'hcfffffff)
         chipselect = 4'h7; // SDRAM
       else if (address >= 32'hd0000000 && address <= 32'hdfffffff)

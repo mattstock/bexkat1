@@ -1,54 +1,82 @@
-#include "serial.h"
+#include <stdlib.h>
+#include <stdio.h>
+#include <string.h>
+#include <stdarg.h>
+#include <unistd.h>
+#include <math.h>
+#include "matrix.h"
 #include "misc.h"
+#include "serial.h"
 
-volatile unsigned int *vga = (unsigned int *)0x00c00000;
+unsigned int *vga = (unsigned *)0xb0000000;
+unsigned int *sw = (unsigned *)0x00800810;
 
-void vga_fade(void);
-void vga_put(unsigned, unsigned, unsigned);
+void mandelbrot(float cx, float cy, float scale) {
+  float limit = 4.0f;
+  int x,y,lp;
+  float ax,ay;
+  float a1,b1,a2,b2;
+  float res,asq,bsq;
 
-void vga_put(unsigned x, unsigned y, unsigned val) {
-  if (y > 480 || x > 640)
-    return;
-  vga[y*640+x] = val;
-}
-
-void vga_fade(void) {
-  unsigned short i;
-  unsigned a,b;
-  unsigned subber;
-  for (i=0; i < 16*32; i++) {
-    subber=0;
-    a = vga[i];
-    b = a & 0xff0000;
-    if (b >= 0x70000)
-      subber += 0x70000;
-    else
-      subber += b;
-    b = a & 0xff00;
-    if (b >= 0x700)
-      subber += 0x700;
-    else
-      subber += b;
-    b = a & 0xff;
-    if (b >= 0x7)
-      subber += 0x7;
-    else
-      subber += b;
-    vga[i] -= subber; 
+  for (x=-320; x < 320; x++) {
+    ax = cx+x*scale;
+    for (y=-240; y < 240; y++) {
+      ay = cy+y*scale;
+      a1 = ax;
+      b1 = ay;
+      lp = 0; 
+      do {
+        lp++;
+        asq = a1*a1;
+        bsq = b1*b1;
+        a2 = asq - bsq + ax;
+        b2 = 2.0f*a1*b1+ay;
+        a1 = a2;
+        b1 = b2;
+        res = a1*a1 + b1*b1;
+      } while ((lp <= 255) && (res <= limit) && (fpclassify(res) != FP_INFINITE));
+      if (lp > 255)
+        vga[640*(y+240)+x+320] = 0;
+      else
+        vga[640*(y+240)+x+320] = lp;
+    }
   }
 }
 
-void main(void) {
-  char c;
-  unsigned val;
-  unsigned short x, y;
+void clear() {
+  int x,y;
+  for (y=0; y < 480; y++)
+    for (x=0; x < 640; x++)
+      vga[y*640+x] = 0;
+}
 
-  x = 320;
-  y = 240;
-  val = 0x00808080;
-  for (val=0; val < 640*480; val++)
-    vga[val] = 0;
-  for (val=0; val < 640; val++)
-    vga[640*100+val] = 0x00ffffff;
-  while (1);
+void pattern() {
+  int x,y;
+  for (y=0; y < 480; y++)
+    for (x=0; x < 640; x++)
+      vga[y*640+x] = (((x>>2)+1) % 8) | ((((y>>2)+1) % 8) << 6);
+}
+
+void main(void) {
+  int x,y;
+  x = 0;
+
+  while (1) {
+    iprintf("Select test with switches and press a key\n");
+    serial_getchar(0);
+    switch (sw[0]) {
+    case 0:
+      pattern();
+      break;
+    case 1:
+      mandelbrot(0.36f, 0.1f, 0.0001f);
+      break;
+    case 2:
+      mandelbrot(0.36f, 0.1f, 0.00001f);
+      break;
+    case 3:
+      clear();
+      break;
+    }
+  }
 }

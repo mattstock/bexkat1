@@ -92,7 +92,15 @@ module soc(
   input serial0_cts,
   output serial0_tx,
   output serial1_tx,
-  output serial0_rts);
+  output serial0_rts,
+  output vga_hs,
+  output vga_vs,
+  output vga_blank_n,
+  output vga_sync_n,
+  output vga_clock,
+  output [7:0] vga_r,
+  output [7:0] vga_g,
+  output [7:0] vga_b);
 
 wire clock_50, clock_25, clock_200, locked;
 wire [7:0] spi_selects;
@@ -169,20 +177,25 @@ wire sdram_read, sdram_write, sdram_ready, sdram_wait;
 wire flash_read, flash_write, flash_ready, flash_wait;
 wire matrix_read, matrix_write, matrix_oe_n;
 wire ssram_read, ssram_write, ssram_wait;
+wire vga_write;
 wire int_en;
 
 // only need one cycle for reading onboard memory
 reg rom_wait, vect_wait, matrix_wait;
+reg [2:0] vga_wait;
+
 always @(posedge clock_50 or negedge rst_n)
 begin
   if (!rst_n) begin
     rom_wait <= 1'b1;
     vect_wait <= 1'b1;
     matrix_wait <= 1'b1;
+    vga_wait <= 3'b111;
   end else begin
     rom_wait <= ~rom_read;
     vect_wait <= ~vect_read;
     matrix_wait <= ~(matrix_read|matrix_write);
+    vga_wait <= { vga_wait[1:0], ~vga_write };
   end
 end
 
@@ -206,6 +219,7 @@ begin
   sdram_write = 1'b0;
   flash_read = 1'b0;
   flash_write = 1'b0;
+  vga_write = 1'b0;
   fs_addrbus = 27'h00000000;
   sdram_addrbus = 13'h00000000;
   case (chipselect)
@@ -258,6 +272,11 @@ begin
       flash_write = mmu_write;
       fs_addrbus = flash_addrout;
     end
+    4'h9: begin
+      cpu_readdata = 32'h0;
+      mmu_wait = vga_wait[2];
+      vga_write = mmu_write;
+    end
     default: begin
       cpu_readdata = 32'h0;
       mmu_wait = 1'b0;
@@ -302,7 +321,9 @@ flash_controller flash0(.clock(clock_50), .reset_n(rst_n), .databus_in(fs_databu
   .be_in(cpu_be), .address_in(cpu_address[26:0]), .address_out(flash_addrout),
   .ready(fl_ry), .wp_n(fl_wp_n), .oe_n(fl_oe_n), .we_n(fl_we_n), .ce_n(fl_ce_n));
 
-
+vga_framebuffer vga0(.clock(clock_50), .reset_n(rst_n), .address(cpu_address[20:2]), .write(vga_write), .data(cpu_writedata),
+  .vs(vga_vs), .hs(vga_hs), .r(vga_r), .g(vga_g), .b(vga_b), .blank_n(vga_blank_n), .vga_clock(vga_clock), .sync_n(vga_sync_n), .sw(SW[17]));
+  
 vectors vecram0(.clock(clock_50), .q(vect_readdata), .rden(vect_read), .address(cpu_address[6:2]));
 monitor rom0(.clock(clock_50), .q(rom_readdata), .rden(rom_read), .address(cpu_address[15:2]));
 mandunit mand0(.clock(clock_50), .rst_n(rst_n), .data_in(cpu_writedata), .data_out(mandelbrot_readdata),

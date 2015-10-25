@@ -12,16 +12,16 @@ TEMP := $(shell mktemp)
 
 .PHONY: all clean lib gcctests kernel install
 
-all: lib gcctests boot.o bootstrap.hex pretty kernel matrix floaters multiply fps serial.hex mandsf manddf basic
+all: lib gcctests boot.o bootstrap.hex pretty kernel matrix floaters multiply fps serial.hex mandsf manddf vga basic
 
-install: kernel pretty floaters mandsf manddf basic fps
-	cp kernel/kernel pretty floaters mandsf manddf basic fps /media/mstock/19D5-2529/
+install: kernel pretty floaters mandsf manddf basic fps vga
+	cp kernel/kernel pretty floaters mandsf manddf basic fps vga /media/mstock/19D5-2529/
 
 clean:
 	cd lib; make clean
 	cd gcctests; make clean
 	cd kernel; make clean
-	rm -f *.o *.srec *.hex bootstrap bootstrap.s mandsf basic matrix pretty.s pretty multiply fp-simple floaters serial *.gkd *.expand manddf fps
+	rm -f *.o *.srec *.hex bootstrap bootstrap.s mandsf basic matrix pretty.s pretty multiply fp-simple floaters serial *.gkd *.expand manddf fps vga
 
 lib:
 	cd lib; make
@@ -64,6 +64,9 @@ mandsf: mandsf.o
 	$(CC) -specs=de2.specs -o $@ $^ $(LIBS)
 
 manddf: manddf.o
+	$(CC) -specs=de2.specs -o $@ $^ $(LIBS)
+
+vga: vga.o
 	$(CC) -specs=de2.specs -o $@ $^ $(LIBS)
 
 basic: basic.o
