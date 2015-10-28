@@ -67,11 +67,15 @@ module soc(
   output sd_sclk,
   input gen_miso,
   output gen_mosi,
-  output gen_ss,
+  output rtc_ss,
+  input rtc_miso,
+  output rtc_mosi,
+  output rtc_sclk,
   output touch_ss,
   output extsd_ss,
   output gen_sclk,
   input touch_irq,
+  output itd_ss,
   output itd_backlight,
   output itd_dc,
   output rst_n,
@@ -102,24 +106,28 @@ module soc(
   output [7:0] vga_g,
   output [7:0] vga_b);
 
-wire clock_50, clock_25, clock_200, locked;
+wire sysclock, locked;
 wire [7:0] spi_selects;
 wire miso, mosi, sclk;
 assign rgb = 3'b000;
 
 // some SPI wiring
 assign sd_ss = spi_selects[0];
-assign gen_ss = spi_selects[1];
+assign itd_ss = spi_selects[1];
 assign touch_ss = spi_selects[2];
 assign extsd_ss = spi_selects[3];
+assign rtc_ss = spi_selects[4];
 assign gen_mosi = mosi;
 assign sd_mosi = mosi;
+assign rtc_mosi = mosi;
 assign miso = (~spi_selects[0] ? sd_miso : 1'b0) |
               (~spi_selects[1] ? gen_miso : 1'b0) |
               (~spi_selects[2] ? gen_miso : 1'b0) |
-              (~spi_selects[3] ? gen_miso : 1'b0);
+              (~spi_selects[3] ? gen_miso : 1'b0) |
+              (~spi_selects[4] ? rtc_miso : 1'b0);
 assign gen_sclk = sclk;
 assign sd_sclk = sclk;
+assign rtc_sclk = sclk;
 
 // ethernet stubs
 assign enet_tx_data = 4'hz;
@@ -137,7 +145,7 @@ assign serial0_rts = serial0_cts; // who needs hardware handshaking?
 assign rst_n = locked;
 
 // Wiring for external SDRAM, SSRAM & flash
-assign sdram_clk = clock_50;
+assign sdram_clk = sysclock;
 
 assign rgb_oe_n = matrix_oe_n;
 
@@ -184,7 +192,7 @@ wire int_en;
 reg rom_wait, vect_wait, matrix_wait;
 reg [2:0] vga_wait;
 
-always @(posedge clock_50 or negedge rst_n)
+always @(posedge sysclock or negedge rst_n)
 begin
   if (!rst_n) begin
     rom_wait <= 1'b1;
@@ -284,7 +292,7 @@ begin
   endcase
 end
 
-always @(posedge clock_50)
+always @(posedge sysclock)
 begin
   if (KEY[3]) begin
     datadisp <= cpu_writedata;
@@ -303,43 +311,50 @@ begin
     cpu_interrupt = 3'h0;
 end
 
-bexkat2 bexkat0(.clk(clock_50), .reset_n(rst_n), .address(cpu_address), .read(cpu_read), .readdata(cpu_readdata),
+sysclock pll0(.inclk0(raw_clock_50), .c0(sysclock), .areset(~KEY[0]), .locked(locked));
+
+bexkat2 bexkat0(.clk(sysclock), .reset_n(rst_n), .address(cpu_address), .read(cpu_read), .readdata(cpu_readdata),
   .write(cpu_write), .writedata(cpu_writedata), .byteenable(cpu_be), .waitrequest(cpu_wait), .halt(cpu_halt),
   .interrupt(cpu_interrupt), .exception(exception), .int_en(int_en));
-mmu mmu0(.clock(clock_50), .reset_n(rst_n), .address(cpu_address), .read_in(cpu_read), .chipselect(chipselect),
+mmu mmu0(.clock(sysclock), .reset_n(rst_n), .address(cpu_address), .read_in(cpu_read), .chipselect(chipselect),
   .write_in(cpu_write), .wait_out(cpu_wait), .write_out(mmu_write), .read_out(mmu_read), .fault(mmu_fault), 
   .wait_in(mmu_wait));
 
-ssram_controller ssram0(.clock(clock_50), .reset_n(rst_n), .databus_in(fs_databus), .databus_out(ssram_dataout),
+// 0x00000000 - 0x003fffff
+ssram_controller ssram0(.clock(sysclock), .reset_n(rst_n), .databus_in(fs_databus), .databus_out(ssram_dataout),
   .read(ssram_read), .write(ssram_write), .wait_out(ssram_wait), .data_in(cpu_writedata), .data_out(ssram_readdata),
   .be_in(cpu_be), .address_in(cpu_address[21:0]), .address_out(ssram_addrout), .bus_clock(ssram_clk),
   .gw_n(ssram_gw_n), .adv_n(ssram_adv_n), .adsp_n(ssram_adsp_n), .adsc_n(ssram_adsc_n), .be_out(ssram_be),
   .oe_n(ssram_oe_n), .we_n(ssram_we_n), .ce0_n(ssram0_ce_n), .ce1_n(ssram1_ce_n));
-
-flash_controller flash0(.clock(clock_50), .reset_n(rst_n), .databus_in(fs_databus[15:0]), .databus_out(flash_dataout),
-  .read(flash_read), .write(flash_write), .wait_out(flash_wait), .data_in(cpu_writedata), .data_out(flash_readdata),
-  .be_in(cpu_be), .address_in(cpu_address[26:0]), .address_out(flash_addrout),
-  .ready(fl_ry), .wp_n(fl_wp_n), .oe_n(fl_oe_n), .we_n(fl_we_n), .ce_n(fl_ce_n));
-
-vga_framebuffer vga0(.clock(clock_50), .reset_n(rst_n), .address(cpu_address[20:2]), .write(vga_write), .data(cpu_writedata),
+// 0x00800000 - 0x008007ff
+led_matrix matrix0(.csi_clk(sysclock), .rsi_reset_n(rst_n), .avs_s0_writedata(cpu_writedata), .avs_s0_readdata(matrix_readdata),
+  .avs_s0_address(cpu_address[11:2]), .avs_s0_byteenable(cpu_be), .avs_s0_write(matrix_write), .avs_s0_read(matrix_read),
+  .demux({rgb_a, rgb_b, rgb_c}), .rgb0(rgb0), .rgb1(rgb1), .rgb_stb(rgb_stb), .rgb_clk(rgb_clk), .oe_n(matrix_oe_n));
+// 0x00800800 - 0x00800fff
+iocontroller io0(.clk(sysclock), .rst_n(rst_n), .miso(miso), .mosi(mosi), .sclk(sclk), .spi_selects(spi_selects), .sd_wp_n(sd_wp_n),
+  .be(cpu_be), .data_in(cpu_writedata), .data_out(io_readdata), .read(io_read), .write(io_write), .address(cpu_address),
+  .lcd_e(lcd_e), .lcd_data(lcd_dataout), .lcd_rs(lcd_rs), .lcd_on(lcd_on), .lcd_rw(lcd_rw), .interrupt(io_interrupt), .wait_out(io_wait),
+  .rx0(serial0_rx), .tx0(serial0_tx), .tx1(serial1_tx), .sw(SW[15:0]), .itd_backlight(itd_backlight), .itd_dc(itd_dc), .fan(fan_ctrl));
+// 0xb0000000 - 0xbfffffff
+vga_framebuffer vga0(.clock(sysclock), .reset_n(rst_n), .address(cpu_address[20:2]), .write(vga_write), .data(cpu_writedata),
   .vs(vga_vs), .hs(vga_hs), .r(vga_r), .g(vga_g), .b(vga_b), .blank_n(vga_blank_n), .vga_clock(vga_clock), .sync_n(vga_sync_n), .sw(SW[17]));
-  
-vectors vecram0(.clock(clock_50), .q(vect_readdata), .rden(vect_read), .address(cpu_address[6:2]));
-monitor rom0(.clock(clock_50), .q(rom_readdata), .rden(rom_read), .address(cpu_address[15:2]));
-mandunit mand0(.clock(clock_50), .rst_n(rst_n), .data_in(cpu_writedata), .data_out(mandelbrot_readdata),
-  .write(mandelbrot_write), .read(mandelbrot_read), .address(cpu_address[18:0]), .be(cpu_be), .wait_out(mandelbrot_wait));
-sdram_controller sdram0(.cpu_clk(clock_50), .mem_clk(clock_50), .reset_n(rst_n), .we_n(sdram_we_n), .cs_n(sdram_cs_n), .cke(sdram_cke),
+// 0xc0000000 - 0xcfffffff
+sdram_controller sdram0(.cpu_clk(sysclock), .mem_clk(sysclock), .reset_n(rst_n), .we_n(sdram_we_n), .cs_n(sdram_cs_n), .cke(sdram_cke),
     .cas_n(sdram_cas_n), .ras_n(sdram_ras_n), .dqm(sdram_dqm), .be(cpu_be), .ba(sdram_ba), .addrbus_out(sdram_addrout),
     .databus_in(sdram_databus), .databus_out(sdram_dataout), .read(sdram_read), .write(sdram_write), .ready(sdram_ready),
     .address(cpu_address[26:2]), .data_in(cpu_writedata), .data_out(sdram_readdata), .wait_out(sdram_wait));
-led_matrix matrix0(.csi_clk(clock_50), .rsi_reset_n(rst_n), .avs_s0_writedata(cpu_writedata), .avs_s0_readdata(matrix_readdata),
-  .avs_s0_address(cpu_address[11:2]), .avs_s0_byteenable(cpu_be), .avs_s0_write(matrix_write), .avs_s0_read(matrix_read),
-  .demux({rgb_a, rgb_b, rgb_c}), .rgb0(rgb0), .rgb1(rgb1), .rgb_stb(rgb_stb), .rgb_clk(rgb_clk), .oe_n(matrix_oe_n));
-iocontroller io0(.clk(clock_50), .rst_n(rst_n), .miso(miso), .mosi(mosi), .sclk(sclk), .spi_selects(spi_selects), .sd_wp_n(sd_wp_n),
-  .be(cpu_be), .data_in(cpu_writedata), .data_out(io_readdata), .read(io_read), .write(io_write), .address(cpu_address),
-  .lcd_e(lcd_e), .lcd_data(lcd_dataout), .lcd_rs(lcd_rs), .lcd_on(lcd_on), .lcd_rw(lcd_rw), .interrupt(io_interrupt), .wait_out(io_wait),
-  .rx0(serial0_rx), .tx0(serial0_tx), .tx1(serial1_tx), .sw(SW[15:0]), .itd_backlight(itd_backlight), .itd_dc(itd_dc));
-sysclock pll0(.inclk0(raw_clock_50), .c0(clock_200), .c1(clock_25), .c2(clock_50), .areset(~KEY[0]), .locked(locked));
-fan_ctrl fan0(.clk(clock_25), .rst_n(rst_n), .fan_pwm(fan_ctrl));
+// 0xd0000000 - 0xdfffffff
+mandunit mand0(.clock(sysclock), .rst_n(rst_n), .data_in(cpu_writedata), .data_out(mandelbrot_readdata),
+  .write(mandelbrot_write), .read(mandelbrot_read), .address(cpu_address[18:0]), .be(cpu_be), .wait_out(mandelbrot_wait));
+// 0xe0000000 - 0xefffffff
+flash_controller flash0(.clock(sysclock), .reset_n(rst_n), .databus_in(fs_databus[15:0]), .databus_out(flash_dataout),
+  .read(flash_read), .write(flash_write), .wait_out(flash_wait), .data_in(cpu_writedata), .data_out(flash_readdata),
+  .be_in(cpu_be), .address_in(cpu_address[26:0]), .address_out(flash_addrout),
+  .ready(fl_ry), .wp_n(fl_wp_n), .oe_n(fl_oe_n), .we_n(fl_we_n), .ce_n(fl_ce_n));
+// 0xffff0000 - 0xffffffdf
+monitor rom0(.clock(sysclock), .q(rom_readdata), .rden(rom_read), .address(cpu_address[15:2]));
+// 0xffffffe0 - 0xffffffff
+vectors vecram0(.clock(sysclock), .q(vect_readdata), .rden(vect_read), .address(cpu_address[6:2]));
+
 
 endmodule

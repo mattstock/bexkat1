@@ -3,13 +3,13 @@ module fan_ctrl(
   input rst_n,
   output fan_pwm);
   
-reg [15:0] tick;
+reg [16:0] tick;
 
-assign fan_pwm = tick[15];
+assign fan_pwm = tick[16];
 
 always @(posedge clk or negedge rst_n)
   if (!rst_n)
-    tick <= 16'h0;
+    tick <= 17'h0;
   else
     tick <= tick + 1'h1;
   

@@ -5,19 +5,14 @@ derive_clock_uncertainty
 
 create_clock -period 200ns -name led_clk
 
-create_generated_clock -name spi_sclk_reg -source pll0|altpll_component|auto_generated|pll1|clk[2] -divide_by 2 [get_registers {iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|sclk}]
+create_generated_clock -name spi_sclk_reg -source pll0|altpll_component|auto_generated|pll1|clk[0] -divide_by 2 [get_registers {iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|sclk}]
 create_generated_clock -name sd_sclk_pin -source [get_registers {iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|sclk}] [get_ports {sd_sclk}]
 create_generated_clock -name gen_sclk_pin -source [get_registers {iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|sclk}] [get_ports {gen_sclk}]
-create_generated_clock -name ssram_clk_pin -source pll0|altpll_component|auto_generated|pll1|clk[2] -add [get_ports ssram_clk]
+create_generated_clock -name ssram_clk_pin -source pll0|altpll_component|auto_generated|pll1|clk[0] -add [get_ports ssram_clk]
 
-# 0 - 200MHz
-# 1 - 25MHz
-# 2 - 50MHz
-# 3 - 50MHz w/-90 deg phase shift
- 
+# 0 - 50MHz
+
 set_clock_groups -asynchronous -group { \
-  pll0|altpll_component|auto_generated|pll1|clk[2] \
-  pll0|altpll_component|auto_generated|pll1|clk[1] \
   pll0|altpll_component|auto_generated|pll1|clk[0]} -group { altera_reserved_tck }
 
 # JTAG

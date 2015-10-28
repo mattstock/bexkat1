@@ -24,6 +24,7 @@ module iocontroller(
   input wp_n,
   output itd_backlight,
   output itd_dc,
+  output fan,
   output [1:0] interrupt,
   input [15:0] sw);
 
@@ -89,5 +90,7 @@ uart uart1(.clk(clk), .rst_n(rst_n), .rx(1'b0), .tx(tx1), .data_in(data_in), .be
   .data_out(uart1_readdata), .select(uart1_read|uart1_write), .write(uart1_write), .address(address[2]));
 spi_master spi0(.clk(clk), .rst_n(rst_n), .miso(miso), .mosi(mosi), .sclk(sclk), .selects(spi_selects), .wp_n(sd_wp_n),
   .be(be), .data_in(data_in), .data_out(spi_readdata), .read(spi_read), .write(spi_write), .address(address[2]), .itd({itd_backlight, itd_dc}));
+
+fan_ctrl fan0(.clk(clk), .rst_n(rst_n), .fan_pwm(fan));
 
 endmodule

@@ -14,12 +14,11 @@ module spi_master(
   input write,
   input address);
 
-parameter clkfreq = 50000000;
-parameter speed =    8000000; // 8MHz
+parameter clockfreq = 50000000;
 
 // write
 // 'h0: xxxxxxdd : spi byte out
-// 'h1: sscfxixx : ss = selects, cf = config byte (cpol, cpha), i = xxbd, backlight, d/c mode
+// 'h1: sscfxixx : ss = selects, cf = config byte (speedselect, cpol, cpha), i = xxbd, backlight, d/c mode
 // read
 // 'h0: xxxxxxdd : spi byte in (clears ready flag)
 // 'h1: sscfxiptr : ss = selects, cf = config byte, p = write protect, t = transmit ready, r = recv ready
@@ -111,7 +110,7 @@ begin
   end
 end
 
-spi_xcvr #(.clkfreq(clkfreq), .speed(speed)) xcvr0(.clk(clk), .rst_n(rst_n), .conf(conf), .start(tx_start), .rx(rx_in), .done(tx_done), .tx(data_in[7:0]), 
+spi_xcvr #(.clockfreq(clockfreq)) xcvr0(.clock(clk), .reset_n(rst_n), .conf(conf), .start(tx_start), .rx(rx_in), .done(tx_done), .tx(data_in[7:0]), 
   .miso(miso), .mosi(mosi), .sclk(sclk));
 
 endmodule

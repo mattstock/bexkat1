@@ -1,23 +1,23 @@
-module spi_xcvr(clk, rst_n, conf, start, rx, done, tx, miso, mosi, sclk);
+module spi_xcvr(
+  input clock,
+  input reset_n,
+  input [15:0] conf,
+  input start,
+  output [7:0] rx,
+  output reg done,
+  input [7:0] tx,
+  input miso,
+  output mosi,
+  output reg sclk);
 
-parameter clkfreq = 50000000;
-parameter speed = 500000; // 500kHz default
-
-input clk;
-input rst_n;
-input [15:0] conf;
-input start;
-output [7:0] rx;
-output done;
-input [7:0] tx;
-input miso;
-output mosi;
-output sclk;
+parameter clockfreq = 50000000; // 50MHz
+parameter hispeed =  8000000; //  8MHz
+parameter lospeed =  2000000; //  2Mhz
 
 reg [8:0] buffer, buffer_next;
-reg done, done_next;
+reg done_next;
 reg [1:0] state, state_next;
-reg sclk, sclk_next;
+reg sclk_next;
 reg [2:0] bits, bits_next;
 
 reg spiclk;
@@ -29,12 +29,15 @@ assign done = (state == STATE_IDLE);
 assign mosi = buffer[8];
 assign rx = buffer[8:1];
 
-wire cpol, cpha;
-assign {cpol, cpha} = conf[1:0];
+wire [31:0] maxval;
+wire speedselect, cpol, cpha;
 
-always @(posedge clk or negedge rst_n)
+assign {speedselect, cpol, cpha} = conf[2:0];
+assign maxval = (speedselect ? clockfreq/hispeed : clockfreq/lospeed);
+
+always @(posedge clock or negedge reset_n)
 begin
-  if (!rst_n) begin
+  if (!reset_n) begin
     state <= STATE_IDLE;
     buffer <= 8'h00;
     sclk <= 1'b1;
@@ -47,11 +50,11 @@ begin
   end
 end
 
-always @(posedge clk)
+always @(posedge clock)
 begin
   spiclk = 1'b0;
   if (state != 4'h0)
-    if (counter < clkfreq/speed)
+    if (counter < maxval)
       counter = counter + 1'h1;
     else begin
       counter = 'h0;
