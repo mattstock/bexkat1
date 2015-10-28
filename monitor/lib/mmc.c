@@ -12,16 +12,15 @@
 /-------------------------------------------------------------------------*/
 
 #include "diskio.h"
-
-volatile unsigned int *sdcard = (unsigned int *)0x00800820;
+#include "spi.h"
 
 /* Port controls  (Platform dependent) */
-#define CS_LOW()	sdcard[1] &= 0xfeffffff		/* CS=low */
-#define	CS_HIGH()	sdcard[1] |= 0xff000000		/* CS=high */
+#define CS_LOW()	CLEAR_BIT(SPI_CTL, SD_SEL)	/* CS=low */
+#define	CS_HIGH()	SET_BIT(SPI_CTL, SD_SEL)	/* CS=high */
 #define MMC_CD		1                               /* Card detected.   yes:true, no:false, default:true */
-#define MMC_WP		(sdcard[1] & 0x00000004)	/* Write protected. yes:true, no:false, default:false */
-#define	FCLK_SLOW()	1		/* Set slow clock (F_CPU / 64) */
-#define	FCLK_FAST()	1		/* Set fast clock (F_CPU / 2) */
+#define MMC_WP		(SPI_CTL & 0x00000004)		/* Write protected. yes:true, no:false, default:false */
+#define	FCLK_SLOW()	CLEAR_BIT(SPI_CTL, SPI_SPEED)	/* Set slow clock (F_CPU / 64) */
+#define	FCLK_FAST()	SET_BIT(SPI_CTL, SPI_SPEED)	/* Set fast clock (F_CPU / 2) */
 
 
 /*--------------------------------------------------------------------------
@@ -91,15 +90,7 @@ BYTE xchg_spi (		/* Returns received data */
 	BYTE dat		/* Data to be sent */
 )
 {
-	unsigned int res;
-
-	sdcard[0] = dat;
-	res = sdcard[1];
-	while ((res & 0x00000001) != 0x00000001) {
-		res = sdcard[1];
-	}
-        res = sdcard[0];
-	return (res & 0xff);
+	return spi_xfer(dat);
 }
 
 /* Send a data block fast */
@@ -112,16 +103,8 @@ void xmit_spi_multi (
 	unsigned int res;
 
 	do {
-		sdcard[0] = *p++;
-		res = sdcard[1];
-		while ((res & 0x00000001) != 0x00000001) {
-			res = sdcard[1];
-		}
-		sdcard[0] = *p++;
-		res = sdcard[1];
-		while ((res & 0x00000001) != 0x00000001) {
-			res = sdcard[1];
-		}
+		spi_xfer(*p++);
+		spi_xfer(*p++);
 	} while (cnt -= 2);
 }
 
@@ -134,20 +117,8 @@ void rcvr_spi_multi (
 {
 	unsigned int res;
 	do {
-		sdcard[0] = 0xff;
-		res = sdcard[1];
-		while ((res & 0x00000001) != 0x00000001) {
-			res = sdcard[1];
-		}
-		res = sdcard[0];
-		*p++ = (res & 0xff);
-		sdcard[0] = 0xff;
-		res = sdcard[1];
-		while ((res & 0x00000001) != 0x00000001) {
-			res = sdcard[1];
-		}
-		res = sdcard[0];
-		*p++ = (res & 0xff);
+		*p++ = spi_xfer(0xff);
+		*p++ = spi_xfer(0xff);
 	} while (cnt -= 2);
 }
 
