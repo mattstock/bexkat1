@@ -3,9 +3,8 @@
  *
  */
 #include "misc.h"
+#include "spi.h"
 #include "itd.h"
-
-volatile unsigned int *spi = (unsigned int *)0x00800820;
 
 // ITD commands
 #define SLPOUT 0x11
@@ -30,34 +29,15 @@ volatile unsigned int *spi = (unsigned int *)0x00800820;
 #define GMCTRN1 0xe1
 
 // Bits of interest for the SPI control port
-#define SD2_SEL 27
-#define TOUCH_SEL 26
-#define LCD_SEL 25
-#define SD_SEL 24
 #define BACKLIGHT 9
 #define DC 8
-#define TX_READY 1
-#define RX_READY 0
 
-#define SPI_CTL (spi[1])
-#define SPI_DATA (spi[0])
-#define SPI_TX_READY (SPI_CTL & (1 << TX_READY))
-#define SPI_RX_READY (SPI_CTL & (1 << RX_READY))
 
 void itd_backlight(int s) {
   if (s)
     SET_BIT(SPI_CTL, BACKLIGHT);
   else
     CLEAR_BIT(SPI_CTL, BACKLIGHT);
-}
-
-char spi_xfer(char tx) {
-  char val;
-
-  SPI_DATA = tx;
-  while (!SPI_RX_READY);
-  val = SPI_DATA;
-  return val;
 }
 
 void itd_command(unsigned char tx) {
