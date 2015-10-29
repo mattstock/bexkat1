@@ -1,6 +1,6 @@
 module control(
-  input clock,
-  input reset_n,
+  input clk_i,
+  input rst_i,
   input [31:0] ir,
   output ir_write,
   input [2:0] ccr,
@@ -22,13 +22,13 @@ module control(
   output addrsel,
   output [1:0] fpccrsel,
   output [3:0] byteenable,
-  output bus_read,
+  output bus_cyc,
   output bus_write,
   output halt,
   output int_en,
   output vectoff_write,
   input supervisor,
-  input bus_wait,
+  input bus_ack,
   output reg [3:0] exception,
   output fp_addsub,
   input [2:0] interrupt,
@@ -68,9 +68,9 @@ endcase
 // tacky to peek at this, but need it for trap
 wire [31:0] ir_uval = { 16'h0000, ir[23:20], ir[11:0] };
 
-always @(posedge clock or negedge reset_n)
+always @(posedge clk_i or posedge rst_i)
 begin
-  if (!reset_n) begin
+  if (rst_i) begin
     state <= STATE_RESET;
     seq <= 5'h0;
     interrupts_enabled = 1'b0;
@@ -108,7 +108,7 @@ begin
   fpccrsel = 2'b0;
   addrsel = 1'b0; // PC
   pcsel = 3'b0;
-  bus_read = 1'b0;
+  bus_cyc = 1'b0;
   bus_write = 1'b0;
   ir_write = 1'b0;
   byteenable = 4'b1111;
@@ -138,13 +138,15 @@ begin
           reg_write_addr = REG_SP; // SP <= aluout
           reg_write = REG_WRITE_DW;
           addrsel = 1'b1; // MAR
+          bus_cyc = 1'b1;
           bus_write = 1'b1;
           seq_next = 3'h2;
         end
         3'h2: begin
           addrsel = 1'b1; // MAR
+          bus_cyc = 1'b1;
           bus_write = 1'b1;            
-          if (bus_wait == 1'b0)
+          if (bus_ack)
             seq_next = 3'h3;
         end
         3'h3: begin
@@ -152,12 +154,12 @@ begin
           seq_next = 3'h4;
         end
         3'h4: begin
-          bus_read = 1'b1;
-          if (bus_wait == 1'b0)
+          bus_cyc = 1'b1;
+          if (bus_ack)
             seq_next = 3'h5;
         end
         3'h5: begin
-          bus_read = 1'b1;
+          bus_cyc = 1'b1;
           marsel = 2'h1; // MAR <= vector address
           seq_next = 3'h6;
         end
@@ -172,17 +174,17 @@ begin
     STATE_FETCHIR: begin
       case (seq)
         3'h0: begin
-          bus_read = 1'b1;
+          bus_cyc = 1'b1;
           if (|interrupt && interrupts_enabled) begin
             state_next = STATE_EXCEPTION;
             interrupts_enabled_next = 1'b0;
             exception_next = { 1'b0, interrupt};
           end else
-            if (bus_wait == 1'b0) // wait until we get control of bus
+            if (bus_ack) // wait until we get control of bus
               seq_next = 3'h1;
         end
         3'h1: begin
-          bus_read = 1'b1; // still assert bus control
+          bus_cyc = 1'b1; // still assert bus control
           ir_write = 1'b1; // latch bus into ir
           seq_next = 3'h2;
         end
@@ -206,13 +208,13 @@ begin
             end
             3'h1: begin
               addrsel = 1'b1; // MAR
-              bus_read = 1'b1;
-              if (bus_wait == 1'b0)
+              bus_cyc = 1'b1;
+              if (bus_ack)
                 seq_next = 3'h2;
             end
             3'h2: begin
               addrsel = 1'b1; // MAR
-              bus_read = 1'b1;
+              bus_cyc = 1'b1;
               marsel = 2'h1; // mar <= databus
               alu2sel = 3'h4; // aluout <= SP + 'h4
               reg_read_addr1 = REG_SP; // SP
@@ -240,13 +242,13 @@ begin
             end
             3'h1: begin
               addrsel = 1'b1; // MAR
-              bus_read = 1'b1;
-              if (bus_wait == 1'b0)
+              bus_cyc = 1'b1;
+              if (bus_ack)
                 seq_next = 3'h2;
             end
             3'h2: begin
               addrsel = 1'b1; // MAR
-              bus_read = 1'b1;
+              bus_cyc = 1'b1;
               marsel = 2'h1; // mar <= databus
               alu2sel = 3'h4; // aluout <= SP + 'h4
               reg_read_addr1 = REG_SP; // SP
@@ -305,13 +307,15 @@ begin
               reg_write_addr = REG_SP; // SP <= aluout
               reg_write = REG_WRITE_DW;
               addrsel = 1'b1; // MAR
+              bus_cyc = 1'b1;
               bus_write = 1'b1;
               seq_next = 3'h2;
             end
             3'h2: begin
               addrsel = 1'b1; // MAR
+              bus_cyc = 1'b1;
               bus_write = 1'b1;            
-              if (bus_wait == 1'b0)
+              if (bus_ack)
                 seq_next = 3'h3;
             end
             3'h3: begin
@@ -340,12 +344,12 @@ begin
               seq_next = 3'h2;
             end
             3'h2: begin
-              bus_read = 1'b1;
-              if (bus_wait == 1'b0)
+              bus_cyc = 1'b1;
+              if (bus_ack)
                 seq_next = 3'h3;
             end
             3'h3: begin
-              bus_read = 1'b1;
+              bus_cyc = 1'b1;
               mdrsel = 4'h1; // mdr <= busread
               seq_next = 3'h4;
             end
@@ -617,7 +621,8 @@ begin
             end
             3'h2: begin
               bus_write = 1'b1; //  addrbus <= MAR
-              if (bus_wait == 1'b0)
+              bus_cyc = 1'b1;
+              if (bus_ack)
                 seq_next = 3'h3;
             end
             3'h3: begin
@@ -642,8 +647,9 @@ begin
               seq_next = 3'h2;
             end
             3'h2: begin
+              bus_cyc = 1'b1;
               bus_write = 1'b1;
-              if (bus_wait == 1'b0)
+              if (bus_ack)
                 seq_next = 3'h3;
             end
             3'h3: begin
@@ -674,7 +680,8 @@ begin
             end
             3'h2: begin
               bus_write = 1'b1; // addrbus <= MAR
-              if (bus_wait == 1'b0)
+              bus_cyc = 1'b1;
+              if (bus_ack)
                 seq_next = 3'h3;
             end
             3'h3: begin
@@ -697,13 +704,13 @@ begin
               seq_next = 3'h2;
             end
             3'h2: begin
-              bus_read = 1'b1;
+              bus_cyc = 1'b1;
               mdrsel = 4'h1; // MDR <= databus
-              if (bus_wait == 1'b0)
+              if (bus_ack)
                 seq_next = 3'h3;
             end
             3'h3: begin
-              bus_read = 1'b1;
+              bus_cyc = 1'b1;
               regsel = 4'h1; // rA <= MDR
               reg_write = REG_WRITE_DW;
               seq_next = 3'h4;
@@ -728,14 +735,14 @@ begin
               seq_next = 3'h2;
             end
             3'h2: begin
-              bus_read = 1'b1;
+              bus_cyc = 1'b1;
               byteenable = (bus_align[1] ? 4'b0011 : 4'b1100);
               mdrsel = 4'h1; // MDR <= databus
-              if (bus_wait == 1'b0)
+              if (bus_ack)
                 seq_next = 3'h3;
             end
             3'h3: begin
-              bus_read = 1'b1;
+              bus_cyc = 1'b1;
               regsel = 4'h1; // rA <= MDR
               reg_write = REG_WRITE_DW;
               seq_next = 3'h4;
@@ -760,7 +767,7 @@ begin
               seq_next = 3'h2;
             end
             3'h2: begin
-              bus_read = 1'b1;
+              bus_cyc = 1'b1;
               case (bus_align[1:0])
                 2'b00: byteenable = 4'b1000;
                 2'b01: byteenable = 4'b0100;
@@ -768,11 +775,11 @@ begin
                 2'b11: byteenable = 4'b0001;
               endcase
               mdrsel = 4'h1; // MDR <= databus
-              if (bus_wait == 1'b0)
+              if (bus_ack)
                 seq_next = 3'h3;
             end
             3'h3: begin
-              bus_read = 1'b1;
+              bus_cyc = 1'b1;
               regsel = 4'h1; // rA <= MDR
               reg_write = REG_WRITE_DW;
               seq_next = 3'h4;
@@ -819,13 +826,15 @@ begin
               reg_write_addr = REG_SP; // SP <= aluout
               reg_write = REG_WRITE_DW;
               addrsel = 1'b1; // MAR
+              bus_cyc = 1'b1;
               bus_write = 1'b1;
               seq_next = 3'h3;
             end
             3'h3: begin
               addrsel = 1'b1; // MAR
+              bus_cyc = 1'b1;
               bus_write = 1'b1;            
-              if (bus_wait == 1'b0)
+              if (bus_ack)
                 seq_next = 3'h4;
             end
             3'h4: begin
@@ -900,12 +909,12 @@ begin
     STATE_FETCHARG: begin
       case (seq)
         3'h0: begin
-          bus_read = 1'b1;
-          if (bus_wait == 1'b0) // wait until we get control of bus
+          bus_cyc = 1'b1;
+          if (bus_ack) // wait until we get control of bus
             seq_next = 3'h1;
         end
         3'h1: begin
-          bus_read = 1'b1; // still assert bus control
+          bus_cyc = 1'b1; // still assert bus control
           marsel = 2'h1; // mar <= busdata
           mdrsel = 4'h1 ; // mdr <= busdata
           seq_next = 3'h2;
@@ -929,7 +938,8 @@ begin
             end
             3'h1: begin
               bus_write = 1'b1; //  addrbus <= MAR
-              if (bus_wait == 1'b0)
+              bus_cyc = 1'b1;
+              if (bus_ack)
                 seq_next = 3'h2;
             end
             3'h2: begin
@@ -946,13 +956,13 @@ begin
               seq_next = 3'h1;
             end
             3'h1: begin
-              bus_read = 1'b1;
+              bus_cyc = 1'b1;
               mdrsel = 4'h1; // MDR <= databus
-              if (bus_wait == 1'b0)
+              if (bus_ack)
                 seq_next = 3'h2;
             end
             3'h2: begin
-              bus_read = 1'b1;
+              bus_cyc = 1'b1;
               regsel = 4'h1; // rA <= MDR
               reg_write = REG_WRITE_DW;
               seq_next = 3'h3;
@@ -974,7 +984,8 @@ begin
             end
             3'h1: begin
               bus_write = 1'b1;
-              if (bus_wait == 1'b0)
+              bus_cyc = 1'b1;
+              if (bus_ack)
                 seq_next = 3'h2;
             end
             3'h2: begin
@@ -988,14 +999,14 @@ begin
           addrsel = 1'b1; // MAR
           case (seq)
             3'h0: begin
-              bus_read = 1'b1;
+              bus_cyc = 1'b1;
               byteenable = (bus_align[1] ? 4'b0011 : 4'b1100);
               mdrsel = 4'h1; // MDR <= databus
-              if (bus_wait == 1'b0)
+              if (bus_ack)
                 seq_next = 3'h1;
             end
             3'h1: begin
-              bus_read = 1'b1;
+              bus_cyc = 1'b1;
               regsel = 4'h1; // rA <= MDR
               reg_write = REG_WRITE_DW;
               seq_next = 3'h2;
@@ -1022,7 +1033,8 @@ begin
             end
             3'h1: begin
               bus_write = 1'b1; // addrbus <= MAR
-              if (bus_wait == 1'b0)
+              bus_cyc = 1'b1;
+              if (bus_ack)
                 seq_next = 3'h2;
             end
             3'h2: begin
@@ -1036,7 +1048,7 @@ begin
           addrsel = 1'b1; // MAR
           case (seq)
             3'h0: begin
-              bus_read = 1'b1;
+              bus_cyc = 1'b1;
               case (bus_align[1:0])
                 2'b00: byteenable = 4'b1000;
                 2'b01: byteenable = 4'b0100;
@@ -1044,11 +1056,11 @@ begin
                 2'b11: byteenable = 4'b0001;
               endcase
               mdrsel = 4'h1; // MDR <= databus
-              if (bus_wait == 1'b0)
+              if (bus_ack)
                 seq_next = 3'h1;
             end
             3'h1: begin
-              bus_read = 1'b1;
+              bus_cyc = 1'b1;
               regsel = 4'h1; // rA <= MDR
               reg_write = REG_WRITE_DW;
               seq_next = 3'h2;
@@ -1084,13 +1096,15 @@ begin
               reg_write_addr = REG_SP; // SP <= aluout
               reg_write = REG_WRITE_DW;
               addrsel = 1'b1; // MAR
+              bus_cyc = 1'b1;
               bus_write = 1'b1;
               seq_next = 3'h2;
             end
             3'h2: begin
               addrsel = 1'b1; // MAR
+              bus_cyc = 1'b1;
               bus_write = 1'b1;            
-              if (bus_wait == 1'b0)
+              if (bus_ack)
                 seq_next = 3'h3;
             end
             3'h3: begin

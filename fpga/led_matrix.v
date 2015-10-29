@@ -1,12 +1,14 @@
 module led_matrix(
-  input csi_clk,
-  input rsi_reset_n,
-  input [23:0] avs_s0_writedata,
-  output [23:0] avs_s0_readdata,
-  input [8:0] avs_s0_address,
-  input [3:0] avs_s0_byteenable,
-  input avs_s0_write,
-  input avs_s0_read,
+  input clk_i,
+  input rst_i,
+  input [31:0] dat_i,
+  output [31:0] dat_o,
+  input [8:0] adr_i,
+  input [3:0] sel_i,
+  input we_i,
+  input stb_i,
+  input cyc_i,
+  output ack_o,
   output [2:0] demux,
   output reg [2:0] rgb0,
   output reg [2:0] rgb1,
@@ -15,10 +17,14 @@ module led_matrix(
   output oe_n);
   
 wire r,g,b;
-wire led_clk;
-wire [23:0] buffer;
+wire led_clk, select;
+wire [23:0] buffer, matrixmem_out;
 
 wire [7:0] r_level, g_level, b_level;
+
+assign select = cyc_i & stb_i;
+assign ack_o = cyc_i & stb_i; // we just need a single cycle
+assign dat_o = { 8'h00, matrixmem_out };
 
 assign r_level = buffer[23:16];
 assign g_level = buffer[15:8];
@@ -42,10 +48,10 @@ reg [2:0] pwmval, pwmval_next;
 reg [7:0] delay, delay_next;
 
 assign demux = rowpos;
-  
-always @(posedge led_clk or negedge rsi_reset_n)
+
+always @(posedge led_clk or posedge rst_i)
 begin
-  if (!rsi_reset_n) begin
+  if (rst_i) begin
     rgb0 <= 1'b0;
     rgb1 <= 1'b0;
     state <= STATE_IDLE;
@@ -122,8 +128,8 @@ begin
   endcase
 end
 
-matrixmem m0(.clock_a(led_clk), .clock_b(csi_clk), .data_b(avs_s0_writedata), .wren_b(avs_s0_write), .address_b(avs_s0_address), .byteena_b(avs_s0_byteenable[2:0]),
-  .q_b(avs_s0_readdata), .wren_a(1'b0), .q_a(buffer), .address_a({ab, rowpos, colpos}));
-matrixpll pll1(.inclk0(csi_clk), .c0(led_clk));
+matrixmem m0(.clock_a(led_clk), .clock_b(clk_i), .data_b(dat_i[23:0]), .wren_b(select&we_i), .address_b(adr_i), .byteena_b(sel_i[2:0]),
+  .q_b(matrixmem_out), .wren_a(1'b0), .q_a(buffer), .address_a({ab, rowpos, colpos}));
+matrixpll pll1(.inclk0(clk_i), .c0(led_clk));
   
 endmodule

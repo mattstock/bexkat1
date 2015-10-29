@@ -165,7 +165,7 @@ hexdisp d0(.out(HEX0), .in(addrdisp[3:0]));
 assign LEDR = { 7'h0, chipselect };
 assign LEDG = { cpu_halt, sdram_ready, fl_ry, 1'b0, int_en, exception };
 
-wire [7:0] chipselect;
+wire [3:0] chipselect;
 wire [26:0] ssram_addrout, flash_addrout;
 wire [12:0] sdram_addrout;
 wire [31:0] cpu_address, flash_readdata, ssram_readdata, ssram_dataout;
@@ -176,20 +176,19 @@ wire [3:0] cpu_be, exception;
 wire [1:0] io_interrupt;
 wire [2:0] cpu_interrupt;
 wire [7:0] lcd_dataout;
-wire cpu_write, cpu_read, cpu_wait, cpu_halt;
+wire cpu_write, cpu_cyc, cpu_ack, cpu_halt;
 wire mandelbrot_write, mandelbrot_read, mandelbrot_wait;
 wire io_write, io_read, io_wait;
-wire mmu_read, mmu_write, mmu_wait, mmu_fault;
 wire rom_read, vect_read;
 wire sdram_read, sdram_write, sdram_ready, sdram_wait;
 wire flash_read, flash_write, flash_ready, flash_wait;
-wire matrix_read, matrix_write, matrix_oe_n;
+wire matrix_read, matrix_write, matrix_oe_n, matrix_ack;
 wire ssram_read, ssram_write, ssram_wait;
 wire vga_write;
-wire int_en;
+wire int_en, cache_enable, mmu_fault;
 
 // only need one cycle for reading onboard memory
-reg rom_wait, vect_wait, matrix_wait;
+reg rom_wait, vect_wait;
 reg [2:0] vga_wait;
 
 always @(posedge sysclock or negedge rst_n)
@@ -197,12 +196,10 @@ begin
   if (!rst_n) begin
     rom_wait <= 1'b1;
     vect_wait <= 1'b1;
-    matrix_wait <= 1'b1;
     vga_wait <= 3'b111;
   end else begin
     rom_wait <= ~rom_read;
     vect_wait <= ~vect_read;
-    matrix_wait <= ~(matrix_read|matrix_write);
     vga_wait <= { vga_wait[1:0], ~vga_write };
   end
 end
@@ -210,87 +207,6 @@ end
 assign fl_rst_n = rst_n;
 assign fs_databus = (~ssram_we_n ? ssram_dataout : (~fl_we_n ? { 16'h0000, flash_dataout } : 32'hzzzzzzzz));
 assign sdram_databus = (~sdram_we_n ? sdram_dataout : 32'hzzzzzzzz);
-
-always @*
-begin
-  vect_read = 1'b0;
-  rom_read = 1'b0;
-  mandelbrot_read = 1'b0;
-  mandelbrot_write = 1'b0;
-  matrix_read = 1'b0;
-  matrix_write = 1'b0;
-  io_read = 1'b0;
-  io_write = 1'b0;
-  ssram_read = 1'b0;
-  ssram_write = 1'b0;
-  sdram_read = 1'b0;
-  sdram_write = 1'b0;
-  flash_read = 1'b0;
-  flash_write = 1'b0;
-  vga_write = 1'b0;
-  fs_addrbus = 27'h00000000;
-  sdram_addrbus = 13'h00000000;
-  case (chipselect)
-    4'h1: begin
-      cpu_readdata = vect_readdata;
-      mmu_wait = vect_wait;
-      vect_read = mmu_read;
-    end
-    4'h2: begin
-      cpu_readdata = rom_readdata;
-      mmu_wait = rom_wait;
-      rom_read = mmu_read;
-    end
-    4'h3: begin
-      cpu_readdata = mandelbrot_readdata;
-      mmu_wait = mandelbrot_wait;
-      mandelbrot_read = mmu_read;
-      mandelbrot_write = mmu_write;
-    end
-    4'h4: begin
-      cpu_readdata = io_readdata;
-      mmu_wait = io_wait;
-      io_read = mmu_read;
-      io_write = mmu_write;
-    end
-    4'h5: begin
-      cpu_readdata = matrix_readdata;
-      mmu_wait = matrix_wait;
-      matrix_read = mmu_read;
-      matrix_write = mmu_write;
-    end
-    4'h6: begin
-      cpu_readdata = ssram_readdata;
-      mmu_wait = ssram_wait;
-      ssram_read = mmu_read;
-      ssram_write = mmu_write;
-      fs_addrbus = ssram_addrout;
-    end
-    4'h7: begin
-      cpu_readdata = sdram_readdata;
-      mmu_wait = sdram_wait;
-      sdram_read = mmu_read;
-      sdram_write = mmu_write;
-      sdram_addrbus = sdram_addrout;
-    end
-    4'h8: begin
-      cpu_readdata = flash_readdata;
-      mmu_wait = flash_wait;
-      flash_read = mmu_read;
-      flash_write = mmu_write;
-      fs_addrbus = flash_addrout;
-    end
-    4'h9: begin
-      cpu_readdata = 32'h0;
-      mmu_wait = vga_wait[2];
-      vga_write = mmu_write;
-    end
-    default: begin
-      cpu_readdata = 32'h0;
-      mmu_wait = 1'b0;
-    end
-  endcase
-end
 
 always @(posedge sysclock)
 begin
@@ -311,14 +227,36 @@ begin
     cpu_interrupt = 3'h0;
 end
 
+assign cpu_readdata = (chipselect == 4'h1 ? vect_readdata : 32'h0) |
+                      (chipselect == 4'h2 ? rom_readdata : 32'h0) |
+                      (chipselect == 4'h3 ? mandelbrot_readdata : 32'h0) |
+                      (chipselect == 4'h4 ? io_readdata : 32'h0) |
+                      (chipselect == 4'h5 ? matrix_readdata : 32'h0) |
+                      (chipselect == 4'h6 ? ssram_readdata : 32'h0) |
+                      (chipselect == 4'h7 ? sdram_readdata : 32'h0) |
+                      (chipselect == 4'h8 ? flash_readdata : 32'h0);
+assign cpu_ack = (chipselect == 4'h1) |
+                 (chipselect == 4'h2) |
+                 (chipselect == 4'h3 ? ~mandelbrot_wait : 1'h0) |
+                 (chipselect == 4'h4 ? ~io_wait : 1'h0) |
+                 (chipselect == 4'h5 ? matrix_ack : 1'h0) |
+                 (chipselect == 4'h6 ? ~ssram_wait: 1'h0) |
+                 (chipselect == 4'h7 ? ~sdram_wait : 1'h0) |
+                 (chipselect == 4'h8 ? ~flash_wait : 1'h0);
+
+assign ssram_read = (chipselect == 4'h6 && cpu_cyc && ~cpu_write);
+assign ssram_write = (chipselect == 4'h6 && cpu_cyc && cpu_write);
+assign io_read = (chipselect == 4'h4 && cpu_cyc && ~cpu_write);
+assign io_write = (chipselect == 4'h4 && cpu_cyc && cpu_write);
+assign rom_read = (chipselect == 4'h2 && cpu_cyc && ~cpu_write);
+assign vect_read = (chipselect == 4'h1 && cpu_cyc && ~cpu_write);
+   
 sysclock pll0(.inclk0(raw_clock_50), .c0(sysclock), .areset(~KEY[0]), .locked(locked));
 
-bexkat2 bexkat0(.clk(sysclock), .reset_n(rst_n), .address(cpu_address), .read(cpu_read), .readdata(cpu_readdata),
-  .write(cpu_write), .writedata(cpu_writedata), .byteenable(cpu_be), .waitrequest(cpu_wait), .halt(cpu_halt),
+bexkat2 bexkat0(.clk_i(sysclock), .rst_i(~rst_n), .address(cpu_address), .cyc_o(cpu_cyc), .readdata(cpu_readdata),
+  .we_o(cpu_write), .writedata(cpu_writedata), .byteenable(cpu_be), .ack_i(cpu_ack), .halt(cpu_halt),
   .interrupt(cpu_interrupt), .exception(exception), .int_en(int_en));
-mmu mmu0(.clock(sysclock), .reset_n(rst_n), .address(cpu_address), .read_in(cpu_read), .chipselect(chipselect),
-  .write_in(cpu_write), .wait_out(cpu_wait), .write_out(mmu_write), .read_out(mmu_read), .fault(mmu_fault), 
-  .wait_in(mmu_wait));
+mmu mmu0(.adr_i(cpu_address), .cyc_i(cpu_cyc), .chipselect(chipselect), .fault(mmu_fault), .cache_enable(cache_enable));
 
 // 0x00000000 - 0x003fffff
 ssram_controller ssram0(.clock(sysclock), .reset_n(rst_n), .databus_in(fs_databus), .databus_out(ssram_dataout),
@@ -327,8 +265,8 @@ ssram_controller ssram0(.clock(sysclock), .reset_n(rst_n), .databus_in(fs_databu
   .gw_n(ssram_gw_n), .adv_n(ssram_adv_n), .adsp_n(ssram_adsp_n), .adsc_n(ssram_adsc_n), .be_out(ssram_be),
   .oe_n(ssram_oe_n), .we_n(ssram_we_n), .ce0_n(ssram0_ce_n), .ce1_n(ssram1_ce_n));
 // 0x00800000 - 0x008007ff
-led_matrix matrix0(.csi_clk(sysclock), .rsi_reset_n(rst_n), .avs_s0_writedata(cpu_writedata), .avs_s0_readdata(matrix_readdata),
-  .avs_s0_address(cpu_address[11:2]), .avs_s0_byteenable(cpu_be), .avs_s0_write(matrix_write), .avs_s0_read(matrix_read),
+led_matrix matrix0(.clk_i(sysclock), .rst_i(~rst_n), .dat_i(cpu_writedata), .dat_o(matrix_readdata),
+  .adr_i(cpu_address[11:2]), .sel_i(cpu_be), .we_i(cpu_write), .stb_i(chipselect == 4'h5), .cyc_i(cpu_cyc), .ack_o(matrix_ack),
   .demux({rgb_a, rgb_b, rgb_c}), .rgb0(rgb0), .rgb1(rgb1), .rgb_stb(rgb_stb), .rgb_clk(rgb_clk), .oe_n(matrix_oe_n));
 // 0x00800800 - 0x00800fff
 iocontroller io0(.clk(sysclock), .rst_n(rst_n), .miso(miso), .mosi(mosi), .sclk(sclk), .spi_selects(spi_selects), .sd_wp_n(sd_wp_n),
@@ -336,25 +274,24 @@ iocontroller io0(.clk(sysclock), .rst_n(rst_n), .miso(miso), .mosi(mosi), .sclk(
   .lcd_e(lcd_e), .lcd_data(lcd_dataout), .lcd_rs(lcd_rs), .lcd_on(lcd_on), .lcd_rw(lcd_rw), .interrupt(io_interrupt), .wait_out(io_wait),
   .rx0(serial0_rx), .tx0(serial0_tx), .tx1(serial1_tx), .sw(SW[15:0]), .itd_backlight(itd_backlight), .itd_dc(itd_dc), .fan(fan_ctrl));
 // 0xb0000000 - 0xbfffffff
-vga_framebuffer vga0(.clock(sysclock), .reset_n(rst_n), .address(cpu_address[20:2]), .write(vga_write), .data(cpu_writedata),
-  .vs(vga_vs), .hs(vga_hs), .r(vga_r), .g(vga_g), .b(vga_b), .blank_n(vga_blank_n), .vga_clock(vga_clock), .sync_n(vga_sync_n), .sw(SW[17]));
+//vga_framebuffer vga0(.clock(sysclock), .reset_n(rst_n), .address(cpu_address[20:2]), .write(vga_write), .data(cpu_writedata),
+//  .vs(vga_vs), .hs(vga_hs), .r(vga_r), .g(vga_g), .b(vga_b), .blank_n(vga_blank_n), .vga_clock(vga_clock), .sync_n(vga_sync_n), .sw(SW[17]));
 // 0xc0000000 - 0xcfffffff
-sdram_controller sdram0(.cpu_clk(sysclock), .mem_clk(sysclock), .reset_n(rst_n), .we_n(sdram_we_n), .cs_n(sdram_cs_n), .cke(sdram_cke),
-    .cas_n(sdram_cas_n), .ras_n(sdram_ras_n), .dqm(sdram_dqm), .be(cpu_be), .ba(sdram_ba), .addrbus_out(sdram_addrout),
-    .databus_in(sdram_databus), .databus_out(sdram_dataout), .read(sdram_read), .write(sdram_write), .ready(sdram_ready),
-    .address(cpu_address[26:2]), .data_in(cpu_writedata), .data_out(sdram_readdata), .wait_out(sdram_wait));
+//sdram_controller sdram0(.cpu_clk(sysclock), .mem_clk(sysclock), .reset_n(rst_n), .we_n(sdram_we_n), .cs_n(sdram_cs_n), .cke(sdram_cke),
+//    .cas_n(sdram_cas_n), .ras_n(sdram_ras_n), .dqm(sdram_dqm), .be(cpu_be), .ba(sdram_ba), .addrbus_out(sdram_addrout),
+//    .databus_in(sdram_databus), .databus_out(sdram_dataout), .read(sdram_read), .write(sdram_write), .ready(sdram_ready),
+//    .address(cpu_address[26:2]), .data_in(cpu_writedata), .data_out(sdram_readdata), .wait_out(sdram_wait));
 // 0xd0000000 - 0xdfffffff
-mandunit mand0(.clock(sysclock), .rst_n(rst_n), .data_in(cpu_writedata), .data_out(mandelbrot_readdata),
-  .write(mandelbrot_write), .read(mandelbrot_read), .address(cpu_address[18:0]), .be(cpu_be), .wait_out(mandelbrot_wait));
+//mandunit mand0(.clock(sysclock), .rst_n(rst_n), .data_in(cpu_writedata), .data_out(mandelbrot_readdata),
+//  .write(mandelbrot_write), .read(mandelbrot_read), .address(cpu_address[18:0]), .be(cpu_be), .wait_out(mandelbrot_wait));
 // 0xe0000000 - 0xefffffff
-flash_controller flash0(.clock(sysclock), .reset_n(rst_n), .databus_in(fs_databus[15:0]), .databus_out(flash_dataout),
-  .read(flash_read), .write(flash_write), .wait_out(flash_wait), .data_in(cpu_writedata), .data_out(flash_readdata),
-  .be_in(cpu_be), .address_in(cpu_address[26:0]), .address_out(flash_addrout),
-  .ready(fl_ry), .wp_n(fl_wp_n), .oe_n(fl_oe_n), .we_n(fl_we_n), .ce_n(fl_ce_n));
+//flash_controller flash0(.clock(sysclock), .reset_n(rst_n), .databus_in(fs_databus[15:0]), .databus_out(flash_dataout),
+//  .read(flash_read), .write(flash_write), .wait_out(flash_wait), .data_in(cpu_writedata), .data_out(flash_readdata),
+//  .be_in(cpu_be), .address_in(cpu_address[26:0]), .address_out(flash_addrout),
+//  .ready(fl_ry), .wp_n(fl_wp_n), .oe_n(fl_oe_n), .we_n(fl_we_n), .ce_n(fl_ce_n));
 // 0xffff0000 - 0xffffffdf
 monitor rom0(.clock(sysclock), .q(rom_readdata), .rden(rom_read), .address(cpu_address[15:2]));
 // 0xffffffe0 - 0xffffffff
 vectors vecram0(.clock(sysclock), .q(vect_readdata), .rden(vect_read), .address(cpu_address[6:2]));
-
 
 endmodule
