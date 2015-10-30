@@ -183,24 +183,23 @@ wire rom_read, vect_read;
 wire sdram_read, sdram_write, sdram_ready, sdram_wait;
 wire flash_read, flash_write, flash_ready, flash_wait;
 wire matrix_read, matrix_write, matrix_oe_n, matrix_ack;
-wire ssram_read, ssram_write, ssram_wait;
+wire ssram_read, ssram_write, ssram_ack;
 wire vga_write;
 wire int_en, cache_enable, mmu_fault;
 
 // only need one cycle for reading onboard memory
-reg rom_wait, vect_wait;
-reg [2:0] vga_wait;
+reg [1:0] rom_ack, vect_ack, vga_ack;
 
 always @(posedge sysclock or negedge rst_n)
 begin
   if (!rst_n) begin
-    rom_wait <= 1'b1;
-    vect_wait <= 1'b1;
-    vga_wait <= 3'b111;
+    rom_ack <= 2'b0;
+    vect_ack <= 2'b0;
+    vga_ack <= 2'b0;
   end else begin
-    rom_wait <= ~rom_read;
-    vect_wait <= ~vect_read;
-    vga_wait <= { vga_wait[1:0], ~vga_write };
+    rom_ack <= { rom_ack[0], rom_read };
+    vect_ack <= { vect_ack[0], vect_read };
+    vga_ack <= { vga_ack[0], vga_write };
   end
 end
 
@@ -235,12 +234,12 @@ assign cpu_readdata = (chipselect == 4'h1 ? vect_readdata : 32'h0) |
                       (chipselect == 4'h6 ? ssram_readdata : 32'h0) |
                       (chipselect == 4'h7 ? sdram_readdata : 32'h0) |
                       (chipselect == 4'h8 ? flash_readdata : 32'h0);
-assign cpu_ack = (chipselect == 4'h1) |
-                 (chipselect == 4'h2) |
+assign cpu_ack = (chipselect == 4'h1 ? vect_ack[1] : 1'h0) |
+                 (chipselect == 4'h2 ? rom_ack[1] : 1'h0) |
                  (chipselect == 4'h3 ? ~mandelbrot_wait : 1'h0) |
                  (chipselect == 4'h4 ? ~io_wait : 1'h0) |
                  (chipselect == 4'h5 ? matrix_ack : 1'h0) |
-                 (chipselect == 4'h6 ? ~ssram_wait: 1'h0) |
+                 (chipselect == 4'h6 ? ssram_ack: 1'h0) |
                  (chipselect == 4'h7 ? ~sdram_wait : 1'h0) |
                  (chipselect == 4'h8 ? ~flash_wait : 1'h0);
 
@@ -259,9 +258,9 @@ bexkat2 bexkat0(.clk_i(sysclock), .rst_i(~rst_n), .address(cpu_address), .cyc_o(
 mmu mmu0(.adr_i(cpu_address), .cyc_i(cpu_cyc), .chipselect(chipselect), .fault(mmu_fault), .cache_enable(cache_enable));
 
 // 0x00000000 - 0x003fffff
-ssram_controller ssram0(.clock(sysclock), .reset_n(rst_n), .databus_in(fs_databus), .databus_out(ssram_dataout),
-  .read(ssram_read), .write(ssram_write), .wait_out(ssram_wait), .data_in(cpu_writedata), .data_out(ssram_readdata),
-  .be_in(cpu_be), .address_in(cpu_address[21:0]), .address_out(ssram_addrout), .bus_clock(ssram_clk),
+ssram_controller ssram0(.clk_i(sysclock), .rst_i(~rst_n), .databus_in(fs_databus), .databus_out(ssram_dataout),
+  .stb_i(chipselect == 4'h6), .cyc_i(cpu_cyc), .we_i(cpu_write), .ack_o(ssram_ack), .dat_i(cpu_writedata), .dat_o(ssram_readdata),
+  .sel_i(cpu_be), .adr_i(cpu_address[21:0]), .address_out(ssram_addrout), .bus_clock(ssram_clk),
   .gw_n(ssram_gw_n), .adv_n(ssram_adv_n), .adsp_n(ssram_adsp_n), .adsc_n(ssram_adsc_n), .be_out(ssram_be),
   .oe_n(ssram_oe_n), .we_n(ssram_we_n), .ce0_n(ssram0_ce_n), .ce1_n(ssram1_ce_n));
 // 0x00800000 - 0x008007ff
