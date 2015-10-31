@@ -1,6 +1,11 @@
 .globl main
 main:
 ldi %0, 0x11223344
+push %0
+push %1
+pop %2
+pop %3
+jsrd wordy
 ldi %1, 0x00010000
 st.l %0, (%1) 
 st.l %0, 3(%1) 
@@ -23,6 +28,9 @@ ldd.b %3, 0x00000000
 ldd.b %3, 0x00000001
 ldd.b %3, 0x00000002
 ldd.b %3, 0x00000003
+foo:
+jmpd foo
+
 .globl wordy
 wordy:
 ldi %0,0x00000000
@@ -74,5 +82,4 @@ ldd.l %0, 0x00000010
 ldd.l %0, 0x00000014
 ldd.l %0, 0x00000018
 ldd.l %0, 0x0000001c
-foo:
-jmpd foo
+rts
