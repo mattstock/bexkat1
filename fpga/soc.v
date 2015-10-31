@@ -183,7 +183,7 @@ wire rom_read, vect_read;
 wire sdram_read, sdram_write, sdram_ready, sdram_wait;
 wire flash_read, flash_write, flash_ready, flash_wait;
 wire matrix_read, matrix_write, matrix_oe_n, matrix_ack;
-wire ssram_read, ssram_write, ssram_ack;
+wire ssram_ack;
 wire vga_write;
 wire int_en, cache_enable, mmu_fault;
 
@@ -204,7 +204,10 @@ begin
 end
 
 assign fl_rst_n = rst_n;
-assign fs_databus = (~ssram_we_n ? ssram_dataout : (~fl_we_n ? { 16'h0000, flash_dataout } : 32'hzzzzzzzz));
+
+assign fs_addrbus = (chipselect == 4'h8 ? flash_addrout : ssram_addrout);
+assign fs_databus = (chipselect == 4'h6 && ~ssram_we_n ? ssram_dataout : 
+                      (chipselect == 4'h8 && ~fl_we_n ? { 16'h0000, flash_dataout } : 32'hzzzzzzzz));
 assign sdram_databus = (~sdram_we_n ? sdram_dataout : 32'hzzzzzzzz);
 
 always @(posedge sysclock)
@@ -284,10 +287,10 @@ iocontroller io0(.clk(sysclock), .rst_n(rst_n), .miso(miso), .mosi(mosi), .sclk(
 //mandunit mand0(.clock(sysclock), .rst_n(rst_n), .data_in(cpu_writedata), .data_out(mandelbrot_readdata),
 //  .write(mandelbrot_write), .read(mandelbrot_read), .address(cpu_address[18:0]), .be(cpu_be), .wait_out(mandelbrot_wait));
 // 0xe0000000 - 0xefffffff
-//flash_controller flash0(.clock(sysclock), .reset_n(rst_n), .databus_in(fs_databus[15:0]), .databus_out(flash_dataout),
-//  .read(flash_read), .write(flash_write), .wait_out(flash_wait), .data_in(cpu_writedata), .data_out(flash_readdata),
-//  .be_in(cpu_be), .address_in(cpu_address[26:0]), .address_out(flash_addrout),
-//  .ready(fl_ry), .wp_n(fl_wp_n), .oe_n(fl_oe_n), .we_n(fl_we_n), .ce_n(fl_ce_n));
+flash_controller flash0(.clock(sysclock), .reset_n(rst_n), .databus_in(fs_databus[15:0]), .databus_out(flash_dataout),
+  .read(1'b0), .write(1'b0), .wait_out(flash_wait), .data_in(cpu_writedata), .data_out(flash_readdata),
+  .be_in(cpu_be), .address_in(cpu_address[26:0]), .address_out(flash_addrout),
+  .ready(fl_ry), .wp_n(fl_wp_n), .oe_n(fl_oe_n), .we_n(fl_we_n), .ce_n(fl_ce_n));
 // 0xffff0000 - 0xffffffdf
 monitor rom0(.clock(sysclock), .q(rom_readdata), .rden(rom_read), .address(cpu_address[15:2]));
 // 0xffffffe0 - 0xffffffff

@@ -31,13 +31,13 @@ assign ack_o = (state == STATE_POST);
 
 assign buswrite = (state == STATE_WRITE) && we_i;
 
-assign dat_o = databus_in;
+assign dat_o = (state == STATE_POST ? databus_in : 32'h0);
 assign databus_out = dat_i;
 assign bus_clock = clk_i;
 assign gw_n = 1'b1;
 assign adv_n = 1'b1;
-assign adsc_n = 1'b1;
-assign adsp_n = ~(state == STATE_ADDRLATCH);
+assign adsp_n = 1'b1;
+assign adsc_n = ~(state == STATE_ADDRLATCH);
 assign ce0_n = ~(select && ~adr_i[21]);
 assign ce1_n = ~(select && adr_i[21]);
 assign address_out = { 6'h00, adr_i[20:0] };

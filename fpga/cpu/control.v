@@ -191,26 +191,24 @@ begin
           case (seq)
             3'h0: begin
               reg_read_addr1 = REG_SP; // SP
+              alu2sel = 3'h4; // aluout <= SP + 'h4
               marsel = 2'h3; // mar <= SP
               seq_next = 3'h1;
             end
             3'h1: begin
-              addrsel = 1'b1; // MAR
-              bus_cyc = 1'b1;
-              if (bus_ack)
-                seq_next = 3'h2;
+              reg_write = REG_WRITE_DW; // SP <= aluout 
+              reg_write_addr = REG_SP;
+              pcsel = 3'h2; // PC <= mar
+              seq_next = 3'h2;
             end
             3'h2: begin
-              addrsel = 1'b1; // MAR
               marsel = 2'h1; // mar <= databus
-              alu2sel = 3'h4; // aluout <= SP + 'h4
-              reg_read_addr1 = REG_SP; // SP
-              seq_next = 3'h3;
+              bus_cyc = 1'b1;
+              if (bus_ack)
+                seq_next = 3'h3;
             end
             3'h3: begin
               pcsel = 3'h2; // PC <= mar 
-              reg_write = REG_WRITE_DW; // SP <= aluout 
-              reg_write_addr = REG_SP;
               seq_next = 3'h0;
               state_next = STATE_FETCHIR;
             end
@@ -224,26 +222,25 @@ begin
               interrupts_enabled_next = 1'b1;
               exception_next = 4'h0;
               reg_read_addr1 = REG_SP; // SP
+              alu2sel = 3'h4; // aluout <= SP + 'h4
               marsel = 2'h3; // mar <= SP
               seq_next = 3'h1;
             end
             3'h1: begin
-              addrsel = 1'b1; // MAR
-              bus_cyc = 1'b1;
-              if (bus_ack)
-                seq_next = 3'h2;
+              reg_write = REG_WRITE_DW; // SP <= aluout 
+              reg_write_addr = REG_SP;
+              pcsel = 3'h2; // PC <= mar
+              seq_next = 3'h2;
             end
             3'h2: begin
               addrsel = 1'b1; // MAR
               marsel = 2'h1; // mar <= databus
-              alu2sel = 3'h4; // aluout <= SP + 'h4
-              reg_read_addr1 = REG_SP; // SP
-              seq_next = 3'h3;
+              bus_cyc = 1'b1;
+              if (bus_ack)
+                seq_next = 3'h3;
             end
             3'h3: begin
               pcsel = 3'h2; // PC <= mar 
-              reg_write = REG_WRITE_DW; // SP <= aluout 
-              reg_write_addr = REG_SP;
               seq_next = 3'h0;
               state_next = STATE_FETCHIR;
             end
@@ -302,9 +299,6 @@ begin
                 seq_next = 3'h3;
             end
             3'h3: begin
-              seq_next = 3'h4;
-            end
-            3'h4: begin
               state_next = STATE_FETCHIR;
               seq_next = 3'h0;
             end
@@ -327,14 +321,11 @@ begin
             end
             3'h2: begin
               bus_cyc = 1'b1;
+              mdrsel = 4'h1; // mdr <= busread
               if (bus_ack)
                 seq_next = 3'h3;
             end
             3'h3: begin
-              mdrsel = 4'h1; // mdr <= busread
-              seq_next = 3'h4;
-            end
-            3'h4: begin
               regsel = 4'h1; // rA <= mdr 
               reg_write = REG_WRITE_DW;
               seq_next = 3'h0;
@@ -601,7 +592,7 @@ begin
               seq_next = 3'h2;
             end
             3'h2: begin
-              bus_write = 1'b1; //  addrbus <= MAR
+              bus_write = 1'b1; //  databus <= MDR
               bus_cyc = 1'b1;
               if (bus_ack)
                 seq_next = 3'h3;
@@ -813,10 +804,6 @@ begin
                 seq_next = 3'h4;
             end
             3'h4: begin
-              addrsel = 1'b1;
-              seq_next = 3'h5;
-            end
-            3'h5: begin
               state_next = STATE_FETCHIR;
               seq_next = 3'h0;
             end
