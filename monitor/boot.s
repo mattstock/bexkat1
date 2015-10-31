@@ -13,4 +13,14 @@ addi %1, %1, 4
 .LC3:
 cmp %1, %2
 bltu .LC2
+ldi %0, _bstart
+ldi %1, _bend
+ldi %2, 0
+jmpd .LC4
+.LC5:
+st.l %2, (%0)
+addi %0, %0, 4
+.LC4:
+cmp %0, %1
+bltu .LC5
 jmpd main
