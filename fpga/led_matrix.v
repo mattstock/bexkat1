@@ -22,8 +22,12 @@ wire [23:0] buffer, matrixmem_out;
 
 wire [7:0] r_level, g_level, b_level;
 
+reg [1:0] ack_delay;
+
+always @(posedge clk_i) ack_delay <= {ack_delay[0], cyc_i & stb_i };
+
 assign select = cyc_i & stb_i;
-assign ack_o = cyc_i & stb_i; // we just need a single cycle
+assign ack_o = ack_delay[1];
 assign dat_o = { 8'h00, matrixmem_out };
 
 assign r_level = buffer[23:16];
