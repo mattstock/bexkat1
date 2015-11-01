@@ -7,7 +7,6 @@
 
 // misc functions
 extern void delay(unsigned int limit);
-extern unsigned char random(unsigned int);
 
 // conversion stuff
 extern char nibble2hex(char n);

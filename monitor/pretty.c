@@ -8,27 +8,22 @@
 
 void matrix_fade(void) {
   unsigned short i;
-  unsigned a,b;
-  unsigned subber;
+  unsigned a;
   for (i=0; i < 16*32; i++) {
-    subber=0;
     a = matrix[i];
-    b = a & 0xff0000;
-    if (b >= 0x70000)
-      subber += 0x70000;
+    if ((a & 0xff0000) >= 0x10000)
+      a -= 0x10000;
     else
-      subber += b;
-    b = a & 0xff00;
-    if (b >= 0x700)
-      subber += 0x700;
+      a &= 0xffff;
+    if ((a & 0xff00) >= 0x100)
+      a -= 0x100;
     else
-      subber += b;
-    b = a & 0xff;
-    if (b >= 0x7)
-      subber += 0x7;
+      a &= 0xff00ff;
+    if ((a & 0xff) >= 0x1)
+      a -= 0x1;
     else
-      subber += b;
-    matrix[i] -= subber; 
+      a &= 0xffff00;
+    matrix[i] = a; 
   }
 }
 
@@ -41,11 +36,11 @@ void main(void) {
   y = 8;
   val = 0x00808080;
 
+  srand(39854);
   while (1) {
-    iprintf("(%d, %d)\n", x,y);
     matrix_fade();
-    c = random(1034);
-    switch (c % 4) {
+    c = (char) (rand() % 4);
+    switch (c) {
       case 0:
         if (x > 0)
           x--;
@@ -63,8 +58,8 @@ void main(void) {
          y++;
        break;
     }  
-    c = random(2034);
-    switch (c % 4) {
+    c = (char) (rand() % 4);
+    switch (c) {
       case 0:
         val += 0x0f;
         break;

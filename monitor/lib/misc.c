@@ -58,17 +58,6 @@ int hextoi(char s) {
   return -1;
 }
 
-unsigned char random(unsigned int r_base) {
-  static unsigned char y;
-  static unsigned int r;
-
-  if (r == 0 || r == 1 || r == -1)
-    r = r_base;
-  r = (9973 * ~r) + (y % 701);
-  y = (r >> 24);
-  return y;
-}
-
 void delay(unsigned int limit) {
   unsigned i;
   for (i=0; i < limit; i++);
