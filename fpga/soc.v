@@ -144,9 +144,6 @@ assign lcd_data = (lcd_rw ? 8'hzz : lcd_dataout);
 assign serial0_rts = serial0_cts; // who needs hardware handshaking?
 assign rst_n = locked;
 
-// Wiring for external SDRAM, SSRAM & flash
-assign sdram_clk = sysclock;
-
 assign rgb_oe_n = matrix_oe_n;
 
 reg [31:0] addrdisp, datadisp;
@@ -163,7 +160,7 @@ hexdisp d0(.out(HEX0), .in(addrdisp[3:0]));
 
 // Blinknlights
 assign LEDR = { 7'h0, chipselect };
-assign LEDG = { cpu_halt, sdram_ready, fl_ry, 1'b0, int_en, exception };
+assign LEDG = { cpu_halt, sdram_ack, fl_ry, 1'b0, int_en, exception };
 
 wire [3:0] chipselect;
 wire [26:0] ssram_addrout, flash_addrout;
@@ -179,7 +176,8 @@ wire cpu_write, cpu_cyc, cpu_ack, cpu_halt;
 wire mandelbrot_write, mandelbrot_read, mandelbrot_wait;
 wire io_write, io_read, io_wait;
 wire rom_read, vect_read;
-wire sdram_read, sdram_write, sdram_ready, sdram_wait;
+wire sdram_ack;
+wire [3:0] sdram_den_n;
 wire flash_read, flash_write, flash_ready, flash_wait;
 wire matrix_read, matrix_write, matrix_oe_n, matrix_ack;
 wire ssram_ack;
@@ -202,12 +200,13 @@ begin
   end
 end
 
-assign fl_rst_n = rst_n;
+// Wiring for external SDRAM, SSRAM & flash
+assign sdram_databus = (~sdram_we_n ? sdram_dataout : 32'hzzzzzzzz);
 
+assign fl_rst_n = rst_n;
 assign fs_addrbus = (chipselect == 4'h8 ? flash_addrout : ssram_addrout);
 assign fs_databus = (chipselect == 4'h6 && ~ssram_we_n ? ssram_dataout : 
                       (chipselect == 4'h8 && ~fl_we_n ? { 16'h0000, flash_dataout } : 32'hzzzzzzzz));
-assign sdram_databus = (~sdram_we_n ? sdram_dataout : 32'hzzzzzzzz);
 
 always @(posedge sysclock)
 begin
@@ -242,7 +241,7 @@ assign cpu_ack = (chipselect == 4'h1 ? vect_ack[1] : 1'h0) |
                  (chipselect == 4'h4 ? ~io_wait : 1'h0) |
                  (chipselect == 4'h5 ? matrix_ack : 1'h0) |
                  (chipselect == 4'h6 ? ssram_ack: 1'h0) |
-                 (chipselect == 4'h7 ? ~sdram_wait : 1'h0) |
+                 (chipselect == 4'h7 ? sdram_ack : 1'h0) |
                  (chipselect == 4'h8 ? ~flash_wait : 1'h0);
 
 assign io_read = (chipselect == 4'h4 && cpu_cyc && ~cpu_write);
@@ -276,10 +275,14 @@ iocontroller io0(.clk(sysclock), .rst_n(rst_n), .miso(miso), .mosi(mosi), .sclk(
 //vga_framebuffer vga0(.clock(sysclock), .reset_n(rst_n), .address(cpu_address[20:2]), .write(vga_write), .data(cpu_writedata),
 //  .vs(vga_vs), .hs(vga_hs), .r(vga_r), .g(vga_g), .b(vga_b), .blank_n(vga_blank_n), .vga_clock(vga_clock), .sync_n(vga_sync_n), .sw(SW[17]));
 // 0xc0000000 - 0xcfffffff
-sdram_controller sdram0(.cpu_clk(sysclock), .mem_clk(sysclock), .reset_n(rst_n), .we_n(sdram_we_n), .cs_n(sdram_cs_n), .cke(sdram_cke),
-    .cas_n(sdram_cas_n), .ras_n(sdram_ras_n), .dqm(sdram_dqm), .be(cpu_be), .ba(sdram_ba), .addrbus_out(sdram_addrbus),
-    .databus_in(sdram_databus), .databus_out(sdram_dataout), .read(1'b0), .write(1'b0), .ready(sdram_ready),
-    .address(cpu_address[26:2]), .data_in(cpu_writedata), .data_out(sdram_readdata), .wait_out(sdram_wait));
+//sdrc_top sdram0(.wb_clk_i(sysclock), .wb_rst_i(~rst_n), .wb_adr_i(cpu_address), .wb_dat_i(sdram_readdata), .wb_sel_i(cpu_be), .wb_we_i(cpu_write),
+//  .wb_stb_i(chipselect == 4'h7), .wb_cyc_i(cpu_cyc), .wb_ack_o(sdram_ack), .sdr_cke(sdram_cke), .sdr_cs_n(sdram_cs_n), .sdr_ras_n(sdram_ras_n),
+//  .sdr_cas_n(sdram_cas_n), .sdr_dqm(sdram_dqm), .sdr_ba(sdram_ba), .sdr_addr(sdram_addrbus), .sdr_dq(sdram_databus),
+//  .cfg_colbits(2'b01), .cfg_sdr_en(1'b1));
+sdram_controller sdram0(.clk_i(sysclock), .mem_clk_o(sdram_clk), .rst_i(~rst_n), .adr_i(cpu_address[26:2]), .dat_i(cpu_writedata),
+  .dat_o(sdram_readdata), .stb_i(chipselect == 4'h7), .cyc_i(cpu_cyc), .ack_o(sdram_ack), .sel_i(cpu_be), .we_i(cpu_write),
+  .we_n(sdram_we_n), .cs_n(sdram_cs_n), .cke(sdram_cke), .cas_n(sdram_cas_n), .ras_n(sdram_ras_n), .dqm(sdram_dqm), .ba(sdram_ba),
+  .addrbus_out(sdram_addrbus), .databus_in(sdram_databus), .databus_out(sdram_dataout));
 // 0xd0000000 - 0xdfffffff
 //mandunit mand0(.clock(sysclock), .rst_n(rst_n), .data_in(cpu_writedata), .data_out(mandelbrot_readdata),
 //  .write(mandelbrot_write), .read(mandelbrot_read), .address(cpu_address[18:0]), .be(cpu_be), .wait_out(mandelbrot_wait));
