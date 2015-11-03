@@ -274,7 +274,7 @@ iocontroller io0(.clk(sysclock), .rst_n(rst_n), .miso(miso), .mosi(mosi), .sclk(
 // 0xb0000000 - 0xbfffffff
 //vga_framebuffer vga0(.clock(sysclock), .reset_n(rst_n), .address(cpu_address[20:2]), .write(vga_write), .data(cpu_writedata),
 //  .vs(vga_vs), .hs(vga_hs), .r(vga_r), .g(vga_g), .b(vga_b), .blank_n(vga_blank_n), .vga_clock(vga_clock), .sync_n(vga_sync_n), .sw(SW[17]));
-// 0xc0000000 - 0xcfffffff
+// 0xc0000000 - 0xc7ffffff
 sdram_controller sdram0(.clk_i(sysclock), .mem_clk_o(sdram_clk), .rst_i(~rst_n), .adr_i(cpu_address[26:2]), .dat_i(cpu_writedata),
   .dat_o(sdram_readdata), .stb_i(chipselect == 4'h7), .cyc_i(cpu_cyc), .ack_o(sdram_ack), .sel_i(cpu_be), .we_i(cpu_write),
   .we_n(sdram_we_n), .cs_n(sdram_cs_n), .cke(sdram_cke), .cas_n(sdram_cas_n), .ras_n(sdram_ras_n), .dqm(sdram_dqm), .ba(sdram_ba),

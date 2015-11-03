@@ -43,7 +43,6 @@ reg [3:0] state, state_next;
 reg [15:0] delay, delay_next;
 reg [12:0] addrbus_out_next;
 reg [3:0] dqm_next;
-reg [24:0] address_last;
 reg [31:0] databus_out_next;
 
 always @(posedge clk_i or posedge rst_i)
@@ -55,7 +54,6 @@ begin
     ba <= 2'b00;
     addrbus_out <= 13'h0000;
     dqm <= 4'hf;
-    address_last <= 25'h00;
     databus_out <= 32'h0;
   end else begin
     ba <= ba_next;
@@ -64,7 +62,6 @@ begin
     state <= state_next;
     addrbus_out <= addrbus_out_next;
     dqm <= dqm_next;
-    address_last <= adr_i;
     databus_out <= databus_out_next;
   end
 end

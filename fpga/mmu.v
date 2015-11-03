@@ -17,7 +17,7 @@ begin
   f = 1'b0;
   c = 1'b1;
   if (adr_i >= 32'h00000000 && adr_i <= 32'h003fffff)
-    cs = 4'h6; // 1M x 32 SSRAM
+    cs = 4'h6; // 4MB (1M x 32) SSRAM
   else if (adr_i >= 32'h00800000 && adr_i <= 32'h008007ff)
     cs = 4'h5; // LED matrix
   else if (adr_i >= 32'h00800800 && adr_i <= 32'h00800fff) begin
@@ -26,12 +26,12 @@ begin
   end else if (adr_i >= 32'hb0000000 && adr_i <= 32'hbfffffff) begin
     cs = 4'h9; // VGA
     c = 1'b0;
-  end else if (adr_i >= 32'hc0000000 && adr_i <= 32'hcfffffff)
-    cs = 4'h7; // SDRAM
+  end else if (adr_i >= 32'hc0000000 && adr_i <= 32'hc7ffffff)
+    cs = 4'h7; // 128MB (32M x 32) SDRAM
   else if (adr_i >= 32'hd0000000 && adr_i <= 32'hdfffffff)
     cs = 4'h3; // mandelbrot
   else if (adr_i >= 32'he0000000 && adr_i <= 32'hefffffff)
-    cs = 4'h8; // 32M x 16 FLASH
+    cs = 4'h8; // 64MB (32M x 16) FLASH
   else if (adr_i >= 32'hffff0000 && adr_i <= 32'hffffffbf)
     cs = 4'h2; // 16k x 32 internal ROM
   else if (adr_i >= 32'hffffffc0 && adr_i <= 32'hffffffff)
