@@ -9,15 +9,15 @@ LD = bexkat1-elf-ld
 
 TEMP := $(shell mktemp)
 
-OBJECTS = boot.o bootstrap.o pretty.o mandsf.o vga.o memtests.o
-APPS = pretty mandsf vga bootstrap memtests
+OBJECTS = boot.o bootstrap.o pretty.o mandsf.o vga.o memtests.o rtc.o
+APPS = pretty mandsf vga bootstrap memtests rtc
 
 .PHONY: all clean lib gcctests kernel install
 
 all: boot.o lib bootstrap.hex gcctests kernel $(APPS)
 
 install: $(APPS)
-	cp $(APPS) /media/mstock/19D5-2529/
+	cp $(APPS) kernel/kernel /media/mstock/19D5-2529/
 
 clean:
 	cd lib; make clean

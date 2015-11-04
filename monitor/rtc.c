@@ -1,32 +1,32 @@
-#include "spi.h"
+#include "rtc.h"
 #include "serial.h"
 #include <stdio.h>
 
-unsigned int *sw = (unsigned *)0x00800810;
-
-unsigned char rtc_read(unsigned char cmd) {
-  unsigned char bcd;
-
-  CLEAR_BIT(SPI_CTL, RTC_SEL);
-  spi_xfer(0x00); // read seconds
-  bcd = spi_xfer(cmd); // data
-  SET_BIT(SPI_CTL, RTC_SEL);
-  return bcd;
-}
-
 void main() {
-  unsigned char res, step;
-  spi_slow();
+  unsigned char res;
+  unsigned int s,m,r,h;
   
-  step = 0;
   while (1) {
-    spi_mode(sw[0]);
-    iprintf("mode = %d, step = %d\n", sw[0], step);
-    res = rtc_read(step);
-    iprintf("%02x\n", res);
-    step++;
+    s = BCD2INT(rtc_cmd(0x00,0xff));
+    m = BCD2INT(rtc_cmd(0x01,0xff));
+    r = rtc_cmd(0x02,0xff);
+    if (r & 0x40) {
+      h = BCD2INT(r&0x1f);
+      if (r & 0x20) {
+        iprintf("%02d:%02d:%02d pm\n", h, m, s);
+      } else {
+        iprintf("%02d:%02d:%02d am\n", h, m, s);
+      }
+    } else {
+      h = BCD2INT(r&0x0f);
+      if (r & 0x10) {
+        h += 10;
+      }
+      if (r & 0x20) {
+        h += 20;
+      }
+      iprintf("%02d:%02d:%02d\n", h, m, s);
+    }
     delay(1000000);
   }
-  spi_fast();
-  spi_mode(SPI_MODE0);
 }
