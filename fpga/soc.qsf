@@ -610,248 +610,278 @@ set_global_assignment -name VERILOG_FILE adapt32to16.v
 set_global_assignment -name QIP_FILE vgabuf.qip
 set_global_assignment -name QIP_FILE vgapll.qip
 set_global_assignment -name QIP_FILE vgafifo.qip
-set_global_assignment -name SLD_NODE_CREATOR_ID 110 -section_id sdram
-set_global_assignment -name SLD_NODE_ENTITY_NAME sld_signaltap -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_clk -to sdram_clk -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[0] -to sdram_addrbus[0] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[1] -to sdram_addrbus[10] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[2] -to sdram_addrbus[11] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[3] -to sdram_addrbus[12] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[4] -to sdram_addrbus[1] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[5] -to sdram_addrbus[2] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[6] -to sdram_addrbus[3] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[7] -to sdram_addrbus[4] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[8] -to sdram_addrbus[5] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[9] -to sdram_addrbus[6] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[10] -to sdram_addrbus[7] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[11] -to sdram_addrbus[8] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[12] -to sdram_addrbus[9] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[13] -to "sdram_controller:sdram0|addrbus_out[0]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[14] -to "sdram_controller:sdram0|addrbus_out[10]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[15] -to "sdram_controller:sdram0|addrbus_out[11]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[16] -to "sdram_controller:sdram0|addrbus_out[12]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[17] -to "sdram_controller:sdram0|addrbus_out[1]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[18] -to "sdram_controller:sdram0|addrbus_out[2]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[19] -to "sdram_controller:sdram0|addrbus_out[3]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[20] -to "sdram_controller:sdram0|addrbus_out[4]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[21] -to "sdram_controller:sdram0|addrbus_out[5]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[22] -to "sdram_controller:sdram0|addrbus_out[6]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[23] -to "sdram_controller:sdram0|addrbus_out[7]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[24] -to "sdram_controller:sdram0|addrbus_out[8]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[25] -to "sdram_controller:sdram0|addrbus_out[9]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[26] -to "sdram_controller:sdram0|ba[0]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[27] -to "sdram_controller:sdram0|ba[1]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[28] -to "sdram_controller:sdram0|cas_n" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[29] -to "sdram_controller:sdram0|cmd[0]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[30] -to "sdram_controller:sdram0|cmd[1]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[31] -to "sdram_controller:sdram0|cmd[2]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[32] -to "sdram_controller:sdram0|cmd[3]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[33] -to "sdram_controller:sdram0|cs_n" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[34] -to "sdram_controller:sdram0|dqm[0]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[35] -to "sdram_controller:sdram0|dqm[1]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[36] -to "sdram_controller:sdram0|dqm[2]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[37] -to "sdram_controller:sdram0|dqm[3]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[38] -to "sdram_controller:sdram0|ras_n" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[39] -to "sdram_controller:sdram0|rst_i" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[40] -to "sdram_controller:sdram0|sel_i[0]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[41] -to "sdram_controller:sdram0|sel_i[1]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[42] -to "sdram_controller:sdram0|sel_i[2]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[43] -to "sdram_controller:sdram0|sel_i[3]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[44] -to "sdram_controller:sdram0|state.STATE_ACTIVATE" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[45] -to "sdram_controller:sdram0|state.STATE_IDLE" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[46] -to "sdram_controller:sdram0|state.STATE_INIT_MODE" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[47] -to "sdram_controller:sdram0|state.STATE_INIT_MODE_WAIT" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[48] -to "sdram_controller:sdram0|state.STATE_INIT_PRECHARGE" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[49] -to "sdram_controller:sdram0|state.STATE_INIT_REFRESH1" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[50] -to "sdram_controller:sdram0|state.STATE_INIT_REFRESH1_WAIT" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[51] -to "sdram_controller:sdram0|state.STATE_INIT_WAIT" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[52] -to "sdram_controller:sdram0|state.STATE_PRECHARGE" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[0] -to sdram_addrbus[0] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[1] -to sdram_addrbus[10] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[2] -to sdram_addrbus[11] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[3] -to sdram_addrbus[12] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[4] -to sdram_addrbus[1] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[5] -to sdram_addrbus[2] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[6] -to sdram_addrbus[3] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[7] -to sdram_addrbus[4] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[8] -to sdram_addrbus[5] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[9] -to sdram_addrbus[6] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[10] -to sdram_addrbus[7] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[11] -to sdram_addrbus[8] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[12] -to sdram_addrbus[9] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[13] -to "sdram_controller:sdram0|addrbus_out[0]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[14] -to "sdram_controller:sdram0|addrbus_out[10]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[15] -to "sdram_controller:sdram0|addrbus_out[11]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[16] -to "sdram_controller:sdram0|addrbus_out[12]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[17] -to "sdram_controller:sdram0|addrbus_out[1]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[18] -to "sdram_controller:sdram0|addrbus_out[2]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[19] -to "sdram_controller:sdram0|addrbus_out[3]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[20] -to "sdram_controller:sdram0|addrbus_out[4]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[21] -to "sdram_controller:sdram0|addrbus_out[5]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[22] -to "sdram_controller:sdram0|addrbus_out[6]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[23] -to "sdram_controller:sdram0|addrbus_out[7]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[24] -to "sdram_controller:sdram0|addrbus_out[8]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[25] -to "sdram_controller:sdram0|addrbus_out[9]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[26] -to "sdram_controller:sdram0|ba[0]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[27] -to "sdram_controller:sdram0|ba[1]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[28] -to "sdram_controller:sdram0|cas_n" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[29] -to "sdram_controller:sdram0|cmd[0]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[30] -to "sdram_controller:sdram0|cmd[1]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[31] -to "sdram_controller:sdram0|cmd[2]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[32] -to "sdram_controller:sdram0|cmd[3]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[33] -to "sdram_controller:sdram0|cs_n" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[34] -to "sdram_controller:sdram0|dqm[0]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[35] -to "sdram_controller:sdram0|dqm[1]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[36] -to "sdram_controller:sdram0|dqm[2]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[37] -to "sdram_controller:sdram0|dqm[3]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[38] -to "sdram_controller:sdram0|ras_n" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[39] -to "sdram_controller:sdram0|rst_i" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[40] -to "sdram_controller:sdram0|sel_i[0]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[41] -to "sdram_controller:sdram0|sel_i[1]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[42] -to "sdram_controller:sdram0|sel_i[2]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[43] -to "sdram_controller:sdram0|sel_i[3]" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[44] -to "sdram_controller:sdram0|state.STATE_ACTIVATE" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[45] -to "sdram_controller:sdram0|state.STATE_IDLE" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[46] -to "sdram_controller:sdram0|state.STATE_INIT_MODE" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[47] -to "sdram_controller:sdram0|state.STATE_INIT_MODE_WAIT" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[48] -to "sdram_controller:sdram0|state.STATE_INIT_PRECHARGE" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[49] -to "sdram_controller:sdram0|state.STATE_INIT_REFRESH1" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[50] -to "sdram_controller:sdram0|state.STATE_INIT_REFRESH1_WAIT" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[51] -to "sdram_controller:sdram0|state.STATE_INIT_WAIT" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[52] -to "sdram_controller:sdram0|state.STATE_PRECHARGE" -section_id sdram
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_RAM_BLOCK_TYPE=AUTO" -section_id sdram
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_NODE_INFO=805334536" -section_id sdram
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_POWER_UP_TRIGGER=0" -section_id sdram
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STORAGE_QUALIFIER_INVERSION_MASK_LENGTH=0" -section_id sdram
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SEGMENT_SIZE=8192" -section_id sdram
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ATTRIBUTE_MEM_MODE=OFF" -section_id sdram
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STATE_FLOW_USE_GENERATED=0" -section_id sdram
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STATE_BITS=11" -section_id sdram
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_BUFFER_FULL_STOP=1" -section_id sdram
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_CURRENT_RESOURCE_WIDTH=1" -section_id sdram
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INCREMENTAL_ROUTING=1" -section_id sdram
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[1] -to sdram|vcc -section_id sdram
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[6] -to sdram|gnd -section_id sdram
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[9] -to sdram|gnd -section_id sdram
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[10] -to sdram|gnd -section_id sdram
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[11] -to sdram|gnd -section_id sdram
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[12] -to sdram|vcc -section_id sdram
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[16] -to sdram|gnd -section_id sdram
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[17] -to sdram|vcc -section_id sdram
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[20] -to sdram|gnd -section_id sdram
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[23] -to sdram|gnd -section_id sdram
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[25] -to sdram|vcc -section_id sdram
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[26] -to sdram|vcc -section_id sdram
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[27] -to sdram|gnd -section_id sdram
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[28] -to sdram|vcc -section_id sdram
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[29] -to sdram|gnd -section_id sdram
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[31] -to sdram|gnd -section_id sdram
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_LEVEL=1" -section_id sdram
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SAMPLE_DEPTH=8192" -section_id sdram
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_IN_ENABLED=0" -section_id sdram
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ADVANCED_TRIGGER_ENTITY=basic,1," -section_id sdram
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_LEVEL_PIPELINE=1" -section_id sdram
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ENABLE_ADVANCED_TRIGGER=0" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[53] -to "sdram_controller:sdram0|state.STATE_READ_WAIT" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[54] -to "sdram_controller:sdram0|state.STATE_READ_WAIT2" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[55] -to "sdram_controller:sdram0|state.STATE_RW" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[56] -to "sdram_controller:sdram0|stb_i" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[57] -to "sdram_controller:sdram0|we_i" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[58] -to "sdram_controller:sdram0|we_n" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[59] -to sdram_databus[0] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[60] -to sdram_databus[10] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[61] -to sdram_databus[11] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[62] -to sdram_databus[12] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[63] -to sdram_databus[13] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[64] -to sdram_databus[14] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[65] -to sdram_databus[15] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[66] -to sdram_databus[16] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[67] -to sdram_databus[17] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[68] -to sdram_databus[18] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[69] -to sdram_databus[19] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[70] -to sdram_databus[1] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[71] -to sdram_databus[20] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[72] -to sdram_databus[21] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[73] -to sdram_databus[22] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[74] -to sdram_databus[23] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[75] -to sdram_databus[24] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[76] -to sdram_databus[25] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[77] -to sdram_databus[26] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[78] -to sdram_databus[27] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[79] -to sdram_databus[28] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[80] -to sdram_databus[29] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[81] -to sdram_databus[2] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[82] -to sdram_databus[30] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[83] -to sdram_databus[31] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[84] -to sdram_databus[3] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[85] -to sdram_databus[4] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[86] -to sdram_databus[5] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[87] -to sdram_databus[6] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[88] -to sdram_databus[7] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[89] -to sdram_databus[8] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[90] -to sdram_databus[9] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[91] -to sdram_ras_n -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[92] -to sdram_we_n -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[53] -to "sdram_controller:sdram0|state.STATE_READ_WAIT" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[54] -to "sdram_controller:sdram0|state.STATE_READ_WAIT2" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[55] -to "sdram_controller:sdram0|state.STATE_RW" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[56] -to "sdram_controller:sdram0|stb_i" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[57] -to "sdram_controller:sdram0|we_i" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[58] -to "sdram_controller:sdram0|we_n" -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[59] -to sdram_databus[0] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[60] -to sdram_databus[10] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[61] -to sdram_databus[11] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[62] -to sdram_databus[12] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[63] -to sdram_databus[13] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[64] -to sdram_databus[14] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[65] -to sdram_databus[15] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[66] -to sdram_databus[16] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[67] -to sdram_databus[17] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[68] -to sdram_databus[18] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[69] -to sdram_databus[19] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[70] -to sdram_databus[1] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[71] -to sdram_databus[20] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[72] -to sdram_databus[21] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[73] -to sdram_databus[22] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[74] -to sdram_databus[23] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[75] -to sdram_databus[24] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[76] -to sdram_databus[25] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[77] -to sdram_databus[26] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[78] -to sdram_databus[27] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[79] -to sdram_databus[28] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[80] -to sdram_databus[29] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[81] -to sdram_databus[2] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[82] -to sdram_databus[30] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[83] -to sdram_databus[31] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[84] -to sdram_databus[3] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[85] -to sdram_databus[4] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[86] -to sdram_databus[5] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[87] -to sdram_databus[6] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[88] -to sdram_databus[7] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[89] -to sdram_databus[8] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[90] -to sdram_databus[9] -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[91] -to sdram_ras_n -section_id sdram
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[92] -to sdram_we_n -section_id sdram
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_DATA_BITS=93" -section_id sdram
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_BITS=93" -section_id sdram
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STORAGE_QUALIFIER_BITS=93" -section_id sdram
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK=000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" -section_id sdram
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK_LENGTH=306" -section_id sdram
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[0] -to sdram|vcc -section_id sdram
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[2] -to sdram|vcc -section_id sdram
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[3] -to sdram|vcc -section_id sdram
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[4] -to sdram|vcc -section_id sdram
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[5] -to sdram|vcc -section_id sdram
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[7] -to sdram|gnd -section_id sdram
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[8] -to sdram|vcc -section_id sdram
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[13] -to sdram|vcc -section_id sdram
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[14] -to sdram|gnd -section_id sdram
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[15] -to sdram|vcc -section_id sdram
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[18] -to sdram|vcc -section_id sdram
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[19] -to sdram|gnd -section_id sdram
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[21] -to sdram|gnd -section_id sdram
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[22] -to sdram|gnd -section_id sdram
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[24] -to sdram|vcc -section_id sdram
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[30] -to sdram|vcc -section_id sdram
+set_global_assignment -name SLD_NODE_CREATOR_ID 110 -section_id sdcard
+set_global_assignment -name SLD_NODE_ENTITY_NAME sld_signaltap -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_clk -to "iocontroller:io0|spi_master:spi0|clk" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[0] -to "iocontroller:io0|spi_master:spi0|address" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[1] -to "iocontroller:io0|spi_master:spi0|conf[0]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[2] -to "iocontroller:io0|spi_master:spi0|conf[1]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[3] -to "iocontroller:io0|spi_master:spi0|conf[2]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[4] -to "iocontroller:io0|spi_master:spi0|conf[3]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[5] -to "iocontroller:io0|spi_master:spi0|conf[4]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[6] -to "iocontroller:io0|spi_master:spi0|conf[5]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[7] -to "iocontroller:io0|spi_master:spi0|conf[6]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[8] -to "iocontroller:io0|spi_master:spi0|conf[7]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[9] -to "iocontroller:io0|spi_master:spi0|data_in[0]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[10] -to "iocontroller:io0|spi_master:spi0|data_in[10]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[11] -to "iocontroller:io0|spi_master:spi0|data_in[11]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[12] -to "iocontroller:io0|spi_master:spi0|data_in[12]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[13] -to "iocontroller:io0|spi_master:spi0|data_in[13]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[14] -to "iocontroller:io0|spi_master:spi0|data_in[14]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[15] -to "iocontroller:io0|spi_master:spi0|data_in[15]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[16] -to "iocontroller:io0|spi_master:spi0|data_in[16]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[17] -to "iocontroller:io0|spi_master:spi0|data_in[17]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[18] -to "iocontroller:io0|spi_master:spi0|data_in[18]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[19] -to "iocontroller:io0|spi_master:spi0|data_in[19]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[20] -to "iocontroller:io0|spi_master:spi0|data_in[1]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[21] -to "iocontroller:io0|spi_master:spi0|data_in[20]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[22] -to "iocontroller:io0|spi_master:spi0|data_in[21]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[23] -to "iocontroller:io0|spi_master:spi0|data_in[22]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[24] -to "iocontroller:io0|spi_master:spi0|data_in[23]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[25] -to "iocontroller:io0|spi_master:spi0|data_in[24]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[26] -to "iocontroller:io0|spi_master:spi0|data_in[25]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[27] -to "iocontroller:io0|spi_master:spi0|data_in[26]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[28] -to "iocontroller:io0|spi_master:spi0|data_in[27]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[29] -to "iocontroller:io0|spi_master:spi0|data_in[28]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[30] -to "iocontroller:io0|spi_master:spi0|data_in[29]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[31] -to "iocontroller:io0|spi_master:spi0|data_in[2]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[32] -to "iocontroller:io0|spi_master:spi0|data_in[30]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[33] -to "iocontroller:io0|spi_master:spi0|data_in[31]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[34] -to "iocontroller:io0|spi_master:spi0|data_in[3]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[35] -to "iocontroller:io0|spi_master:spi0|data_in[4]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[36] -to "iocontroller:io0|spi_master:spi0|data_in[5]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[37] -to "iocontroller:io0|spi_master:spi0|data_in[6]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[38] -to "iocontroller:io0|spi_master:spi0|data_in[7]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[39] -to "iocontroller:io0|spi_master:spi0|data_in[8]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[40] -to "iocontroller:io0|spi_master:spi0|data_in[9]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[41] -to "iocontroller:io0|spi_master:spi0|data_out[0]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[42] -to "iocontroller:io0|spi_master:spi0|data_out[10]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[43] -to "iocontroller:io0|spi_master:spi0|data_out[11]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[44] -to "iocontroller:io0|spi_master:spi0|data_out[12]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[45] -to "iocontroller:io0|spi_master:spi0|data_out[13]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[46] -to "iocontroller:io0|spi_master:spi0|data_out[14]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[47] -to "iocontroller:io0|spi_master:spi0|data_out[15]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[48] -to "iocontroller:io0|spi_master:spi0|data_out[16]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[49] -to "iocontroller:io0|spi_master:spi0|data_out[17]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[50] -to "iocontroller:io0|spi_master:spi0|data_out[18]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[51] -to "iocontroller:io0|spi_master:spi0|data_out[19]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[52] -to "iocontroller:io0|spi_master:spi0|data_out[1]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[53] -to "iocontroller:io0|spi_master:spi0|data_out[20]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[54] -to "iocontroller:io0|spi_master:spi0|data_out[21]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[55] -to "iocontroller:io0|spi_master:spi0|data_out[22]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[56] -to "iocontroller:io0|spi_master:spi0|data_out[23]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[57] -to "iocontroller:io0|spi_master:spi0|data_out[24]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[58] -to "iocontroller:io0|spi_master:spi0|data_out[25]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[59] -to "iocontroller:io0|spi_master:spi0|data_out[26]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[60] -to "iocontroller:io0|spi_master:spi0|data_out[27]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[61] -to "iocontroller:io0|spi_master:spi0|data_out[28]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[62] -to "iocontroller:io0|spi_master:spi0|data_out[29]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[63] -to "iocontroller:io0|spi_master:spi0|data_out[2]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[64] -to "iocontroller:io0|spi_master:spi0|data_out[30]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[65] -to "iocontroller:io0|spi_master:spi0|data_out[31]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[66] -to "iocontroller:io0|spi_master:spi0|data_out[3]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[67] -to "iocontroller:io0|spi_master:spi0|data_out[4]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[68] -to "iocontroller:io0|spi_master:spi0|data_out[5]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[69] -to "iocontroller:io0|spi_master:spi0|data_out[6]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[70] -to "iocontroller:io0|spi_master:spi0|data_out[7]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[71] -to "iocontroller:io0|spi_master:spi0|data_out[8]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[72] -to "iocontroller:io0|spi_master:spi0|data_out[9]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[0] -to "iocontroller:io0|spi_master:spi0|address" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[1] -to "iocontroller:io0|spi_master:spi0|conf[0]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[2] -to "iocontroller:io0|spi_master:spi0|conf[1]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[3] -to "iocontroller:io0|spi_master:spi0|conf[2]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[4] -to "iocontroller:io0|spi_master:spi0|conf[3]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[5] -to "iocontroller:io0|spi_master:spi0|conf[4]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[6] -to "iocontroller:io0|spi_master:spi0|conf[5]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[7] -to "iocontroller:io0|spi_master:spi0|conf[6]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[8] -to "iocontroller:io0|spi_master:spi0|conf[7]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[9] -to "iocontroller:io0|spi_master:spi0|data_in[0]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[10] -to "iocontroller:io0|spi_master:spi0|data_in[10]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[11] -to "iocontroller:io0|spi_master:spi0|data_in[11]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[12] -to "iocontroller:io0|spi_master:spi0|data_in[12]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[13] -to "iocontroller:io0|spi_master:spi0|data_in[13]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[14] -to "iocontroller:io0|spi_master:spi0|data_in[14]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[15] -to "iocontroller:io0|spi_master:spi0|data_in[15]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[16] -to "iocontroller:io0|spi_master:spi0|data_in[16]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[17] -to "iocontroller:io0|spi_master:spi0|data_in[17]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[18] -to "iocontroller:io0|spi_master:spi0|data_in[18]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[19] -to "iocontroller:io0|spi_master:spi0|data_in[19]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[20] -to "iocontroller:io0|spi_master:spi0|data_in[1]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[21] -to "iocontroller:io0|spi_master:spi0|data_in[20]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[22] -to "iocontroller:io0|spi_master:spi0|data_in[21]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[23] -to "iocontroller:io0|spi_master:spi0|data_in[22]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[24] -to "iocontroller:io0|spi_master:spi0|data_in[23]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[25] -to "iocontroller:io0|spi_master:spi0|data_in[24]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[26] -to "iocontroller:io0|spi_master:spi0|data_in[25]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[27] -to "iocontroller:io0|spi_master:spi0|data_in[26]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[28] -to "iocontroller:io0|spi_master:spi0|data_in[27]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[29] -to "iocontroller:io0|spi_master:spi0|data_in[28]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[30] -to "iocontroller:io0|spi_master:spi0|data_in[29]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[31] -to "iocontroller:io0|spi_master:spi0|data_in[2]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[32] -to "iocontroller:io0|spi_master:spi0|data_in[30]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[33] -to "iocontroller:io0|spi_master:spi0|data_in[31]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[34] -to "iocontroller:io0|spi_master:spi0|data_in[3]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[35] -to "iocontroller:io0|spi_master:spi0|data_in[4]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[36] -to "iocontroller:io0|spi_master:spi0|data_in[5]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[37] -to "iocontroller:io0|spi_master:spi0|data_in[6]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[38] -to "iocontroller:io0|spi_master:spi0|data_in[7]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[39] -to "iocontroller:io0|spi_master:spi0|data_in[8]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[40] -to "iocontroller:io0|spi_master:spi0|data_in[9]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[41] -to "iocontroller:io0|spi_master:spi0|data_out[0]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[42] -to "iocontroller:io0|spi_master:spi0|data_out[10]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[43] -to "iocontroller:io0|spi_master:spi0|data_out[11]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[44] -to "iocontroller:io0|spi_master:spi0|data_out[12]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[45] -to "iocontroller:io0|spi_master:spi0|data_out[13]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[46] -to "iocontroller:io0|spi_master:spi0|data_out[14]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[47] -to "iocontroller:io0|spi_master:spi0|data_out[15]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[48] -to "iocontroller:io0|spi_master:spi0|data_out[16]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[49] -to "iocontroller:io0|spi_master:spi0|data_out[17]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[50] -to "iocontroller:io0|spi_master:spi0|data_out[18]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[51] -to "iocontroller:io0|spi_master:spi0|data_out[19]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[52] -to "iocontroller:io0|spi_master:spi0|data_out[1]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[53] -to "iocontroller:io0|spi_master:spi0|data_out[20]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[54] -to "iocontroller:io0|spi_master:spi0|data_out[21]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[55] -to "iocontroller:io0|spi_master:spi0|data_out[22]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[56] -to "iocontroller:io0|spi_master:spi0|data_out[23]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[57] -to "iocontroller:io0|spi_master:spi0|data_out[24]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[58] -to "iocontroller:io0|spi_master:spi0|data_out[25]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[59] -to "iocontroller:io0|spi_master:spi0|data_out[26]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[60] -to "iocontroller:io0|spi_master:spi0|data_out[27]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[61] -to "iocontroller:io0|spi_master:spi0|data_out[28]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[62] -to "iocontroller:io0|spi_master:spi0|data_out[29]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[63] -to "iocontroller:io0|spi_master:spi0|data_out[2]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[64] -to "iocontroller:io0|spi_master:spi0|data_out[30]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[65] -to "iocontroller:io0|spi_master:spi0|data_out[31]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[66] -to "iocontroller:io0|spi_master:spi0|data_out[3]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[67] -to "iocontroller:io0|spi_master:spi0|data_out[4]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[68] -to "iocontroller:io0|spi_master:spi0|data_out[5]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[69] -to "iocontroller:io0|spi_master:spi0|data_out[6]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[70] -to "iocontroller:io0|spi_master:spi0|data_out[7]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[71] -to "iocontroller:io0|spi_master:spi0|data_out[8]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[72] -to "iocontroller:io0|spi_master:spi0|data_out[9]" -section_id sdcard
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_RAM_BLOCK_TYPE=AUTO" -section_id sdcard
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_NODE_INFO=805334534" -section_id sdcard
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_POWER_UP_TRIGGER=0" -section_id sdcard
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STORAGE_QUALIFIER_INVERSION_MASK_LENGTH=0" -section_id sdcard
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ATTRIBUTE_MEM_MODE=OFF" -section_id sdcard
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STATE_FLOW_USE_GENERATED=0" -section_id sdcard
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STATE_BITS=11" -section_id sdcard
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_BUFFER_FULL_STOP=1" -section_id sdcard
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_CURRENT_RESOURCE_WIDTH=1" -section_id sdcard
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INCREMENTAL_ROUTING=1" -section_id sdcard
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[0] -to sdcard|gnd -section_id sdcard
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[1] -to sdcard|gnd -section_id sdcard
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[6] -to sdcard|gnd -section_id sdcard
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[8] -to sdcard|vcc -section_id sdcard
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[12] -to sdcard|vcc -section_id sdcard
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[15] -to sdcard|gnd -section_id sdcard
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[18] -to sdcard|vcc -section_id sdcard
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[19] -to sdcard|gnd -section_id sdcard
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[20] -to sdcard|vcc -section_id sdcard
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[22] -to sdcard|vcc -section_id sdcard
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[26] -to sdcard|gnd -section_id sdcard
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[29] -to sdcard|gnd -section_id sdcard
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[31] -to sdcard|vcc -section_id sdcard
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_LEVEL=1" -section_id sdcard
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_IN_ENABLED=0" -section_id sdcard
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ADVANCED_TRIGGER_ENTITY=basic,1," -section_id sdcard
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_LEVEL_PIPELINE=1" -section_id sdcard
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ENABLE_ADVANCED_TRIGGER=0" -section_id sdcard
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SEGMENT_SIZE=32768" -section_id sdcard
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[17] -to sdcard|gnd -section_id sdcard
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[21] -to sdcard|gnd -section_id sdcard
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[23] -to sdcard|vcc -section_id sdcard
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[25] -to sdcard|gnd -section_id sdcard
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[27] -to sdcard|vcc -section_id sdcard
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[28] -to sdcard|vcc -section_id sdcard
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[30] -to sdcard|vcc -section_id sdcard
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SAMPLE_DEPTH=32768" -section_id sdcard
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[3] -to sdcard|vcc -section_id sdcard
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[7] -to sdcard|vcc -section_id sdcard
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[9] -to sdcard|gnd -section_id sdcard
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[11] -to sdcard|gnd -section_id sdcard
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[14] -to sdcard|gnd -section_id sdcard
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[16] -to sdcard|gnd -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[73] -to "iocontroller:io0|spi_master:spi0|miso" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[74] -to "iocontroller:io0|spi_master:spi0|mosi" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[75] -to "iocontroller:io0|spi_master:spi0|read" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[76] -to "iocontroller:io0|spi_master:spi0|rst_n" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[77] -to "iocontroller:io0|spi_master:spi0|rx_byte[0]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[78] -to "iocontroller:io0|spi_master:spi0|rx_byte[1]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[79] -to "iocontroller:io0|spi_master:spi0|rx_byte[2]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[80] -to "iocontroller:io0|spi_master:spi0|rx_byte[3]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[81] -to "iocontroller:io0|spi_master:spi0|rx_byte[4]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[82] -to "iocontroller:io0|spi_master:spi0|rx_byte[5]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[83] -to "iocontroller:io0|spi_master:spi0|rx_byte[6]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[84] -to "iocontroller:io0|spi_master:spi0|rx_byte[7]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[85] -to "iocontroller:io0|spi_master:spi0|sclk" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[86] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|buffer[0]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[87] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|buffer[1]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[88] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|buffer[2]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[89] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|buffer[3]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[90] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|buffer[4]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[91] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|buffer[5]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[92] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|buffer[6]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[93] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|buffer[7]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[94] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|buffer[8]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[95] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|spiclk" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[96] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|state.STATE_IDLE" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[97] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|state.STATE_LEAD" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[73] -to "iocontroller:io0|spi_master:spi0|miso" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[74] -to "iocontroller:io0|spi_master:spi0|mosi" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[75] -to "iocontroller:io0|spi_master:spi0|read" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[76] -to "iocontroller:io0|spi_master:spi0|rst_n" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[77] -to "iocontroller:io0|spi_master:spi0|rx_byte[0]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[78] -to "iocontroller:io0|spi_master:spi0|rx_byte[1]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[79] -to "iocontroller:io0|spi_master:spi0|rx_byte[2]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[80] -to "iocontroller:io0|spi_master:spi0|rx_byte[3]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[81] -to "iocontroller:io0|spi_master:spi0|rx_byte[4]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[82] -to "iocontroller:io0|spi_master:spi0|rx_byte[5]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[83] -to "iocontroller:io0|spi_master:spi0|rx_byte[6]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[84] -to "iocontroller:io0|spi_master:spi0|rx_byte[7]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[85] -to "iocontroller:io0|spi_master:spi0|sclk" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[86] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|buffer[0]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[87] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|buffer[1]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[88] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|buffer[2]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[89] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|buffer[3]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[90] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|buffer[4]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[91] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|buffer[5]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[92] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|buffer[6]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[93] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|buffer[7]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[94] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|buffer[8]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[95] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|spiclk" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[96] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|state.STATE_IDLE" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[97] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|state.STATE_LEAD" -section_id sdcard
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[2] -to sdcard|gnd -section_id sdcard
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[4] -to sdcard|vcc -section_id sdcard
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[5] -to sdcard|vcc -section_id sdcard
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[13] -to sdcard|gnd -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[98] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|state.STATE_START" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[99] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|state.STATE_TRAIL" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[100] -to "iocontroller:io0|spi_master:spi0|state.STATE_BUSY" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[101] -to "iocontroller:io0|spi_master:spi0|state.STATE_COMPLETE" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[102] -to "iocontroller:io0|spi_master:spi0|state.STATE_IDLE" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[103] -to "iocontroller:io0|spi_master:spi0|state.STATE_RELEASE" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[104] -to "iocontroller:io0|spi_master:spi0|tx_start" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[105] -to "iocontroller:io0|spi_master:spi0|write" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[106] -to "iocontroller:io0|spi_selects[0]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[107] -to "iocontroller:io0|spi_selects[4]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[98] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|state.STATE_START" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[99] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|state.STATE_TRAIL" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[100] -to "iocontroller:io0|spi_master:spi0|state.STATE_BUSY" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[101] -to "iocontroller:io0|spi_master:spi0|state.STATE_COMPLETE" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[102] -to "iocontroller:io0|spi_master:spi0|state.STATE_IDLE" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[103] -to "iocontroller:io0|spi_master:spi0|state.STATE_RELEASE" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[104] -to "iocontroller:io0|spi_master:spi0|tx_start" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[105] -to "iocontroller:io0|spi_master:spi0|write" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[106] -to "iocontroller:io0|spi_selects[0]" -section_id sdcard
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[107] -to "iocontroller:io0|spi_selects[4]" -section_id sdcard
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_DATA_BITS=108" -section_id sdcard
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_BITS=108" -section_id sdcard
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STORAGE_QUALIFIER_BITS=108" -section_id sdcard
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK=00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" -section_id sdcard
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK_LENGTH=353" -section_id sdcard
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[10] -to sdcard|gnd -section_id sdcard
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[24] -to sdcard|vcc -section_id sdcard
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 set_global_assignment -name SLD_FILE db/stp1_auto_stripped.stp

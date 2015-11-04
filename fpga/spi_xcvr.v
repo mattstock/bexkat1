@@ -11,8 +11,8 @@ module spi_xcvr(
   output reg sclk);
 
 parameter clockfreq = 50000000; // 50MHz
-parameter hispeed =  8000000; //  8MHz
-parameter lospeed =  2000000; //  2Mhz
+parameter hispeed =  8000000; //  16MHz
+parameter lospeed =  500000; //  1Mhz
 
 reg [8:0] buffer, buffer_next;
 reg done_next;
@@ -23,11 +23,11 @@ reg [2:0] bits, bits_next;
 reg spiclk;
 reg [31:0] counter;
 
-localparam STATE_IDLE = 'h0, STATE_LEAD = 'h1, STATE_TRAIL = 'h2;
+localparam STATE_IDLE = 2'h0, STATE_LEAD = 2'h1, STATE_TRAIL = 2'h2, STATE_START = 2'h3;
 
 assign done = (state == STATE_IDLE);
 assign mosi = buffer[8];
-assign rx = buffer[8:1];
+assign rx = (cpha ? buffer[7:0] : buffer[8:1]);
 
 wire [31:0] maxval;
 wire speedselect, cpol, cpha;
@@ -40,7 +40,7 @@ begin
   if (!reset_n) begin
     state <= STATE_IDLE;
     buffer <= 8'h00;
-    sclk <= 1'b1;
+    sclk <= cpol;
     bits <= 'h0;
   end else begin
     state <= state_next;
@@ -74,10 +74,14 @@ begin
     STATE_IDLE: begin
       sclk_next = cpol;
       if (start) begin
-        buffer_next[8:1] = tx;
-        state_next = STATE_LEAD;
+        buffer_next = (cpha ? { 1'b0, tx } : { tx, 1'b0 });
         bits_next = 'h7;
+        state_next = STATE_START;
       end
+    end
+    STATE_START: begin // clock still in inactive state, but present the correct buffer info
+      if (spiclk)
+        state_next = STATE_LEAD;
     end
     STATE_LEAD: begin // leading edge
       if (spiclk) begin
