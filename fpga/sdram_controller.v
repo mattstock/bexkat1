@@ -107,7 +107,7 @@ begin
     STATE_INIT_MODE: begin
       ba_next = 2'b00;
       cmd_next = CMD_MRS;
-      addrbus_out_next = 13'h0222; // CAS = 2, sequential, read burst length = 4, write single location
+      addrbus_out_next = 13'b0001000100000; // CAS = 2, sequential, read burst length = 1, write single location
       delay_next = 16'h3;
       state_next = STATE_INIT_MODE_WAIT;
     end
