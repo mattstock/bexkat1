@@ -40,7 +40,7 @@ begin
   if (!reset_n) begin
     state <= STATE_IDLE;
     buffer <= 8'h00;
-    sclk <= cpol;
+    sclk <= 1'b0;
     bits <= 'h0;
   end else begin
     state <= state_next;
