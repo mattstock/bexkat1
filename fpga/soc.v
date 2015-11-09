@@ -73,6 +73,7 @@ module soc(
   output rtc_sclk,
   output touch_ss,
   output extsd_ss,
+  output joy_ss,
   output gen_sclk,
   input touch_irq,
   output itd_ss,
@@ -112,11 +113,7 @@ wire miso, mosi, sclk;
 assign rgb = 3'b000;
 
 // some SPI wiring
-assign sd_ss = spi_selects[0];
-assign itd_ss = spi_selects[1];
-assign touch_ss = spi_selects[2];
-assign extsd_ss = spi_selects[3];
-assign rtc_ss = spi_selects[4];
+assign { joy_ss, rtc_ss, extsd_ss, touch_ss, itd_ss, sd_ss } = spi_selects[5:0];
 assign gen_mosi = mosi;
 assign sd_mosi = mosi;
 assign rtc_mosi = mosi;
@@ -124,7 +121,8 @@ assign miso = (~spi_selects[0] ? sd_miso : 1'b0) |
               (~spi_selects[1] ? gen_miso : 1'b0) |
               (~spi_selects[2] ? gen_miso : 1'b0) |
               (~spi_selects[3] ? gen_miso : 1'b0) |
-              (~spi_selects[4] ? rtc_miso : 1'b0);
+              (~spi_selects[4] ? rtc_miso : 1'b0) |
+              (~spi_selects[5] ? rtc_miso : 1'b0);
 assign gen_sclk = sclk;
 assign sd_sclk = sclk;
 assign rtc_sclk = sclk;
@@ -267,10 +265,11 @@ led_matrix matrix0(.clk_i(sysclock), .rst_i(~rst_n), .dat_i(cpu_writedata), .dat
   .adr_i(cpu_address[11:2]), .sel_i(cpu_be), .we_i(cpu_write), .stb_i(chipselect == 4'h5), .cyc_i(cpu_cyc), .ack_o(matrix_ack),
   .demux({rgb_a, rgb_b, rgb_c}), .rgb0(rgb0), .rgb1(rgb1), .rgb_stb(rgb_stb), .rgb_clk(rgb_clk), .oe_n(matrix_oe_n));
 // 0x00800800 - 0x00800fff
-iocontroller io0(.clk(sysclock), .rst_n(rst_n), .miso(miso), .mosi(mosi), .sclk(sclk), .spi_selects(spi_selects), .sd_wp_n(sd_wp_n),
+iocontroller io0(.clk(sysclock), .rst_n(rst_n), .miso(miso), .mosi(mosi), .sclk(sclk), .spi_selects(spi_selects),
   .be(cpu_be), .data_in(cpu_writedata), .data_out(io_readdata), .read(io_read), .write(io_write), .address(cpu_address),
+  .sd_wp_n(sd_wp_n), .touch_in(touch_irq), .fan(fan_ctrl), .itd_backlight(itd_backlight), .itd_dc(itd_dc),
   .lcd_e(lcd_e), .lcd_data(lcd_dataout), .lcd_rs(lcd_rs), .lcd_on(lcd_on), .lcd_rw(lcd_rw), .interrupt(io_interrupt), .wait_out(io_wait),
-  .rx0(serial0_rx), .tx0(serial0_tx), .tx1(serial1_tx), .sw(SW[15:0]), .itd_backlight(itd_backlight), .itd_dc(itd_dc), .fan(fan_ctrl));
+  .rx0(serial0_rx), .tx0(serial0_tx), .tx1(serial1_tx), .sw(SW[15:0]));
 // 0xb0000000 - 0xbfffffff
 //vga_framebuffer vga0(.clock(sysclock), .reset_n(rst_n), .address(cpu_address[20:2]), .write(vga_write), .data(cpu_writedata),
 //  .vs(vga_vs), .hs(vga_hs), .r(vga_r), .g(vga_g), .b(vga_b), .blank_n(vga_blank_n), .vga_clock(vga_clock), .sync_n(vga_sync_n), .sw(SW[17]));

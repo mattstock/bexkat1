@@ -3,6 +3,7 @@
 
 #include "misc.h"
 
+#define JOY_SEL 29
 #define RTC_SEL 28
 #define SD2_SEL 27
 #define TOUCH_SEL 26

@@ -7,6 +7,7 @@ module spi_master(
   output reg [7:0] selects,
   output reg [1:0] itd,
   input wp_n,
+  input touch,
   input [3:0] be,
   input [31:0] data_in,
   output [31:0] data_out,
@@ -94,7 +95,7 @@ begin
           if (state == STATE_COMPLETE)
             state_next = STATE_RELEASE;
         end
-        'h1: data_out = { selects, conf, 6'h00, itd, 5'h00, ~wp_n, (state != STATE_BUSY), (state == STATE_COMPLETE) };
+        'h1: data_out = { selects, conf, 6'h00, itd, 4'h0, touch, ~wp_n, (state != STATE_BUSY), (state == STATE_COMPLETE) };
         default: data_out = 'h0;
       endcase
     end
