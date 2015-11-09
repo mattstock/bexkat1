@@ -1,6 +1,6 @@
 #include "matrix.h"
 
-unsigned *matrix = (unsigned *)0x00800000;
+unsigned *matrix = (unsigned *)0x20000000;
 
 void matrix_put(unsigned x, unsigned y, unsigned val) {
   if (y > 15 || x > 31)

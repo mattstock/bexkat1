@@ -2,7 +2,7 @@ MEMORY
 {
   vectors : ORIGIN = 0xffffffc0, LENGTH = 64
   rom : ORIGIN = 0xffff0000, LENGTH = 64K
-  ram : ORIGIN = 0x003ff000, LENGTH = 4K
+  ram : ORIGIN = 0x07ff0000, LENGTH = 64K
 }
 
 STARTUP(boot.o)

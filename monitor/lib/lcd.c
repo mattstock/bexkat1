@@ -1,7 +1,7 @@
 #include "lcd.h"
 #include "misc.h"
 
-unsigned int *lcd = (unsigned int *)0x00800c00;
+unsigned int *lcd = (unsigned int *)0x20000c00;
 
 void lcd_init(void) {
   lcd[32] = 0x1;

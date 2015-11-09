@@ -16,18 +16,19 @@ always @*
 begin
   f = 1'b0;
   c = 1'b1;
-  if (adr_i >= 32'h00000000 && adr_i <= 32'h003fffff)
-    cs = 4'h6; // 4MB (1M x 32) SSRAM
-  else if (adr_i >= 32'h00800000 && adr_i <= 32'h008007ff)
+  
+  if (adr_i >= 32'h00000000 && adr_i <= 32'h07ffffff)
+    cs = 4'h7; // 128MB (32M x 32) SDRAM
+  else if (adr_i >= 32'h20000000 && adr_i <= 32'h200007ff)
     cs = 4'h5; // LED matrix
-  else if (adr_i >= 32'h00800800 && adr_i <= 32'h00800fff) begin
+  else if (adr_i >= 32'h20000800 && adr_i <= 32'h20000fff) begin
     cs = 4'h4; // IO
     c = 1'b0;
   end else if (adr_i >= 32'hb0000000 && adr_i <= 32'hbfffffff) begin
     cs = 4'h9; // VGA
     c = 1'b0;
-  end else if (adr_i >= 32'hc0000000 && adr_i <= 32'hc7ffffff)
-    cs = 4'h7; // 128MB (32M x 32) SDRAM
+  end else if (adr_i >= 32'hc0000000 && adr_i <= 32'hc03fffff)
+    cs = 4'h6; // 4MB (1M x 32) SSRAM
   else if (adr_i >= 32'hd0000000 && adr_i <= 32'hdfffffff)
     cs = 4'h3; // mandelbrot
   else if (adr_i >= 32'he0000000 && adr_i <= 32'hefffffff)

@@ -1,7 +1,7 @@
 #CC = ~/lcc/lcc
 #CFLAGS = -I../include
 CC = bexkat1-elf-gcc
-CFLAGS = -I../include
+CFLAGS = -I../include -specs=de2.specs
 AS = bexkat1-elf-as
 AR = bexkat1-elf-ar
 RANLIB = bexkat1-elf-ranlib

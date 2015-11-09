@@ -1,6 +1,7 @@
 #include "misc.h"
 #include "matrix.h"
 #include "serial.h"
+#include "spi.h"
 #include "ff.h"
 #include "lcd.h"
 #include "itd.h"
@@ -10,7 +11,7 @@
 unsigned int addr;
 unsigned short data;
 
-unsigned int *sw = (unsigned int *)0x00800810;
+unsigned int *sw = (unsigned int *)0x20000810;
 
 char helpmsg[] = "\n? = help\na aaaaaaaa = set address\nr = read page of mem and display\nw dddddddd = write word current address\nc = SDcard test\nm = led matrix init\nl = lcd test\nb filename = boot file\n\n";
 
@@ -197,11 +198,12 @@ void main(void) {
   int val;
   int *ref;
 
-  addr = 0x00800004;
+  spi_fast();
+  addr = 0x20000000;
   lcd_init();
   lcd_print("Bexkat 1000");
   lcd_pos(0,1);
-  lcd_print("v2.2");
+  lcd_print("v3.0");
   if (sw[0] && 0x1) {
     sdcard_exec("/kernel");
     serial_print(0, "\nautoboot failed\n");
@@ -269,7 +271,7 @@ void main(void) {
 	val = (val << 4) + hextoi(*msg);
 	msg++;
       }
-      if (addr >= 0x08000000 && addr < 0x10000000) {
+      if (addr >= 0xe0000000 && addr < 0xf0000000) {
         serial_print(0, "\nflash write");
         flash_write(addr, val);
       } else {

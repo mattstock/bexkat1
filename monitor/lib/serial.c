@@ -1,8 +1,8 @@
 #include "serial.h"
 #include "misc.h"
 
-volatile unsigned int *serial0 = (unsigned int *)0x00800800;
-volatile unsigned int *serial1 = (unsigned int *)0x00800808;
+volatile unsigned int *serial0 = (unsigned int *)0x20000800;
+volatile unsigned int *serial1 = (unsigned int *)0x20000808;
 
 void serial_printf(unsigned port, const char *format, ...) {
   serial_print(port, format);
