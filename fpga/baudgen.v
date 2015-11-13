@@ -18,7 +18,7 @@ begin
     if (counter < clkfreq/baud)
       counter <= counter + 1'b1;
     else begin
-      baudclk = 1'b1;
+      baudclk <= 1'b1;
       counter <= 16'h0;
     end
   end else begin

@@ -73,7 +73,7 @@ begin
   if (rst_i) begin
     state <= STATE_RESET;
     seq <= 5'h0;
-    interrupts_enabled = 1'b0;
+    interrupts_enabled <= 1'b0;
     exception <= 4'h0;
   end else begin
     seq <= seq_next;

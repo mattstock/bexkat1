@@ -1,6 +1,7 @@
 #include <stdarg.h>
 #include "misc.h"
 #include "matrix.h"
+#include "spi.h"
 #include "serial.h"
 #include <stdio.h>
 #include <stdlib.h>
@@ -27,10 +28,29 @@ void matrix_fade(void) {
   }
 }
 
+unsigned int joystick() {
+  unsigned char a0,a1;
+  unsigned int ret;
+
+  spi_slow();
+  CLEAR_BIT(SPI_CTL, JOY_SEL);
+  a0 = spi_xfer(0x78);
+  a1 = spi_xfer(0x00);
+  SET_BIT(SPI_CTL, JOY_SEL);
+  ret = (((a0 << 8) | a1) & 0x3ff) << 16;
+  CLEAR_BIT(SPI_CTL, JOY_SEL);
+  a0 = spi_xfer(0x68);
+  a1 = spi_xfer(0x00);
+  SET_BIT(SPI_CTL, JOY_SEL);
+  ret |= ((a0 << 8) | a1) & 0x3ff;
+  return ret;
+}
+ 
 void main(void) {
   char c;
-  unsigned val;
+  unsigned val, pot;
   unsigned short x, y;
+  unsigned tick = 0;
 
   x = 16;
   y = 8;
@@ -38,26 +58,19 @@ void main(void) {
 
   srand(39854);
   while (1) {
+    tick++;
     matrix_fade();
-    c = (char) (rand() % 4);
-    switch (c) {
-      case 0:
-        if (x > 0)
-          x--;
-        break;
-      case 1:
-        if (x < 31)
-          x++;
-        break;
-     case 2:
-       if (y > 0)
-         y--;
-       break;
-     case 3:
-       if (y < 15)
-         y++;
-       break;
-    }  
+    if ((tick % 10) == 0) {
+      pot = joystick();
+      if (((pot & 0xffff) > 900) && (x < 31))
+        x++;
+      if (((pot & 0xffff) < 200) && (x > 0))
+        x--;
+      if (((pot >> 16) < 200) && (y < 15))
+        y++;
+      if (((pot >> 16) > 900) && (y > 0))
+        y--;
+    }
     c = (char) (rand() % 4);
     switch (c) {
       case 0:
