@@ -104,7 +104,7 @@ begin
     2'h0: scandata_out = 24'h0;
     2'h1: scandata_out = 24'hff0000;
     2'h2: scandata_out = (x < 10'd8 ? 24'h00ff00 : (x > 10'd631 ? 24'h0000ff : 24'h000000));
-    2'h3: scandata_out = { 5'b0, pixel };
+    2'h3: scandata_out = (pixel == 'd0 ? 24'hff0000 : (pixel == 'd638 ? 24'h00ff00 : (pixel == 'd306560 ? 24'h0000ff : 24'h0)));
   endcase
 end
 
