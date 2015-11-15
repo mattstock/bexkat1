@@ -21,13 +21,13 @@ module vga_master(
 
 parameter VIDMEM = 32'hc0000000;
 
-wire [15:0] x;
+wire [15:0] x_raw, y_raw;
 reg [23:0] scandata_out;
 wire [7:0] scanpos;
 
 reg [1:0] state, state_next;
 /*reg [18:0] pixel, pixel_next;*/
-wire [18:0] pixel;
+wire [18:0] pixel_raw;
 reg [9:0] idx, idx_next;
 reg [2:0] hs_sync;
 reg scandata_we;
@@ -103,14 +103,17 @@ begin
   case (sw)
     2'h0: scandata_out = 24'h0;
     2'h1: scandata_out = 24'hff0000;
-    2'h2: scandata_out = (x < 10'd8 ? 24'h00ff00 : (x > 10'd631 ? 24'h0000ff : 24'h000000));
-    2'h3: scandata_out = (pixel == 'd0 ? 24'hff0000 : (pixel == 'd638 ? 24'h00ff00 : (pixel == 'd306560 ? 24'h0000ff : 24'h0)));
+    2'h2: scandata_out = (x_raw < 10'd8 ? 24'h800000 : 24'h000000) |
+                         (x_raw > 10'd631 ? 24'h008000 : 24'h000000) |
+                         (y_raw < 10'd8 ? 24'h000080 : 24'h000000) |
+                         (y_raw > 10'd472 ? 24'h7f7f7f : 24'h000000);
+    2'h3: scandata_out = 24'h7f4010;
   endcase
 end
 
 //vgalinebuf scanline0(.wrclock(clk_i), .wraddress(idx), .wren(scandata_we), .data(datain),
 //  .rdclock(vga_clock), .rdaddress(x));
-vga_controller vga0(.active(blank_n), .vs(vs), .hs(hs), .clock(vga_clock), .reset_n(~rst_i), .x(x), .pixel(pixel));
+vga_controller vga0(.active(blank_n), .vs(vs), .hs(hs), .clock(vga_clock), .reset_n(~rst_i), .x(x_raw), .y(y_raw), .pixel(pixel_raw));
 vgapll vgapll0(.inclk0(clk_i), .c0(vga_clock));
 
 endmodule
