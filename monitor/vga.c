@@ -6,10 +6,13 @@
 #include <math.h>
 #include "matrix.h"
 #include "misc.h"
-#include "serial.h"
 
-unsigned int *vga = (unsigned *)0xb0000000;
-unsigned int *sw = (unsigned *)0x00800810;
+unsigned char *vga = (unsigned char *)0xc0000000;
+unsigned int *sw = (unsigned *)0x20000810;
+
+void vga_point(int x, int y) {
+  vga[y*640+x] = (char)0xff;
+}
 
 void mandelbrot(float cx, float cy, float scale) {
   float limit = 4.0f;
@@ -52,9 +55,8 @@ void clear() {
 
 void pattern() {
   int x,y;
-  for (y=0; y < 480; y++)
-    for (x=0; x < 640; x++)
-      vga[y*640+x] = (((x>>2)+1) % 8) | ((((y>>2)+1) % 8) << 6);
+  for (x=0; x < 640; x++)
+    vga_point(x,30);
 }
 
 void main(void) {
@@ -63,13 +65,13 @@ void main(void) {
 
   while (1) {
     iprintf("Select test with switches and press a key\n");
-    serial_getchar(0);
+    getchar();
     switch (sw[0]) {
     case 0:
       pattern();
       break;
     case 1:
-      mandelbrot(0.36f, 0.1f, 0.0001f);
+      vga[0] = 0xffeeddcc;
       break;
     case 2:
       mandelbrot(0.36f, 0.1f, 0.00001f);

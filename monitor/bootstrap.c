@@ -12,8 +12,21 @@ unsigned int addr;
 unsigned short data;
 
 unsigned int *sw = (unsigned int *)0x20000810;
+unsigned char *vid = (unsigned char *)0xc0000000;
 
 char helpmsg[] = "\n? = help\na aaaaaaaa = set address\nr = read page of mem and display\nw dddddddd = write word current address\nc = SDcard test\nm = led matrix init\nl = lcd test\nb filename = boot file\n\n";
+
+void vidtest(void) {
+  int x;
+  for (x=0; x < 640*480; x++)
+    vid[x] = 0x00;
+  for (x=0; x < 640; x++)
+    vid[x] = 0xff;
+  for (x=0; x < 640; x++)
+    vid[239*640+x] = 0xff;
+  for (x=0; x < 640; x++)
+    vid[478*640+x] = 0xff;
+}
 
 void memtest(void) {
   unsigned int *ref = (unsigned int *)0x00004000;
@@ -68,20 +81,17 @@ void flash_write(unsigned int addr, unsigned short val) {
 void serial_dumpmem(unsigned port,
 		    unsigned addr, 
 		    unsigned short len) {
-  unsigned int i;
+  unsigned int i,j;
   unsigned *pos = (unsigned *)addr;
   
   serial_print(port, "\n");
-  for (i=0; i < len; i += 4) {
+  for (i=0; i < len; i += 8) {
     serial_printhex(port, addr+4*i);
     serial_print(port, ": ");
-    serial_printhex(port, pos[i]);
-    serial_print(port, " ");
-    serial_printhex(port, pos[i+1]);
-    serial_print(port, " ");
-    serial_printhex(port, pos[i+2]);
-    serial_print(port, " ");
-    serial_printhex(port, pos[i+3]);
+    for (j=0; j < 8; j++) {
+      serial_printhex(port, pos[i+j]);
+      serial_print(port, " ");
+    }
     serial_print(port, "\n");
   }
 }
@@ -264,6 +274,9 @@ void main(void) {
       break;
     case ',':
       addr -= 4;
+      break;
+    case 'v':
+      vidtest();
       break;
     case 'w':
       msg++;

@@ -237,7 +237,7 @@ assign cpu_ack = (chipselect == 4'h1 ? vect_ack[1] : 1'h0) |
                  (chipselect == 4'h3 ? ~mandelbrot_wait : 1'h0) |
                  (chipselect == 4'h4 ? ~io_wait : 1'h0) |
                  (chipselect == 4'h5 ? matrix_ack : 1'h0) |
-                 (chipselect == 4'h6 ? ssram_ack: 1'h0) |
+                 (chipselect == 4'h6 ? ssram_ack & cpu_gnt : 1'h0) |
                  (chipselect == 4'h7 ? sdram_ack : 1'h0) |
                  (chipselect == 4'h8 ? ~flash_wait : 1'h0);
 
@@ -292,14 +292,14 @@ arbiter arb0(.clk_i(sysclock), .rst_i(~rst_n), .cpu_cyc_i(chipselect == 4'h6),
   .vga_cyc_i(vga_cyc), .cyc_o(arb_cyc), .cpu_gnt(cpu_gnt), .vga_gnt(vga_gnt), .ack_i(ssram_ack));
 
 vga_master vga0(.clk_i(sysclock), .rst_i(~rst_n), .adr_o(vga_address), .cyc_o(vga_cyc), .dat_i(ssram_readdata),
-  .we_o(vga_we), .dat_o(vga_writedata), .sel_o(vga_sel), .ack_i(ssram_ack), .stb_o(vga_stb),
+  .we_o(vga_we), .dat_o(vga_writedata), .sel_o(vga_sel), .ack_i(vga_gnt & ssram_ack), .stb_o(vga_stb),
   .vs(vga_vs), .hs(vga_hs), .r(vga_r), .g(vga_g), .b(vga_b), .blank_n(vga_blank_n), .vga_clock(vga_clock), .sync_n(vga_sync_n), .sw(SW[17:16]));
 
 // 0xc0000000 - 0xc03fffff
 ssram_controller ssram0(.clk_i(sysclock), .rst_i(~rst_n), 
-  .stb_i(vga_stb), .cyc_i(vga_cyc), .we_i(1'b0), 
-  .ack_o(ssram_ack), .dat_i(32'h00000000), .dat_o(ssram_readdata),
-  .sel_i(vga_sel), .adr_i(vga_address[21:0]),
+  .stb_i(ssram_stb), .cyc_i(arb_cyc), .we_i(fs_we), 
+  .ack_o(ssram_ack), .dat_i(cpu_writedata), .dat_o(ssram_readdata),
+  .sel_i(fs_sel), .adr_i(fs_adr[21:0]),
   .databus_in(fs_databus), .databus_out(ssram_dataout),
   .address_out(ssram_addrout), .bus_clock(ssram_clk), .gw_n(ssram_gw_n), .adv_n(ssram_adv_n), .adsp_n(ssram_adsp_n),
   .adsc_n(ssram_adsc_n), .be_out(ssram_be), .oe_n(ssram_oe_n), .we_n(ssram_we_n), .ce0_n(ssram0_ce_n), .ce1_n(ssram1_ce_n));
