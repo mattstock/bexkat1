@@ -29,6 +29,8 @@ begin
     c = 1'b0;
   end else if (adr_i >= 32'hc0000000 && adr_i <= 32'hc03fffff)
     cs = 4'h6; // 4MB (1M x 32) SSRAM
+  else if (adr_i >= 32'hc0400000 && adr_i <= 32'hc0400fff)
+    cs = 4'ha; // VGA controller
   else if (adr_i >= 32'hd0000000 && adr_i <= 32'hdfffffff)
     cs = 4'h3; // mandelbrot
   else if (adr_i >= 32'he0000000 && adr_i <= 32'hefffffff)

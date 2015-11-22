@@ -71,7 +71,7 @@ void main(void) {
       pattern();
       break;
     case 1:
-      vga[0] = 0xffeeddcc;
+      vga[0] = 0x01;
       break;
     case 2:
       mandelbrot(0.36f, 0.1f, 0.00001f);

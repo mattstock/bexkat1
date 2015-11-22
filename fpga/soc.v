@@ -162,7 +162,7 @@ assign LEDG = { cpu_halt, sdram_ack, fl_ry, 1'b0, int_en, exception };
 
 wire [3:0] chipselect;
 wire [26:0] ssram_addrout, flash_addrout;
-wire [31:0] cpu_address, vga_address, flash_readdata, ssram_readdata, ssram_dataout;
+wire [31:0] cpu_address, vga_address, flash_readdata, ssram_readdata, ssram_dataout, vga_readdata;
 wire [15:0] flash_dataout;
 wire [31:0] cpu_readdata, cpu_writedata, mon_readdata, mandelbrot_readdata, matrix_readdata, rom_readdata;
 wire [31:0] vect_readdata, io_readdata, sdram_readdata, sdram_dataout, vga_writedata;
@@ -176,7 +176,7 @@ wire arb_cyc, cpu_gnt, vga_gnt;
 wire mandelbrot_write, mandelbrot_read, mandelbrot_wait;
 wire io_write, io_read, io_wait;
 wire rom_read, vect_read;
-wire sdram_ack;
+wire sdram_ack, vga_slave_ack;
 wire [3:0] sdram_den_n;
 wire flash_read, flash_write, flash_ready, flash_wait;
 wire matrix_read, matrix_write, matrix_oe_n, matrix_ack;
@@ -231,7 +231,8 @@ assign cpu_readdata = (chipselect == 4'h1 ? vect_readdata : 32'h0) |
                       (chipselect == 4'h5 ? matrix_readdata : 32'h0) |
                       (chipselect == 4'h6 ? ssram_readdata : 32'h0) |
                       (chipselect == 4'h7 ? sdram_readdata : 32'h0) |
-                      (chipselect == 4'h8 ? flash_readdata : 32'h0);
+                      (chipselect == 4'h8 ? flash_readdata : 32'h0) |
+                      (chipselect == 4'ha ? vga_readdata : 32'h0);
 assign cpu_ack = (chipselect == 4'h1 ? vect_ack[1] : 1'h0) |
                  (chipselect == 4'h2 ? rom_ack[1] : 1'h0) |
                  (chipselect == 4'h3 ? ~mandelbrot_wait : 1'h0) |
@@ -239,7 +240,8 @@ assign cpu_ack = (chipselect == 4'h1 ? vect_ack[1] : 1'h0) |
                  (chipselect == 4'h5 ? matrix_ack : 1'h0) |
                  (chipselect == 4'h6 ? ssram_ack & cpu_gnt : 1'h0) |
                  (chipselect == 4'h7 ? sdram_ack : 1'h0) |
-                 (chipselect == 4'h8 ? ~flash_wait : 1'h0);
+                 (chipselect == 4'h8 ? ~flash_wait : 1'h0) |
+                 (chipselect == 4'ha ? vga_slave_ack : 1'h0);
 
 assign io_read = (chipselect == 4'h4 && cpu_cyc && ~cpu_write);
 assign io_write = (chipselect == 4'h4 && cpu_cyc && cpu_write);
@@ -291,9 +293,12 @@ assign ssram_stb = cpu_gnt | vga_gnt;
 arbiter arb0(.clk_i(sysclock), .rst_i(~rst_n), .cpu_cyc_i(chipselect == 4'h6), 
   .vga_cyc_i(vga_cyc), .cyc_o(arb_cyc), .cpu_gnt(cpu_gnt), .vga_gnt(vga_gnt), .ack_i(ssram_ack));
 
-vga_master vga0(.clk_i(sysclock), .rst_i(~rst_n), .adr_o(vga_address), .cyc_o(vga_cyc), .dat_i(ssram_readdata),
-  .we_o(vga_we), .dat_o(vga_writedata), .sel_o(vga_sel), .ack_i(vga_gnt & ssram_ack), .stb_o(vga_stb),
-  .vs(vga_vs), .hs(vga_hs), .r(vga_r), .g(vga_g), .b(vga_b), .blank_n(vga_blank_n), .vga_clock(vga_clock), .sync_n(vga_sync_n), .sw(SW[17:16]));
+// 0xc0040000 - 0xc0040fff
+vga_master vga0(.clk_i(sysclock), .rst_i(~rst_n), .master_adr_o(vga_address), .master_cyc_o(vga_cyc), .master_dat_i(ssram_readdata),
+  .master_we_o(vga_we), .master_dat_o(vga_writedata), .master_sel_o(vga_sel), .master_ack_i(vga_gnt & ssram_ack), .master_stb_o(vga_stb),
+  .slave_adr_i(cpu_address[9:0]), .slave_dat_i(cpu_writedata), .slave_sel_i(cpu_be), .slave_cyc_i(cpu_cyc), .slave_we_i(cpu_write),
+  .slave_stb_i(chipselect == 4'ha), .slave_ack_o(vga_slave_ack), .slave_dat_o(vga_readdata),
+  .vs(vga_vs), .hs(vga_hs), .r(vga_r), .g(vga_g), .b(vga_b), .blank_n(vga_blank_n), .vga_clock(vga_clock), .sync_n(vga_sync_n));
 
 // 0xc0000000 - 0xc03fffff
 ssram_controller ssram0(.clk_i(sysclock), .rst_i(~rst_n), 
