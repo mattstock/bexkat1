@@ -15,7 +15,7 @@ module vga_master(
   input slave_cyc_i,
   input slave_we_i,
   input [3:0] slave_sel_i,
-  output reg slave_ack_o,
+  output slave_ack_o,
   input slave_stb_i,
   output vs,
   output hs,
@@ -28,40 +28,38 @@ module vga_master(
 
 parameter VIDMEM = 32'hc0000000;
 
-localparam [2:0] STATE_IDLE = 3'h0, STATE_BUS = 3'h1, STATE_GRAPHICS = 3'h2,
-                 STATE_MAP0 = 3'h3, STATE_MAP1 = 3'h4, STATE_MAP2 = 3'h5, STATE_MAP3 = 3'h6;
+localparam [1:0] STATE_IDLE = 2'h0, STATE_BUS = 2'h1, STATE_PALETTE = 2'h2, STATE_STORE = 2'h3;
 
-wire [7:0] pallette_idx;
-wire [23:0] pallette_out, linebuf_out;
+wire [23:0] buf0_out, buf1_out, buf2_out, buf3_out;
+wire [23:0] map0_out, map1_out, map2_out, map3_out;
 wire [15:0] x_raw, y_raw;
-wire line_write;
+wire [15:0] scanaddr;
 
-reg [2:0] state, state_next;
+reg [1:0] state, state_next;
 reg [9:0] idx, idx_next;
-reg [31:0] x_sync [2:0];
-reg [31:0] y_sync [2:0];
+reg [15:0] x_sync [2:0];
+reg [15:0] y_sync [2:0];
 reg [31:0] rowval, rowval_next;
-reg [31:0] tempvals, tempvals_next;
+reg [31:0] map_idx, map_idx_next;
+reg slave_state, slave_state_next;
 
+assign scanaddr = x_raw+1'b1;
 assign master_dat_o = 32'h0;
 assign slave_dat_o = 32'h0;
+assign slave_ack_o = slave_state;
 assign master_we_o = 1'b0;
 assign master_sel_o = 4'hf;
 assign master_cyc_o = (state == STATE_BUS);
 assign master_stb_o = master_cyc_o;
 
 assign sync_n = 1'b0;
-assign { r,g,b } = linebuf_out;
-
-assign line_write = (state == STATE_MAP0 || state == STATE_MAP1 || state == STATE_MAP2 || state == STATE_MAP3);
 
 always @* begin
-  case (state)
-    STATE_MAP0: pallette_idx = tempvals[31:24];
-    STATE_MAP1: pallette_idx = tempvals[23:16];
-    STATE_MAP2: pallette_idx = tempvals[15:8];
-    STATE_MAP3: pallette_idx = tempvals[7:0];
-    default: pallette_idx = 8'h00;
+  case (x_raw[1:0])
+    2'h0: {r,g,b} = buf0_out;
+    2'h1: {r,g,b} = buf1_out;
+    2'h2: {r,g,b} = buf2_out;
+    2'h3: {r,g,b} = buf3_out;
   endcase
 end
 
@@ -80,12 +78,14 @@ begin
     state <= STATE_IDLE;
     idx <= 10'h0;
     rowval <= 32'h0;
-    tempvals <= 32'h0;
+    map_idx <= 32'h0;
+    slave_state <= 1'b0;
   end else begin
     idx <= idx_next;
     state <= state_next;
     rowval <= rowval_next;
-    tempvals <= tempvals_next;
+    map_idx <= map_idx_next;
+    slave_state <= slave_state_next;
   end
 end
 
@@ -95,58 +95,64 @@ begin
   idx_next = idx;
   rowval_next = rowval;
   master_adr_o = 32'hc0000000;
-  slave_ack_o = slave_cyc_i & slave_stb_i; // should be just a single cycle delay
-  tempvals_next = tempvals;
+  map_idx_next = map_idx;
+  slave_state_next = slave_state;
+  if (slave_state == 1'b0) begin
+    if (slave_cyc_i & slave_stb_i) begin
+      slave_state_next = 1'b1;
+    end
+  end else begin
+    slave_state_next = 1'b0;
+  end
   case (state)
     STATE_IDLE: begin
-      if (y_sync[2] == 32'h0) begin
-        rowval_next = 32'h0;
-      end else begin
-        if (x_sync[2] == 32'h0) begin
-          state_next = STATE_BUS;
-        end
+      if (y_sync[2] != y_sync[1]) begin
+        state_next = STATE_BUS;
       end
     end
     STATE_BUS: begin
       master_adr_o = VIDMEM + rowval + idx;
       if (master_ack_i) begin
-        state_next = STATE_MAP0;
-        tempvals_next = master_dat_i;
+        state_next = STATE_PALETTE;
+        map_idx_next = master_dat_i;
       end
     end
-    STATE_MAP0: begin
-      idx_next = idx + 1'h1;
-      state_next = STATE_MAP1;
-    end
-    STATE_MAP1: begin
-      idx_next = idx + 1'h1;
-      state_next = STATE_MAP2;
-    end
-    STATE_MAP2: begin
-      idx_next = idx + 1'h1;
-      state_next = STATE_MAP3;
-    end
-    STATE_MAP3: begin
-      idx_next = idx + 1'h1;
-      state_next = STATE_GRAPHICS;
-    end
-    STATE_GRAPHICS: begin
+    STATE_PALETTE: state_next = STATE_STORE;
+    STATE_STORE: begin
       if (idx < 10'd640) begin
         state_next = STATE_BUS;
+        idx_next = idx + 10'd4;
       end else begin
-        rowval_next = rowval + idx;
         idx_next = 10'd0;
+        if (y_sync[1] == 16'd479) begin
+          rowval_next = 32'h0;
+        end else begin
+          rowval_next = rowval + 10'd640;
+        end
         state_next = STATE_IDLE;
       end
     end
-    default: state_next = STATE_IDLE;
   endcase
 end
 
+// We duplicate the palette map to allow for parallel handling of the reads later
 vga_pallette map0(.clock(clk_i), .wraddress(slave_adr_i[7:0]), .wren(slave_cyc_i & slave_stb_i & slave_we_i),
-  .data(slave_dat_i[23:0]), .rdaddress(pallette_idx), .q(pallette_out));
-vgalinebuf scanline0(.wrclock(clk_i), .wraddress(idx), .wren(line_write), .data(pallette_out),
-  .rdclock(vga_clock), .rdaddress(x_raw), .q(linebuf_out));
+  .data(slave_dat_i[23:0]), .rdaddress(map_idx[31:24]), .q(map0_out));
+vga_pallette map1(.clock(clk_i), .wraddress(slave_adr_i[7:0]), .wren(slave_cyc_i & slave_stb_i & slave_we_i),
+  .data(slave_dat_i[23:0]), .rdaddress(map_idx[23:16]), .q(map1_out));
+vga_pallette map2(.clock(clk_i), .wraddress(slave_adr_i[7:0]), .wren(slave_cyc_i & slave_stb_i & slave_we_i),
+  .data(slave_dat_i[23:0]), .rdaddress(map_idx[15:8]), .q(map2_out));
+vga_pallette map3(.clock(clk_i), .wraddress(slave_adr_i[7:0]), .wren(slave_cyc_i & slave_stb_i & slave_we_i),
+  .data(slave_dat_i[23:0]), .rdaddress(map_idx[7:0]), .q(map3_out));
+// And we interleave the memory
+vgalinebuf scanline0(.wrclock(clk_i), .wraddress(idx[9:2]), .wren(state == STATE_STORE), .data(map0_out),
+  .rdclock(vga_clock), .rdaddress(scanaddr[9:2]), .q(buf0_out));
+vgalinebuf scanline1(.wrclock(clk_i), .wraddress(idx[9:2]), .wren(state == STATE_STORE), .data(map1_out),
+  .rdclock(vga_clock), .rdaddress(scanaddr[9:2]), .q(buf1_out));
+vgalinebuf scanline2(.wrclock(clk_i), .wraddress(idx[9:2]), .wren(state == STATE_STORE), .data(map2_out),
+  .rdclock(vga_clock), .rdaddress(scanaddr[9:2]), .q(buf2_out));
+vgalinebuf scanline3(.wrclock(clk_i), .wraddress(idx[9:2]), .wren(state == STATE_STORE), .data(map3_out),
+  .rdclock(vga_clock), .rdaddress(scanaddr[9:2]), .q(buf3_out));
 
 vga_controller vga0(.active(blank_n), .vs(vs), .hs(hs), .clock(vga_clock), .reset_n(~rst_i), .x(x_raw), .y(y_raw));
 vgapll vgapll0(.inclk0(clk_i), .c0(vga_clock));
