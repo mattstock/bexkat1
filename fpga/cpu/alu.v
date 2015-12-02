@@ -58,7 +58,7 @@ begin
       v_out = n_out ^ c_out;
     end
     ALU_RSHIFTA: begin
-      out = in1 >>> in2;
+      out = $signed(in1) >>> in2;
       c_out = 1'b0;
       v_out = n_out;
     end

@@ -9,12 +9,12 @@ LD = bexkat1-elf-ld
 
 TEMP := $(shell mktemp)
 
-OBJECTS = boot.o bootstrap.o pretty.o mandsf.o vga.o memtests.o rtc.o fileio.o touch.o joy.o
-APPS = pretty mandsf vga bootstrap memtests rtc fileio touch joy
+OBJECTS = boot.o bootstrap.o pretty.o mandsf.o vga.o memtests.o rtc.o fileio.o touch.o joy.o multiply.o
+APPS = pretty mandsf vga bootstrap memtests rtc fileio touch joy multiply
 
 .PHONY: all clean lib gcctests kernel install
 
-all: boot.o lib bootstrap.hex gcctests kernel $(APPS)
+all: boot.o lib bootstrap.mif gcctests kernel $(APPS)
 
 install: $(APPS)
 	cp $(APPS) kernel/kernel /media/mstock/19D5-2529/
@@ -23,7 +23,7 @@ clean:
 	cd lib; make clean
 	cd gcctests; make clean
 	cd kernel; make clean
-	rm -f *.o *.hex *.gkd *.expand $(APPS)
+	rm -f *.o *.hex *.mif *.gkd *.expand $(APPS)
 
 lib:
 	cd lib; make
@@ -37,9 +37,8 @@ kernel:
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $^
 
-%.hex: %
-	$(OBJCOPY) -O ihex $< $(TEMP)
-	egrep -v "^:02000004" $(TEMP) | egrep -v "^:04000005" > $@	
+%.mif: %
+	$(OBJCOPY) -O mif $< $@
 
 bootstrap: bootstrap.o
 	$(CC) -T profile.ld -nostartfiles -o $@ $^ $(LDLIBS)

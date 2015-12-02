@@ -71,7 +71,15 @@ void main(void) {
   int i;
   char buf[10];
   int x,y;
+  unsigned int b;
 
+  x = 75497472;
+  y = -239075328;
+  printf("%d -> %d, %d -> %d\n", x, x>>16, y, y>>16);
+  b = x;
+  printf("%d -> %d\n", b, b>>16);
+  b = y;
+  printf("%d -> %d\n", b, b>>16);
   x = 0;
   y = 0;
   itd_init();

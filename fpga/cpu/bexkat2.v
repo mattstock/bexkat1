@@ -16,7 +16,7 @@ module bexkat2(
   output [3:0] byteenable);
 
 // Control signals
-wire reg_write;
+wire [1:0] reg_write;
 wire [2:0] alu_func, int_func;
 wire addrsel, ir_write, vectoff_write;
 wire [3:0] reg_read_addr1, reg_read_addr2, reg_write_addr;

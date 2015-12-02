@@ -5,7 +5,7 @@ input rst_n;
 input supervisor;
 input [COUNTP-1:0] read1, read2, write_addr;
 input [WIDTH-1:0] write_data;
-input write_en;
+input [1:0] write_en;
 output [WIDTH-1:0] data1, data2;
 
 parameter WIDTH=32;
@@ -37,12 +37,27 @@ begin
   for (int i=0; i < COUNT; i = i + 1)
     regfile_next[i] = regfile[i];
   ssp_next = ssp;
-  if (write_en) begin
-    if (write_addr == 4'd15 && supervisor)
-      ssp_next = write_data;
-    else
-      regfile_next[write_addr] = write_data;
-  end
+  case (write_en)
+    2'b00: begin end
+    2'b01: begin
+      if (write_addr == 4'd15 && supervisor)
+        ssp_next = { 24'h000000, write_data[7:0] };
+      else
+        regfile_next[write_addr] = { 24'h000000, write_data[7:0] };
+    end
+    2'b10: begin
+      if (write_addr == 4'd15 && supervisor)
+        ssp_next = { 24'h0000, write_data[15:0] };
+      else
+        regfile_next[write_addr] = { 24'h0000, write_data[15:0] };
+    end
+    2'b11: begin
+      if (write_addr == 4'd15 && supervisor)
+        ssp_next = write_data;
+      else
+        regfile_next[write_addr] = write_data;
+    end
+  endcase
 end
 
 endmodule

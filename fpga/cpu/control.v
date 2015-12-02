@@ -12,7 +12,7 @@ module control(
   output [3:0] reg_read_addr1,
   output [3:0] reg_read_addr2,
   output [3:0] reg_write_addr,
-  output reg_write,
+  output [1:0] reg_write,
   output [3:0] mdrsel,
   output [1:0] marsel,
   output [1:0] int1sel,
@@ -53,7 +53,7 @@ reg [3:0] exception_next;
 
 localparam [3:0] STATE_FETCHIR = 4'h0, STATE_EVALIR = 4'h1, STATE_FETCHARG = 4'h2, STATE_EVALARG = 4'h3, STATE_HALT = 4'h4, STATE_EXCEPTION = 4'h5, STATE_RESET = 4'h6;
 localparam MODE_REG = 2'h0, MODE_REGIND = 2'h1, MODE_IMM = 2'h2, MODE_DIR = 2'h3;
-localparam REG_WRITE_NONE = 1'b0, REG_WRITE_DW = 1'b1;
+localparam REG_WRITE_NONE = 2'h0, REG_WRITE_8 = 2'h1, REG_WRITE_16 = 2'h2, REG_WRITE_DW = 2'h3;
 
 parameter REG_SP = 4'hf;
 
@@ -99,7 +99,7 @@ begin
   reg_read_addr1 = ir_ra;
   reg_read_addr2 = ir_rb;
   reg_write_addr = ir_ra;
-  reg_write = 1'b0;
+  reg_write = REG_WRITE_NONE;
   mdrsel = 4'b0;
   marsel = 2'b0;
   int1sel = 2'b0;
@@ -341,7 +341,7 @@ begin
         end
         {MODE_REG, 7'h0a}: begin // mov
           regsel = 4'h4; // reg_data_out2
-          reg_write = REG_WRITE_DW;
+          reg_write = REG_WRITE_16;
           state_next = STATE_FETCHIR;
         end
         {MODE_REG, 7'h0b}: begin // com
@@ -363,6 +363,11 @@ begin
             end
             default: seq_next = seq + 1'b1;
           endcase
+        end
+        {MODE_REG, 7'h0f}: begin // mov.l
+          regsel = 4'h4; // reg_data_out2
+          reg_write = REG_WRITE_DW;
+          state_next = STATE_FETCHIR;
         end
         {MODE_REG, 7'h10}: begin // cvtis
           case (seq)
@@ -410,6 +415,11 @@ begin
         end
         {MODE_REG, 7'h15}: begin // sti
           interrupts_enabled_next = 1'b1;
+          state_next = STATE_FETCHIR;
+        end
+        {MODE_REG, 7'h16}: begin // mov.b
+          regsel = 4'h4; // reg_data_out2
+          reg_write = REG_WRITE_8;
           state_next = STATE_FETCHIR;
         end
         {MODE_REG, 7'h1c}: begin // sqrt.s

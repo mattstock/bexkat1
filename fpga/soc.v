@@ -90,9 +90,7 @@ module soc(
   output rgb_b,
   output rgb_c,
   output rgb_stb,
-  output [2:0] rgb,
-  input [1:0] quad,
-  input pb,
+  input joy_pb,
   input serial0_rx,
   input serial0_cts,
   output serial0_tx,
@@ -110,7 +108,6 @@ module soc(
 wire sysclock, locked;
 wire [7:0] spi_selects;
 wire miso, mosi, sclk;
-assign rgb = 3'b000;
 
 // some SPI wiring
 assign { joy_ss, rtc_ss, extsd_ss, touch_ss, itd_ss, sd_ss } = spi_selects[5:0];
@@ -144,21 +141,19 @@ assign rst_n = locked;
 
 assign rgb_oe_n = matrix_oe_n;
 
-reg [31:0] addrdisp, datadisp;
-
 // visualization stuff
-hexdisp d7(.out(HEX7), .in(addrdisp[31:28]));
-hexdisp d6(.out(HEX6), .in(addrdisp[27:24]));
-hexdisp d5(.out(HEX5), .in(addrdisp[23:20]));
-hexdisp d4(.out(HEX4), .in(addrdisp[19:16]));
-hexdisp d3(.out(HEX3), .in(addrdisp[15:12]));
-hexdisp d2(.out(HEX2), .in(addrdisp[11:8]));
-hexdisp d1(.out(HEX1), .in(addrdisp[7:4]));
-hexdisp d0(.out(HEX0), .in(addrdisp[3:0]));
+hexdisp d7(.out(HEX7), .in(cpu_address[31:28]));
+hexdisp d6(.out(HEX6), .in(cpu_address[27:24]));
+hexdisp d5(.out(HEX5), .in(cpu_address[23:20]));
+hexdisp d4(.out(HEX4), .in(cpu_address[19:16]));
+hexdisp d3(.out(HEX3), .in(cpu_address[15:12]));
+hexdisp d2(.out(HEX2), .in(cpu_address[11:8]));
+hexdisp d1(.out(HEX1), .in(cpu_address[7:4]));
+hexdisp d0(.out(HEX0), .in(cpu_address[3:0]));
 
 // Blinknlights
 assign LEDR = { 7'h0, chipselect };
-assign LEDG = { cpu_halt, sdram_ack, fl_ry, 1'b0, int_en, exception };
+assign LEDG = { cpu_halt, sdram_ack, fl_ry, joy_pb, int_en, exception };
 
 wire [3:0] chipselect;
 wire [26:0] ssram_addrout, flash_addrout;
@@ -204,14 +199,6 @@ assign fl_rst_n = rst_n;
 assign fs_addrbus = (chipselect == 4'h8 ? flash_addrout : ssram_addrout);
 assign fs_databus = (chipselect == 4'h6 && ~ssram_we_n ? ssram_dataout : 
                       (chipselect == 4'h8 && ~fl_we_n ? { 16'h0000, flash_dataout } : 32'hzzzzzzzz));
-
-always @(posedge sysclock)
-begin
-  if (KEY[3]) begin
-    datadisp <= cpu_writedata;
-    addrdisp <= cpu_address;
-  end
-end
 
 // interrupt hierarchy
 always @(*)
@@ -271,12 +258,12 @@ iocontroller io0(.clk(sysclock), .rst_n(rst_n), .miso(miso), .mosi(mosi), .sclk(
   .be(cpu_be), .data_in(cpu_writedata), .data_out(io_readdata), .read(io_read), .write(io_write), .address(cpu_address),
   .sd_wp_n(sd_wp_n), .touch_in(touch_irq), .fan(fan_ctrl), .itd_backlight(itd_backlight), .itd_dc(itd_dc),
   .lcd_e(lcd_e), .lcd_data(lcd_dataout), .lcd_rs(lcd_rs), .lcd_on(lcd_on), .lcd_rw(lcd_rw), .interrupt(io_interrupt), .wait_out(io_wait),
-  .rx0(serial0_rx), .tx0(serial0_tx), .tx1(serial1_tx), .sw(SW[15:0]));
+  .rx0(serial0_rx), .tx0(serial0_tx), .tx1(serial1_tx), .sw(SW[15:0]), .kbd({KEY[3:1], joy_pb}));
 // 0xd0000000 - 0xdfffffff
 mandunit mand0(.clock(sysclock), .rst_n(rst_n), .data_in(cpu_writedata), .data_out(mandelbrot_readdata),
   .write(mandelbrot_write), .read(mandelbrot_read), .address(cpu_address[18:0]), .be(cpu_be), .wait_out(mandelbrot_wait));
-// 0xffff0000 - 0xffffffdf
-monitor rom0(.clock(sysclock), .q(rom_readdata), .rden(rom_read), .address(cpu_address[15:2]));
+// 0xfffe0000 - 0xffffffdf
+monitor rom0(.clock(sysclock), .q(rom_readdata), .rden(rom_read), .address(cpu_address[16:2]));
 // 0xffffffe0 - 0xffffffff
 vectors vecram0(.clock(sysclock), .q(vect_readdata), .rden(vect_read), .address(cpu_address[6:2]));
 

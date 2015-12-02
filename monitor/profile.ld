@@ -1,7 +1,7 @@
 MEMORY
 {
   vectors : ORIGIN = 0xffffffc0, LENGTH = 64
-  rom : ORIGIN = 0xffff0000, LENGTH = 64K
+  rom : ORIGIN = 0xfffe0000, LENGTH = 128K
   ram : ORIGIN = 0x07ff0000, LENGTH = 64K
 }
 
@@ -22,6 +22,7 @@ SECTIONS
       . = ALIGN(0x4);
       _erodata = . ;
     } > rom
+  .eh_frame_hdr : { *(.eh_frame_hdr) } 
   .data :
     { 
       _data = . ;
@@ -29,6 +30,7 @@ SECTIONS
       . = ALIGN(0x4);
       _edata = . ;
     } > ram AT>rom
+  .eh_frame : { KEEP (*(.eh_frame)) } > ram AT>rom
   .bss :
     { 
       _bstart = . ;

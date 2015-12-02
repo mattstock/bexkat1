@@ -29,9 +29,6 @@ set_false_path -from * -to [get_ports {LED*}]
 set_false_path -from * -to [get_ports {HEX*}]
 set_false_path -from [get_ports {serial*}] -to *
 set_false_path -from * -to [get_ports {serial*}]
-set_false_path -from * -to [get_ports {rgb[*]}]
-set_false_path -from [get_ports {pb}] -to *
-set_false_path -from [get_ports {quad[*]}] -to *
 set_false_path -from * -to [get_ports {fan_ctrl lcd_data[*] lcd_e lcd_on lcd_rs lcd_rw itd_backlight}] 
 
 #set_multicycle_path -from * -to [get_registers {*bexkat0|ccr[*]}] -setup -start 2

@@ -35,8 +35,8 @@ begin
     cs = 4'h3; // mandelbrot
   else if (adr_i >= 32'he0000000 && adr_i <= 32'hefffffff)
     cs = 4'h8; // 64MB (32M x 16) FLASH
-  else if (adr_i >= 32'hffff0000 && adr_i <= 32'hffffffbf)
-    cs = 4'h2; // 16k x 32 internal ROM
+  else if (adr_i >= 32'hfffe0000 && adr_i <= 32'hffffffbf)
+    cs = 4'h2; // 32k x 32 internal ROM
   else if (adr_i >= 32'hffffffc0 && adr_i <= 32'hffffffff)
     cs = 4'h1; // interrupt vector
   else begin

@@ -17,7 +17,7 @@ void main(void) {
     a1 = spi_xfer(0x00);
     SET_BIT(SPI_CTL, JOY_SEL);
     ch0 = ((a0 << 8) | a1) & 0x3ff;
-    iprintf("ch0 = %u, ch1 = %u\n", ch0, ch1);
+    iprintf("ch0 = %hu, ch1 = %hu\n", ch0, ch1);
     delay(50000);
   }
 }

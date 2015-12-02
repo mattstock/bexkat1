@@ -25,8 +25,8 @@ typedef int				INT;
 typedef unsigned int	UINT;
 
 /* These types MUST be 32 bit */
-typedef long			LONG;
-typedef unsigned long	DWORD;
+typedef int			LONG;
+typedef unsigned int	DWORD;
 
 #endif
 

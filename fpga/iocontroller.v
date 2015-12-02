@@ -26,7 +26,8 @@ module iocontroller(
   output itd_backlight,
   output reg [7:0] spi_selects,
   output [1:0] interrupt,
-  input [15:0] sw);
+  input [15:0] sw,
+  input [3:0] kbd);
 
 reg lcd_read, lcd_write, uart1_read, uart0_read, uart1_write, uart0_write, spi_read, spi_write;
 wire [31:0] spi_readdata, uart0_readdata, uart1_readdata, lcd_readdata, sw_readdata;
@@ -69,7 +70,7 @@ begin
     uart1_write = write;
     data_out = uart1_readdata;
   end else if (address >= 11'h010 && address <= 11'h013) begin
-    data_out = { 16'h0000, sw }; // Trivial, so just do it.  Should it be synced?  Maybe.
+    data_out = { 12'h0000, ~kbd, sw }; // Trivial, so just do it.  Should it be synced?  Maybe.
   end else if (address >= 11'h020 && address <= 11'h027) begin
     spi_read = read;
     spi_write = write;
