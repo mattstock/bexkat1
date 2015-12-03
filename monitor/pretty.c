@@ -62,13 +62,13 @@ void main(void) {
     matrix_fade();
     if ((tick % 10) == 0) {
       pot = joystick();
-      if (((pot & 0xffff) > 900) && (x < 31))
+      if (((pot & 0xffff) > 600) && (x < 31))
         x++;
-      if (((pot & 0xffff) < 200) && (x > 0))
+      if (((pot & 0xffff) < 300) && (x > 0))
         x--;
-      if (((pot >> 16) < 200) && (y < 15))
+      if (((pot >> 16) < 300) && (y < 15))
         y++;
-      if (((pot >> 16) > 900) && (y > 0))
+      if (((pot >> 16) > 600) && (y > 0))
         y--;
     }
     c = (char) (rand() % 4);
