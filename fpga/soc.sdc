@@ -27,8 +27,8 @@ set_false_path -from [get_ports {KEY*}] -to *
 set_false_path -from [get_ports {SW*}] -to *
 set_false_path -from * -to [get_ports {LED*}]
 set_false_path -from * -to [get_ports {HEX*}]
-set_false_path -from [get_ports {serial*}] -to *
-set_false_path -from * -to [get_ports {serial*}]
+set_false_path -from [get_ports {serial* joy_pb touch_irq}] -to *
+set_false_path -from * -to [get_ports {serial* joy_ss vga_b[*] vga_r[*] vga_g[*] vga_blank_n vga_clock vga_hs vga_vs}]
 set_false_path -from * -to [get_ports {fan_ctrl lcd_data[*] lcd_e lcd_on lcd_rs lcd_rw itd_backlight}] 
 
 #set_multicycle_path -from * -to [get_registers {*bexkat0|ccr[*]}] -setup -start 2
@@ -36,6 +36,8 @@ set_false_path -from * -to [get_ports {fan_ctrl lcd_data[*] lcd_e lcd_on lcd_rs 
 
 set_multicycle_path -through [get_pins -compatibility_mode {*intcalc*}] -setup -start 8
 set_multicycle_path -through [get_pins -compatibility_mode {*intcalc*}] -hold -start 7
+set_multicycle_path -through [get_pins -compatibility_mode {*fp_*}] -setup -start 8
+set_multicycle_path -through [get_pins -compatibility_mode {*fp_*}] -hold -start 7
 
 set_input_delay -clock sd_sclk_pin -min 0ns [get_ports sd_miso]
 set_input_delay -clock sd_sclk_pin -max 0ns [get_ports sd_miso]

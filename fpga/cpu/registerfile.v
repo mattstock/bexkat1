@@ -47,9 +47,9 @@ begin
     end
     2'b10: begin
       if (write_addr == 4'd15 && supervisor)
-        ssp_next = { 24'h0000, write_data[15:0] };
+        ssp_next = { 16'h0000, write_data[15:0] };
       else
-        regfile_next[write_addr] = { 24'h0000, write_data[15:0] };
+        regfile_next[write_addr] = { 16'h0000, write_data[15:0] };
     end
     2'b11: begin
       if (write_addr == 4'd15 && supervisor)
