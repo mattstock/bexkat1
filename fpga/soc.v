@@ -241,11 +241,12 @@ wire [31:0] cpung_address, cpung_writedata;
 wire [3:0] cpung_be, exceptionng;
 wire cpung_cyc, cpung_write, int_en_ng, cpung_halt, cpu_fail;
 
-// Experimental CPU
-bexkat1 bexkatng0(.clk_i(sysclock), .rst_i(~rst_n), .adr_o(cpung_address), .cyc_o(cpung_cyc), .dat_i(cpu_readdata),
+// Canary CPU
+bexkat1 cpu0(.clk_i(sysclock), .rst_i(~rst_n), .adr_o(cpung_address), .cyc_o(cpung_cyc), .dat_i(cpu_readdata),
   .we_o(cpung_write), .dat_o(cpung_writedata), .sel_o(cpung_be), .ack_i(cpu_ack), .halt(cpung_halt),
   .interrupt(cpu_interrupt), .exception(exceptionng), .int_en(int_en_ng));
 
+// Experimental CPU
 bexkat2 bexkat0(.clk_i(sysclock), .rst_i(~rst_n), .address(cpu_address), .cyc_o(cpu_cyc), .readdata(cpu_readdata),
   .we_o(cpu_write), .writedata(cpu_writedata), .byteenable(cpu_be), .ack_i(cpu_ack), .halt(cpu_halt),
   .interrupt(cpu_interrupt), .exception(exception), .int_en(int_en));

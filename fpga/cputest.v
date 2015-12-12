@@ -36,6 +36,6 @@ wire success = (adr1 == adr2) && (dat1 == dat2) && (sel1 == sel2) &&
                (cyc1 == cyc2) && (we1 == we2) && (halt1 == halt2) &&
                (int1 == int2) && (ex1 == ex2);
 
-assign fail_next = ~success;
+assign fail_next = (success ? fail : 1'b1); // Once we fail, only reset will recover
 
 endmodule
