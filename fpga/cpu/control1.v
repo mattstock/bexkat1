@@ -1,4 +1,4 @@
-module control(
+module control1(
   input clk_i,
   input rst_i,
   input [31:0] ir,
