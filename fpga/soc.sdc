@@ -96,6 +96,8 @@ set_output_delay -clock sdram_clk_pin -max 1.5ns [get_ports {sdram_*}]
 set_input_delay -clock sdram_clk_pin -min -0.8ns [get_ports {sdram_databus*}]
 set_input_delay -clock sdram_clk_pin -max 1.5ns [get_ports {sdram_databus*}]
 
+set_multicycle_path -from * -to [get_ports {rgb0[*] rgb1[*] rgb_a rgb_b rgb_c rgb_clk rgb_oe_n rgb_stb}] -setup -start 3
+set_multicycle_path -from * -to [get_ports {rgb0[*] rgb1[*] rgb_a rgb_b rgb_c rgb_clk rgb_oe_n rgb_stb}] -hold -start 2
 set_output_delay -clock led_clk -max 0ns [get_ports {rgb0[*]}]
 set_output_delay -clock led_clk -min 0ns [get_ports {rgb0[*]}]
 set_output_delay -clock led_clk -max 0ns [get_ports {rgb1[*]}]
@@ -112,20 +114,5 @@ set_output_delay -clock led_clk -max 0ns [get_ports rgb_stb]
 set_output_delay -clock led_clk -min 0ns [get_ports rgb_stb]
 set_output_delay -clock led_clk -max 0ns [get_ports rgb_clk]
 set_output_delay -clock led_clk -min 0ns [get_ports rgb_clk]
-
-#create_clock -period 40ns -name vga_clk
-#set_output_delay -clock vga_clk -max 0ns [get_ports {vga_r*}]
-#set_output_delay -clock vga_clk -min 0ns [get_ports {vga_r*}]
-#set_output_delay -clock vga_clk -max 0ns [get_ports {vga_g*}]
-#set_output_delay -clock vga_clk -min 0ns [get_ports {vga_g*}]
-#set_output_delay -clock vga_clk -max 0ns [get_ports {vga_b*}]
-#set_output_delay -clock vga_clk -min 0ns [get_ports {vga_b*}]
-#set_output_delay -clock vga_clk -max 0ns [get_ports {vga_hs}]
-#set_output_delay -clock vga_clk -min 0ns [get_ports {vga_hs}]
-#set_output_delay -clock vga_clk -max 0ns [get_ports {vga_vs}]
-#set_output_delay -clock vga_clk -min 0ns [get_ports {vga_vs}]
-#set_output_delay -clock vga_clk -max 0ns [get_ports {vga_clock}]
-#set_output_delay -clock vga_clk -min 0ns [get_ports {vga_clock}]
-
 
 
