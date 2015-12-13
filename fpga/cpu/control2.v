@@ -335,9 +335,19 @@ begin
           endcase
         end
         {MODE_REG, 7'h09}: begin // cmp
-          alu_func = 'h3; // sub
-          ccrsel = 2'h1; // set values in CCR
-          state_next = STATE_FETCHIR;
+          case (seq)
+            3'h0: begin
+              alu_func = 'h3; // sub
+              seq_next = 3'h1;
+            end
+            3'h1: begin
+              alu_func = 'h3; // sub
+              ccrsel = 2'h1; // set values in CCR
+              state_next = STATE_FETCHIR;
+              seq_next = 3'h0;
+            end
+            default: state_next = STATE_HALT;
+          endcase
         end
         {MODE_REG, 7'h0a}: begin // mov
           regsel = 4'h4; // reg_data_out2
