@@ -4,16 +4,16 @@ module bexkat2(
   input clk_i,
   input rst_i,
   input ack_i,
-  output [31:0] address,
+  output [31:0] adr_o,
   output reg cyc_o,
   output reg we_o,
   output halt,
   input [2:0] interrupt,
   output int_en,
   output [3:0] exception,
-  input [31:0] readdata,
-  output [31:0] writedata,
-  output [3:0] byteenable);
+  input [31:0] dat_i,
+  output [31:0] dat_o,
+  output [3:0] sel_o);
 
 // Control signals
 wire [1:0] reg_write;
@@ -52,8 +52,8 @@ wire [31:0] ir_uval = { 16'h0000, ir[23:20], ir[11:0] };
 wire super_mode = status[3];
 
 // Data switching logic
-assign address = (addrsel ? mar : pc);
-assign ir_next = (ir_write ? readdata : ir);
+assign adr_o = (addrsel ? mar : pc);
+assign ir_next = (ir_write ? dat_i : ir);
 assign vectoff_next = (vectoff_write ? mdr : vectoff);
 
 always @(posedge clk_i or posedge rst_i)
@@ -95,43 +95,43 @@ always @* begin
   endcase  
   case (marsel)
     2'h0: mar_next = mar;
-    2'h1: mar_next = readdata;
+    2'h1: mar_next = dat_i;
     2'h2: mar_next = alu_out;
     2'h3: mar_next = reg_data_out1;
     default: mar_next = mar;
   endcase
-  case (byteenable)
+  case (sel_o)
     4'b1111: begin
-      writedata = mdr;
-      busin_be = readdata;
+      dat_o = mdr;
+      busin_be = dat_i;
     end
     4'b0011: begin
-      writedata = mdr;
-      busin_be = { 16'h0000, readdata[15:0] };
+      dat_o = mdr;
+      busin_be = { 16'h0000, dat_i[15:0] };
     end 
     4'b1100: begin
-      writedata = { mdr[15:0], 16'h0000 };
-      busin_be = { 16'h0000, readdata[31:16] };
+      dat_o = { mdr[15:0], 16'h0000 };
+      busin_be = { 16'h0000, dat_i[31:16] };
     end
     4'b0001: begin
-      writedata = mdr;
-      busin_be = { 24'h000000, readdata[7:0] };
+      dat_o = mdr;
+      busin_be = { 24'h000000, dat_i[7:0] };
     end
     4'b0010: begin
-      writedata = { 16'h0000, mdr[7:0], 8'h00 };
-      busin_be = { 24'h000000, readdata[15:8] };
+      dat_o = { 16'h0000, mdr[7:0], 8'h00 };
+      busin_be = { 24'h000000, dat_i[15:8] };
     end
     4'b0100: begin
-      writedata = { 8'h00, mdr[7:0], 16'h0000 };
-      busin_be = { 24'h000000, readdata[23:16] };
+      dat_o = { 8'h00, mdr[7:0], 16'h0000 };
+      busin_be = { 24'h000000, dat_i[23:16] };
     end
     4'b1000: begin
-      writedata = { mdr[7:0], 24'h000000 };
-      busin_be = { 24'h000000, readdata[31:24] };
+      dat_o = { mdr[7:0], 24'h000000 };
+      busin_be = { 24'h000000, dat_i[31:24] };
     end
     default: begin // really these are invalid
-      writedata = mdr;
-      busin_be = readdata;
+      dat_o = mdr;
+      busin_be = dat_i;
     end
   endcase
   case (mdrsel)
@@ -202,7 +202,7 @@ end
 control2 con0(.clk_i(clk_i), .rst_i(rst_i), .ir(ir), .ir_write(ir_write), .ccr(ccr), .ccrsel(ccrsel), .alu_func(alu_func), .alu1sel(alu1sel),
   .alu2sel(alu2sel), .regsel(regsel), .reg_read_addr1(reg_read_addr1), .reg_read_addr2(reg_read_addr2), .reg_write_addr(reg_write_addr),
   .reg_write(reg_write), .mdrsel(mdrsel), .marsel(marsel), .pcsel(pcsel), .int1sel(int1sel), .int2sel(int2sel), .int_func(int_func),
-  .supervisor(super_mode), .addrsel(addrsel), .byteenable(byteenable), .bus_cyc(cyc_o), .bus_write(we_o), .bus_ack(ack_i), .bus_align(address[1:0]),
+  .supervisor(super_mode), .addrsel(addrsel), .byteenable(sel_o), .bus_cyc(cyc_o), .bus_write(we_o), .bus_ack(ack_i), .bus_align(adr_o[1:0]),
   .vectoff_write(vectoff_write), .halt(halt), .exception(exception), .interrupt(interrupt), .int_en(int_en),
   .fp_addsub(fp_addsub), .fpccrsel(fpccrsel));
 

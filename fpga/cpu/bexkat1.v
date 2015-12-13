@@ -36,7 +36,7 @@ wire alu_carry, alu_negative, alu_overflow, alu_zero;
 wire fp_addsub;
 
 // Special registers
-reg [31:0] mdr, mdr_next, mar, pc, aluval, ir, busin_be, vectoff;
+reg [31:0] mdr, mdr_next, mar, pc, ir, busin_be, vectoff;
 reg [32:0] pc_next, mar_next;
 reg [31:0] reg_data_in, alu_in1, alu_in2, int_in1, int_in2;
 reg [63:0] intval;
@@ -63,7 +63,6 @@ begin
     ir <= 0;
     mdr <= 0;
     mar <= 0;
-    aluval <= 0;
     intval <= 0;
     ccr <= 3'h0;
     fpccr <= 4'h0;
@@ -74,7 +73,6 @@ begin
     ir <= ir_next;
     mdr <= mdr_next;
     mar <= mar_next[31:0];
-    aluval <= alu_out;
     intval <= int_out;
     fpccr <= fpccr_next;
     ccr <= ccr_next;
@@ -91,14 +89,14 @@ always @* begin
     3'h1: pc_next = pc + 'h4;
     3'h2: pc_next = { 1'b0, mar };
     3'h3: pc_next = { 1'b0, pc } + ir_sval;  // relative branching
-    3'h4: pc_next = { 1'b0, aluval }; // reg offset
+    3'h4: pc_next = { 1'b0, alu_out }; // reg offset
     3'h5: pc_next = { 1'b0, vectoff } + { exception, 2'b00 }; // exception vectors 
     default: pc_next = pc;
   endcase  
   case (marsel)
     2'h0: mar_next = mar;
     2'h1: mar_next = dat_i;
-    2'h2: mar_next = aluval;
+    2'h2: mar_next = alu_out;
     2'h3: mar_next = reg_data_out1;
     default: mar_next = mar;
   endcase
@@ -139,7 +137,7 @@ always @* begin
   case (mdrsel)
     4'h0: mdr_next = mdr;
     4'h1: mdr_next = busin_be; // byte aligned
-    4'h2: mdr_next = aluval;
+    4'h2: mdr_next = alu_out;
     4'h3: mdr_next = reg_data_out1;
     4'h4: mdr_next = intval[31:0];
     4'h5: mdr_next = intval[63:32];
@@ -153,7 +151,7 @@ always @* begin
     default: mdr_next = mdr;
   endcase
   case (regsel)
-    4'h0: reg_data_in = aluval;
+    4'h0: reg_data_in = alu_out;
     4'h1: reg_data_in = mdr;
     4'h2: reg_data_in = -reg_data_out2;
     4'h3: reg_data_in = ~reg_data_out2;
@@ -208,7 +206,8 @@ control1 con0(.clk_i(clk_i), .rst_i(rst_i), .ir(ir), .ir_write(ir_write), .ccr(c
   .vectoff_write(vectoff_write), .halt(halt), .exception(exception), .interrupt(interrupt), .int_en(int_en),
   .fp_addsub(fp_addsub), .fpccrsel(fpccrsel));
 
-alu alu0(.in1(alu_in1), .in2(alu_in2), .func(alu_func), .out(alu_out), .c_out(alu_carry), .n_out(alu_negative), .v_out(alu_overflow), .z_out(alu_zero));
+alu alu0(.clk_i(clk_i), .rst_i(rst_i), .in1(alu_in1), .in2(alu_in2), .func(alu_func), .out(alu_out),
+  .c_out(alu_carry), .n_out(alu_negative), .v_out(alu_overflow), .z_out(alu_zero));
 intcalc int0(.clock(clk_i), .func(int_func), .in1(int_in1), .in2(int_in2), .out(int_out));
 fp_cvtis fp_cvtis0(.clock(clk_i), .dataa(reg_data_out2), .result(fp_cvtis_out));
 fp_cvtsi fp_cvtsi0(.clock(clk_i), .dataa(reg_data_out2), .result(fp_cvtsi_out));

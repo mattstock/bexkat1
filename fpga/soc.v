@@ -109,11 +109,17 @@ module soc(
   input ps2mouse_data,
   input ps2kbd_data);
 
+// System clock
 wire sysclock, locked;
+
+assign rst_n = locked;
+
+sysclock pll0(.inclk0(raw_clock_50), .c0(sysclock), .areset(~KEY[0]), .locked(locked));
+
+// SPI wiring
 wire [7:0] spi_selects;
 wire miso, mosi, sclk;
 
-// some SPI wiring
 assign { joy_ss, rtc_ss, extsd_ss, touch_ss, itd_ss, sd_ss } = spi_selects[5:0];
 assign gen_mosi = mosi;
 assign sd_mosi = mosi;
@@ -128,7 +134,7 @@ assign gen_sclk = sclk;
 assign sd_sclk = sclk;
 assign rtc_sclk = sclk;
 
-// ethernet stubs
+// ethernet stubs TODO
 assign enet_tx_data = 4'hz;
 assign enet_gtx_clk = 1'bz;
 assign enet_tx_en = 1'b0;
@@ -137,12 +143,19 @@ assign enet_mdc = 1'bz;
 assign enet_mdio = 1'bz;
 assign enet_rst_n = 1'b1;
 
-// LCD handling
+// LCD wiring
 assign lcd_data = (lcd_rw ? 8'hzz : lcd_dataout);
 
-assign rst_n = locked;
+// External SDRAM, SSRAM & flash bus wiring
+assign sdram_databus = (~sdram_we_n ? sdram_dataout : 32'hzzzzzzzz);
+assign fl_rst_n = rst_n;
+assign fs_addrbus = (chipselect == 4'h8 ? flash_addrout : ssram_addrout);
+assign fs_databus = (chipselect == 4'h6 && ~ssram_we_n ? ssram_dataout : 
+                      (chipselect == 4'h8 && ~fl_we_n ? { 16'h0000, flash_dataout } : 32'hzzzzzzzz));
 
-// visualization stuff
+// Blinknlights
+assign LEDR = { cpu_fail, cpu_halt, cpung_halt, 4'h0, chipselect };
+assign LEDG = 9'h0;
 hexdisp d7(.out(HEX7), .in(cpu_address[31:28]));
 hexdisp d6(.out(HEX6), .in(cpu_address[27:24]));
 hexdisp d5(.out(HEX5), .in(cpu_address[23:20]));
@@ -152,10 +165,7 @@ hexdisp d2(.out(HEX2), .in(cpu_address[11:8]));
 hexdisp d1(.out(HEX1), .in(cpu_address[7:4]));
 hexdisp d0(.out(HEX0), .in(cpu_address[3:0]));
 
-// Blinknlights
-assign LEDR = { cpu_fail, cpu_halt, cpung_halt, 4'h0, chipselect };
-assign LEDG = 9'h0;
-
+// Internal bus wiring
 wire [3:0] chipselect;
 wire [26:0] ssram_addrout, flash_addrout;
 wire [31:0] cpu_address, vga_address, flash_readdata, ssram_readdata, ssram_dataout, vga_readdata;
@@ -193,14 +203,6 @@ begin
   end
 end
 
-// Wiring for external SDRAM, SSRAM & flash
-assign sdram_databus = (~sdram_we_n ? sdram_dataout : 32'hzzzzzzzz);
-
-assign fl_rst_n = rst_n;
-assign fs_addrbus = (chipselect == 4'h8 ? flash_addrout : ssram_addrout);
-assign fs_databus = (chipselect == 4'h6 && ~ssram_we_n ? ssram_dataout : 
-                      (chipselect == 4'h8 && ~fl_we_n ? { 16'h0000, flash_dataout } : 32'hzzzzzzzz));
-
 // interrupt hierarchy
 always @(*)
 begin
@@ -236,7 +238,6 @@ assign io_write = (chipselect == 4'h4 && cpu_cyc && cpu_write);
 assign rom_read = (chipselect == 4'h2 && cpu_cyc && ~cpu_write);
 assign vect_read = (chipselect == 4'h1 && cpu_cyc && ~cpu_write);
    
-sysclock pll0(.inclk0(raw_clock_50), .c0(sysclock), .areset(~KEY[0]), .locked(locked));
 
 wire [31:0] cpung_address, cpung_writedata;
 wire [3:0] cpung_be, exceptionng;
@@ -248,8 +249,8 @@ bexkat1 cpu0(.clk_i(sysclock), .rst_i(~rst_n), .adr_o(cpung_address), .cyc_o(cpu
   .interrupt(cpu_interrupt), .exception(exceptionng), .int_en(int_en_ng));
 
 // Experimental CPU
-bexkat2 bexkat0(.clk_i(sysclock), .rst_i(~rst_n), .address(cpu_address), .cyc_o(cpu_cyc), .readdata(cpu_readdata),
-  .we_o(cpu_write), .writedata(cpu_writedata), .byteenable(cpu_be), .ack_i(cpu_ack), .halt(cpu_halt),
+bexkat2 bexkat0(.clk_i(sysclock), .rst_i(~rst_n), .adr_o(cpu_address), .cyc_o(cpu_cyc), .dat_i(cpu_readdata),
+  .we_o(cpu_write), .dat_o(cpu_writedata), .sel_o(cpu_be), .ack_i(cpu_ack), .halt(cpu_halt),
   .interrupt(cpu_interrupt), .exception(exception), .int_en(int_en));
 
 cputest testframe0(.clk_i(sysclock), .rst_i(~rst_n), .adr1(cpung_address), .adr2(cpu_address), .cyc1(cpung_cyc), .cyc2(cpu_cyc),
