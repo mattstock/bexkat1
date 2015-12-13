@@ -28,7 +28,7 @@ wire [3:0] fp_nan, fp_overflow, fp_underflow;
 
 // Data paths
 wire [31:0] alu_out, reg_data_out1, reg_data_out2;
-wire [31:0] ir_next, vectoff_next, fp_cvtis_out;
+wire [31:0] ir_next, vectoff_next, fp_cvtis_out, dataout;
 wire [31:0] fp_cvtsi_out, fp_addsub_out, fp_div_out, fp_mult_out, fp_sqrt_out;
 wire [63:0] int_out;
 wire [2:0] ccr_next;
@@ -52,6 +52,7 @@ wire [31:0] ir_uval = { 16'h0000, ir[23:20], ir[11:0] };
 wire super_mode = status[3];
 
 // Data switching logic
+assign dat_o = (we_o ? dataout : 32'h0);
 assign adr_o = (addrsel ? mar : pc);
 assign ir_next = (ir_write ? dat_i : ir);
 assign vectoff_next = (vectoff_write ? mdr : vectoff);
@@ -102,35 +103,35 @@ always @* begin
   endcase
   case (sel_o)
     4'b1111: begin
-      dat_o = mdr;
+      dataout = mdr;
       busin_be = dat_i;
     end
     4'b0011: begin
-      dat_o = mdr;
+      dataout = mdr;
       busin_be = { 16'h0000, dat_i[15:0] };
     end 
     4'b1100: begin
-      dat_o = { mdr[15:0], 16'h0000 };
+      dataout = { mdr[15:0], 16'h0000 };
       busin_be = { 16'h0000, dat_i[31:16] };
     end
     4'b0001: begin
-      dat_o = mdr;
+      dataout = mdr;
       busin_be = { 24'h000000, dat_i[7:0] };
     end
     4'b0010: begin
-      dat_o = { 16'h0000, mdr[7:0], 8'h00 };
+      dataout = { 16'h0000, mdr[7:0], 8'h00 };
       busin_be = { 24'h000000, dat_i[15:8] };
     end
     4'b0100: begin
-      dat_o = { 8'h00, mdr[7:0], 16'h0000 };
+      dataout = { 8'h00, mdr[7:0], 16'h0000 };
       busin_be = { 24'h000000, dat_i[23:16] };
     end
     4'b1000: begin
-      dat_o = { mdr[7:0], 24'h000000 };
+      dataout = { mdr[7:0], 24'h000000 };
       busin_be = { 24'h000000, dat_i[31:24] };
     end
     default: begin // really these are invalid
-      dat_o = mdr;
+      dataout = mdr;
       busin_be = dat_i;
     end
   endcase

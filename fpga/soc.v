@@ -154,8 +154,8 @@ assign fs_databus = (chipselect == 4'h6 && ~ssram_we_n ? ssram_dataout :
                       (chipselect == 4'h8 && ~fl_we_n ? { 16'h0000, flash_dataout } : 32'hzzzzzzzz));
 
 // Blinknlights
-assign LEDR = { cpu_fail, cpu_halt, cpung_halt, 4'h0, chipselect };
-assign LEDG = 9'h0;
+assign LEDR = { 14'h0, cpung_halt, cpu_halt, cpu_fail };
+assign LEDG = {6'h0, ~ps2mouse_clk, ~ps2mouse_data, ~ps2kbd_clk, ~ps2kbd_data};
 hexdisp d7(.out(HEX7), .in(cpu_address[31:28]));
 hexdisp d6(.out(HEX6), .in(cpu_address[27:24]));
 hexdisp d5(.out(HEX5), .in(cpu_address[23:20]));
@@ -244,7 +244,7 @@ wire [3:0] cpung_be, exceptionng;
 wire cpung_cyc, cpung_write, int_en_ng, cpung_halt, cpu_fail;
 
 // Canary CPU
-bexkat1 cpu0(.clk_i(sysclock), .rst_i(~rst_n), .adr_o(cpung_address), .cyc_o(cpung_cyc), .dat_i(cpu_readdata),
+bexkat1 bexkat1(.clk_i(sysclock), .rst_i(~rst_n), .adr_o(cpung_address), .cyc_o(cpung_cyc), .dat_i(cpu_readdata),
   .we_o(cpung_write), .dat_o(cpung_writedata), .sel_o(cpung_be), .ack_i(cpu_ack), .halt(cpung_halt),
   .interrupt(cpu_interrupt), .exception(exceptionng), .int_en(int_en_ng));
 
