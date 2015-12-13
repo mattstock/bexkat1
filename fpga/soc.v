@@ -82,14 +82,14 @@ module soc(
   output rst_n,
   input sd_wp_n,
   output fan_ctrl, 
-  output [2:0] rgb0,
-  output [2:0] rgb1,
-  output rgb_clk,
-  output rgb_oe_n,
-  output rgb_a, 
-  output rgb_b,
-  output rgb_c,
-  output rgb_stb,
+  output [2:0] matrix0,
+  output [2:0] matrix1,
+  output matrix_clk,
+  output matrix_oe_n,
+  output matrix_a, 
+  output matrix_b,
+  output matrix_c,
+  output matrix_stb,
   input joy_pb,
   input serial0_rx,
   input serial0_cts,
@@ -103,7 +103,11 @@ module soc(
   output vga_clock,
   output [7:0] vga_r,
   output [7:0] vga_g,
-  output [7:0] vga_b);
+  output [7:0] vga_b,
+  input ps2mouse_clk,
+  input ps2kbd_clk,
+  input ps2mouse_data,
+  input ps2kbd_data);
 
 wire sysclock, locked;
 wire [7:0] spi_selects;
@@ -136,10 +140,7 @@ assign enet_rst_n = 1'b1;
 // LCD handling
 assign lcd_data = (lcd_rw ? 8'hzz : lcd_dataout);
 
-assign serial0_rts = serial0_cts; // who needs hardware handshaking?
 assign rst_n = locked;
-
-assign rgb_oe_n = matrix_oe_n;
 
 // visualization stuff
 hexdisp d7(.out(HEX7), .in(cpu_address[31:28]));
@@ -174,7 +175,7 @@ wire rom_read, vect_read;
 wire sdram_ack, vga_slave_ack;
 wire [3:0] sdram_den_n;
 wire flash_read, flash_write, flash_ready, flash_wait;
-wire matrix_read, matrix_write, matrix_oe_n, matrix_ack;
+wire matrix_read, matrix_write, matrix_ack;
 wire ssram_ack;
 wire int_en, cache_enable, mmu_fault;
 
@@ -263,15 +264,16 @@ sdram_controller sdram0(.clk_i(sysclock), .mem_clk_o(sdram_clk), .rst_i(~rst_n),
   .we_n(sdram_we_n), .cs_n(sdram_cs_n), .cke(sdram_cke), .cas_n(sdram_cas_n), .ras_n(sdram_ras_n), .dqm(sdram_dqm), .ba(sdram_ba),
   .addrbus_out(sdram_addrbus), .databus_in(sdram_databus), .databus_out(sdram_dataout));
 // 0x20000000 - 0x200007ff
-led_matrix matrix0(.clk_i(sysclock), .rst_i(~rst_n), .dat_i(cpu_writedata), .dat_o(matrix_readdata),
+led_matrix rgbmatrix0(.clk_i(sysclock), .rst_i(~rst_n), .dat_i(cpu_writedata), .dat_o(matrix_readdata),
   .adr_i(cpu_address[11:2]), .sel_i(cpu_be), .we_i(cpu_write), .stb_i(chipselect == 4'h5), .cyc_i(cpu_cyc), .ack_o(matrix_ack),
-  .demux({rgb_a, rgb_b, rgb_c}), .rgb0(rgb0), .rgb1(rgb1), .rgb_stb(rgb_stb), .rgb_clk(rgb_clk), .oe_n(matrix_oe_n));
+  .demux({matrix_a, matrix_b, matrix_c}), .matrix0(matrix0), .matrix1(matrix1), .matrix_stb(matrix_stb), .matrix_clk(matrix_clk), .oe_n(matrix_oe_n));
 // 0x20000800 - 0x20000fff
 iocontroller io0(.clk(sysclock), .rst_n(rst_n), .miso(miso), .mosi(mosi), .sclk(sclk), .spi_selects(spi_selects),
   .be(cpu_be), .data_in(cpu_writedata), .data_out(io_readdata), .read(io_read), .write(io_write), .address(cpu_address),
   .sd_wp_n(sd_wp_n), .touch_in(touch_irq), .fan(fan_ctrl), .itd_backlight(itd_backlight), .itd_dc(itd_dc),
   .lcd_e(lcd_e), .lcd_data(lcd_dataout), .lcd_rs(lcd_rs), .lcd_on(lcd_on), .lcd_rw(lcd_rw), .interrupt(io_interrupt), .wait_out(io_wait),
-  .rx0(serial0_rx), .tx0(serial0_tx), .tx1(serial1_tx), .sw(SW[15:0]), .kbd({KEY[3:1], joy_pb}));
+  .rx0(serial0_rx), .tx0(serial0_tx), .rts0(serial0_rts), .cts0(serial0_cts), .tx1(serial1_tx), .sw(SW[15:0]), .kbd({KEY[3:1], joy_pb}),
+  .ps2mouse({ps2mouse_clk, ps2mouse_data}), .ps2kbd({ps2kbd_clk, ps2kbd_data}));
 // 0xd0000000 - 0xdfffffff
 mandunit mand0(.clock(sysclock), .rst_n(rst_n), .data_in(cpu_writedata), .data_out(mandelbrot_readdata),
   .write(mandelbrot_write), .read(mandelbrot_read), .address(cpu_address[18:0]), .be(cpu_be), .wait_out(mandelbrot_wait));

@@ -14,6 +14,8 @@ module iocontroller(
   output lcd_rs,
   output tx0,
   input rx0,
+  input cts0,
+  output rts0,
   output tx1,
   input miso,
   output mosi,
@@ -27,12 +29,16 @@ module iocontroller(
   output reg [7:0] spi_selects,
   output [1:0] interrupt,
   input [15:0] sw,
-  input [3:0] kbd);
+  input [3:0] kbd,
+  input [1:0] ps2mouse,
+  input [1:0] ps2kbd);
 
 reg lcd_read, lcd_write, uart1_read, uart0_read, uart1_write, uart0_write, spi_read, spi_write;
 wire [31:0] spi_readdata, uart0_readdata, uart1_readdata, lcd_readdata, sw_readdata;
 
 reg [1:0] iodelay, iodelay_next;
+
+assign rts0 = cts0;
 
 assign wait_out = iodelay[0];
 

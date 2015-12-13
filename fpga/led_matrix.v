@@ -10,10 +10,10 @@ module led_matrix(
   input cyc_i,
   output ack_o,
   output [2:0] demux,
-  output reg [2:0] rgb0,
-  output reg [2:0] rgb1,
-  output rgb_stb,
-  output rgb_clk,
+  output reg [2:0] matrix0,
+  output reg [2:0] matrix1,
+  output matrix_stb,
+  output matrix_clk,
   output oe_n);
   
 wire r,g,b;
@@ -37,13 +37,13 @@ assign b_level = buffer[7:0];
 assign r = r_level[pwmval];
 assign g = g_level[pwmval];
 assign b = b_level[pwmval];
-assign rgb_stb = (state == STATE_LATCH);
-assign rgb_clk = (state == STATE_CLOCK);
+assign matrix_stb = (state == STATE_LATCH);
+assign matrix_clk = (state == STATE_CLOCK);
 assign oe_n = ~(state == STATE_DELAY);
 
 localparam STATE_IDLE = 3'h0, STATE_READ1 = 3'h1, STATE_READ2 = 3'h2, STATE_CLOCK = 3'h3, STATE_LATCH = 3'h4, STATE_DELAY = 3'h5;
 
-reg [2:0] rgb0_next, rgb1_next;
+reg [2:0] matrix0_next, matrix1_next;
 reg [2:0] state, state_next;
 reg ab, ab_next;
 reg [4:0] colpos, colpos_next;
@@ -56,8 +56,8 @@ assign demux = rowpos;
 always @(posedge led_clk or posedge rst_i)
 begin
   if (rst_i) begin
-    rgb0 <= 1'b0;
-    rgb1 <= 1'b0;
+    matrix0 <= 1'b0;
+    matrix1 <= 1'b0;
     state <= STATE_IDLE;
     colpos <= 5'h0;
     rowpos <= 3'h0;
@@ -66,8 +66,8 @@ begin
     delay <= 8'h00;
   end else begin
     state <= state_next;
-    rgb0 <= rgb0_next;
-    rgb1 <= rgb1_next;
+    matrix0 <= matrix0_next;
+    matrix1 <= matrix1_next;
     colpos <= colpos_next;
     rowpos <= rowpos_next;
     ab <= ab_next;
@@ -79,8 +79,8 @@ end
 always @*
 begin
   state_next = state;
-  rgb0_next = rgb0;
-  rgb1_next = rgb1;
+  matrix0_next = matrix0;
+  matrix1_next = matrix1;
   colpos_next = colpos;
   rowpos_next = rowpos;
   ab_next = ab;
@@ -94,10 +94,10 @@ begin
     STATE_READ1: begin
       state_next = STATE_READ2;
       ab_next = ~ab;
-      rgb0_next = {r,g,b};      
+      matrix0_next = {r,g,b};      
     end
     STATE_READ2: begin
-      rgb1_next = {r,g,b};
+      matrix1_next = {r,g,b};
       state_next = STATE_CLOCK;
       colpos_next = colpos + 1'b1;
     end

@@ -367,18 +367,6 @@ set_location_assignment PIN_AH24 -to fs_databus[2]
 set_location_assignment PIN_AE23 -to fs_databus[1]
 set_location_assignment PIN_AK29 -to fs_databus[0]
 set_location_assignment PIN_G16 -to serial1_tx
-set_location_assignment PIN_F18 -to rgb0[2]
-set_location_assignment PIN_D19 -to rgb0[1]
-set_location_assignment PIN_K21 -to rgb0[0]
-set_location_assignment PIN_F19 -to rgb1[2]
-set_location_assignment PIN_K22 -to rgb1[1]
-set_location_assignment PIN_B21 -to rgb1[0]
-set_location_assignment PIN_C21 -to rgb_a
-set_location_assignment PIN_D22 -to rgb_b
-set_location_assignment PIN_D21 -to rgb_c
-set_location_assignment PIN_B28 -to rgb_clk
-set_location_assignment PIN_D23 -to rgb_oe_n
-set_location_assignment PIN_D24 -to rgb_stb
 set_global_assignment -name CYCLONEII_RESERVE_NCEO_AFTER_CONFIGURATION "USE AS REGULAR IO"
 set_global_assignment -name SMART_RECOMPILE ON
 set_global_assignment -name READ_OR_WRITE_IN_BYTE_ADDRESS ON
@@ -1926,5 +1914,21 @@ set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK=00
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK_LENGTH=1909" -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[3] -to cpu|gnd -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[27] -to cpu|gnd -section_id cpu
+set_location_assignment PIN_F18 -to matrix0[2]
+set_location_assignment PIN_D19 -to matrix0[1]
+set_location_assignment PIN_K21 -to matrix0[0]
+set_location_assignment PIN_F19 -to matrix1[2]
+set_location_assignment PIN_K22 -to matrix1[1]
+set_location_assignment PIN_B21 -to matrix1[0]
+set_location_assignment PIN_C21 -to matrix_a
+set_location_assignment PIN_D22 -to matrix_b
+set_location_assignment PIN_D21 -to matrix_c
+set_location_assignment PIN_B28 -to matrix_clk
+set_location_assignment PIN_D23 -to matrix_oe_n
+set_location_assignment PIN_D24 -to matrix_stb
+set_location_assignment PIN_C25 -to ps2kbd_clk
+set_location_assignment PIN_C26 -to ps2kbd_data
+set_location_assignment PIN_F17 -to ps2mouse_clk
+set_location_assignment PIN_D18 -to ps2mouse_data
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 set_global_assignment -name SLD_FILE db/stp1_auto_stripped.stp
