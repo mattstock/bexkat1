@@ -20,10 +20,10 @@ wire [1:0] reg_write;
 wire [2:0] alu_func, int_func;
 wire addrsel, ir_write, vectoff_write;
 wire [3:0] reg_read_addr1, reg_read_addr2, reg_write_addr;
-wire [1:0] marsel, int1sel, int2sel, ccrsel, fpccrsel;
+wire [1:0] marsel, ccrsel, fpccrsel, spsel, sspsel;
 wire [2:0] pcsel, alu1sel, alu2sel;
 wire [3:0] regsel, mdrsel;
-wire fp_aeb, fp_alb, fp_divzero;
+wire fp_aeb, fp_alb, fp_divzero, int2sel;
 wire [3:0] fp_nan, fp_overflow, fp_underflow;
 
 // Data paths
@@ -172,20 +172,11 @@ always @* begin
     3'h0: alu_in2 = reg_data_out2;
     3'h1: alu_in2 = ir_sval;
     3'h2: alu_in2 = 1;
-    3'h3: alu_in2 = ir_uval; // prob can remove
     3'h4: alu_in2 = 4;
     3'h5: alu_in2 = mdr;
     default: alu_in2 = 0;
   endcase
-  case (int1sel)
-    3'h0: int_in1 = reg_data_out1;
-    default: int_in1 = reg_data_out1;
-  endcase
-  case (int2sel)
-    3'h0: int_in2 = reg_data_out2;
-    3'h1: int_in2 = ir_sval;
-    default: int_in2 = reg_data_out2;
-  endcase
+  int_in2 = (int2sel ? ir_sval : reg_data_out2);
   case (ccrsel)
     2'h0: ccr_next = ccr;
     2'h1: ccr_next = { alu_carry, alu_negative ^ alu_overflow, alu_zero };
@@ -202,14 +193,14 @@ end
 
 control2 con0(.clk_i(clk_i), .rst_i(rst_i), .ir(ir), .ir_write(ir_write), .ccr(ccr), .ccrsel(ccrsel), .alu_func(alu_func), .alu1sel(alu1sel),
   .alu2sel(alu2sel), .regsel(regsel), .reg_read_addr1(reg_read_addr1), .reg_read_addr2(reg_read_addr2), .reg_write_addr(reg_write_addr),
-  .reg_write(reg_write), .mdrsel(mdrsel), .marsel(marsel), .pcsel(pcsel), .int1sel(int1sel), .int2sel(int2sel), .int_func(int_func),
+  .reg_write(reg_write), .mdrsel(mdrsel), .marsel(marsel), .pcsel(pcsel), .int2sel(int2sel), .int_func(int_func),
   .supervisor(super_mode), .addrsel(addrsel), .byteenable(sel_o), .bus_cyc(cyc_o), .bus_write(we_o), .bus_ack(ack_i), .bus_align(adr_o[1:0]),
   .vectoff_write(vectoff_write), .halt(halt), .exception(exception), .interrupt(interrupt), .int_en(int_en),
   .fp_addsub(fp_addsub), .fpccrsel(fpccrsel));
 
 alu2 alu0(.clk_i(clk_i), .rst_i(rst_i), .in1(alu_in1), .in2(alu_in2), .func(alu_func), .out(alu_out),
   .c_out(alu_carry), .n_out(alu_negative), .v_out(alu_overflow), .z_out(alu_zero));
-intcalc2 int0(.clock(clk_i), .func(int_func), .in1(int_in1), .in2(int_in2), .out(int_out));
+intcalc2 int0(.clock(clk_i), .func(int_func), .in1(reg_data_out1), .in2(int_in2), .out(int_out));
 fp_cvtis fp_cvtis0(.clock(clk_i), .dataa(reg_data_out2), .result(fp_cvtis_out));
 fp_cvtsi fp_cvtsi0(.clock(clk_i), .dataa(reg_data_out2), .result(fp_cvtsi_out));
 fp_cmp fp_cmp0(.clock(clk_i), .dataa(reg_data_out1), .datab(reg_data_out2), .aeb(fp_aeb), .alb(fp_alb));
@@ -221,6 +212,6 @@ fp_div fp_div0(.clock(clk_i), .aclr(rst_i), .dataa(reg_data_out1), .datab(reg_da
   .nan(fp_nan[2]), .overflow(fp_overflow[2]), .underflow(fp_underflow[2]), .division_by_zero(fp_divzero));
 fp_sqrt fp_sqrt0(.clock(clk_i), .aclr(rst_i), .data(reg_data_out2), .result(fp_sqrt_out), .overflow(fp_overflow[3]));
 registerfile2 intreg(.clk(clk_i), .rst_n(~rst_i), .read1(reg_read_addr1), .read2(reg_read_addr2), .write_addr(reg_write_addr),
-  .write_data(reg_data_in), .write_en(reg_write), .data1(reg_data_out1), .data2(reg_data_out2), .supervisor(super_mode));
+  .write_data(reg_data_in), .write_en(reg_write), .data1(reg_data_out1), .data2(reg_data_out2));
 
 endmodule

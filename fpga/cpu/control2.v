@@ -15,8 +15,7 @@ module control2(
   output [1:0] reg_write,
   output [3:0] mdrsel,
   output [1:0] marsel,
-  output [1:0] int1sel,
-  output [1:0] int2sel,
+  output int2sel,
   output [2:0] int_func,
   output [2:0] pcsel,
   output addrsel,
@@ -102,8 +101,7 @@ begin
   reg_write = REG_WRITE_NONE;
   mdrsel = 4'b0;
   marsel = 2'b0;
-  int1sel = 2'b0;
-  int2sel = 2'b0;
+  int2sel = 1'b0;
   int_func = 3'b0;
   fpccrsel = 2'b0;
   addrsel = 1'b0; // PC
@@ -125,7 +123,7 @@ begin
           if (exception == 4'h0)
             seq_next = 3'h3;
           else begin
-            alu2sel = 3'h4; // aluout <= SP - 'h4
+            alu2sel = 3'h4; // aluout <= SP - 4
             alu_func = 3'h3; // -
             reg_read_addr1 = REG_SP; // SP
             seq_next = 3'h1;
@@ -177,7 +175,7 @@ begin
               seq_next = 3'h1;
         end
         3'h1: begin
-          pcsel = 3'b1; // move PC forward
+          pcsel = 3'b1; // PC <= PC + 4
           seq_next = 3'b0;
           state_next = STATE_EVALIR;
         end
@@ -191,12 +189,12 @@ begin
           case (seq)
             3'h0: begin
               reg_read_addr1 = REG_SP; // SP
-              alu2sel = 3'h4; // aluout <= SP + 'h4
+              alu2sel = 3'h4; // SP <= SP + 4
               marsel = 2'h3; // mar <= SP
               seq_next = 3'h1;
             end
             3'h1: begin
-              reg_write = REG_WRITE_DW; // SP <= aluout 
+              reg_write = REG_WRITE_DW; // SP <= aluout
               reg_write_addr = REG_SP;
               pcsel = 3'h2; // PC <= mar
               seq_next = 3'h2;
@@ -222,18 +220,17 @@ begin
               interrupts_enabled_next = 1'b1;
               exception_next = 4'h0;
               reg_read_addr1 = REG_SP; // SP
-              alu2sel = 3'h4; // aluout <= SP + 'h4
+              alu2sel = 3'h4; // aluout <= SP + 4
               marsel = 2'h3; // mar <= SP
               seq_next = 3'h1;
             end
             3'h1: begin
-              reg_write = REG_WRITE_DW; // SP <= aluout 
+              reg_write = REG_WRITE_DW; // SP <= aluout
               reg_write_addr = REG_SP;
               pcsel = 3'h2; // PC <= mar
               seq_next = 3'h2;
             end
             3'h2: begin
-              addrsel = 1'b1; // MAR
               marsel = 2'h1; // mar <= databus
               bus_cyc = 1'b1;
               if (bus_ack)
@@ -279,7 +276,7 @@ begin
         {MODE_REG, 7'h05}: begin // push rA
           case (seq)
             3'h0: begin
-              alu2sel = 3'h4; // aluout <= SP - 'h4
+              alu2sel = 3'h4; // aluout <= SP - 4
               alu_func = 3'h3; // -
               reg_read_addr1 = REG_SP; // SP
               seq_next = 3'h1;
@@ -310,12 +307,12 @@ begin
           case (seq)
             3'h0: begin
               marsel = 2'h3; // mar <= SP
-              alu2sel = 3'h4; // aluout <= SP + 'h4
+              alu2sel = 3'h4; // aluout <= SP + 4
               reg_read_addr1 = REG_SP; // SP
               seq_next = 3'h1;
             end
             3'h1: begin
-              reg_write = REG_WRITE_DW; // SP <= aluout 
+              reg_write = REG_WRITE_DW; // SP <= aluout
               reg_write_addr = REG_SP;
               seq_next = 3'h2;
             end
@@ -857,7 +854,7 @@ begin
             default: int_func = 'b000;
           endcase
           reg_read_addr1 = ir_rb;
-          int2sel = 2'h1; // sval
+          int2sel = 1'h1; // sval
           case (seq)
             'h6: begin
               if (ir_op == 'h26 || ir_op == 'h27)
