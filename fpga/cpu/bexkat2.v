@@ -20,9 +20,9 @@ wire [1:0] reg_write;
 wire [2:0] alu_func, int_func;
 wire addrsel, ir_write, vectoff_write;
 wire [3:0] reg_read_addr1, reg_read_addr2, reg_write_addr;
-wire [1:0] marsel, ccrsel, fpccrsel, spsel, sspsel;
-wire [2:0] pcsel, alu1sel, alu2sel;
-wire [3:0] regsel, mdrsel;
+wire [1:0] marsel, ccrsel, fpccrsel, spsel, sspsel, alu2sel;
+wire [2:0] pcsel, regsel;
+wire [3:0] mdrsel;
 wire fp_aeb, fp_alb, fp_divzero, int2sel;
 wire [3:0] fp_nan, fp_overflow, fp_underflow;
 
@@ -38,7 +38,7 @@ wire fp_addsub;
 // Special registers
 reg [31:0] mdr, mdr_next, mar, pc, ir, busin_be, vectoff;
 reg [32:0] pc_next, mar_next;
-reg [31:0] reg_data_in, alu_in1, alu_in2, int_in1, int_in2;
+reg [31:0] reg_data_in, alu_in2, int_in1, int_in2;
 reg [63:0] intval;
 reg [2:0] ccr;
 reg [3:0] status, status_next;
@@ -99,7 +99,6 @@ always @* begin
     2'h1: mar_next = dat_i;
     2'h2: mar_next = alu_out;
     2'h3: mar_next = reg_data_out1;
-    default: mar_next = mar;
   endcase
   case (sel_o)
     4'b1111: begin
@@ -138,7 +137,6 @@ always @* begin
   case (mdrsel)
     4'h0: mdr_next = mdr;
     4'h1: mdr_next = busin_be; // byte aligned
-    4'h2: mdr_next = alu_out;
     4'h3: mdr_next = reg_data_out1;
     4'h4: mdr_next = intval[31:0];
     4'h5: mdr_next = intval[63:32];
@@ -157,24 +155,15 @@ always @* begin
     4'h2: reg_data_in = -reg_data_out2;
     4'h3: reg_data_in = ~reg_data_out2;
     4'h4: reg_data_in = reg_data_out2;
-    4'h6: reg_data_in = ir_uval; // no sign ext
-    4'h9: reg_data_in = { {24{reg_data_out2[7]}}, reg_data_out2[7:0] };
-    4'ha: reg_data_in = { {16{reg_data_out2[15]}}, reg_data_out2[15:0] };
-    default: reg_data_in = 0;
-  endcase
-  case (alu1sel)
-    3'h0: alu_in1 = reg_data_out1;
-    3'h1: alu_in1 = mar;
-    3'h2: alu_in1 = mdr;
-    default: alu_in1 = 0;
+    4'h5: reg_data_in = ir_uval; // no sign ext
+    4'h6: reg_data_in = { {24{reg_data_out2[7]}}, reg_data_out2[7:0] };
+    4'h7: reg_data_in = { {16{reg_data_out2[15]}}, reg_data_out2[15:0] };
   endcase
   case (alu2sel)
-    3'h0: alu_in2 = reg_data_out2;
-    3'h1: alu_in2 = ir_sval;
-    3'h2: alu_in2 = 1;
-    3'h4: alu_in2 = 4;
-    3'h5: alu_in2 = mdr;
-    default: alu_in2 = 0;
+    2'h0: alu_in2 = reg_data_out2;
+    2'h1: alu_in2 = ir_sval;
+    2'h2: alu_in2 = 4;
+    2'h3: alu_in2 = 1;
   endcase
   int_in2 = (int2sel ? ir_sval : reg_data_out2);
   case (ccrsel)
@@ -191,14 +180,14 @@ always @* begin
   endcase
 end
 
-control2 con0(.clk_i(clk_i), .rst_i(rst_i), .ir(ir), .ir_write(ir_write), .ccr(ccr), .ccrsel(ccrsel), .alu_func(alu_func), .alu1sel(alu1sel),
+control2 con0(.clk_i(clk_i), .rst_i(rst_i), .ir(ir), .ir_write(ir_write), .ccr(ccr), .ccrsel(ccrsel), .alu_func(alu_func),
   .alu2sel(alu2sel), .regsel(regsel), .reg_read_addr1(reg_read_addr1), .reg_read_addr2(reg_read_addr2), .reg_write_addr(reg_write_addr),
   .reg_write(reg_write), .mdrsel(mdrsel), .marsel(marsel), .pcsel(pcsel), .int2sel(int2sel), .int_func(int_func),
   .supervisor(super_mode), .addrsel(addrsel), .byteenable(sel_o), .bus_cyc(cyc_o), .bus_write(we_o), .bus_ack(ack_i), .bus_align(adr_o[1:0]),
   .vectoff_write(vectoff_write), .halt(halt), .exception(exception), .interrupt(interrupt), .int_en(int_en),
   .fp_addsub(fp_addsub), .fpccrsel(fpccrsel));
 
-alu2 alu0(.clk_i(clk_i), .rst_i(rst_i), .in1(alu_in1), .in2(alu_in2), .func(alu_func), .out(alu_out),
+alu2 alu0(.clk_i(clk_i), .rst_i(rst_i), .in1(reg_data_out1), .in2(alu_in2), .func(alu_func), .out(alu_out),
   .c_out(alu_carry), .n_out(alu_negative), .v_out(alu_overflow), .z_out(alu_zero));
 intcalc2 int0(.clock(clk_i), .func(int_func), .in1(reg_data_out1), .in2(int_in2), .out(int_out));
 fp_cvtis fp_cvtis0(.clock(clk_i), .dataa(reg_data_out2), .result(fp_cvtis_out));
