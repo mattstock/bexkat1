@@ -44,6 +44,9 @@ wire [3:0] ir_rc   = ir[11:8];
 wire ccr_ltu, ccr_lt, ccr_eq;
 assign { ccr_ltu, ccr_lt, ccr_eq } = ccr;
 
+assign int_func = ir_op[2:0];
+assign fp_addsub = ~ir_op[0];
+
 reg [3:0] state, state_next;
 reg [4:0] seq, seq_next;
 reg interrupts_enabled, interrupts_enabled_next;
@@ -62,6 +65,7 @@ case (ir_mode)
   MODE_IMM:    ir_op = { 3'b000, ir[29:26] };
   MODE_DIR:    ir_op = { 1'b0, ir[29:24] };
 endcase
+
 
 // tacky to peek at this, but need it for trap
 wire [31:0] ir_uval = { 16'h0000, ir[23:20], ir[11:0] };
@@ -92,7 +96,6 @@ begin
   ccrsel = 2'h0;
   alu2sel = 2'b0; // reg_data_out2
   regsel = 3'b0; // aluout
-  fp_addsub = 1'b0;
   reg_read_addr1 = ir_ra;
   reg_read_addr2 = ir_rb;
   reg_write_addr = ir_ra;
@@ -100,7 +103,6 @@ begin
   mdrsel = 4'b0;
   marsel = 2'b0;
   int2sel = 1'b0;
-  int_func = 3'b0;
   fpccrsel = 2'b0;
   addrsel = 1'b0; // PC
   pcsel = 3'b0;
@@ -457,21 +459,11 @@ begin
           endcase
         end
         {MODE_REG, 7'h3x}: begin // [un]signed rA <= rB * / % rC
-          case (ir_op)
-            'h31: int_func = 'b001;
-            'h32: int_func = 'b010;
-            'h33: int_func = 'b100;
-            'h34: int_func = 'b101;
-            'h35: int_func = 'b110;
-            'h36: int_func = 'b000;
-            'h37: int_func = 'b100;
-            default: int_func = 'b000;
-          endcase
           reg_read_addr1 = ir_rb;
           reg_read_addr2 = ir_rc;
           case (seq)
             4'hc: begin
-              if (ir_op == 'h36 || ir_op == 'h37)
+              if (ir_op[3])
                 mdrsel = 4'h5; // MDR <= intout[63:32]
               else
                 mdrsel = 4'h4; // MDR <= intout[31:0]
@@ -487,7 +479,6 @@ begin
           endcase
         end
         {MODE_REG, 7'h4x}: begin // fp math
-          fp_addsub =  (ir_op == 7'h40);
           reg_read_addr1 = ir_rb;
           reg_read_addr2 = ir_rc;
           case (seq)
@@ -841,21 +832,11 @@ begin
         end
         {MODE_DIR, 7'h1x}: state_next = STATE_FETCHARG;
         {MODE_DIR, 7'h2x}: begin // [un]signed rA <= rB * / % 0x1234
-          case (ir_op)
-            'h21: int_func = 'b001;
-            'h22: int_func = 'b010;
-            'h23: int_func = 'b100;
-            'h24: int_func = 'b101;
-            'h25: int_func = 'b110;
-            'h26: int_func = 'b000;
-            'h27: int_func = 'b100;
-            default: int_func = 'b000;
-          endcase
           reg_read_addr1 = ir_rb;
           int2sel = 1'h1; // sval
           case (seq)
             'h6: begin
-              if (ir_op == 'h26 || ir_op == 'h27)
+              if (ir_op[3])
                 mdrsel = 4'h5; // MDR <= intout[63:32]
               else
                 mdrsel = 4'h4; // MDR <= intout[31:0]
