@@ -5,7 +5,7 @@ static void dummy(void) {
 }
 
 isr _vectors_start[16] = {
-  (void *)0xffff0000, /* reset */
+  (void *)0x70000000, /* reset */
   dummy, /* bus error */
   dummy, /* page fault */
   dummy, /* invalid opcode */

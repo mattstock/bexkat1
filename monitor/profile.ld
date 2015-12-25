@@ -1,7 +1,7 @@
 MEMORY
 {
   vectors : ORIGIN = 0xffffffc0, LENGTH = 64
-  rom : ORIGIN = 0xfffe0000, LENGTH = 128K
+  rom : ORIGIN = 0x70000000, LENGTH = 128K
   ram : ORIGIN = 0x07ff0000, LENGTH = 64K
 }
 

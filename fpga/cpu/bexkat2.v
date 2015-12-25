@@ -1,84 +1,81 @@
 `timescale 1ns / 1ns
+`include "bexkat2.vh"
 
-module bexkat2(
-  input clk_i,
-  input rst_i,
-  input ack_i,
-  output [31:0] adr_o,
-  output reg cyc_o,
-  output reg we_o,
-  output halt,
-  input [2:0] interrupt,
-  output int_en,
-  output [3:0] exception,
-  input [31:0] dat_i,
-  output [31:0] dat_o,
-  output [3:0] sel_o);
-
+module bexkat2(input 	     clk_i,
+	       input 	     rst_i,
+	       input 	     ack_i,
+	       output [31:0] adr_o,
+	       output reg    cyc_o,
+	       output reg    we_o,
+	       output 	     halt,
+	       input [2:0]   interrupt,
+	       output 	     int_en,
+	       output [3:0]  exception,
+	       input [31:0]  dat_i,
+	       output [31:0] dat_o,
+	       output [3:0]  sel_o);
+  
 // Control signals
 wire [1:0] reg_write;
-wire [2:0] alu_func, int_func;
-wire addrsel, ir_write, vectoff_write;
+wire [2:0] alu_func, fpu_func;
+wire 	   addrsel, ir_write, vectoff_write, a_write, b_write;
 wire [3:0] reg_read_addr1, reg_read_addr2, reg_write_addr;
 wire [1:0] marsel, ccrsel, fpccrsel, spsel, sspsel, alu2sel;
 wire [2:0] pcsel, regsel;
-wire [3:0] mdrsel;
-wire fp_aeb, fp_alb, fp_divzero, int2sel;
-wire [3:0] fp_nan, fp_overflow, fp_underflow;
-
+wire [3:0] mdrsel, int_func;
+wire 	   fp_aeb, fp_alb, int2sel, fpccr_write;
+  
 // Data paths
 wire [31:0] alu_out, reg_data_out1, reg_data_out2;
-wire [31:0] ir_next, vectoff_next, fp_cvtis_out, dataout;
-wire [31:0] fp_cvtsi_out, fp_addsub_out, fp_div_out, fp_mult_out, fp_sqrt_out;
-wire [63:0] int_out;
-wire [2:0] ccr_next;
-wire alu_carry, alu_negative, alu_overflow, alu_zero;
-wire fp_addsub;
-
+wire [31:0] ir_next, vectoff_next, fpu_out, dataout, a_next, b_next, int_out;
+wire [2:0]  ccr_next;
+wire 	    alu_carry, alu_negative, alu_overflow, alu_zero; 
+wire        fp_nan, fp_overflow, fp_underflow, fp_divzero;
+ 
 // Special registers
-reg [31:0] mdr, mdr_next, mar, pc, ir, busin_be, vectoff;
+reg [31:0] mdr, mdr_next, mar, a, b, pc, ir, busin_be, vectoff;
 reg [32:0] pc_next, mar_next;
-reg [31:0] reg_data_in, alu_in2, int_in1, int_in2;
-reg [63:0] intval;
-reg [2:0] ccr;
-reg [3:0] status, status_next;
-reg [3:0] fpccr, fpccr_next;
+reg [31:0] reg_data_in, alu_in2, int_in1, int_in2, intval;
+reg [2:0]  ccr;
+reg [3:0]  status, status_next;
+reg [3:0]  fpccr, fpccr_next;
 
 // opcode format
-wire [31:0] ir_sval = { {16{ir[23]}}, ir[23:20], ir[11:0] };
-wire [31:0] ir_uval = { 16'h0000, ir[23:20], ir[11:0] };
-
+wire [31:0] ir_sval = { {17{ir[15]}}, ir[15:1] };
+wire [31:0] ir_uval = { 17'h0000, ir[15:1] };
+  
 // Convenience mappings
 wire super_mode = status[3];
 
 // Data switching logic
 assign dat_o = (we_o ? dataout : 32'h0);
-assign adr_o = (addrsel ? mar : pc);
+assign adr_o = (addrsel == ADDR_MAR ? mar : pc);
 assign ir_next = (ir_write ? dat_i : ir);
 assign vectoff_next = (vectoff_write ? mdr : vectoff);
 
-always @(posedge clk_i or posedge rst_i)
-begin
+always @(posedge clk_i or posedge rst_i) begin
   if (rst_i) begin
     pc <= 'h0;
     ir <= 0;
     mdr <= 0;
     mar <= 0;
-    intval <= 0;
     ccr <= 3'h0;
     fpccr <= 4'h0;
     vectoff <= 'hffffffc0;
     status <= 4'b1000; // start in supervisor mode
+    a <= 'h0;
+    b <= 'h0;
   end else begin
     pc <= pc_next[31:0];
     ir <= ir_next;
     mdr <= mdr_next;
     mar <= mar_next[31:0];
-    intval <= int_out;
     fpccr <= fpccr_next;
     ccr <= ccr_next;
     vectoff <= vectoff_next;
     status <= status_next;
+    a <= a_next;
+    b <= b_next;
   end
 end
 
@@ -86,19 +83,19 @@ end
 always @* begin
   status_next = status;
   case (pcsel)
-    3'h0: pc_next = pc;
-    3'h1: pc_next = pc + 'h4;
-    3'h2: pc_next = { 1'b0, mar };
-    3'h3: pc_next = { 1'b0, pc } + ir_sval;  // relative branching
-    3'h4: pc_next = { 1'b0, alu_out }; // reg offset
-    3'h5: pc_next = { 1'b0, vectoff } + { exception, 2'b00 }; // exception vectors 
+    PC_PC:   pc_next = pc;
+    PC_NEXT: pc_next = pc + 'h4;
+    PC_MAR:  pc_next = { 1'b0, mar };
+    PC_REL:  pc_next = { 1'b0, pc } + { ir_sval[29:0], 2'b00 };
+    PC_ALU:  pc_next = { 1'b0, alu_out }; // reg offset
+    PC_EXC: pc_next = { 1'b0, vectoff } + { exception, 2'b00 };
     default: pc_next = pc;
-  endcase  
+  endcase // case (pcsel)
   case (marsel)
-    2'h0: mar_next = mar;
-    2'h1: mar_next = dat_i;
-    2'h2: mar_next = alu_out;
-    2'h3: mar_next = reg_data_out1;
+    MAR_MAR: mar_next = mar;
+    MAR_BUS: mar_next = dat_i;
+    MAR_ALU: mar_next = alu_out;
+    MAR_A:   mar_next = a;
   endcase
   case (sel_o)
     4'b1111: begin
@@ -135,72 +132,66 @@ always @* begin
     end
   endcase
   case (mdrsel)
-    4'h0: mdr_next = mdr;
-    4'h1: mdr_next = busin_be; // byte aligned
-    4'h3: mdr_next = reg_data_out1;
-    4'h4: mdr_next = intval[31:0];
-    4'h5: mdr_next = intval[63:32];
-    4'h6: mdr_next = pc;
-    4'h7: mdr_next = fp_cvtis_out;
-    4'h8: mdr_next = fp_cvtsi_out;
-    4'h9: mdr_next = fp_addsub_out;
-    4'ha: mdr_next = fp_mult_out;
-    4'hb: mdr_next = fp_div_out;
-    4'hc: mdr_next = fp_sqrt_out;
+    MDR_MDR: mdr_next = mdr;
+    MDR_BUS: mdr_next = busin_be; // byte aligned
+    MDR_B:   mdr_next = b;
+    MDR_A:   mdr_next = a;
+    MDR_PC:  mdr_next = pc;
+    MDR_INT: mdr_next = int_out;
+    MDR_FPU: mdr_next = fpu_out;
+    MDR_ALU: mdr_next = alu_out;
     default: mdr_next = mdr;
   endcase
   case (regsel)
-    4'h0: reg_data_in = alu_out;
-    4'h1: reg_data_in = mdr;
-    4'h2: reg_data_in = -reg_data_out2;
-    4'h3: reg_data_in = ~reg_data_out2;
-    4'h4: reg_data_in = reg_data_out2;
-    4'h5: reg_data_in = ir_uval; // no sign ext
-    4'h6: reg_data_in = { {24{reg_data_out2[7]}}, reg_data_out2[7:0] };
-    4'h7: reg_data_in = { {16{reg_data_out2[15]}}, reg_data_out2[15:0] };
-  endcase
+    REG_ALU:  reg_data_in = alu_out;
+    REG_MDR:  reg_data_in = mdr;
+    REG_UVAL: reg_data_in = ir_uval; // no sign ext
+    REG_B:    reg_data_in = b;
+    default:  reg_data_in = 'h0;
+  endcase // case (regsel)
   case (alu2sel)
-    2'h0: alu_in2 = reg_data_out2;
-    2'h1: alu_in2 = ir_sval;
-    2'h2: alu_in2 = 4;
-    2'h3: alu_in2 = 1;
+    ALU_B:    alu_in2 = b;
+    ALU_SVAL: alu_in2 = ir_sval;
+    ALU_4:    alu_in2 = 4;
+    ALU_1:    alu_in2 = 1;
   endcase
-  int_in2 = (int2sel ? ir_sval : reg_data_out2);
+  int_in2 = (int2sel == INT2_SVAL ? ir_sval : b);
+  a_next = (a_write ? reg_data_out1 : a);
+  b_next = (b_write ? reg_data_out2 : b);
   case (ccrsel)
-    2'h0: ccr_next = ccr;
-    2'h1: ccr_next = { alu_carry, alu_negative ^ alu_overflow, alu_zero };
-    2'h2: ccr_next = { fp_alb, fp_alb, fp_aeb };
+    CCR_CCR: ccr_next = ccr;
+    CCR_ALU: ccr_next = { alu_carry, alu_negative ^ alu_overflow, alu_zero };
+    CCR_FPU: ccr_next = { fp_alb, fp_alb, fp_aeb };
     default: ccr_next = ccr;
   endcase
-  case (fpccrsel)
-    2'h0: fpccr_next = fpccr;
-    2'h1: fpccr_next = { fp_nan[0], fp_overflow[0], fp_underflow[0], 1'b0 };
-    2'h2: fpccr_next = { fp_nan[1], fp_overflow[1], fp_underflow[1], 1'b0 };
-    2'h3: fpccr_next = { fp_nan[2], fp_overflow[2], fp_underflow[2], fp_divzero };
-  endcase
+  fpccr_next =  (fpccr_write ? { fp_nan, fp_overflow, fp_underflow, fp_divzero } : fpccr);
 end
 
-control2 con0(.clk_i(clk_i), .rst_i(rst_i), .ir(ir), .ir_write(ir_write), .ccr(ccr), .ccrsel(ccrsel), .alu_func(alu_func),
-  .alu2sel(alu2sel), .regsel(regsel), .reg_read_addr1(reg_read_addr1), .reg_read_addr2(reg_read_addr2), .reg_write_addr(reg_write_addr),
-  .reg_write(reg_write), .mdrsel(mdrsel), .marsel(marsel), .pcsel(pcsel), .int2sel(int2sel), .int_func(int_func),
-  .supervisor(super_mode), .addrsel(addrsel), .byteenable(sel_o), .bus_cyc(cyc_o), .bus_write(we_o), .bus_ack(ack_i), .bus_align(adr_o[1:0]),
-  .vectoff_write(vectoff_write), .halt(halt), .exception(exception), .interrupt(interrupt), .int_en(int_en),
-  .fp_addsub(fp_addsub), .fpccrsel(fpccrsel));
+control2 con0(.clk_i(clk_i), .rst_i(rst_i), .ir(ir), .ir_write(ir_write),
+  .ccr(ccr), .ccrsel(ccrsel), .alu_func(alu_func), .a_write(a_write),
+  .b_write(b_write), .alu2sel(alu2sel), .regsel(regsel),
+  .reg_read_addr1(reg_read_addr1), .reg_read_addr2(reg_read_addr2),
+  .reg_write_addr(reg_write_addr), .reg_write(reg_write), .mdrsel(mdrsel),
+  .marsel(marsel), .pcsel(pcsel), .int2sel(int2sel), .int_func(int_func),
+  .supervisor(super_mode), .addrsel(addrsel), .byteenable(sel_o),
+  .bus_cyc(cyc_o), .bus_write(we_o), .bus_ack(ack_i), .bus_align(adr_o[1:0]),
+  .vectoff_write(vectoff_write), .halt(halt), .exception(exception),
+  .interrupt(interrupt), .int_en(int_en), .fpu_func(fpu_func), 
+  .fpccr_write(fpccr_write));
 
-alu2 alu0(.clk_i(clk_i), .rst_i(rst_i), .in1(reg_data_out1), .in2(alu_in2), .func(alu_func), .out(alu_out),
-  .c_out(alu_carry), .n_out(alu_negative), .v_out(alu_overflow), .z_out(alu_zero));
-intcalc2 int0(.clock(clk_i), .func(int_func), .in1(reg_data_out1), .in2(int_in2), .out(int_out));
-fp_cvtis fp_cvtis0(.clock(clk_i), .dataa(reg_data_out2), .result(fp_cvtis_out));
-fp_cvtsi fp_cvtsi0(.clock(clk_i), .dataa(reg_data_out2), .result(fp_cvtsi_out));
-fp_cmp fp_cmp0(.clock(clk_i), .dataa(reg_data_out1), .datab(reg_data_out2), .aeb(fp_aeb), .alb(fp_alb));
-fp_addsub fp_addsub0(.clock(clk_i), .aclr(rst_i), .dataa(reg_data_out1), .datab(reg_data_out2), .add_sub(fp_addsub), .result(fp_addsub_out),
-  .nan(fp_nan[0]), .overflow(fp_overflow[0]), .underflow(fp_underflow[0]));
-fp_mult fp_mult0(.clock(clk_i), .aclr(rst_i), .dataa(reg_data_out1), .datab(reg_data_out2), .result(fp_mult_out),
-  .nan(fp_nan[1]), .overflow(fp_overflow[1]), .underflow(fp_underflow[1]));
-fp_div fp_div0(.clock(clk_i), .aclr(rst_i), .dataa(reg_data_out1), .datab(reg_data_out2), .result(fp_div_out),
-  .nan(fp_nan[2]), .overflow(fp_overflow[2]), .underflow(fp_underflow[2]), .division_by_zero(fp_divzero));
-fp_sqrt fp_sqrt0(.clock(clk_i), .aclr(rst_i), .data(reg_data_out2), .result(fp_sqrt_out), .overflow(fp_overflow[3]));
-registerfile2 intreg(.clk(clk_i), .rst_n(~rst_i), .read1(reg_read_addr1), .read2(reg_read_addr2), .write_addr(reg_write_addr),
-  .write_data(reg_data_in), .write_en(reg_write), .data1(reg_data_out1), .data2(reg_data_out2));
+alu2 alu0(.clk_i(clk_i), .rst_i(rst_i), .in1(a), .in2(alu_in2),
+  .func(alu_func), .out(alu_out), .c_out(alu_carry), .n_out(alu_negative),
+  .v_out(alu_overflow), .z_out(alu_zero));
+intcalc2 int0(.clock(clk_i), .func(int_func), .in1(a), .in2(int_in2),
+  .out(int_out));
+registerfile2 intreg(.clk(clk_i), .rst_n(~rst_i),
+  .read1(reg_read_addr1), .read2(reg_read_addr2), .write_addr(reg_write_addr),
+  .write_data(reg_data_in), .write_en(reg_write),
+  .data1(reg_data_out1), .data2(reg_data_out2));
+
+fpu fpu0(.clk_i(clk_i), .func(fpu_func), .in1(a), .in2(b), .out(fpu_out),
+	 .overflow(fp_overflow), .nan(fp_nan), .underflow(fp_underflow),
+	 .divzero(fp_divzero));
+fp_cmp fp_cmp0(.clock(clk_i), .dataa(a), .datab(b), .aeb(fp_aeb), .alb(fp_alb));
 
 endmodule

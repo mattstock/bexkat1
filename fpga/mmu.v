@@ -17,32 +17,24 @@ begin
   f = 1'b0;
   c = 1'b1;
   
-  if (adr_i >= 32'h00000000 && adr_i <= 32'h07ffffff)
-    cs = 4'h7; // 128MB (32M x 32) SDRAM
-  else if (adr_i >= 32'h20000000 && adr_i <= 32'h200007ff)
-    cs = 4'h5; // LED matrix
-  else if (adr_i >= 32'h20000800 && adr_i <= 32'h20000fff) begin
-    cs = 4'h4; // IO
-    c = 1'b0;
-  end else if (adr_i >= 32'hb0000000 && adr_i <= 32'hbfffffff) begin
-    cs = 4'h9; // VGA
-    c = 1'b0;
-  end else if (adr_i >= 32'hc0000000 && adr_i <= 32'hc03fffff)
-    cs = 4'h6; // 4MB (1M x 32) SSRAM
-  else if (adr_i >= 32'hc0400000 && adr_i <= 32'hc0400fff)
-    cs = 4'ha; // VGA controller
-  else if (adr_i >= 32'hd0000000 && adr_i <= 32'hdfffffff)
-    cs = 4'h3; // mandelbrot
-  else if (adr_i >= 32'he0000000 && adr_i <= 32'hefffffff)
-    cs = 4'h8; // 64MB (32M x 16) FLASH
-  else if (adr_i >= 32'hfffe0000 && adr_i <= 32'hffffffbf)
-    cs = 4'h2; // 32k x 32 internal ROM
-  else if (adr_i >= 32'hffffffc0 && adr_i <= 32'hffffffff)
-    cs = 4'h1; // interrupt vector
-  else begin
-    f = 1'b1;
-    cs = 4'h0;
-  end
+  case (adr_i[31:28])
+    4'h0: cs = 4'h7; // 128MB (32M x 32) SDRAM
+    4'h2: cs = 4'h5; // LED matrix
+    4'h3: begin
+      cs = 4'h4; // IO
+      c = 1'b0;
+    end
+    4'h7: cs = 4'h2; // monitor
+    4'h8: cs = 4'ha; // VGA controller
+    4'hc: cs = 4'h6; // 4MB (1M x 32) SSRAM
+    4'hd: cs = 4'h3; // mandelbrot
+    4'he: cs = 4'h8; // 64MB (32M x 16) FLASH
+    4'hf: cs = 4'h1; // vectors
+    default: begin
+      cs = 4'h0;
+      f = 1'h1;
+    end
+  endcase
 end
 
 endmodule

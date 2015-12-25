@@ -1,6 +1,6 @@
 #include "spi.h"
 
-volatile unsigned int *spi = (unsigned int *)0x20000820;
+volatile unsigned int *spi = (unsigned int *)0x30000820;
 
 void spi_fast() {
   SET_BIT(SPI_CTL, SPI_SPEED);

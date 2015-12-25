@@ -33,12 +33,12 @@ void drawchar(int x, int y, char c) {
   }
 }
 
-void mandelbrot(double cx, double cy, double scale) {
-  double limit = 4.0;
+void mandelbrot(float cx, float cy, float scale) {
+  float limit = 4.0f;
   int x,y,lp;
-  double ax,ay;
-  double a1,b1,a2,b2;
-  double res,asq,bsq;
+  float ax,ay;
+  float a1,b1,a2,b2;
+  float res,asq,bsq;
 
   for (x=-120; x < 120; x++) {
     ax = cx+x*scale;
@@ -53,7 +53,7 @@ void mandelbrot(double cx, double cy, double scale) {
         asq = a1*a1;
         bsq = b1*b1;
         a2 = asq - bsq + ax;
-        b2 = 2.0*a1*b1+ay;
+        b2 = 2.0f*a1*b1+ay;
         a1 = a2;
         b1 = b2;
         res = a1*a1 + b1*b1;
@@ -84,7 +84,7 @@ void main(void) {
   y = 0;
   itd_init();
   itd_backlight(1);
-  mandelbrot(0.36,0.1,0.0001);
+  mandelbrot(0.36f,0.1f,0.0001f);
   while (1) {
     read(0, buf, 1);
     printf("%c\n", buf[0]);

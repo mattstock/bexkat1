@@ -198,8 +198,13 @@ begin
     rom_ack <= 2'b0;
     vect_ack <= 2'b0;
   end else begin
-    rom_ack <= { rom_ack[0], rom_read };
-    vect_ack <= { vect_ack[0], vect_read };
+    if (chipselect == 4'h0) begin
+      rom_ack <= 2'b0;
+      vect_ack <= 2'b0;
+    end else begin
+      rom_ack <= { rom_ack[0], rom_read };
+      vect_ack <= { vect_ack[0], vect_read };
+    end
   end
 end
 

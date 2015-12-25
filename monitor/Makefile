@@ -9,8 +9,8 @@ LD = bexkat1-elf-ld
 
 TEMP := $(shell mktemp)
 
-OBJECTS = boot.o bootstrap.o pretty.o mandsf.o vga.o memtests.o rtc.o fileio.o touch.o joy.o multiply.o
-APPS = pretty mandsf vga bootstrap memtests rtc fileio touch joy multiply
+OBJECTS = boot.o bootstrap.o pretty.o vga.o memtests.o rtc.o fileio.o touch.o joy.o multiply.o tests.o serial.o tests.o
+APPS = pretty vga bootstrap memtests rtc fileio touch joy multiply serial tests
 
 .PHONY: all clean lib gcctests kernel install
 

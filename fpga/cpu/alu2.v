@@ -1,5 +1,8 @@
 // A simple ALU design
 // Matt Stock 11/16/14
+
+`include "bexkat2.vh"
+
 module alu2(
   input clk_i,
   input rst_i,
@@ -14,15 +17,6 @@ module alu2(
 );
 
 parameter WIDTH = 32;
-
-localparam ALU_AND =     'h0;
-localparam ALU_OR =      'h1;
-localparam ALU_ADD =     'h2;
-localparam ALU_SUB =     'h3;
-localparam ALU_LSHIFT =  'h4;
-localparam ALU_RSHIFTA = 'h5;
-localparam ALU_RSHIFTL = 'h6;
-localparam ALU_XOR =     'h7;
 
 assign n_out = out[WIDTH-1];
 assign z_out = ~|out;

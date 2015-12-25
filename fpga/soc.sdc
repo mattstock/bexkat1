@@ -31,13 +31,28 @@ set_false_path -from [get_ports {serial* joy_pb touch_irq}] -to *
 set_false_path -from * -to [get_ports {serial* joy_ss vga_b[*] vga_r[*] vga_g[*] vga_blank_n vga_clock vga_hs vga_vs}]
 set_false_path -from * -to [get_ports {fan_ctrl lcd_data[*] lcd_e lcd_on lcd_rs lcd_rw itd_backlight}] 
 
-#set_multicycle_path -from * -to [get_registers {*bexkat0|ccr[*]}] -setup -start 2
-#set_multicycle_path -from * -to [get_registers {*bexkat0|ccr[*]}] -hold -start 1
-
 set_multicycle_path -from [get_registers {*bexkat0|ir[*]}] -to [get_registers {*bexkat0|mdr[*]}] -setup -start 2
 set_multicycle_path -from [get_registers {*bexkat0|ir[*]}] -to [get_registers {*bexkat0|mdr[*]}] -hold -start 1
-set_multicycle_path -from [get_registers {*con0|seq[*]}] -to [get_registers {*bexkat0|mdr[*]}] -setup -start 2
-set_multicycle_path -from [get_registers {*con0|seq[*]}] -to [get_registers {*bexkat0|mdr[*]}] -hold -start 1
+set_multicycle_path -from [get_registers {*bexkat0|pc[*]}] -to [get_registers {*bexkat0|mdr[*]}] -setup -start 2
+set_multicycle_path -from [get_registers {*bexkat0|pc[*]}] -to [get_registers {*bexkat0|mdr[*]}] -hold -start 1
+set_multicycle_path -from [get_registers {*bexkat0|mar[*]}] -to [get_registers {*bexkat0|mdr[*]}] -setup -start 2
+set_multicycle_path -from [get_registers {*bexkat0|mar[*]}] -to [get_registers {*bexkat0|mdr[*]}] -hold -start 1
+set_multicycle_path -from [get_registers {*bexkat0|con0|state*}] -to [get_registers {*bexkat0|mdr[*]}] -setup -start 2
+set_multicycle_path -from [get_registers {*bexkat0|con0|state*}] -to [get_registers {*bexkat0|mdr[*]}] -hold -start 1
+set_multicycle_path -from [get_registers {*bexkat0|con0|state*}] -to [get_registers {*bexkat0|mar[*]}] -setup -start 2
+set_multicycle_path -from [get_registers {*bexkat0|con0|state*}] -to [get_registers {*bexkat0|mar[*]}] -hold -start 1
+set_multicycle_path -from [get_registers {*bexkat0|con0|state*}] -to [get_registers {*bexkat0|ir[*]}] -setup -start 2
+set_multicycle_path -from [get_registers {*bexkat0|con0|state*}] -to [get_registers {*bexkat0|ir[*]}] -hold -start 1
+set_multicycle_path -from [get_registers {*bexkat0|con0|state*}] -to [get_registers {*bexkat0|*alu0|out[*]}] -setup -start 2
+set_multicycle_path -from [get_registers {*bexkat0|con0|state*}] -to [get_registers {*bexkat0|*alu0|out[*]}] -hold -start 1
+set_multicycle_path -from [get_registers {*bexkat0|pc[*]}] -to [get_registers {*bexkat0|mar[*]}] -setup -start 2
+set_multicycle_path -from [get_registers {*bexkat0|pc[*]}] -to [get_registers {*bexkat0|mar[*]}] -hold -start 1
+set_multicycle_path -from [get_registers {*bexkat0|mar[*]}] -to [get_registers {*bexkat0|mar[*]}] -setup -start 2
+set_multicycle_path -from [get_registers {*bexkat0|mar[*]}] -to [get_registers {*bexkat0|mar[*]}] -hold -start 1
+set_multicycle_path -from [get_registers {*bexkat0|mar[*]}] -to [get_registers {*bexkat0|ir[*]}] -setup -start 2
+set_multicycle_path -from [get_registers {*bexkat0|mar[*]}] -to [get_registers {*bexkat0|ir[*]}] -hold -start 1
+set_multicycle_path -from [get_registers {*bexkat0|pc[*]}] -to [get_registers {*bexkat0|ir[*]}] -setup -start 2
+set_multicycle_path -from [get_registers {*bexkat0|pc[*]}] -to [get_registers {*bexkat0|ir[*]}] -hold -start 1
 
 set_multicycle_path -through [get_pins -compatibility_mode {*intcalc*}] -setup -start 8
 set_multicycle_path -through [get_pins -compatibility_mode {*intcalc*}] -hold -start 7

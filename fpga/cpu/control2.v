@@ -1,1084 +1,549 @@
-module control2(
-  input clk_i,
-  input rst_i,
-  input [31:0] ir,
-  output ir_write,
-  input [2:0] ccr,
-  output [1:0] ccrsel,
-  output [2:0] alu_func,
-  output [1:0] alu2sel,
-  output [2:0] regsel,
-  output [3:0] reg_read_addr1,
-  output [3:0] reg_read_addr2,
-  output [3:0] reg_write_addr,
-  output [1:0] reg_write,
-  output [3:0] mdrsel,
-  output [1:0] marsel,
-  output int2sel,
-  output [2:0] int_func,
-  output [2:0] pcsel,
-  output addrsel,
-  output [1:0] fpccrsel,
-  output [3:0] byteenable,
-  output bus_cyc,
-  output bus_write,
-  output halt,
-  output int_en,
-  output vectoff_write,
-  input supervisor,
-  input bus_ack,
-  output reg [3:0] exception,
-  output fp_addsub,
-  input [2:0] interrupt,
-  input [1:0] bus_align);
+`timescale 1ns / 1ns
+`include "bexkat2.vh"
+  
+module control2(input clk_i,
+		input rst_i,
+		input [31:0] ir,
+		output ir_write,
+		input [2:0] ccr,
+		output [1:0] ccrsel,
+		output [2:0] alu_func,
+		output [1:0] alu2sel,
+		output [2:0] regsel,
+		output [3:0] reg_read_addr1,
+		output [3:0] reg_read_addr2,
+		output [3:0] reg_write_addr,
+		output [1:0] reg_write,
+		output a_write,
+		output b_write,
+		output [3:0] mdrsel,
+		output [1:0] marsel,
+		output int2sel,
+		output [3:0] int_func,
+		output [2:0] fpu_func,
+		output fpccr_write,
+		output [2:0] pcsel,
+		output addrsel,
+		output [3:0] byteenable,
+		output bus_cyc,
+		output bus_write,
+		output halt,
+		output int_en,
+		output vectoff_write,
+		input supervisor,
+		input bus_ack,
+		output reg [3:0] exception,
+		input [2:0] interrupt,
+		input [1:0] bus_align);
 
-assign halt = (state == STATE_HALT);
+assign halt = (state == S_HALT);
 assign int_en = interrupts_enabled;
 
-wire [1:0] ir_mode = ir[31:30];
-wire [6:0] ir_op;
-wire [3:0] ir_ra   = ir[19:16];
-wire [3:0] ir_rb   = ir[15:12];
-wire [3:0] ir_rc   = ir[11:8];
+// IR helpers
+wire [3:0]  ir_type  = ir[31:28];
+wire [3:0]  ir_op    = ir[27:24];
+wire [3:0]  ir_ra    = ir[23:20];
+wire [3:0]  ir_rb    = ir[19:16];
+wire [3:0]  ir_rc    = ir[15:12];
+wire [31:0] ir_uval  = { 17'h0000, ir[15:1] };
+wire ir_size         = ir[0];
 
 wire ccr_ltu, ccr_lt, ccr_eq;
 assign { ccr_ltu, ccr_lt, ccr_eq } = ccr;
 
-assign int_func = ir_op[2:0];
-assign fp_addsub = ~ir_op[0];
-
-reg [3:0] state, state_next;
-reg [4:0] seq, seq_next;
+reg [7:0] state, state_next;
 reg interrupts_enabled, interrupts_enabled_next;
 reg [3:0] exception_next;
-
-localparam [3:0] STATE_FETCHIR = 4'h0, STATE_EVALIR = 4'h1, STATE_FETCHARG = 4'h2, STATE_EVALARG = 4'h3, STATE_HALT = 4'h4, STATE_EXCEPTION = 4'h5, STATE_RESET = 4'h6;
-localparam MODE_REG = 2'h0, MODE_REGIND = 2'h1, MODE_IMM = 2'h2, MODE_DIR = 2'h3;
-localparam REG_WRITE_NONE = 2'h0, REG_WRITE_8 = 2'h1, REG_WRITE_16 = 2'h2, REG_WRITE_DW = 2'h3;
-
-parameter REG_SP = 4'hf;
-
-always @(ir_mode or ir)
-case (ir_mode)
-  MODE_REG:    ir_op = ir[29:23];
-  MODE_REGIND: ir_op = { 3'b000, ir[29:26] };
-  MODE_IMM:    ir_op = { 3'b000, ir[29:26] };
-  MODE_DIR:    ir_op = { 1'b0, ir[29:24] };
-endcase
-
-
-// tacky to peek at this, but need it for trap
-wire [31:0] ir_uval = { 16'h0000, ir[23:20], ir[11:0] };
+reg [7:0] delay, delay_next;
 
 always @(posedge clk_i or posedge rst_i)
 begin
   if (rst_i) begin
-    state <= STATE_RESET;
-    seq <= 5'h0;
+    state <= S_RESET;
     interrupts_enabled <= 1'b0;
     exception <= 4'h0;
+    delay <= 8'h00;
   end else begin
-    seq <= seq_next;
     state <= state_next;
     interrupts_enabled <= interrupts_enabled_next;
     exception <= exception_next;
+    delay <= (delay == 8'h00 ? delay_next : delay - 8'h1);
   end
 end
 
 always @(*)
 begin
   state_next = state;
-  seq_next = seq;
   interrupts_enabled_next = interrupts_enabled;
   exception_next = exception;
   ir_write = 1'b0;
-  alu_func = 3'h2; // add
-  ccrsel = 2'h0;
-  alu2sel = 2'b0; // reg_data_out2
-  regsel = 3'b0; // aluout
+  alu_func = ALU_ADD;
+  ccrsel = CCR_CCR;
+  alu2sel = ALU_B;
+  regsel = REG_ALU;
   reg_read_addr1 = ir_ra;
   reg_read_addr2 = ir_rb;
   reg_write_addr = ir_ra;
+  a_write = 1'h0;
+  b_write = 1'h0;
   reg_write = REG_WRITE_NONE;
-  mdrsel = 4'b0;
-  marsel = 2'b0;
-  int2sel = 1'b0;
-  fpccrsel = 2'b0;
-  addrsel = 1'b0; // PC
-  pcsel = 3'b0;
+  mdrsel = MDR_MDR;
+  marsel = MAR_MAR;
+  int2sel = INT2_B;
+  fpccr_write = 1'b0;
+  fpu_func = FPU_CVTIS;
+  addrsel = ADDR_PC;
+  pcsel = PC_PC;
   bus_cyc = 1'b0;
   bus_write = 1'b0;
   byteenable = 4'b1111;
   vectoff_write = 1'b0;
+  int_func = INT_NEG;
+  delay_next = 8'h00;
   
   case (state)
-    STATE_RESET: begin
+    S_RESET: begin
       exception_next = 4'h0;
-      state_next = STATE_EXCEPTION;
+      state_next = S_EXC;
     end
-    STATE_EXCEPTION: begin
-      // for everyone except reset, we need to push the PC onto the stack, just like jsr
-      case (seq)
-        3'h0: begin
-          if (exception == 4'h0)
-            seq_next = 3'h3;
-          else begin
-            alu2sel = 2'h2; // aluout <= SP - 4
-            alu_func = 3'h3; // -
-            reg_read_addr1 = REG_SP; // SP
-            seq_next = 3'h1;
-            mdrsel = 4'h6; // MDR <= PC
+    S_EXC: begin
+      // for everyone except reset, we need to push the PC onto the stack
+      if (exception == 4'h0)
+        state_next = S_EXC5;
+      else begin
+	a_write = 1'b1; // A <= SP
+        reg_read_addr1 = REG_SP;
+        mdrsel = MDR_PC;
+	state_next = S_EXC3;
+      end
+    end // case: S_EXC
+    S_EXC2: begin
+        alu2sel = ALU_4;
+        alu_func = ALU_SUB;
+        state_next = S_EXC3;
+    end
+    S_EXC3: begin
+      marsel = MAR_ALU;
+      reg_write_addr = REG_SP;
+      reg_write = REG_WRITE_DW;
+      state_next = S_EXC4;
+    end
+    S_EXC4: begin
+      addrsel = ADDR_MAR;
+      bus_cyc = 1'b1;
+      bus_write = 1'b1;       
+      if (bus_ack)
+        state_next = S_EXC5;
+    end
+    S_EXC5: begin
+      pcsel = PC_EXC; // load exception_next handler address into PC
+      state_next = S_EXC6;
+    end
+    S_EXC6: begin
+      bus_cyc = 1'b1;
+      marsel = MAR_BUS;
+      if (bus_ack)
+        state_next = S_EXC7;
+    end
+    S_EXC7: begin
+      pcsel = PC_MAR;
+      state_next = S_FETCH;
+    end
+    S_FETCH: begin
+      bus_cyc = 1'b1;
+      ir_write = 1'b1; // latch bus into ir
+      if (|interrupt && interrupts_enabled) begin
+        state_next = S_EXC;
+        interrupts_enabled_next = 1'b0;
+        exception_next = { 1'b0, interrupt};
+      end else
+        if (bus_ack)
+          state_next = S_FETCH2;
+    end // case: S_FETCH
+    S_FETCH2: begin
+      pcsel = PC_NEXT;
+      state_next = S_EVAL;
+    end
+    S_EVAL: begin
+      if (ir_size)
+	state_next = S_ARG;
+      else
+	case (ir_type)
+          T_INH: state_next = S_INH;
+          T_PUSH: state_next = (ir_op == 4'h1 ? S_RELADDR : S_PUSH);
+          T_POP: state_next = S_POP;
+          T_CMP: state_next = S_CMP;
+          T_MOV: state_next = S_MOV;
+	  T_INTU: state_next = S_INTU;
+          T_INT: state_next = S_INT;
+          T_FPU: state_next = S_FPU;
+          T_ALU: state_next = S_ALU;
+          T_LDI: state_next = S_LDIU;
+          T_LOAD: state_next = S_LOAD;
+          T_STORE: state_next = S_STORE;
+          T_BRANCH: state_next = S_BRANCH;
+          T_JUMP: state_next = S_JUMP;
+          default: state_next = S_HALT;
+	endcase
+    end // case: S_EVAL
+    S_TERM: state_next = S_FETCH;
+    S_ARG: begin
+      bus_cyc = 1'b1;
+      marsel = MAR_BUS;
+      mdrsel = MDR_BUS;
+      if (bus_ack)
+        state_next = S_ARG2;
+    end
+    S_ARG2: begin
+      pcsel = PC_NEXT;
+      case (ir_type)
+	T_INH: state_next = S_INH;
+	T_PUSH: state_next = S_PUSH2;
+	T_STORE: state_next = S_STORED;
+	T_LOAD: state_next = S_LOADD;
+	T_JUMP: state_next = S_EXC7;
+	T_LDI: state_next = S_MDR2RA;
+	default: state_next = S_HALT;
+      endcase
+    end
+    S_INH: begin
+      case (ir_op)
+	4'h0: state_next = S_FETCH; // nop
+	4'h1: begin
+	  if (ir_size) begin // setint
+	    vectoff_write = 1'b1;
+	    state_next = S_FETCH;
+	  end else begin // trap
+	    exception_next = { 1'b1, ir_uval[2:0] }; // upper 8 are swi
+            state_next = S_EXC;
           end
-        end
-        3'h1: begin
-          marsel = 2'h2; // mar <= aluout
-          reg_write_addr = REG_SP; // SP <= aluout
-          reg_write = REG_WRITE_DW;
-          seq_next = 3'h2;
-        end
-        3'h2: begin
-          addrsel = 1'b1; // MAR
-          bus_cyc = 1'b1;
-          bus_write = 1'b1;       
-          if (bus_ack)
-            seq_next = 3'h3;
-        end
-        3'h3: begin
-          pcsel = 3'h5; // load exception_next handler address into PC
-          seq_next = 3'h4;
-        end
-        3'h4: begin
-          bus_cyc = 1'b1;
-          marsel = 2'h1;
-          if (bus_ack)
-            seq_next = 3'h5;
-        end
-        3'h5: begin
-          pcsel = 3'h2; // PC <= MAR
-          seq_next = 3'h0;
-          state_next = STATE_FETCHIR;
-        end
-        default: state_next = STATE_HALT;
-      endcase
-    end
-    STATE_FETCHIR: begin
-      case (seq)
-        3'h0: begin
-          bus_cyc = 1'b1;
-          ir_write = 1'b1; // latch bus into ir
-          if (|interrupt && interrupts_enabled) begin
-            state_next = STATE_EXCEPTION;
-            interrupts_enabled_next = 1'b0;
-            exception_next = { 1'b0, interrupt};
-          end else
-            if (bus_ack) // wait until we get control of bus
-              seq_next = 3'h1;
-        end
-        3'h1: begin
-          pcsel = 3'b1; // PC <= PC + 4
-          seq_next = 3'b0;
-          state_next = STATE_EVALIR;
-        end
-        default: state_next = STATE_HALT;
-      endcase
-    end
-    STATE_EVALIR: begin
-      casex ({ir_mode, ir_op})
-        {MODE_REG, 7'h00}: state_next = STATE_FETCHIR; // nop
-        {MODE_REG, 7'h01}: begin // rts
-          case (seq)
-            3'h0: begin
-              reg_read_addr1 = REG_SP; // SP
-              alu2sel = 2'h2; // SP <= SP + 4
-              marsel = 2'h3; // mar <= SP
-              seq_next = 3'h1;
-            end
-            3'h1: begin
-              reg_write = REG_WRITE_DW; // SP <= aluout
-              reg_write_addr = REG_SP;
-              pcsel = 3'h2; // PC <= mar
-              seq_next = 3'h2;
-            end
-            3'h2: begin
-              marsel = 2'h1; // mar <= databus
-              bus_cyc = 1'b1;
-              if (bus_ack)
-                seq_next = 3'h3;
-            end
-            3'h3: begin
-              pcsel = 3'h2; // PC <= mar 
-              seq_next = 3'h0;
-              state_next = STATE_FETCHIR;
-            end
-            default: state_next = STATE_HALT;
-          endcase
-        end
-        {MODE_REG, 7'h02}: begin // rti
-          // almost the same as rts, but reenable interrupts
-          case (seq)
-            3'h0: begin
-              interrupts_enabled_next = 1'b1;
-              exception_next = 4'h0;
-              reg_read_addr1 = REG_SP; // SP
-              alu2sel = 2'h2; // aluout <= SP + 4
-              marsel = 2'h3; // mar <= SP
-              seq_next = 3'h1;
-            end
-            3'h1: begin
-              reg_write = REG_WRITE_DW; // SP <= aluout
-              reg_write_addr = REG_SP;
-              pcsel = 3'h2; // PC <= mar
-              seq_next = 3'h2;
-            end
-            3'h2: begin
-              marsel = 2'h1; // mar <= databus
-              bus_cyc = 1'b1;
-              if (bus_ack)
-                seq_next = 3'h3;
-            end
-            3'h3: begin
-              pcsel = 3'h2; // PC <= mar 
-              seq_next = 3'h0;
-              state_next = STATE_FETCHIR;
-            end
-            default: state_next = STATE_HALT;
-          endcase
-        end          
-        {MODE_REG, 7'h03}: begin // inc rA
-          case (seq)
-            3'h0: begin
-              alu2sel = 'h3; // aluval <= regA + 1
-              seq_next = 3'h1;
-            end
-            3'h1: begin
-              reg_write = REG_WRITE_DW; // rA <= aluval
-              seq_next = 3'h0;
-              state_next = STATE_FETCHIR;
-            end
-            default: state_next = STATE_HALT;
-          endcase
-        end
-        {MODE_REG, 7'h04}: begin // dec rA
-          case (seq)
-            3'h0: begin
-              alu_func = 'h3; // sub
-              alu2sel = 'h3; // aluval <= regA - 1
-              seq_next = 3'h1;
-            end
-            3'h1: begin  
-              reg_write = REG_WRITE_DW; // rA <= aluval
-              seq_next = 3'h0;
-              state_next = STATE_FETCHIR;
-            end
-            default: state_next = STATE_HALT;
-          endcase
-        end
-        {MODE_REG, 7'h05}: begin // push rA
-          case (seq)
-            3'h0: begin
-              alu2sel = 2'h2; // aluout <= SP - 4
-              alu_func = 3'h3; // -
-              reg_read_addr1 = REG_SP; // SP
-              seq_next = 3'h1;
-            end
-            3'h1: begin
-              marsel = 2'h2; // mar <= aluout
-              mdrsel = 4'h3; // mdr <= rA
-              reg_write_addr = REG_SP; // SP <= aluout
-              reg_write = REG_WRITE_DW;
-              seq_next = 3'h2;
-            end
-            3'h2: begin
-              addrsel = 1'b1; // MAR
-              bus_cyc = 1'b1;
-              bus_write = 1'b1;            
-              if (bus_ack)
-                seq_next = 3'h3;
-            end
-            3'h3: begin
-              state_next = STATE_FETCHIR;
-              seq_next = 3'h0;
-            end
-            default: state_next = STATE_HALT;
-          endcase
-        end
-        {MODE_REG, 7'h06}: begin // pop rA
-          addrsel = 1'b1; // MAR
-          case (seq)
-            3'h0: begin
-              marsel = 2'h3; // mar <= SP
-              alu2sel = 2'h2; // aluout <= SP + 4
-              reg_read_addr1 = REG_SP; // SP
-              seq_next = 3'h1;
-            end
-            3'h1: begin
-              reg_write = REG_WRITE_DW; // SP <= aluout
-              reg_write_addr = REG_SP;
-              seq_next = 3'h2;
-            end
-            3'h2: begin
-              bus_cyc = 1'b1;
-              mdrsel = 4'h1; // mdr <= busread
-              if (bus_ack)
-                seq_next = 3'h3;
-            end
-            3'h3: begin
-              regsel = 3'h1; // rA <= mdr 
-              reg_write = REG_WRITE_DW;
-              seq_next = 3'h0;
-              state_next = STATE_FETCHIR;
-            end
-            default: state_next = STATE_HALT;
-          endcase
-        end
-        {MODE_REG, 7'h09}: begin // cmp
-          case (seq)
-            3'h0: begin
-              alu_func = 'h3; // sub
-              seq_next = 3'h1;
-            end
-            3'h1: begin
-              alu_func = 'h3; // sub
-              ccrsel = 2'h1; // set values in CCR
-              state_next = STATE_FETCHIR;
-              seq_next = 3'h0;
-            end
-            default: state_next = STATE_HALT;
-          endcase
-        end
-        {MODE_REG, 7'h0a}: begin // mov
-          regsel = 3'h4; // reg_data_out2
-          reg_write = REG_WRITE_16;
-          state_next = STATE_FETCHIR;
-        end
-        {MODE_REG, 7'h0b}: begin // com
-          regsel = 3'h3; // ~reg_data_out2
-          reg_write = REG_WRITE_DW;          
-          state_next = STATE_FETCHIR;
-        end
-        {MODE_REG, 7'h0c}: begin // neg
-          regsel = 3'h2; // -reg_data_out2
-          reg_write = REG_WRITE_DW;          
-          state_next = STATE_FETCHIR;
-        end
-        {MODE_REG, 7'h0d}: begin // cmp.s
-          case (seq)
-            4'h3: begin
-              seq_next = 4'h0;
-              ccrsel = 2'h2;
-              state_next = STATE_FETCHIR;
-            end
-            default: seq_next = seq + 1'b1;
-          endcase
-        end
-        {MODE_REG, 7'h0f}: begin // mov.l
-          regsel = 3'h4; // reg_data_out2
-          reg_write = REG_WRITE_DW;
-          state_next = STATE_FETCHIR;
-        end
-        {MODE_REG, 7'h10}: begin // cvtis
-          case (seq)
-            4'ha: begin
-              seq_next = 4'hb;
-              mdrsel = 4'h7;
-            end
-            4'hb: begin
-              seq_next = 4'h0;
-              regsel = 3'h1; // rA <= MDR
-              reg_write = REG_WRITE_DW;              
-              state_next = STATE_FETCHIR;
-            end
-            default: seq_next = seq + 1'b1;
-          endcase
-        end
-        {MODE_REG, 7'h11}: begin // cvtsi
-          case (seq)
-            4'ha: begin
-              seq_next = 4'hb;
-              mdrsel = 4'h8;
-            end
-            4'hb: begin
-              seq_next = 4'h0;
-              regsel = 3'h1; // rA <= MDR
-              reg_write = REG_WRITE_DW;              
-              state_next = STATE_FETCHIR;
-            end
-            default: seq_next = seq + 1'b1;
-          endcase
-        end
-        {MODE_REG, 7'h12}: begin // ext.b
-          regsel = 3'h6; // reg_data_out2[7:0] + extend
-          reg_write = REG_WRITE_DW;          
-          state_next = STATE_FETCHIR;
-        end
-        {MODE_REG, 7'h13}: begin // ext
-          regsel = 3'h7; // reg_data_out2[15:0] + extend
-          reg_write = REG_WRITE_DW;          
-          state_next = STATE_FETCHIR;
-        end
-        {MODE_REG, 7'h14}: begin // cli
+	end
+	4'h3: begin // cli
           interrupts_enabled_next = 1'b0;
-          state_next = STATE_FETCHIR;
-        end
-        {MODE_REG, 7'h15}: begin // sti
+	  state_next = S_FETCH;
+	end
+	4'h4: begin // sti
           interrupts_enabled_next = 1'b1;
-          state_next = STATE_FETCHIR;
-        end
-        {MODE_REG, 7'h16}: begin // mov.b
-          regsel = 3'h4; // reg_data_out2
-          reg_write = REG_WRITE_8;
-          state_next = STATE_FETCHIR;
-        end
-        {MODE_REG, 7'h1c}: begin // sqrt.s
-          case (seq)
-            5'h11: begin
-              seq_next = 5'h12;
-              mdrsel = 4'hc; // MDR <= fp_sqrt
-            end
-            5'h12: begin
-              seq_next = 5'h0;
-              regsel = 3'h1; // rA <= MDR
-              reg_write = REG_WRITE_DW;              
-              state_next = STATE_FETCHIR;
-            end
-            default: seq_next = seq + 1'b1;
-          endcase
-        end
-        {MODE_REG, 7'h2x}: begin // alu rA <= rB + rC
-          alu_func = ir_op[2:0];
-          reg_read_addr1 = ir_rb;
-          reg_read_addr2 = ir_rc;
-          case (seq)
-            3'h0: seq_next = 3'h1;
-            3'h1: begin
-              reg_write = REG_WRITE_DW;
-              seq_next = 3'h0;
-              state_next = STATE_FETCHIR;
-            end
-            default: state_next = STATE_HALT;
-          endcase
-        end
-        {MODE_REG, 7'h3x}: begin // [un]signed rA <= rB * / % rC
-          reg_read_addr1 = ir_rb;
-          reg_read_addr2 = ir_rc;
-          case (seq)
-            4'hc: begin
-              if (ir_op[3])
-                mdrsel = 4'h5; // MDR <= intout[63:32]
-              else
-                mdrsel = 4'h4; // MDR <= intout[31:0]
-              seq_next = 4'hd;
-            end
-            4'hd: begin
-              seq_next = 4'h0;
-              regsel = 3'h1; // rA <= MDR
-              reg_write = REG_WRITE_DW;              
-              state_next = STATE_FETCHIR;
-            end
-            default: seq_next = seq + 1'b1;
-          endcase
-        end
-        {MODE_REG, 7'h4x}: begin // fp math
-          reg_read_addr1 = ir_rb;
-          reg_read_addr2 = ir_rc;
-          case (seq)
-            5'h0: begin
-              case (ir_op)
-                7'h40: seq_next = 5'ha;
-                7'h41: seq_next = 5'ha;
-                7'h42: seq_next = 5'h8;
-                7'h43: seq_next = 5'h9;
-                default: seq_next = 5'h0;
-              endcase
-            end
-            5'h2: begin
-              seq_next = 5'h1;
-              case (ir_op)
-                7'h40: begin
-                  mdrsel = 4'h9; // MDR <= fp_addsub
-                  fpccrsel = 2'h1;
-                end
-                7'h41: begin
-                  mdrsel = 4'h9; // MDR <= fp_addsub
-                  fpccrsel = 2'h1;
-                end
-                7'h42: begin
-                  mdrsel = 4'ha; // MDR <= fp_mult
-                  fpccrsel = 2'h2;
-                end
-                7'h43: begin
-                  mdrsel = 4'hb; // MDR <= fp_div
-                  fpccrsel = 2'h3;
-                end
-                default: mdrsel = 4'h0;
-              endcase
-            end
-            5'h1: begin
-              seq_next = 5'h0;
-              regsel = 3'h1; // fp_rA <= MDR
-              reg_write = REG_WRITE_DW;
-              state_next = STATE_FETCHIR;
-            end
-            default: seq_next = seq - 1'b1;
-          endcase
-        end
-        {MODE_IMM, 7'h00}: begin // bra
-          state_next = STATE_FETCHIR;
-          pcsel = 3'h3; // relbranch
-        end
-        {MODE_IMM, 7'h01}: begin // beq
-          state_next = STATE_FETCHIR;
-          if (ccr_eq)
-            pcsel = 3'h3;
-        end
-        {MODE_IMM, 7'h02}: begin // bne
-          state_next = STATE_FETCHIR;
-          if (~ccr_eq)
-            pcsel = 3'h3;
-        end
-        {MODE_IMM, 7'h04}: begin // bgt
-          state_next = STATE_FETCHIR;
-          if (~(ccr_lt | ccr_eq))
-            pcsel = 3'h3;
-        end
-        {MODE_IMM, 7'h05}: begin // bge
-          state_next = STATE_FETCHIR;
-          if (~ccr_lt)
-            pcsel = 3'h3;
-        end
-        {MODE_IMM, 7'h06}: begin // ble
-          state_next = STATE_FETCHIR;
-          if (ccr_lt | ccr_eq)
-            pcsel = 3'h3;
-        end
-        {MODE_IMM, 7'h07}: begin // blt
-          state_next = STATE_FETCHIR;
-          if (ccr_lt)
-            pcsel = 3'h3;
-        end
-        {MODE_IMM, 7'h03}: begin // bgtu
-          state_next = STATE_FETCHIR;
-          if (~(ccr_ltu | ccr_eq))
-            pcsel = 3'h3;
-        end
-        {MODE_IMM, 7'h08}: begin // bgeu
-          state_next = STATE_FETCHIR;
-          if (~ccr_ltu)
-            pcsel = 3'h3;
-        end
-        {MODE_IMM, 7'h09}: begin // bltu
-          state_next = STATE_FETCHIR;
-          if (ccr_ltu)
-            pcsel = 3'h3;
-        end
-        {MODE_IMM, 7'h0a}: begin // bleu
-          state_next = STATE_FETCHIR;
-          if (ccr_ltu | ccr_eq)
-            pcsel = 3'h3;
-        end
-        {MODE_IMM, 7'h0b}: begin // brn
-          state_next = STATE_FETCHIR;
-        end
-        {MODE_IMM, 7'h0c}: begin // ldiu
-          regsel = 3'h5; // rA <= unsigned 16bit
-          reg_write = REG_WRITE_DW;
-          state_next = STATE_FETCHIR;
-        end
-        {MODE_REGIND, 7'h00}: begin // st.l
-          addrsel = 1'b1; // MAR
-          case (seq)
-            3'h0: begin
-              reg_read_addr1 = ir_rb;
-              alu2sel = 2'h1; // aluval <= rB + ir_sval
-              seq_next = 3'h1;
-            end
-            3'h1: begin
-              marsel = 2'h2; // mar <= aluval
-              mdrsel = 4'h3; // MDR <= rA
-              seq_next = 3'h2;
-            end
-            3'h2: begin
-              bus_write = 1'b1; //  databus <= MDR
-              bus_cyc = 1'b1;
-              if (bus_ack)
-                seq_next = 3'h3;
-            end
-            3'h3: begin
-              state_next = STATE_FETCHIR;
-              seq_next = 3'h0;
-            end
-            default: state_next = STATE_HALT;
-          endcase
-        end
-        {MODE_REGIND, 7'h02}: begin // st
-          addrsel = 1'b1; // MAR
-          byteenable = (bus_align[1] ? 4'b0011 : 4'b1100);
-          case (seq)
-            3'h0: begin
-              reg_read_addr1 = ir_rb;
-              alu2sel = 2'h1; // aluval <= rB + ir_sval
-              seq_next = 3'h1;
-            end
-            3'h1: begin
-              marsel = 2'h2; // mar <= aluval
-              mdrsel = 4'h3; // MDR <= rA (with bytelanes)
-              seq_next = 3'h2;
-            end
-            3'h2: begin
-              bus_cyc = 1'b1;
-              bus_write = 1'b1;
-              if (bus_ack)
-                seq_next = 3'h3;
-            end
-            3'h3: begin
-              state_next = STATE_FETCHIR;
-              seq_next = 3'h0;
-            end
-            default: state_next = STATE_HALT;
-          endcase
-        end
-        {MODE_REGIND, 7'h04}: begin // st.b
-          addrsel = 1'b1; // MAR
-          case (bus_align[1:0])
-            2'b00: byteenable = 4'b1000;
-            2'b01: byteenable = 4'b0100;
-            2'b10: byteenable = 4'b0010;
-            2'b11: byteenable = 4'b0001;
-          endcase
-          case (seq)
-            3'h0: begin
-              reg_read_addr1 = ir_rb;
-              alu2sel = 2'h1; // aluval <= rB + ir_sval
-              seq_next = 3'h1;
-            end
-            3'h1: begin
-              marsel = 2'h2; // mar <= aluval
-              mdrsel = 4'h3; // MDR <= rA
-              seq_next = 3'h2;
-            end
-            3'h2: begin
-              bus_write = 1'b1; // addrbus <= MAR
-              bus_cyc = 1'b1;
-              if (bus_ack)
-                seq_next = 3'h3;
-            end
-            3'h3: begin
-              state_next = STATE_FETCHIR;
-              seq_next = 3'h0;
-            end
-            default: state_next = STATE_HALT;
-          endcase
-        end
-        {MODE_REGIND, 7'h01}: begin // ld.l
-          addrsel = 1'b1; // MAR
-          case (seq)
-            3'h0: begin
-              reg_read_addr1 = ir_rb;
-              alu2sel = 2'h1; // aluval <= rB + ir_sval
-              seq_next = 3'h1;
-            end
-            3'h1: begin
-              marsel = 2'h2; // mar <= aluval
-              seq_next = 3'h2;
-            end
-            3'h2: begin
-              bus_cyc = 1'b1;
-              mdrsel = 4'h1; // MDR <= databus
-              if (bus_ack)
-                seq_next = 3'h3;
-            end
-            3'h3: begin
-              regsel = 3'h1; // rA <= MDR
-              reg_write = REG_WRITE_DW;
-              seq_next = 3'h4;
-            end
-            3'h4: begin
-              seq_next = 3'h0;
-              state_next = STATE_FETCHIR;
-            end
-            default: state_next = STATE_HALT;
-          endcase
-        end
-        {MODE_REGIND, 7'h03}: begin // ld
-          addrsel = 1'b1; // MAR
-          case (seq)
-            3'h0: begin
-              reg_read_addr1 = ir_rb;
-              alu2sel = 2'h1; // aluval <= rB + ir_sval
-              seq_next = 3'h1;
-            end
-            3'h1: begin
-              marsel = 2'h2; // mar <= aluval
-              seq_next = 3'h2;
-            end
-            3'h2: begin
-              bus_cyc = 1'b1;
-              byteenable = (bus_align[1] ? 4'b0011 : 4'b1100);
-              mdrsel = 4'h1; // MDR <= databus
-              if (bus_ack)
-                seq_next = 3'h3;
-            end
-            3'h3: begin
-              regsel = 3'h1; // rA <= MDR
-              reg_write = REG_WRITE_DW;
-              seq_next = 3'h4;
-            end
-            3'h4: begin
-              seq_next = 3'h0;
-              state_next = STATE_FETCHIR;
-            end
-            default: state_next = STATE_HALT;
-          endcase
-        end
-        {MODE_REGIND, 7'h05}: begin // ld.b
-          addrsel = 1'b1; // MAR
-          case (seq)
-            3'h0: begin
-              reg_read_addr1 = ir_rb;
-              alu2sel = 2'h1; // aluval <= rB + ir_sval
-              seq_next = 3'h1;
-            end
-            3'h1: begin
-              marsel = 2'h2; // mar <= aluval
-              seq_next = 3'h2;
-            end
-            3'h2: begin
-              bus_cyc = 1'b1;
-              case (bus_align[1:0])
-                2'b00: byteenable = 4'b1000;
-                2'b01: byteenable = 4'b0100;
-                2'b10: byteenable = 4'b0010;
-                2'b11: byteenable = 4'b0001;
-              endcase
-              mdrsel = 4'h1; // MDR <= databus
-              if (bus_ack)
-                seq_next = 3'h3;
-            end
-            3'h3: begin
-              regsel = 3'h1; // rA <= MDR
-              reg_write = REG_WRITE_DW;
-              seq_next = 3'h4;
-            end
-            3'h4: begin
-              seq_next = 3'h0;
-              state_next = STATE_FETCHIR;
-            end
-            default: state_next = STATE_HALT;
-          endcase
-        end
-        {MODE_REGIND, 7'h09}: begin // jmp
-          case (seq)
-            3'h0: begin
-              reg_read_addr1 = ir_rb;
-              alu2sel = 2'h1; // aluval <= rB + ir_sval
-              seq_next = 3'h1;
-            end
-            3'h1: begin
-              pcsel = 3'h4; // PC <= aluval
-              seq_next = 3'h0;
-              state_next = STATE_FETCHIR;
-            end
-            default: state_next = STATE_HALT;
-          endcase
-        end
-        {MODE_REGIND, 7'h0a}: begin // jsr
-          case (seq)
-            3'h0: begin
-              reg_read_addr1 = ir_rb;
-              alu2sel = 2'h1; // aluval <= rB + ir_sval
-              seq_next = 3'h1;
-            end
-            3'h1: begin
-              alu2sel = 2'h2; // aluout <= SP - 'h4
-              alu_func = 3'h3; // -
-              reg_read_addr1 = REG_SP; // SP
-              mdrsel = 4'h6; // MDR <= PC
-              pcsel = 3'h4; // PC <= aluval
-              seq_next = 3'h2;
-            end
-            3'h2: begin
-              marsel = 2'h2; // mar <= aluout
-              reg_write_addr = REG_SP; // SP <= aluout
-              reg_write = REG_WRITE_DW;
-              seq_next = 3'h3;
-            end
-            3'h3: begin
-              addrsel = 1'b1; // MAR
-              bus_cyc = 1'b1;
-              bus_write = 1'b1;            
-              if (bus_ack)
-                seq_next = 3'h4;
-            end
-            3'h4: begin
-              state_next = STATE_FETCHIR;
-              seq_next = 3'h0;
-            end
-            default: state_next = STATE_HALT;
-          endcase
-        end
-        {MODE_DIR, 7'h0x}: begin // alu rA <= rB + 0x1234
-          alu_func = ir_op[2:0];
-          reg_read_addr1 = ir_rb;
-          alu2sel = 2'h1; // sval
-          case (seq)
-            3'h0: seq_next = 3'h1;
-            3'h1: begin
-              reg_write = REG_WRITE_DW; // rA <= aluout
-              seq_next = 3'h0;
-              state_next = STATE_FETCHIR;
-            end
-            default: state_next = STATE_HALT;
-          endcase
-        end
-        {MODE_DIR, 7'h1x}: state_next = STATE_FETCHARG;
-        {MODE_DIR, 7'h2x}: begin // [un]signed rA <= rB * / % 0x1234
-          reg_read_addr1 = ir_rb;
-          int2sel = 1'h1; // sval
-          case (seq)
-            'h6: begin
-              if (ir_op[3])
-                mdrsel = 4'h5; // MDR <= intout[63:32]
-              else
-                mdrsel = 4'h4; // MDR <= intout[31:0]
-              seq_next = 3'h7;
-            end
-            'h7: begin
-              seq_next = 3'h0;
-              regsel = 3'h1; // rA <= MDR
-              reg_write = REG_WRITE_DW;              
-              state_next = STATE_FETCHIR;
-            end
-            default: seq_next = seq + 1'b1;
-          endcase
-        end
-        {MODE_DIR, 7'h30}: state_next = STATE_FETCHARG;
-        {MODE_DIR, 7'h31}: state_next = STATE_FETCHARG;
-        {MODE_DIR, 7'h32}: begin // trap
-          exception_next = { 1'b1, ir_uval[2:0] }; // upper 8 are swi
-          state_next = STATE_EXCEPTION;
-        end
-        {MODE_DIR, 7'h33}: state_next = STATE_FETCHARG; // setint
-        default: begin
-          exception_next = 4'h3; // bad opcode
-          state_next = STATE_EXCEPTION;
-        end
+	  state_next = S_FETCH;
+	end
+  default: state_next = S_HALT;
+      endcase // case (ip_op)
+    end // case: S_INH
+    S_RELADDR: begin
+      // jsr only
+      reg_read_addr1 = ir_rb;
+      a_write = 1'b1; // A <= rB
+      state_next = S_RELADDR2;
+    end
+    S_RELADDR2: begin
+      alu2sel = ALU_SVAL;
+      state_next = S_PUSH2;
+    end
+    S_PUSH: begin // push, jsrd, jsr
+      b_write = 1'b1; // B <= rA
+      reg_read_addr2 = ir_ra;
+      state_next = S_PUSH2;
+    end
+    S_PUSH2: begin
+      casex ({ir_size,ir_op})
+	5'h11: begin // jsrd
+	  mdrsel = MDR_PC;
+	  pcsel = PC_MAR;
+	end
+	5'h01: begin // jsr
+	  mdrsel = MDR_PC;
+	  pcsel = PC_ALU;
+	end
+	default: begin
+	  mdrsel = MDR_B;
+	end
+      endcase // casex ({ir_size,ir_op})
+      a_write = 1'b1; // A <= SP
+      reg_read_addr1 = REG_SP; // SP
+      state_next = S_PUSH3;
+    end
+    S_PUSH3: begin
+      alu2sel = ALU_4;
+      alu_func = ALU_SUB;
+      state_next = S_PUSH4;
+    end
+    S_PUSH4: begin
+       marsel = MAR_ALU; // MAR <= aluout
+       reg_write_addr = REG_SP; // SP <= aluout
+       reg_write = REG_WRITE_DW;
+       state_next = S_PUSH5;
+    end
+    S_PUSH5: begin
+       addrsel = ADDR_MAR;
+       bus_cyc = 1'b1;
+       bus_write = 1'b1;            
+       if (bus_ack)
+         state_next = S_TERM;
+    end
+    S_POP: begin // pop
+      reg_read_addr1 = REG_SP;
+      a_write = 1'b1;
+      state_next = S_POP2;
+    end
+    S_POP2: begin
+      alu2sel = ALU_4;
+      marsel = MAR_A;
+      state_next = S_POP3;
+    end
+    S_POP3: begin
+      reg_write = REG_WRITE_DW; // SP <= aluout
+      reg_write_addr = REG_SP;
+      case (ir_op)
+	4'h0: state_next = S_POP4;
+	default: state_next = S_RTS;
       endcase
     end
-    STATE_FETCHARG: begin
-      case (seq)
-        3'h0: begin
-          bus_cyc = 1'b1;
-          marsel = 2'h1; // mar <= busdata
-          mdrsel = 4'h1 ; // mdr <= busdata
-          if (bus_ack) // wait until we get control of bus
-            seq_next = 3'h1;
-        end
-        3'h1: begin
-          pcsel = 2'b1; // move PC forward
-          seq_next = 3'b0;
-          state_next = STATE_EVALARG;
-        end
-        default: state_next = STATE_HALT;
-      endcase
+    S_POP4: begin
+      addrsel = ADDR_MAR;
+      bus_cyc = 1'b1;
+      mdrsel = MDR_BUS;
+      if (bus_ack)
+        state_next = S_MDR2RA;
     end
-    STATE_EVALARG: begin
-      casex (ir_op)
-        7'h10: begin // std.l
-          addrsel = 1'b1; // MAR
-          case (seq)
-            3'h0: begin
-              mdrsel = 4'h3; // MDR <= rA
-              seq_next = 3'h1;
-            end
-            3'h1: begin
-              bus_write = 1'b1; //  addrbus <= MAR
-              bus_cyc = 1'b1;
-              if (bus_ack)
-                seq_next = 3'h2;
-            end
-            3'h2: begin
-              state_next = STATE_FETCHIR;
-              seq_next = 3'h0;
-            end
-            default: state_next = STATE_HALT;
-          endcase
-        end
-        7'h11: begin // ldd.l
-          addrsel = 1'b1; // MAR
-          case (seq)
-            3'h0: begin // allow address to settle
-              seq_next = 3'h1;
-            end
-            3'h1: begin
-              bus_cyc = 1'b1;
-              mdrsel = 4'h1; // MDR <= databus
-              if (bus_ack)
-                seq_next = 3'h2;
-            end
-            3'h2: begin
-              regsel = 3'h1; // rA <= MDR
-              reg_write = REG_WRITE_DW;
-              seq_next = 3'h3;
-            end
-            3'h3: begin
-              seq_next = 3'h0;
-              state_next = STATE_FETCHIR;
-            end
-            default: state_next = STATE_HALT;
-          endcase
-        end
-        7'h12: begin // std
-          addrsel = 1'b1; // MAR
-          byteenable = (bus_align[1] ? 4'b0011 : 4'b1100);
-          case (seq)
-            3'h0: begin
-              mdrsel = 4'h3; // MDR <= rA (with bytelanes)
-              seq_next = 3'h1;
-            end
-            3'h1: begin
-              bus_write = 1'b1;
-              bus_cyc = 1'b1;
-              if (bus_ack)
-                seq_next = 3'h2;
-            end
-            3'h2: begin
-              state_next = STATE_FETCHIR;
-              seq_next = 3'h0;
-            end
-            default: state_next = STATE_HALT;
-          endcase
-        end
-        7'h13: begin // ldd
-          addrsel = 1'b1; // MAR
-          case (seq)
-            3'h0: begin
-              bus_cyc = 1'b1;
-              byteenable = (bus_align[1] ? 4'b0011 : 4'b1100);
-              mdrsel = 4'h1; // MDR <= databus
-              if (bus_ack)
-                seq_next = 3'h1;
-            end
-            3'h1: begin
-              regsel = 3'h1; // rA <= MDR
-              reg_write = REG_WRITE_DW;
-              seq_next = 3'h2;
-            end
-            3'h2: begin
-              seq_next = 3'h0;
-              state_next = STATE_FETCHIR;
-            end
-            default: state_next = STATE_HALT;
-          endcase
-        end
-        7'h14: begin // std.b
-          addrsel = 1'b1; // MAR
-          case (bus_align[1:0])
-            2'b00: byteenable = 4'b1000;
-            2'b01: byteenable = 4'b0100;
-            2'b10: byteenable = 4'b0010;
-            2'b11: byteenable = 4'b0001;
-          endcase
-          case (seq)
-            3'h0: begin
-              mdrsel = 4'h3; // MDR <= rA
-              seq_next = 3'h1;
-            end
-            3'h1: begin
-              bus_write = 1'b1; // addrbus <= MAR
-              bus_cyc = 1'b1;
-              if (bus_ack)
-                seq_next = 3'h2;
-            end
-            3'h2: begin
-              state_next = STATE_FETCHIR;
-              seq_next = 3'h0;
-            end
-            default: state_next = STATE_HALT;
-          endcase
-        end
-        7'h15: begin // ldd.b
-          addrsel = 1'b1; // MAR
-          case (seq)
-            3'h0: begin
-              bus_cyc = 1'b1;
-              case (bus_align[1:0])
-                2'b00: byteenable = 4'b1000;
-                2'b01: byteenable = 4'b0100;
-                2'b10: byteenable = 4'b0010;
-                2'b11: byteenable = 4'b0001;
-              endcase
-              mdrsel = 4'h1; // MDR <= databus
-              if (bus_ack)
-                seq_next = 3'h1;
-            end
-            3'h1: begin
-              regsel = 3'h1; // rA <= MDR
-              reg_write = REG_WRITE_DW;
-              seq_next = 3'h2;
-            end
-            3'h2: begin
-              seq_next = 3'h0;
-              state_next = STATE_FETCHIR;
-            end
-            default: state_next = STATE_HALT;
-          endcase
-        end
-        7'h18: begin // ldi
-          state_next = STATE_FETCHIR;
-          regsel = 3'h1; // rA <= MDR
-          reg_write = REG_WRITE_DW;        
-        end
-        7'h30: begin // jmpd
-          state_next = STATE_FETCHIR;
-          pcsel = 3'h2; // PC <= MAR;
-        end
-        7'h31: begin // jsrd = push PC, jmp
-          case (seq)
-            3'h0: begin
-              alu2sel = 2'h2; // aluout <= SP - 'h4
-              alu_func = 3'h3; // -
-              reg_read_addr1 = REG_SP; // SP
-              seq_next = 3'h1;
-              mdrsel = 4'h6; // MDR <= PC
-              pcsel = 3'h2; // PC <= MAR
-            end
-            3'h1: begin
-              marsel = 2'h2; // mar <= aluout
-              reg_write_addr = REG_SP; // SP <= aluout
-              reg_write = REG_WRITE_DW;
-              seq_next = 3'h2;
-            end
-            3'h2: begin
-              addrsel = 1'b1; // MAR
-              bus_cyc = 1'b1;
-              bus_write = 1'b1;            
-              if (bus_ack)
-                seq_next = 3'h3;
-            end
-            3'h3: begin
-              addrsel = 1'b1;
-              seq_next = 3'h4;
-            end
-            3'h4: begin
-              state_next = STATE_FETCHIR;
-              seq_next = 3'h0;
-            end
-            default: state_next = STATE_HALT;
-          endcase
-        end
-        7'h33: begin // setint
-          vectoff_write = 1'b1;
-          state_next = STATE_FETCHIR;  
-        end
-        default: begin
-          exception_next = 4'h3; // bad opcode
-          state_next = STATE_EXCEPTION;
-        end
-      endcase
+    S_RTS: begin // rts
+      pcsel = PC_MAR;
+      state_next = S_RTS2;
     end
-    STATE_HALT: state_next = STATE_HALT;
-    default: state_next = STATE_HALT;
-  endcase
+    S_RTS2: begin
+      marsel = MAR_BUS;
+      bus_cyc = 1'b1;
+      if (bus_ack)
+	state_next = S_RTS3;
+    end
+    S_RTS3: begin
+      pcsel = PC_MAR;
+      if (ir_op == 4'h2) begin
+        interrupts_enabled_next = 1'b1;
+        exception_next = 4'h0;
+      end
+      state_next = S_FETCH;
+    end
+    S_CMP: begin // cmp
+      a_write = 1'b1; // A <= rA
+      b_write = 1'b1; // B <= rB
+      if (ir_op == 4'h0)
+	state_next = S_CMP2;
+      else
+	state_next = S_CMPS;
+    end
+    S_CMP2: begin
+      alu_func = ALU_SUB;
+      state_next = S_CMP3;
+    end
+    S_CMP3: begin
+      alu_func = ALU_SUB; // hold so we select the correct CCR value TODO fix
+      ccrsel = 2'h1;
+      state_next = S_FETCH;
+    end
+    S_CMPS: state_next = S_CMPS2; // cmp.s
+    S_CMPS2: state_next = S_CMPS3;
+    S_CMPS3: begin
+      ccrsel = CCR_FPU;
+      state_next = S_FETCH;
+    end
+    S_MOV: begin // mov, mov.l, mov.b
+      reg_read_addr2 = ir_rb;
+      b_write = 1'b1; // B <= rB
+      state_next = S_MOV2;
+    end
+    S_MOV2: begin
+      regsel = REG_B;
+      reg_write = ir_op[1:0];
+      state_next = S_FETCH;
+    end
+    S_INTU: begin
+      reg_read_addr2 = ir_rb;
+      b_write = 1'b1; // B <= rB
+      state_next = S_INTU2;
+    end
+    S_INTU2: begin
+      int2sel = INT2_B;
+      int_func = ir_op;
+      mdrsel = MDR_INT;
+      state_next = S_MDR2RA;
+    end
+    S_FPU: begin
+      reg_read_addr2 = ir_rb;
+      b_write = 1'b1; // B <= rB
+      delay_next = 8'h11;
+      state_next = S_FP2;
+    end
+    S_FP: begin
+      reg_read_addr1 = ir_rb;
+      a_write = 1'b1; // A <= rB
+      reg_read_addr2 = ir_rc;
+      b_write = 1'b1; // B <= rC
+      delay_next = 8'ha;
+      state_next = S_FP2;
+    end
+    S_FP2: begin
+      fpu_func = ir_op[2:0];
+      mdrsel = MDR_FPU;
+      if (delay == 8'h00)
+        state_next = S_MDR2RA;
+    end
+    S_MDR2RA: begin
+      regsel = REG_MDR; // rA <= MDR
+      reg_write = REG_WRITE_DW;
+      state_next = S_FETCH;
+    end
+    S_ALU: begin
+      reg_read_addr1 = ir_rb;
+      a_write = 1'b1; // A <= rB
+      reg_read_addr2 = ir_rc;
+      b_write = 1'b1; // B <= rC
+      if (ir_op[3])
+	state_next = S_ALU3;
+      else
+	state_next = S_ALU2;
+    end
+    S_ALU2: begin
+      alu_func = ir_op[2:0];
+      state_next = S_ALU4;
+    end
+    S_ALU3: begin
+      alu_func = ir_op[2:0];
+      alu2sel = ALU_SVAL;
+      state_next = S_ALU4;
+    end
+    S_ALU4: begin
+      mdrsel = MDR_ALU;
+      state_next = S_MDR2RA;
+    end
+    S_INT: begin
+      reg_read_addr1 = ir_rb;
+      a_write = 1'b1; // A <= rB
+      reg_read_addr2 = ir_rc;
+      b_write = 1'b1; // B <= rC
+      delay_next = 8'hc;
+      if (ir_op[3])
+	state_next = S_INT3;
+      else
+	state_next = S_INT2;
+    end
+    S_INT2: begin
+      int_func = { 1'b0, ir_op[2:0] };
+      mdrsel = MDR_INT;
+      if (delay == 8'h00)
+        state_next = S_MDR2RA;
+    end
+    S_INT3: begin
+      int2sel = INT2_SVAL;
+      int_func = { 1'b0, ir_op[2:0] };
+      mdrsel = MDR_INT;
+      if (delay == 8'h00)
+        state_next = S_MDR2RA;
+    end
+    S_BRANCH: begin
+      case (ir_op)
+	4'h0: pcsel = PC_REL; // bra
+	4'h1: if (ccr_eq) pcsel = PC_REL; // beq
+	4'h2: if (~ccr_eq) pcsel = PC_REL; // bne
+	4'h3: if (~(ccr_ltu | ccr_eq)) pcsel = PC_REL; // bgtu
+	4'h4: if (~(ccr_lt | ccr_eq)) pcsel = PC_REL; // bgt
+	4'h5: if (~ccr_lt) pcsel = PC_REL; // bge
+	4'h6: if (ccr_lt | ccr_eq) pcsel = PC_REL; // ble
+	4'h7: if (ccr_lt) pcsel = PC_REL; // blt
+	4'h8: if (~ccr_ltu) pcsel = PC_REL; // bgeu
+	4'h9: if (ccr_ltu) pcsel = PC_REL; // bltu
+	4'ha: if (ccr_ltu | ccr_eq) pcsel = PC_REL; // bleu
+	default: pcsel = PC_PC; // brn
+      endcase // case (ir_op)
+      state_next = S_FETCH;
+    end
+    S_LDIU: begin
+      regsel = REG_UVAL;
+      reg_write = REG_WRITE_DW;
+      state_next = S_FETCH;
+    end
+    S_JUMP: begin
+      reg_read_addr1 = ir_rb;
+      a_write = 1'b1;
+      state_next = S_JUMP2;
+    end 
+    S_JUMP2: begin
+      alu2sel = ALU_SVAL;
+      state_next = S_JUMP3;
+    end
+    S_JUMP3: begin
+      pcsel = PC_ALU;
+      state_next = S_FETCH;
+    end    
+    S_LOAD: begin
+      reg_read_addr1 = ir_rb;
+      a_write = 1'b1; // A <= rB
+      state_next = S_LOAD2;
+    end
+    S_LOAD2: begin
+      alu2sel = ALU_SVAL;
+      state_next = S_LOAD3;
+    end
+    S_LOAD3: begin
+      marsel = MAR_ALU;
+      state_next = S_LOADD;
+    end
+    S_LOADD: begin
+      addrsel = ADDR_MAR;
+      bus_cyc = 1'b1;
+      mdrsel = MDR_BUS;
+      if (ir_op[1:0] == 2'h1)
+	byteenable = (bus_align[1] ? 4'b0011 : 4'b1100);
+      else if (ir_op[1:0] == 2'h2)
+	case (bus_align[1:0])
+          2'b00: byteenable = 4'b1000;
+          2'b01: byteenable = 4'b0100;
+          2'b10: byteenable = 4'b0010;
+          2'b11: byteenable = 4'b0001;
+        endcase
+      if (bus_ack)
+	state_next = S_MDR2RA;
+    end
+    S_STORE: begin
+      reg_read_addr1 = ir_rb;
+      a_write = 1'b1; // A <= rB
+      state_next = S_STORE2;
+    end
+    S_STORE2: begin
+      alu2sel = ALU_SVAL;
+      a_write = 1'b1; // A <= rA
+      state_next = S_STORE3;
+    end
+    S_STORE3: begin
+      marsel = MAR_ALU;
+      mdrsel = MDR_A;
+      state_next = S_STORE4;
+    end
+    S_STORED: begin
+      a_write = 1'b1;
+      state_next = S_STORED2;
+    end
+    S_STORED2: begin
+      mdrsel = MDR_A;
+      state_next = S_STORE4;
+    end
+    S_STORE4: begin // MAR has address, MDR value
+      addrsel = ADDR_MAR;
+      bus_cyc = 1'b1;
+      bus_write = 1'b1;
+      if (ir_op[1:0] == 2'h1)
+	byteenable = (bus_align[1] ? 4'b0011 : 4'b1100);
+      else if (ir_op[1:0] == 2'h2)
+	case (bus_align[1:0])
+          2'b00: byteenable = 4'b1000;
+          2'b01: byteenable = 4'b0100;
+          2'b10: byteenable = 4'b0010;
+          2'b11: byteenable = 4'b0001;
+        endcase
+      if (bus_ack)
+	state_next = S_TERM;
+    end
+    S_HALT: state_next = S_HALT;
+  endcase // case (state)
 end
-
+  
 endmodule

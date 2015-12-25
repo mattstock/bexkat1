@@ -8,15 +8,15 @@
 #include "misc.h"
 
 unsigned char *vga = (unsigned char *)0xc0000000;
-unsigned int *vga_p = (unsigned int *)0xc0400000;
-unsigned int *sw = (unsigned *)0x20000810;
+unsigned int *vga_p = (unsigned int *)0x80000000;
+unsigned int *sw = (unsigned *)0x30000810;
 
 void vga_pallette(unsigned char idx, unsigned int color) {
   vga_p[idx] = color;
 }
 
 void vga_point(int x, int y, unsigned char val) {
-  vga[y*640+x] = val;
+  vga[y*320+x] = val;
 }
 
 void mandelbrot(float cx, float cy, float scale) {
@@ -26,9 +26,9 @@ void mandelbrot(float cx, float cy, float scale) {
   float a1,b1,a2,b2;
   float res,asq,bsq;
 
-  for (x=-320; x < 320; x++) {
+  for (x=-160; x < 160; x++) {
     ax = cx+x*scale;
-    for (y=-240; y < 240; y++) {
+    for (y=-120; y < 120; y++) {
       ay = cy+y*scale;
       a1 = ax;
       b1 = ay;
@@ -44,9 +44,9 @@ void mandelbrot(float cx, float cy, float scale) {
         res = a1*a1 + b1*b1;
       } while ((lp <= 255) && (res <= limit) && (fpclassify(res) != FP_INFINITE));
       if (lp > 255)
-        vga_point(x+320, y+240, 0);
+        vga_point(x+160, y+120, 0);
       else
-        vga_point(x+320, y+240, lp);
+        vga_point(x+160, y+120, lp);
     }
   }
 }
