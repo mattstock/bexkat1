@@ -4,9 +4,14 @@
 
 void main(void) {
   int i;
+  float f;
 
-  for (i = 0 ; i < 100; i++) 
-    printf("i = %i (%08x)\n", i, i);
-  while (1);
+  while (1) {
+    iprintf("Pick a float: ");
+    scanf("%f", &f);
+    printf("%f * %f = %f\n", f, f, f*f);
+    printf("%f / 3.0 = %f\n", f, f/3.0f);
+    printf("%f / 1.5 = %f\n", f, f/1.5f);
+  }
 }
  

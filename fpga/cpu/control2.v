@@ -177,6 +177,7 @@ begin
 	  T_INTU: state_next = S_INTU;
           T_INT: state_next = S_INT;
           T_FPU: state_next = S_FPU;
+          T_FP: state_next = S_FP;
           T_ALU: state_next = S_ALU;
           T_LDI: state_next = S_LDIU;
           T_LOAD: state_next = S_LOAD;

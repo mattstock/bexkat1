@@ -97,7 +97,7 @@ begin
   state_next = state;
   idx_next = idx;
   rowval_next = rowval;
-  master_adr_o = 32'hc0000000;
+  master_adr_o = VIDMEM;
   map_idx_next = map_idx;
   slave_state_next = slave_state;
   y_double_next = y_double;
