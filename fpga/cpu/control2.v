@@ -255,6 +255,10 @@ begin
 	  mdrsel = MDR_PC;
 	  pcsel = PC_ALU;
 	end
+  5'h02: begin // bsr
+    mdrsel = MDR_PC;
+    pcsel = PC_REL;
+  end
 	default: begin
 	  mdrsel = MDR_B;
 	end

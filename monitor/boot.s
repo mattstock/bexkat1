@@ -4,7 +4,7 @@ ldi %sp, 0x08000000
 ldi %0, _erodata
 ldi %1, _data
 ldi %2, _edata
-jmpd .LC3
+bra .LC3
 .LC2:
 ld.l %3, (%0)
 addi %0, %0, 4
@@ -16,7 +16,7 @@ bltu .LC2
 ldi %0, _bstart
 ldi %1, _bend
 ldi %2, 0
-jmpd .LC4
+bra .LC4
 .LC5:
 st.l %2, (%0)
 addi %0, %0, 4
