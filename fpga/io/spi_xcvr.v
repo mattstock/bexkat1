@@ -1,6 +1,6 @@
 module spi_xcvr(
-  input clock,
-  input reset_n,
+  input clk_i,
+  input rst_i,
   input [15:0] conf,
   input start,
   output [7:0] rx,
@@ -35,9 +35,9 @@ wire speedselect, cpol, cpha;
 assign {speedselect, cpol, cpha} = conf[2:0];
 assign maxval = (speedselect ? clockfreq/hispeed : clockfreq/lospeed);
 
-always @(posedge clock or negedge reset_n)
+always @(posedge clk_i or posedge rst_i)
 begin
-  if (!reset_n) begin
+  if (rst_i) begin
     state <= STATE_IDLE;
     buffer <= 8'h00;
     sclk <= 1'b0;
@@ -50,7 +50,7 @@ begin
   end
 end
 
-always @(posedge clock)
+always @(posedge clk_i)
 begin
   spiclk = 1'b0;
   if (state != 4'h0)

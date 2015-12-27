@@ -518,19 +518,11 @@ set_location_assignment PIN_AG26 -to gen_mosi
 set_location_assignment PIN_AG28 -to gen_sclk
 set_location_assignment PIN_AH25 -to sd_sclk
 set_location_assignment PIN_Y21 -to gen_miso
-set_location_assignment PIN_A27 -to extsd_ss
-set_location_assignment PIN_A28 -to touch_ss
-set_location_assignment PIN_A19 -to touch_irq
-set_location_assignment PIN_A25 -to itd_backlight
-set_location_assignment PIN_A26 -to itd_dc
 set_location_assignment PIN_G23 -to rst_n
 set_location_assignment PIN_G22 -to rtc_ss
-set_location_assignment PIN_B30 -to itd_ss
 set_location_assignment PIN_G20 -to rtc_sclk
 set_location_assignment PIN_F22 -to rtc_miso
 set_location_assignment PIN_G24 -to rtc_mosi
-set_location_assignment PIN_F23 -to joy_ss
-set_location_assignment PIN_E21 -to joy_pb
 set_location_assignment PIN_F18 -to matrix0[2]
 set_location_assignment PIN_D19 -to matrix0[1]
 set_location_assignment PIN_K21 -to matrix0[0]
@@ -549,7 +541,7 @@ set_location_assignment PIN_F17 -to ps2mouse_clk
 set_location_assignment PIN_D18 -to ps2mouse_data
 set_global_assignment -name VERILOG_INCLUDE_FILE cpu/bexkat2.vh
 set_global_assignment -name VERILOG_FILE cpu/fpu.v
-set_global_assignment -name VERILOG_FILE ps2_kbd.v
+set_global_assignment -name VERILOG_FILE io/ps2_kbd.v
 set_global_assignment -name VERILOG_FILE cpu/registerfile2.v
 set_global_assignment -name VERILOG_FILE cpu/intcalc2.v
 set_global_assignment -name VERILOG_FILE cpu/alu2.v
@@ -560,14 +552,12 @@ set_global_assignment -name QIP_FILE vgalinebuf.qip
 set_global_assignment -name VERILOG_FILE vga_controller.v
 set_global_assignment -name VERILOG_FILE sdram_controller.v
 set_global_assignment -name VERILOG_FILE mmu.v
-set_global_assignment -name VERILOG_FILE spi_xcvr.v
-set_global_assignment -name VERILOG_FILE lcd_module.v
-set_global_assignment -name VERILOG_FILE baudgen.v
-set_global_assignment -name VERILOG_FILE uart_rx.v
-set_global_assignment -name VERILOG_FILE uart.v
-set_global_assignment -name VERILOG_FILE uart_tx.v
-set_global_assignment -name VERILOG_FILE scratch.v
-set_global_assignment -name QIP_FILE scratch.qip
+set_global_assignment -name VERILOG_FILE io/spi_xcvr.v
+set_global_assignment -name VERILOG_FILE io/lcd_module.v
+set_global_assignment -name VERILOG_FILE io/baudgen.v
+set_global_assignment -name VERILOG_FILE io/uart_rx.v
+set_global_assignment -name VERILOG_FILE io/uart.v
+set_global_assignment -name VERILOG_FILE io/uart_tx.v
 set_global_assignment -name VERILOG_FILE cpu/registerfile.v
 set_global_assignment -name VERILOG_FILE cpu/intumult.v
 set_global_assignment -name QIP_FILE cpu/intumult.qip
@@ -589,19 +579,19 @@ set_global_assignment -name SDC_FILE soc.sdc
 set_global_assignment -name VERILOG_FILE soc.v
 set_global_assignment -name VERILOG_FILE debounce.v
 set_global_assignment -name VERILOG_FILE quadenc.v
-set_global_assignment -name VERILOG_FILE hexdisp.v
+set_global_assignment -name VERILOG_FILE io/hexdisp.v
 set_global_assignment -name SIGNALTAP_FILE stp1.stp
 set_global_assignment -name VERILOG_FILE rgb_enc.v
-set_global_assignment -name CDF_FILE output_files/soc.cdf
+set_global_assignment -name CDF_FILE soc.cdf
 set_global_assignment -name QIP_FILE sysclock.qip
 set_global_assignment -name VERILOG_FILE cpu/bexkat2.v
 set_global_assignment -name HEX_FILE cpu/vectors.hex
-set_global_assignment -name VERILOG_FILE fan_ctrl.v
-set_global_assignment -name VERILOG_FILE spi_master.v
-set_global_assignment -name VERILOG_FILE iocontroller.v
+set_global_assignment -name VERILOG_FILE io/fan_ctrl.v
+set_global_assignment -name VERILOG_FILE io/spi_master.v
+set_global_assignment -name VERILOG_FILE io/iocontroller.v
 set_global_assignment -name QIP_FILE matrixpll.qip
 set_global_assignment -name QIP_FILE vectors.qip
-set_global_assignment -name QIP_FILE uart_fifo.qip
+set_global_assignment -name QIP_FILE io/uart_fifo.qip
 set_global_assignment -name QIP_FILE cpu/fp_cvtis.qip
 set_global_assignment -name QIP_FILE cpu/fp_cvtsi.qip
 set_global_assignment -name QIP_FILE cpu/fp_cmp.qip
@@ -867,14 +857,10 @@ set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_BUFFER_FULL_STOP=
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_CURRENT_RESOURCE_WIDTH=1" -section_id cpu
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INCREMENTAL_ROUTING=1" -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[4] -to cpu|gnd -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[7] -to cpu|gnd -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[8] -to cpu|gnd -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[9] -to cpu|vcc -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[12] -to cpu|vcc -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[17] -to cpu|gnd -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[18] -to cpu|gnd -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[23] -to cpu|vcc -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[24] -to cpu|gnd -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[27] -to cpu|vcc -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[31] -to cpu|gnd -section_id cpu
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_LEVEL=1" -section_id cpu
@@ -886,12 +872,8 @@ set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ENABLE_ADVANCED_T
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[3] -to cpu|vcc -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[5] -to cpu|gnd -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[19] -to cpu|vcc -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[20] -to cpu|vcc -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[21] -to cpu|gnd -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[25] -to cpu|vcc -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[11] -to cpu|gnd -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[6] -to cpu|vcc -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[13] -to cpu|gnd -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[14] -to cpu|gnd -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[26] -to cpu|vcc -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[28] -to cpu|gnd -section_id cpu
@@ -1309,23 +1291,6 @@ set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[525
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[526] -to "bexkat2:bexkat0|vectoff[8]" -section_id cpu
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[527] -to "bexkat2:bexkat0|vectoff[9]" -section_id cpu
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[528] -to "bexkat2:bexkat0|we_o" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[529] -to "mmu:mmu0|chipselect[0]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[530] -to "mmu:mmu0|chipselect[1]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[531] -to "mmu:mmu0|chipselect[2]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[532] -to "mmu:mmu0|chipselect[3]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[533] -to "sdram_controller:sdram0|state.STATE_ACTIVATE" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[534] -to "sdram_controller:sdram0|state.STATE_IDLE" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[535] -to "sdram_controller:sdram0|state.STATE_INIT_MODE" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[536] -to "sdram_controller:sdram0|state.STATE_INIT_MODE_WAIT" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[537] -to "sdram_controller:sdram0|state.STATE_INIT_PRECHARGE" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[538] -to "sdram_controller:sdram0|state.STATE_INIT_REFRESH1" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[539] -to "sdram_controller:sdram0|state.STATE_INIT_REFRESH1_WAIT" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[540] -to "sdram_controller:sdram0|state.STATE_INIT_WAIT" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[541] -to "sdram_controller:sdram0|state.STATE_PRECHARGE" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[542] -to "sdram_controller:sdram0|state.STATE_READ_WAIT" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[543] -to "sdram_controller:sdram0|state.STATE_READ_WAIT2" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[544] -to "sdram_controller:sdram0|state.STATE_REFRESH" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[545] -to "sdram_controller:sdram0|state.STATE_RW" -section_id cpu
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[116] -to "bexkat2:bexkat0|control2:con0|state.S_PUSH" -section_id cpu
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[117] -to "bexkat2:bexkat0|control2:con0|state.S_PUSH2" -section_id cpu
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[118] -to "bexkat2:bexkat0|control2:con0|state.S_PUSH3" -section_id cpu
@@ -1739,35 +1704,227 @@ set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[525] -
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[526] -to "bexkat2:bexkat0|vectoff[8]" -section_id cpu
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[527] -to "bexkat2:bexkat0|vectoff[9]" -section_id cpu
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[528] -to "bexkat2:bexkat0|we_o" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[529] -to "mmu:mmu0|chipselect[0]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[530] -to "mmu:mmu0|chipselect[1]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[531] -to "mmu:mmu0|chipselect[2]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[532] -to "mmu:mmu0|chipselect[3]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[533] -to "sdram_controller:sdram0|state.STATE_ACTIVATE" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[534] -to "sdram_controller:sdram0|state.STATE_IDLE" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[535] -to "sdram_controller:sdram0|state.STATE_INIT_MODE" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[536] -to "sdram_controller:sdram0|state.STATE_INIT_MODE_WAIT" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[537] -to "sdram_controller:sdram0|state.STATE_INIT_PRECHARGE" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[538] -to "sdram_controller:sdram0|state.STATE_INIT_REFRESH1" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[539] -to "sdram_controller:sdram0|state.STATE_INIT_REFRESH1_WAIT" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[540] -to "sdram_controller:sdram0|state.STATE_INIT_WAIT" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[541] -to "sdram_controller:sdram0|state.STATE_PRECHARGE" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[542] -to "sdram_controller:sdram0|state.STATE_READ_WAIT" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[543] -to "sdram_controller:sdram0|state.STATE_READ_WAIT2" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[544] -to "sdram_controller:sdram0|state.STATE_REFRESH" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[545] -to "sdram_controller:sdram0|state.STATE_RW" -section_id cpu
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_DATA_BITS=546" -section_id cpu
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_BITS=546" -section_id cpu
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STORAGE_QUALIFIER_BITS=546" -section_id cpu
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK=0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" -section_id cpu
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK_LENGTH=1663" -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[0] -to cpu|gnd -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[1] -to cpu|vcc -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[2] -to cpu|gnd -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[10] -to cpu|gnd -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[15] -to cpu|vcc -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[16] -to cpu|vcc -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[22] -to cpu|gnd -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[30] -to cpu|gnd -section_id cpu
+
+set_global_assignment -name QIP_FILE io/ps2_kbd_fifo.qip
+set_global_assignment -name VERILOG_FILE io/segdigits.v
+
+
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[529] -to "iocontroller:io0|state.STATE_BUSY" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[530] -to "iocontroller:io0|state.STATE_DONE" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[531] -to "iocontroller:io0|state.STATE_IDLE" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[532] -to "iocontroller:io0|uart:uart0|ack_o" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[533] -to "iocontroller:io0|uart:uart0|cyc_i" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[534] -to "iocontroller:io0|uart:uart0|dat_i[0]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[535] -to "iocontroller:io0|uart:uart0|dat_i[10]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[536] -to "iocontroller:io0|uart:uart0|dat_i[11]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[537] -to "iocontroller:io0|uart:uart0|dat_i[12]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[538] -to "iocontroller:io0|uart:uart0|dat_i[13]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[539] -to "iocontroller:io0|uart:uart0|dat_i[14]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[540] -to "iocontroller:io0|uart:uart0|dat_i[15]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[541] -to "iocontroller:io0|uart:uart0|dat_i[16]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[542] -to "iocontroller:io0|uart:uart0|dat_i[17]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[543] -to "iocontroller:io0|uart:uart0|dat_i[18]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[544] -to "iocontroller:io0|uart:uart0|dat_i[19]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[545] -to "iocontroller:io0|uart:uart0|dat_i[1]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[546] -to "iocontroller:io0|uart:uart0|dat_i[20]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[547] -to "iocontroller:io0|uart:uart0|dat_i[21]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[548] -to "iocontroller:io0|uart:uart0|dat_i[22]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[549] -to "iocontroller:io0|uart:uart0|dat_i[23]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[550] -to "iocontroller:io0|uart:uart0|dat_i[24]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[551] -to "iocontroller:io0|uart:uart0|dat_i[25]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[552] -to "iocontroller:io0|uart:uart0|dat_i[26]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[553] -to "iocontroller:io0|uart:uart0|dat_i[27]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[554] -to "iocontroller:io0|uart:uart0|dat_i[28]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[555] -to "iocontroller:io0|uart:uart0|dat_i[29]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[556] -to "iocontroller:io0|uart:uart0|dat_i[2]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[557] -to "iocontroller:io0|uart:uart0|dat_i[30]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[558] -to "iocontroller:io0|uart:uart0|dat_i[31]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[559] -to "iocontroller:io0|uart:uart0|dat_i[3]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[560] -to "iocontroller:io0|uart:uart0|dat_i[4]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[561] -to "iocontroller:io0|uart:uart0|dat_i[5]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[562] -to "iocontroller:io0|uart:uart0|dat_i[6]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[563] -to "iocontroller:io0|uart:uart0|dat_i[7]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[564] -to "iocontroller:io0|uart:uart0|dat_i[8]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[565] -to "iocontroller:io0|uart:uart0|dat_i[9]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[566] -to "iocontroller:io0|uart:uart0|dat_o[0]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[567] -to "iocontroller:io0|uart:uart0|dat_o[10]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[568] -to "iocontroller:io0|uart:uart0|dat_o[11]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[569] -to "iocontroller:io0|uart:uart0|dat_o[12]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[570] -to "iocontroller:io0|uart:uart0|dat_o[13]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[571] -to "iocontroller:io0|uart:uart0|dat_o[14]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[572] -to "iocontroller:io0|uart:uart0|dat_o[15]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[573] -to "iocontroller:io0|uart:uart0|dat_o[16]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[574] -to "iocontroller:io0|uart:uart0|dat_o[17]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[575] -to "iocontroller:io0|uart:uart0|dat_o[18]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[576] -to "iocontroller:io0|uart:uart0|dat_o[19]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[577] -to "iocontroller:io0|uart:uart0|dat_o[1]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[578] -to "iocontroller:io0|uart:uart0|dat_o[20]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[579] -to "iocontroller:io0|uart:uart0|dat_o[21]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[580] -to "iocontroller:io0|uart:uart0|dat_o[22]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[581] -to "iocontroller:io0|uart:uart0|dat_o[23]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[582] -to "iocontroller:io0|uart:uart0|dat_o[24]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[583] -to "iocontroller:io0|uart:uart0|dat_o[25]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[584] -to "iocontroller:io0|uart:uart0|dat_o[26]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[585] -to "iocontroller:io0|uart:uart0|dat_o[27]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[586] -to "iocontroller:io0|uart:uart0|dat_o[28]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[587] -to "iocontroller:io0|uart:uart0|dat_o[29]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[588] -to "iocontroller:io0|uart:uart0|dat_o[2]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[589] -to "iocontroller:io0|uart:uart0|dat_o[30]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[590] -to "iocontroller:io0|uart:uart0|dat_o[31]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[591] -to "iocontroller:io0|uart:uart0|dat_o[3]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[592] -to "iocontroller:io0|uart:uart0|dat_o[4]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[593] -to "iocontroller:io0|uart:uart0|dat_o[5]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[594] -to "iocontroller:io0|uart:uart0|dat_o[6]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[595] -to "iocontroller:io0|uart:uart0|dat_o[7]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[596] -to "iocontroller:io0|uart:uart0|dat_o[8]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[597] -to "iocontroller:io0|uart:uart0|dat_o[9]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[598] -to "iocontroller:io0|uart:uart0|state.STATE_DONE" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[599] -to "iocontroller:io0|uart:uart0|state.STATE_IDLE" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[600] -to "iocontroller:io0|uart:uart0|state.STATE_READ" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[601] -to "iocontroller:io0|uart:uart0|state.STATE_READ2" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[602] -to "iocontroller:io0|uart:uart0|state.STATE_READ3" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[529] -to "iocontroller:io0|state.STATE_BUSY" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[530] -to "iocontroller:io0|state.STATE_DONE" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[531] -to "iocontroller:io0|state.STATE_IDLE" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[532] -to "iocontroller:io0|uart:uart0|ack_o" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[533] -to "iocontroller:io0|uart:uart0|cyc_i" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[534] -to "iocontroller:io0|uart:uart0|dat_i[0]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[535] -to "iocontroller:io0|uart:uart0|dat_i[10]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[536] -to "iocontroller:io0|uart:uart0|dat_i[11]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[537] -to "iocontroller:io0|uart:uart0|dat_i[12]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[538] -to "iocontroller:io0|uart:uart0|dat_i[13]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[539] -to "iocontroller:io0|uart:uart0|dat_i[14]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[540] -to "iocontroller:io0|uart:uart0|dat_i[15]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[541] -to "iocontroller:io0|uart:uart0|dat_i[16]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[542] -to "iocontroller:io0|uart:uart0|dat_i[17]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[543] -to "iocontroller:io0|uart:uart0|dat_i[18]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[544] -to "iocontroller:io0|uart:uart0|dat_i[19]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[545] -to "iocontroller:io0|uart:uart0|dat_i[1]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[546] -to "iocontroller:io0|uart:uart0|dat_i[20]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[547] -to "iocontroller:io0|uart:uart0|dat_i[21]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[548] -to "iocontroller:io0|uart:uart0|dat_i[22]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[549] -to "iocontroller:io0|uart:uart0|dat_i[23]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[550] -to "iocontroller:io0|uart:uart0|dat_i[24]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[551] -to "iocontroller:io0|uart:uart0|dat_i[25]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[552] -to "iocontroller:io0|uart:uart0|dat_i[26]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[553] -to "iocontroller:io0|uart:uart0|dat_i[27]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[554] -to "iocontroller:io0|uart:uart0|dat_i[28]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[555] -to "iocontroller:io0|uart:uart0|dat_i[29]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[556] -to "iocontroller:io0|uart:uart0|dat_i[2]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[557] -to "iocontroller:io0|uart:uart0|dat_i[30]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[558] -to "iocontroller:io0|uart:uart0|dat_i[31]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[559] -to "iocontroller:io0|uart:uart0|dat_i[3]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[560] -to "iocontroller:io0|uart:uart0|dat_i[4]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[561] -to "iocontroller:io0|uart:uart0|dat_i[5]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[562] -to "iocontroller:io0|uart:uart0|dat_i[6]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[563] -to "iocontroller:io0|uart:uart0|dat_i[7]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[564] -to "iocontroller:io0|uart:uart0|dat_i[8]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[565] -to "iocontroller:io0|uart:uart0|dat_i[9]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[566] -to "iocontroller:io0|uart:uart0|dat_o[0]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[567] -to "iocontroller:io0|uart:uart0|dat_o[10]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[568] -to "iocontroller:io0|uart:uart0|dat_o[11]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[569] -to "iocontroller:io0|uart:uart0|dat_o[12]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[570] -to "iocontroller:io0|uart:uart0|dat_o[13]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[571] -to "iocontroller:io0|uart:uart0|dat_o[14]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[572] -to "iocontroller:io0|uart:uart0|dat_o[15]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[573] -to "iocontroller:io0|uart:uart0|dat_o[16]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[574] -to "iocontroller:io0|uart:uart0|dat_o[17]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[575] -to "iocontroller:io0|uart:uart0|dat_o[18]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[576] -to "iocontroller:io0|uart:uart0|dat_o[19]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[577] -to "iocontroller:io0|uart:uart0|dat_o[1]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[578] -to "iocontroller:io0|uart:uart0|dat_o[20]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[579] -to "iocontroller:io0|uart:uart0|dat_o[21]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[580] -to "iocontroller:io0|uart:uart0|dat_o[22]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[581] -to "iocontroller:io0|uart:uart0|dat_o[23]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[582] -to "iocontroller:io0|uart:uart0|dat_o[24]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[583] -to "iocontroller:io0|uart:uart0|dat_o[25]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[584] -to "iocontroller:io0|uart:uart0|dat_o[26]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[585] -to "iocontroller:io0|uart:uart0|dat_o[27]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[586] -to "iocontroller:io0|uart:uart0|dat_o[28]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[587] -to "iocontroller:io0|uart:uart0|dat_o[29]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[588] -to "iocontroller:io0|uart:uart0|dat_o[2]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[589] -to "iocontroller:io0|uart:uart0|dat_o[30]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[590] -to "iocontroller:io0|uart:uart0|dat_o[31]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[591] -to "iocontroller:io0|uart:uart0|dat_o[3]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[592] -to "iocontroller:io0|uart:uart0|dat_o[4]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[593] -to "iocontroller:io0|uart:uart0|dat_o[5]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[594] -to "iocontroller:io0|uart:uart0|dat_o[6]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[595] -to "iocontroller:io0|uart:uart0|dat_o[7]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[596] -to "iocontroller:io0|uart:uart0|dat_o[8]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[597] -to "iocontroller:io0|uart:uart0|dat_o[9]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[598] -to "iocontroller:io0|uart:uart0|state.STATE_DONE" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[599] -to "iocontroller:io0|uart:uart0|state.STATE_IDLE" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[600] -to "iocontroller:io0|uart:uart0|state.STATE_READ" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[601] -to "iocontroller:io0|uart:uart0|state.STATE_READ2" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[602] -to "iocontroller:io0|uart:uart0|state.STATE_READ3" -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[1] -to cpu|gnd -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[7] -to cpu|vcc -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[10] -to cpu|vcc -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[13] -to cpu|vcc -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[18] -to cpu|vcc -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[20] -to cpu|gnd -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[22] -to cpu|vcc -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[25] -to cpu|gnd -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[30] -to cpu|vcc -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[6] -to cpu|gnd -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[17] -to cpu|vcc -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[16] -to cpu|gnd -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[603] -to "iocontroller:io0|uart:uart0|state.STATE_WRITE" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[604] -to "iocontroller:io0|uart:uart0|stb_i" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[605] -to "iocontroller:io0|uart:uart0|tx_shift.TX_DEQUEUE" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[606] -to "iocontroller:io0|uart:uart0|tx_shift.TX_IDLE" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[607] -to "iocontroller:io0|uart:uart0|tx_shift.TX_START" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[608] -to "iocontroller:io0|uart:uart0|tx_shift.TX_WAIT" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[609] -to "iocontroller:io0|uart:uart0|we_i" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[610] -to "mmu:mmu0|chipselect[0]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[611] -to "mmu:mmu0|chipselect[1]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[612] -to "mmu:mmu0|chipselect[2]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[613] -to "mmu:mmu0|chipselect[3]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[614] -to "sdram_controller:sdram0|state.STATE_ACTIVATE" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[615] -to "sdram_controller:sdram0|state.STATE_IDLE" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[616] -to "sdram_controller:sdram0|state.STATE_INIT_MODE" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[617] -to "sdram_controller:sdram0|state.STATE_INIT_MODE_WAIT" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[618] -to "sdram_controller:sdram0|state.STATE_INIT_PRECHARGE" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[619] -to "sdram_controller:sdram0|state.STATE_INIT_REFRESH1" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[620] -to "sdram_controller:sdram0|state.STATE_INIT_REFRESH1_WAIT" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[621] -to "sdram_controller:sdram0|state.STATE_INIT_WAIT" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[622] -to "sdram_controller:sdram0|state.STATE_PRECHARGE" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[623] -to "sdram_controller:sdram0|state.STATE_READ_WAIT" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[624] -to "sdram_controller:sdram0|state.STATE_READ_WAIT2" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[625] -to "sdram_controller:sdram0|state.STATE_REFRESH" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[626] -to "sdram_controller:sdram0|state.STATE_RW" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[603] -to "iocontroller:io0|uart:uart0|state.STATE_WRITE" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[604] -to "iocontroller:io0|uart:uart0|stb_i" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[605] -to "iocontroller:io0|uart:uart0|tx_shift.TX_DEQUEUE" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[606] -to "iocontroller:io0|uart:uart0|tx_shift.TX_IDLE" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[607] -to "iocontroller:io0|uart:uart0|tx_shift.TX_START" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[608] -to "iocontroller:io0|uart:uart0|tx_shift.TX_WAIT" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[609] -to "iocontroller:io0|uart:uart0|we_i" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[610] -to "mmu:mmu0|chipselect[0]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[611] -to "mmu:mmu0|chipselect[1]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[612] -to "mmu:mmu0|chipselect[2]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[613] -to "mmu:mmu0|chipselect[3]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[614] -to "sdram_controller:sdram0|state.STATE_ACTIVATE" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[615] -to "sdram_controller:sdram0|state.STATE_IDLE" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[616] -to "sdram_controller:sdram0|state.STATE_INIT_MODE" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[617] -to "sdram_controller:sdram0|state.STATE_INIT_MODE_WAIT" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[618] -to "sdram_controller:sdram0|state.STATE_INIT_PRECHARGE" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[619] -to "sdram_controller:sdram0|state.STATE_INIT_REFRESH1" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[620] -to "sdram_controller:sdram0|state.STATE_INIT_REFRESH1_WAIT" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[621] -to "sdram_controller:sdram0|state.STATE_INIT_WAIT" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[622] -to "sdram_controller:sdram0|state.STATE_PRECHARGE" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[623] -to "sdram_controller:sdram0|state.STATE_READ_WAIT" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[624] -to "sdram_controller:sdram0|state.STATE_READ_WAIT2" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[625] -to "sdram_controller:sdram0|state.STATE_REFRESH" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[626] -to "sdram_controller:sdram0|state.STATE_RW" -section_id cpu
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_DATA_BITS=627" -section_id cpu
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_BITS=627" -section_id cpu
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STORAGE_QUALIFIER_BITS=627" -section_id cpu
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK=0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" -section_id cpu
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK_LENGTH=1906" -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[0] -to cpu|vcc -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[24] -to cpu|vcc -section_id cpu
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 set_global_assignment -name SLD_FILE db/stp1_auto_stripped.stp

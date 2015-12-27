@@ -1,9 +1,9 @@
-module uart_rx(clk, data, ready, serial_in);
+module uart_rx(clk_i, data, ready, serial_in);
 
 parameter clkfreq = 500000000;
 parameter baud = 9600;
 
-input clk;
+input clk_i;
 output [7:0] data;
 output ready;
 input serial_in;
@@ -17,7 +17,7 @@ reg [2:0] bit_spacing;
 wire next_bit = baud8clk && (bit_spacing == 'h7);
 wire baud8clk;
 
-always @(posedge clk)
+always @(posedge clk_i)
 if (baud8clk) begin
   rx_sync <= {rx_sync[0], serial_in};
   if (rx_sync[1] && rx_count != 2'b11)
@@ -46,19 +46,19 @@ if (baud8clk) begin
   endcase
 end
 
-always @(posedge clk)
+always @(posedge clk_i)
 if (state == 0)
   bit_spacing <= 0;
 else
   if (baud8clk)
     bit_spacing <= bit_spacing + 1'b1;
 
-always @(posedge clk) begin
+always @(posedge clk_i) begin
   if (baud8clk && next_bit && state[3])
     data <= {rx_bit, data[7:1]};
   ready <= (state == 4'b0010 && next_bit && rx_bit);
 end
 
-baudgen #(.clkfreq(clkfreq), .baud(8*baud)) rxbaud(.clk(clk), .enable(1'b1), .baudclk(baud8clk));
+baudgen #(.clkfreq(clkfreq), .baud(8*baud)) rxbaud(.clk_i(clk_i), .enable(1'b1), .baudclk(baud8clk));
 
 endmodule

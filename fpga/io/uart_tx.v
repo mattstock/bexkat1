@@ -1,9 +1,9 @@
-module uart_tx(clk, data, start, ready, serial_out);
+module uart_tx(clk_i, data, start, ready, serial_out);
 
 parameter clkfreq = 500000000;
 parameter baud = 9600;
 
-input clk;
+input clk_i;
 input [7:0] data;
 input start;
 output ready;
@@ -17,7 +17,7 @@ wire baudclk;
 assign ready = (state == 4'b0000);
 assign serial_out = (state<4) | (state[3] & tx_byte[0]);
 
-always @(posedge clk) begin
+always @(posedge clk_i) begin
   if (ready && start)
     tx_byte <= data;
   else
@@ -39,6 +39,6 @@ always @(posedge clk) begin
   endcase
 end
 
-baudgen #(.clkfreq(clkfreq), .baud(baud)) txbaud(.clk(clk), .enable(~ready), .baudclk(baudclk));
+baudgen #(.clkfreq(clkfreq), .baud(baud)) txbaud(.clk_i(clk_i), .enable(~ready), .baudclk(baudclk));
 
 endmodule

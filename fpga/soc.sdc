@@ -27,9 +27,9 @@ set_false_path -from [get_ports {KEY*}] -to *
 set_false_path -from [get_ports {SW*}] -to *
 set_false_path -from * -to [get_ports {LED*}]
 set_false_path -from * -to [get_ports {HEX*}]
-set_false_path -from [get_ports {serial* joy_pb touch_irq}] -to *
-set_false_path -from * -to [get_ports {serial* joy_ss vga_b[*] vga_r[*] vga_g[*] vga_blank_n vga_clock vga_hs vga_vs}]
-set_false_path -from * -to [get_ports {fan_ctrl lcd_data[*] lcd_e lcd_on lcd_rs lcd_rw itd_backlight}] 
+set_false_path -from [get_ports {serial*}] -to *
+set_false_path -from * -to [get_ports {serial* vga_b[*] vga_r[*] vga_g[*] vga_blank_n vga_clock vga_hs vga_vs}]
+set_false_path -from * -to [get_ports {fan_ctrl lcd_data[*] lcd_e lcd_on lcd_rs lcd_rw}] 
 
 set_multicycle_path -from [get_registers {*bexkat0|ir[*]}] -to [get_registers {*bexkat0|mdr[*]}] -setup -start 2
 set_multicycle_path -from [get_registers {*bexkat0|ir[*]}] -to [get_registers {*bexkat0|mdr[*]}] -hold -start 1
@@ -75,14 +75,6 @@ set_output_delay -clock sd_sclk_pin -min 0ns [get_ports sd_ss]
 set_output_delay -clock sd_sclk_pin -max 0ns [get_ports sd_ss]
 set_output_delay -clock rtc_sclk_pin -min 0ns [get_ports rtc_ss]
 set_output_delay -clock rtc_sclk_pin -max 0ns [get_ports rtc_ss]
-set_output_delay -clock gen_sclk_pin -min 0ns [get_ports extsd_ss]
-set_output_delay -clock gen_sclk_pin -max 0ns [get_ports extsd_ss]
-set_output_delay -clock gen_sclk_pin -min 0ns [get_ports touch_ss]
-set_output_delay -clock gen_sclk_pin -max 0ns [get_ports touch_ss]
-set_output_delay -clock gen_sclk_pin -min 0ns [get_ports itd_ss]
-set_output_delay -clock gen_sclk_pin -max 0ns [get_ports itd_ss]
-set_output_delay -clock gen_sclk_pin -min 0ns [get_ports itd_dc]
-set_output_delay -clock gen_sclk_pin -max 0ns [get_ports itd_dc]
 set_output_delay -clock pll0|altpll_component|auto_generated|pll1|clk[0] -max 0ns [get_ports sd_sclk]
 set_output_delay -clock pll0|altpll_component|auto_generated|pll1|clk[0] -min 0ns [get_ports sd_sclk]
 set_output_delay -clock pll0|altpll_component|auto_generated|pll1|clk[0] -max 0ns [get_ports gen_sclk]

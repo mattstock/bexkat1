@@ -1,6 +1,6 @@
-module baudgen(clk, enable, baudclk);
+module baudgen(clk_i, enable, baudclk);
 
-input clk;
+input clk_i;
 input enable;
 output baudclk;
 
@@ -11,7 +11,7 @@ reg [15:0] counter;
 
 reg baudclk;
   
-always @(posedge clk)
+always @(posedge clk_i)
 begin
   baudclk = 1'b0;
   if (enable) begin

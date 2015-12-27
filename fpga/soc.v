@@ -71,14 +71,7 @@ module soc(
   input rtc_miso,
   output rtc_mosi,
   output rtc_sclk,
-  output touch_ss,
-  output extsd_ss,
-  output joy_ss,
   output gen_sclk,
-  input touch_irq,
-  output itd_ss,
-  output itd_backlight,
-  output itd_dc,
   output rst_n,
   input sd_wp_n,
   output fan_ctrl, 
@@ -90,7 +83,6 @@ module soc(
   output matrix_b,
   output matrix_c,
   output matrix_stb,
-  input joy_pb,
   input serial0_rx,
   input serial0_cts,
   output serial0_tx,
@@ -110,9 +102,10 @@ module soc(
   input ps2kbd_data);
 
 // System clock
-wire sysclock, locked;
+wire sysclock, locked, rst_i;
 
 assign rst_n = locked;
+assign rst_i = ~locked;
 
 sysclock pll0(.inclk0(raw_clock_50), .c0(sysclock), .areset(~KEY[0]), .locked(locked));
 
@@ -120,7 +113,8 @@ sysclock pll0(.inclk0(raw_clock_50), .c0(sysclock), .areset(~KEY[0]), .locked(lo
 wire [7:0] spi_selects;
 wire miso, mosi, sclk;
 
-assign { joy_ss, rtc_ss, extsd_ss, touch_ss, itd_ss, sd_ss } = spi_selects[5:0];
+assign rtc_ss = spi_selects[4];
+assign sd_ss = spi_selects[0];
 assign gen_mosi = mosi;
 assign sd_mosi = mosi;
 assign rtc_mosi = mosi;
@@ -141,29 +135,20 @@ assign enet_tx_en = 1'b0;
 assign enet_tx_er = 1'b0;
 assign enet_mdc = 1'bz;
 assign enet_mdio = 1'bz;
-assign enet_rst_n = 1'b1;
+assign enet_rst_n = ~rst_i;
 
 // LCD wiring
 assign lcd_data = (lcd_rw ? 8'hzz : lcd_dataout);
 
 // External SDRAM, SSRAM & flash bus wiring
 assign sdram_databus = (~sdram_we_n ? sdram_dataout : 32'hzzzzzzzz);
-assign fl_rst_n = rst_n;
+assign fl_rst_n = ~rst_i;
 assign fs_addrbus = (chipselect == 4'h8 ? flash_addrout : ssram_addrout);
 assign fs_databus = (chipselect == 4'h6 && ~ssram_we_n ? ssram_dataout : 
                       (chipselect == 4'h8 && ~fl_we_n ? { 16'h0000, flash_dataout } : 32'hzzzzzzzz));
 
-// Blinknlights
-assign LEDR = { 14'h0, cpung_halt, cpu_halt, cpu_fail };
-assign LEDG = {5'h0, ~ps2mouse_clk, ~ps2mouse_data, ~ps2kbd_clk, ~ps2kbd_data};
-hexdisp d7(.out(HEX7), .in(cpu_address[31:28]));
-hexdisp d6(.out(HEX6), .in(cpu_address[27:24]));
-hexdisp d5(.out(HEX5), .in(cpu_address[23:20]));
-hexdisp d4(.out(HEX4), .in(cpu_address[19:16]));
-hexdisp d3(.out(HEX3), .in(cpu_address[15:12]));
-hexdisp d2(.out(HEX2), .in(cpu_address[11:8]));
-hexdisp d1(.out(HEX1), .in(cpu_address[7:4]));
-hexdisp d0(.out(HEX0), .in(cpu_address[3:0]));
+// System Blinknlights
+assign LEDR = { 12'h0, ~ps2mouse_clk, ~ps2mouse_data, ~ps2kbd_clk, ~ps2kbd_data, cpu_halt, cpu_fail };
 
 // Internal bus wiring
 wire [3:0] chipselect;
@@ -179,8 +164,7 @@ wire [7:0] lcd_dataout;
 wire cpu_write, cpu_cyc, cpu_ack, cpu_halt;
 wire vga_we, vga_cyc, vga_stb;
 wire arb_cyc, cpu_gnt, vga_gnt;
-wire mandelbrot_write, mandelbrot_read, mandelbrot_wait;
-wire io_write, io_read, io_wait;
+wire mandelbrot_ack, io_ack;
 wire rom_read, vect_read;
 wire sdram_ack, vga_slave_ack;
 wire [3:0] sdram_den_n;
@@ -192,9 +176,9 @@ wire int_en, cache_enable, mmu_fault;
 // only need one cycle for reading onboard memory
 reg [1:0] rom_ack, vect_ack;
 
-always @(posedge sysclock or negedge rst_n)
+always @(posedge sysclock or posedge rst_i)
 begin
-  if (!rst_n) begin
+  if (rst_i) begin
     rom_ack <= 2'b0;
     vect_ack <= 2'b0;
   end else begin
@@ -230,62 +214,45 @@ assign cpu_readdata = (chipselect == 4'h1 ? vect_readdata : 32'h0) |
                       (chipselect == 4'ha ? vga_readdata : 32'h0);
 assign cpu_ack = (chipselect == 4'h1 ? vect_ack[1] : 1'h0) |
                  (chipselect == 4'h2 ? rom_ack[1] : 1'h0) |
-                 (chipselect == 4'h3 ? ~mandelbrot_wait : 1'h0) |
-                 (chipselect == 4'h4 ? ~io_wait : 1'h0) |
+                 (chipselect == 4'h3 ? mandelbrot_ack : 1'h0) |
+                 (chipselect == 4'h4 ? io_ack : 1'h0) |
                  (chipselect == 4'h5 ? matrix_ack : 1'h0) |
                  (chipselect == 4'h6 ? ssram_ack & cpu_gnt : 1'h0) |
                  (chipselect == 4'h7 ? sdram_ack : 1'h0) |
                  (chipselect == 4'h8 ? ~flash_wait : 1'h0) |
                  (chipselect == 4'ha ? vga_slave_ack : 1'h0);
 
-assign io_read = (chipselect == 4'h4 && cpu_cyc && ~cpu_write);
-assign io_write = (chipselect == 4'h4 && cpu_cyc && cpu_write);
 assign rom_read = (chipselect == 4'h2 && cpu_cyc && ~cpu_write);
 assign vect_read = (chipselect == 4'h1 && cpu_cyc && ~cpu_write);
-   
 
 wire [31:0] cpung_address, cpung_writedata;
 wire [3:0] cpung_be, exceptionng;
 wire cpung_cyc, cpung_write, int_en_ng, cpung_halt, cpu_fail;
 
-// Canary CPU
-/*bexkat1 bexkat1(.clk_i(sysclock), .rst_i(~rst_n), .adr_o(cpung_address), .cyc_o(cpung_cyc), .dat_i(cpu_readdata),
-  .we_o(cpung_write), .dat_o(cpung_writedata), .sel_o(cpung_be), .ack_i(cpu_ack), .halt(cpung_halt),
-  .interrupt(cpu_interrupt), .exception(exceptionng), .int_en(int_en_ng));
-*/
 // Experimental CPU
-bexkat2 bexkat0(.clk_i(sysclock), .rst_i(~rst_n), .adr_o(cpu_address), .cyc_o(cpu_cyc), .dat_i(cpu_readdata),
+bexkat2 bexkat0(.clk_i(sysclock), .rst_i(rst_i), .adr_o(cpu_address), .cyc_o(cpu_cyc), .dat_i(cpu_readdata),
   .we_o(cpu_write), .dat_o(cpu_writedata), .sel_o(cpu_be), .ack_i(cpu_ack), .halt(cpu_halt),
   .interrupt(cpu_interrupt), .exception(exception), .int_en(int_en));
-/*
-cputest testframe0(.clk_i(sysclock), .rst_i(~rst_n), .adr1(cpung_address), .adr2(cpu_address), .cyc1(cpung_cyc), .cyc2(cpu_cyc),
-  .we1(cpung_write), .we2(cpu_write), .dat1(cpung_writedata), .dat2(cpu_writedata), .sel1(cpung_be), .sel2(cpu_be),
-  .ex1(exceptionng), .ex2(exception), .int1(int_en_ng), .int2(int_en), .halt1(cpung_halt), .halt2(cpu_halt), .fail(cpu_fail));
-*/
+
 mmu mmu0(.adr_i(cpu_address), .cyc_i(cpu_cyc), .chipselect(chipselect), .fault(mmu_fault), .cache_enable(cache_enable));
 
-// 0x00000000 - 0x07ffffff
-sdram_controller sdram0(.clk_i(sysclock), .mem_clk_o(sdram_clk), .rst_i(~rst_n), .adr_i(cpu_address[26:2]), .dat_i(cpu_writedata),
+sdram_controller sdram0(.clk_i(sysclock), .mem_clk_o(sdram_clk), .rst_i(rst_i), .adr_i(cpu_address[26:2]), .dat_i(cpu_writedata),
   .dat_o(sdram_readdata), .stb_i(chipselect == 4'h7), .cyc_i(cpu_cyc), .ack_o(sdram_ack), .sel_i(cpu_be), .we_i(cpu_write),
   .we_n(sdram_we_n), .cs_n(sdram_cs_n), .cke(sdram_cke), .cas_n(sdram_cas_n), .ras_n(sdram_ras_n), .dqm(sdram_dqm), .ba(sdram_ba),
   .addrbus_out(sdram_addrbus), .databus_in(sdram_databus), .databus_out(sdram_dataout));
-// 0x20000000 - 0x200007ff
-led_matrix rgbmatrix0(.clk_i(sysclock), .rst_i(~rst_n), .dat_i(cpu_writedata), .dat_o(matrix_readdata),
+led_matrix rgbmatrix0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cpu_writedata), .dat_o(matrix_readdata),
   .adr_i(cpu_address[11:2]), .sel_i(cpu_be), .we_i(cpu_write), .stb_i(chipselect == 4'h5), .cyc_i(cpu_cyc), .ack_o(matrix_ack),
   .demux({matrix_a, matrix_b, matrix_c}), .matrix0(matrix0), .matrix1(matrix1), .matrix_stb(matrix_stb), .matrix_clk(matrix_clk), .oe_n(matrix_oe_n));
-// 0x20000800 - 0x20000fff
-iocontroller io0(.clk(sysclock), .rst_n(rst_n), .miso(miso), .mosi(mosi), .sclk(sclk), .spi_selects(spi_selects),
-  .be(cpu_be), .data_in(cpu_writedata), .data_out(io_readdata), .read(io_read), .write(io_write), .address(cpu_address),
-  .sd_wp_n(sd_wp_n), .touch_in(touch_irq), .fan(fan_ctrl), .itd_backlight(itd_backlight), .itd_dc(itd_dc),
-  .lcd_e(lcd_e), .lcd_data(lcd_dataout), .lcd_rs(lcd_rs), .lcd_on(lcd_on), .lcd_rw(lcd_rw), .interrupt(io_interrupt), .wait_out(io_wait),
-  .rx0(serial0_rx), .tx0(serial0_tx), .rts0(serial0_rts), .cts0(serial0_cts), .tx1(serial1_tx), .sw(SW[15:0]), .kbd({KEY[3:1], joy_pb}),
-  .ps2mouse({ps2mouse_clk, ps2mouse_data}), .ps2kbd({ps2kbd_clk, ps2kbd_data}));
-// 0xd0000000 - 0xdfffffff
-mandunit mand0(.clock(sysclock), .rst_n(rst_n), .data_in(cpu_writedata), .data_out(mandelbrot_readdata),
-  .write(mandelbrot_write), .read(mandelbrot_read), .address(cpu_address[18:0]), .be(cpu_be), .wait_out(mandelbrot_wait));
-// 0xfffe0000 - 0xffffffdf
+iocontroller io0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cpu_writedata), .dat_o(io_readdata), .we_i(cpu_write), .adr_i(cpu_address[15:0]),
+  .stb_i(chipselect == 4'h4), .cyc_i(cpu_cyc), .ack_o(io_ack), .sel_i(cpu_be),
+  .miso(miso), .mosi(mosi), .sclk(sclk), .spi_selects(spi_selects), .sd_wp_n(sd_wp_n), .fan(fan_ctrl),
+  .lcd_e(lcd_e), .lcd_data(lcd_dataout), .lcd_rs(lcd_rs), .lcd_on(lcd_on), .lcd_rw(lcd_rw), .interrupt(io_interrupt),
+  .rx0(serial0_rx), .tx0(serial0_tx), .rts0(serial0_rts), .cts0(serial0_cts), .tx1(serial1_tx), .sw(SW[15:0]),
+  .ps2mouse({ps2mouse_clk, ps2mouse_data}), .ps2kbd({ps2kbd_clk, ps2kbd_data}), .led(LEDG),
+  .hex0(HEX0), .hex1(HEX1), .hex2(HEX2), .hex3(HEX3), .hex4(HEX4), .hex5(HEX5), .hex6(HEX6), .hex7(HEX7));
+//mandunit mand0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cpu_writedata), .dat_o(mandelbrot_readdata), .cyc_i(cpu_cyc),
+//  .adr_i(cpu_address[18:0]), .we_i(cpu_write), , .stb_i(chipselect == 4'h3), .sel_i(cpu_be), .ack_o(mandelbrot_ack));
 monitor rom0(.clock(sysclock), .q(rom_readdata), .rden(rom_read), .address(cpu_address[16:2]));
-// 0xffffffe0 - 0xffffffff
 vectors vecram0(.clock(sysclock), .q(vect_readdata), .rden(vect_read), .address(cpu_address[6:2]));
 
 wire [31:0] fs_adr;
@@ -298,26 +265,26 @@ assign fs_sel = (cpu_gnt ? cpu_be : vga_sel);
 assign fs_we = (cpu_gnt ? cpu_write : vga_we);
 assign ssram_stb = cpu_gnt | vga_gnt;
 
-arbiter arb0(.clk_i(sysclock), .rst_i(~rst_n), .cpu_cyc_i(chipselect == 4'h6), 
+arbiter arb0(.clk_i(sysclock), .rst_i(rst_i), .cpu_cyc_i(chipselect == 4'h6), 
   .vga_cyc_i(vga_cyc), .cyc_o(arb_cyc), .cpu_gnt(cpu_gnt), .vga_gnt(vga_gnt), .ack_i(ssram_ack));
 
 // 0xc0040000 - 0xc0040fff
-vga_master vga0(.clk_i(sysclock), .rst_i(~rst_n), .master_adr_o(vga_address), .master_cyc_o(vga_cyc), .master_dat_i(ssram_readdata),
+vga_master vga0(.clk_i(sysclock), .rst_i(rst_i), .master_adr_o(vga_address), .master_cyc_o(vga_cyc), .master_dat_i(ssram_readdata),
   .master_we_o(vga_we), .master_dat_o(vga_writedata), .master_sel_o(vga_sel), .master_ack_i(vga_gnt & ssram_ack), .master_stb_o(vga_stb),
   .slave_adr_i(cpu_address[9:2]), .slave_dat_i(cpu_writedata), .slave_sel_i(cpu_be), .slave_cyc_i(cpu_cyc), .slave_we_i(cpu_write),
   .slave_stb_i(chipselect == 4'ha), .slave_ack_o(vga_slave_ack), .slave_dat_o(vga_readdata),
   .vs(vga_vs), .hs(vga_hs), .r(vga_r), .g(vga_g), .b(vga_b), .blank_n(vga_blank_n), .vga_clock(vga_clock), .sync_n(vga_sync_n));
 
 // 0xc0000000 - 0xc03fffff
-ssram_controller ssram0(.clk_i(sysclock), .rst_i(~rst_n), 
+ssram_controller ssram0(.clk_i(sysclock), .rst_i(rst_i), 
   .stb_i(ssram_stb), .cyc_i(arb_cyc), .we_i(fs_we), 
   .ack_o(ssram_ack), .dat_i(cpu_writedata), .dat_o(ssram_readdata),
   .sel_i(fs_sel), .adr_i(fs_adr[21:0]),
   .databus_in(fs_databus), .databus_out(ssram_dataout),
   .address_out(ssram_addrout), .bus_clock(ssram_clk), .gw_n(ssram_gw_n), .adv_n(ssram_adv_n), .adsp_n(ssram_adsp_n),
   .adsc_n(ssram_adsc_n), .be_out(ssram_be), .oe_n(ssram_oe_n), .we_n(ssram_we_n), .ce0_n(ssram0_ce_n), .ce1_n(ssram1_ce_n));
-// 0xe0000000 - 0xefffffff
-flash_controller flash0(.clock(sysclock), .reset_n(rst_n), .databus_in(fs_databus[15:0]), .databus_out(flash_dataout),
+
+flash_controller flash0(.clock(sysclock), .reset_n(~rst_i), .databus_in(fs_databus[15:0]), .databus_out(flash_dataout),
   .read(1'b0), .write(1'b0), .wait_out(flash_wait), .data_in(cpu_writedata), .data_out(flash_readdata),
   .be_in(cpu_be), .address_in(fs_adr[26:0]), .address_out(flash_addrout),
   .ready(fl_ry), .wp_n(fl_wp_n), .oe_n(fl_oe_n), .we_n(fl_we_n), .ce_n(fl_ce_n));
