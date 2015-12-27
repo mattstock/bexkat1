@@ -1,5 +1,8 @@
 #include "misc.h"
 
+volatile unsigned int *sysctrl = (unsigned int *)0x30000000;
+volatile unsigned int *sysio = (unsigned int *)0x30001000;
+
 char nibble2hex(char n) {
   char x = (n & 0xf);
   static const char hex[] = "0123456789abcdef";

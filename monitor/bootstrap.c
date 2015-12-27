@@ -11,7 +11,9 @@
 unsigned int addr;
 unsigned short data;
 
-unsigned int *sw = (unsigned int *)0x20000810;
+unsigned char katherine[] = { 194, 132, 190, 148, 129, 141, 0 }; 
+unsigned char rebecca[] = { 148, 131, 172, 131, 196, 131, 0 };
+
 unsigned char *vid = (unsigned char *)0xc0000000;
 
 char helpmsg[] = "\n? = help\na aaaaaaaa = set address\nr = read page of mem and display\nw dddddddd = write word current address\nc = SDcard test\nm = led matrix init\nl = lcd test\nb filename = boot file\n\n";
@@ -208,13 +210,14 @@ void main(void) {
   int val;
   int *ref;
 
+  serial_print(1, katherine);
   spi_fast();
   addr = 0xc0000000;
   lcd_init();
   lcd_print("Bexkat 1000");
   lcd_pos(0,1);
-  lcd_print("v3.0");
-  if ((sw[0] & 0x1) == 0x1) {
+  lcd_print("v4.0");
+  if ((sysio[0] & 0x1) == 0x1) {
     sdcard_exec("/kernel");
     serial_print(0, "\nautoboot failed\n");
   }
@@ -222,6 +225,7 @@ void main(void) {
     serial_print(0, "\nBexkat1 [");
     serial_printhex(0, addr);
     serial_print(0, "] > ");
+    sysctrl[0] = addr;
     msg = buf;
     serial_getline(0, msg, &size);
     switch (msg[0]) {

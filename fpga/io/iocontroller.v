@@ -56,9 +56,9 @@ localparam [1:0] STATE_IDLE = 2'h0, STATE_BUSY = 2'h1, STATE_DONE = 2'h2;
 always @(posedge clk_i or posedge rst_i)
   begin
     if (rst_i) begin
-      segreg <= 32'h01234567;
+      segreg <= 32'h0;
       fanspeed <= 32'h00010000;
-      led <= 9'h0a;
+      led <= 9'h0;
       result <= 32'h0;
       state <= STATE_IDLE;
     end else begin
