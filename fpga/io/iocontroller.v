@@ -43,9 +43,9 @@ reg [31:0] segreg, fanspeed, segreg_next, fanspeed_next, result, result_next;
 reg [1:0] state, state_next;
 reg [8:0] led_next;
 
-wire [31:0] lcd_out, uart1_out, uart0_out, spi_out, ps2_out;
+wire [31:0] lcd_out, uart1_out, uart0_out, spi_out, ps2mouse_out, ps2kbd_out;
 wire [3:0] selector;
-wire lcd_ack, uart0_ack, uart1_ack, spi_ack, ps2_ack;
+wire lcd_ack, uart0_ack, uart1_ack, spi_ack, ps2mouse_ack, ps2kbd_ack;
 
 assign ack_o = (state == STATE_DONE);
 assign dat_o = result;
@@ -116,14 +116,14 @@ always @*
           end
           3'h4: begin // ps2 kbd
             if (~we_i)
-              result_next = ps2_out;
-            if (ps2_ack)
+              result_next = ps2kbd_out;
+            if (ps2kbd_ack)
               state_next = STATE_DONE;
           end
           3'h5: begin // ps2 mouse
             if (~we_i)
-              result_next = ps2_out;
-            if (ps2_ack)
+              result_next = ps2mouse_out;
+            if (ps2mouse_ack)
               state_next = STATE_DONE;
           end
           3'h6: begin // LCD
@@ -146,34 +146,43 @@ always @*
     endcase  
   end
 
-wire stb_uart0 = (state == STATE_BUSY) & (selector == 3'h2);
-wire stb_uart1 = (state == STATE_BUSY) & (selector == 3'h3);
-wire stb_lcd = (state == STATE_BUSY) & (selector == 3'h6);
-wire stb_spi = (state == STATE_BUSY) & (selector == 3'h7);
+wire cyc_o = (state == STATE_BUSY);
+wire stb_uart0 = (selector == 3'h2);
+wire stb_uart1 = (selector == 3'h3);
+wire stb_ps2kbd = (selector == 3'h4);
+wire stb_ps2mouse = (selector == 3'h5);
+wire stb_lcd = (selector == 3'h6);
+wire stb_spi = (selector == 3'h7);
 
 uart #(.baud(115200)) uart0(.clk_i(clk_i), .rst_i(rst_i), .we_i(we_i),
 			    .sel_i(sel_i), .stb_i(stb_uart0),
-			    .dat_i(dat_i), .dat_o(uart0_out), .cyc_i(cyc_i),
+			    .dat_i(dat_i), .dat_o(uart0_out), .cyc_i(cyc_o),
 			    .adr_i(adr_i[2]), .ack_o(uart0_ack),
 			    .rx(rx0), .tx(tx0), .rts(rts0), .cts(cts0),
 			    .interrupt(interrupt));
 
 uart uart1(.clk_i(clk_i), .rst_i(rst_i), .we_i(we_i),
 	   .sel_i(sel_i), .stb_i(stb_uart1),
-	   .dat_i(dat_i), .dat_o(uart1_out), .cyc_i(cyc_i),
+	   .dat_i(dat_i), .dat_o(uart1_out), .cyc_i(cyc_o),
 	   .adr_i(adr_i[2]), .ack_o(uart1_ack),
 	   .tx(tx1));
 
 lcd_module lcd0(.clk_i(clk_i), .rst_i(rst_i), .we_i(we_i), .sel_i(sel_i),
-		.stb_i(stb_lcd), .cyc_i(cyc_i), .dat_i(dat_i), .ack_o(lcd_ack),
+		.stb_i(stb_lcd), .cyc_i(cyc_o), .dat_i(dat_i), .ack_o(lcd_ack),
 		.adr_i(adr_i[8:2]), .dat_o(lcd_out), .e(lcd_e),
 		.data_out(lcd_data), .rs(lcd_rs), .on(lcd_on), .rw(lcd_rw));
 
-spi_master spi0(.clk_i(clk_i), .cyc_i(cyc_i), .rst_i(rst_i), .sel_i(sel_i), .we_i(we_i),
+spi_master spi0(.clk_i(clk_i), .cyc_i(cyc_o), .rst_i(rst_i), .sel_i(sel_i), .we_i(we_i),
 		.stb_i(stb_spi), .dat_i(dat_i), .dat_o(spi_out), .ack_o(spi_ack),
 		.adr_i(adr_i[2]), .miso(miso), .mosi(mosi),
 		.sclk(sclk), .selects(spi_selects), .wp_n(sd_wp_n));
-  
+
+ps2_kbd ps2kbd0(.clk_i(clk_i), .rst_i(rst_i), .cyc_i(cyc_o), .sel_i(sel_i), .we_i(we_i), .stb_i(stb_ps2kbd),
+  .dat_i(dat_i), .dat_o(ps2kbd_out), .ack_o(ps2kbd_ack), .adr_i(adr_i[2]), .ps2_clock(ps2kbd[1]), .ps2_data(ps2kbd[0]));
+
+//ps2_kbd ps2mouse0(.clk_i(clk_i), .rst_i(rst_i), .cyc_i(cyc_i), .sel_i(sel_i), .we_i(we_i), .stb_i(stb_ps2mouse),
+//  .dat_i(dat_i), .dat_o(ps2mouse_out), .ack_o(ps2mouse_ack), .adr_i(adr_i[3:2]), .ps2_clock(ps2mouse[1]), .ps2_data(ps2mouse[0]));
+
 fan_ctrl fan0(.clk_i(clk_i), .rst_i(rst_i), .speed(fanspeed), .fan_pwm(fan));
 
 segdigits segdigits0(.in(segreg), .out0(hex0), .out1(hex1), .out2(hex2), .out3(hex3), .out4(hex4), .out5(hex5), .out6(hex6), .out7(hex7));
