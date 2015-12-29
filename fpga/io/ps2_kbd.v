@@ -51,7 +51,7 @@ begin
   end
 end
 
-always @(*)
+always_comb
 begin
   state_next = state;
   result_next = result;
@@ -63,10 +63,10 @@ begin
       case (adr_i)
         1'h0: state_next = (we_i ? STATE_DONE : STATE_READ);
         1'h1: begin
-          if (~we_i)
-            result_next = { 25'h0, full, usedw };
-          else
+          if (we_i & sel_i[0])
             sclr_next = dat_i[0];
+          else
+            result_next = { 25'h0, full, usedw };
           state_next = STATE_DONE;
         end
       endcase

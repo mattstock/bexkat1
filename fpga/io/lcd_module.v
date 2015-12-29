@@ -70,13 +70,13 @@ always @(*)
 	    if (cyc_i && stb_i) begin
 	      case (adr_i)
 	        2'h0: begin
-	          if (we_i)
+	          if (we_i & sel_i[0])
               on_next = dat_i[0];
             else
               dat_o_next = { 7'h00, op, 7'h0, on };
           end
           2'h1: begin
-            if (we_i) begin
+            if (we_i & sel_i[0]) begin
               rs_next = 1'b0;
               rw_next = 1'b0;
               op_next = 1'b1;
@@ -85,7 +85,7 @@ always @(*)
               dat_o_next = 32'h0;
           end
           default: begin
-            if (we_i) begin
+            if (we_i & sel_i[0]) begin
               rs_next = 1'b1;
               rw_next = 1'b0;
               op_next = 1'b1;

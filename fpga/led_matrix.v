@@ -134,6 +134,6 @@ end
 
 matrixmem m0(.clock_a(led_clk), .clock_b(clk_i), .data_b(dat_i[23:0]), .wren_b(select&we_i), .address_b(adr_i), .byteena_b(sel_i[2:0]),
   .q_b(matrixmem_out), .wren_a(1'b0), .q_a(buffer), .address_a({ab, rowpos, colpos}));
-matrixpll pll1(.inclk0(clk_i), .c0(led_clk));
+matrixpll pll1(.inclk0(clk_i), .areset(rst_i), .c0(led_clk));
   
 endmodule

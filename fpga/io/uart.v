@@ -66,9 +66,16 @@ begin
         case (adr_i)
           1'b0: state_next = (we_i ? STATE_WRITE : STATE_READ);
           1'b1: begin
-            if (we_i)
-              conf_next = dat_i;
-            else
+            if (we_i) begin
+              if (sel_i[3])
+                conf_next[31:24] = dat_i[31:24];
+              if (sel_i[2])
+                conf_next[23:16] = dat_i[23:16];
+              if (sel_i[1])
+                conf_next[15:8] = dat_i[15:8];
+              if (sel_i[0])
+                conf_next[7:0] = dat_i[7:0];
+            end else
               result_next = conf;
             state_next = STATE_DONE;
           end

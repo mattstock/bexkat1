@@ -5,7 +5,7 @@ output [6:0] out;
 
 reg [6:0] out;
 
-always @(in) begin
+always_comb begin
   case (in)
     4'h1: out = 7'b1111001;
     4'h2: out = 7'b0100100;
