@@ -119,7 +119,10 @@ begin
                 end else
                   slave_dat_o_next = setupreg;
               end
-              default: begin end
+              default: begin
+                if (~slave_we_i)
+                  slave_dat_o_next = 32'h0;
+              end
             endcase
             sstate_next = SSTATE_DONE;
           end
@@ -132,8 +135,11 @@ begin
   endcase
 end
 
-always @* begin
-  case (x_raw[2:1])
+wire pixeldouble = setupreg[0];
+
+always_comb
+begin
+  case ((pixeldouble ? x_raw[2:1] : x_raw[1:0]))
     2'h0: {r,g,b} = buf0_out;
     2'h1: {r,g,b} = buf1_out;
     2'h2: {r,g,b} = buf2_out;
@@ -201,8 +207,7 @@ begin
           rowval_next = 32'h0;
           y_double_next = 1'b0;
         end else begin
-          if (y_double)
-            rowval_next = rowval + 10'd320;
+          rowval_next = (pixeldouble ? (y_double ? rowval + 10'd320 : rowval) : rowval + 10'd640);
         end
         state_next = STATE_IDLE;
       end
@@ -221,15 +226,15 @@ vga_pallette map3(.clock(clk_i), .wraddress(slave_adr_i[7:0]), .wren((sstate == 
   .data(slave_dat_i[23:0]), .rdaddress(map_idx[7:0]), .q(map3_out));
 // And we interleave the memory
 vgalinebuf scanline0(.wrclock(clk_i), .wraddress(idx[9:2]), .wren(state == STATE_STORE), .data(map0_out),
-  .rdclock(vga_clock), .rdaddress(scanaddr[10:3]), .q(buf0_out));
+  .rdclock(vga_clock), .rdaddress((pixeldouble ? scanaddr[10:3] : scanaddr[9:2])), .q(buf0_out));
 vgalinebuf scanline1(.wrclock(clk_i), .wraddress(idx[9:2]), .wren(state == STATE_STORE), .data(map1_out),
-  .rdclock(vga_clock), .rdaddress(scanaddr[10:3]), .q(buf1_out));
+  .rdclock(vga_clock), .rdaddress((pixeldouble ? scanaddr[10:3] : scanaddr[9:2])), .q(buf1_out));
 vgalinebuf scanline2(.wrclock(clk_i), .wraddress(idx[9:2]), .wren(state == STATE_STORE), .data(map2_out),
-  .rdclock(vga_clock), .rdaddress(scanaddr[10:3]), .q(buf2_out));
+  .rdclock(vga_clock), .rdaddress((pixeldouble ? scanaddr[10:3] : scanaddr[9:2])), .q(buf2_out));
 vgalinebuf scanline3(.wrclock(clk_i), .wraddress(idx[9:2]), .wren(state == STATE_STORE), .data(map3_out),
-  .rdclock(vga_clock), .rdaddress(scanaddr[10:3]), .q(buf3_out));
+  .rdclock(vga_clock), .rdaddress((pixeldouble ? scanaddr[10:3] : scanaddr[9:2])), .q(buf3_out));
 
 vga_controller vga0(.active(blank_n), .vs(vs), .hs(hs), .clock(vga_clock), .reset_n(~rst_i), .x(x_raw), .y(y_raw));
-vgapll vgapll0(.inclk0(clk_i), .c0(vga_clock));
+vgapll vgapll0(.inclk0(clk_i), .areset(rst_i), .c0(vga_clock));
 
 endmodule
