@@ -40,5 +40,8 @@ kernel:
 %.mif: %
 	$(OBJCOPY) -O mif $< $@
 
+tests: tests.o
+	$(CC) -T profile.ld -nostartfiles -o $@ $^ $(LDLIBS)
+
 bootstrap: bootstrap.o
 	$(CC) -T profile.ld -nostartfiles -o $@ $^ $(LDLIBS)

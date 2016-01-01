@@ -210,13 +210,21 @@ void main(void) {
   int val;
   int *ref;
 
+  matrix_put(0,0,0xff);
   serial_print(1, katherine);
+  matrix_put(1,0,0xff);
   spi_fast();
+  matrix_put(2,0,0xff);
   addr = 0xc0000000;
+  matrix_put(3,0,0xff);
   lcd_init();
+  matrix_put(4,0,0xff);
   lcd_print("Bexkat 1000");
+  matrix_put(5,0,0xff);
   lcd_pos(0,1);
+  matrix_put(6,0,0xff);
   lcd_print("v4.0");
+  matrix_put(7,0,0xff);
   if ((sysio[0] & 0x1) == 0x1) {
     sdcard_exec("/kernel");
     serial_print(0, "\nautoboot failed\n");

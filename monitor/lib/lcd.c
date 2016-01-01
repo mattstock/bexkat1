@@ -1,5 +1,6 @@
 #include "lcd.h"
 #include "misc.h"
+#include "matrix.h"
 
 unsigned int *lcd = (unsigned int *)0x30006000;
 
@@ -42,9 +43,14 @@ void lcd_pos(int x, int y) {
 }
  
 void lcd_print(char *str) {
+  int i=0;
+  matrix_put(0, 1, 0xff00);
   while (*str != '\0') {
+    i++;
+    matrix_put(i, 1, 0xff);
     lcd[3] = *str;
     str++;
     delay(500);
   }
+  matrix_put(0, 2, 0xff0000);
 }
