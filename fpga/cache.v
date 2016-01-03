@@ -3,7 +3,7 @@ module cache(
   input rst_i,
   input s_cyc_i,
   input s_we_i,
-  input [31:0] s_adr_i,
+  input [24:0] s_adr_i,
   input [3:0] s_sel_i,
   input [31:0] s_dat_i,
   output reg [31:0] s_dat_o,
@@ -11,30 +11,32 @@ module cache(
   output s_ack_o,
   output reg m_cyc_o,
   output reg m_we_o,
-  output reg [31:0] m_adr_o,
+  output reg [24:0] m_adr_o,
   output reg [3:0] m_sel_o,
   input [31:0] m_dat_i,
   output [31:0] m_dat_o,
   output reg m_stb_o,
   input m_ack_i);
   
-logic [152:0] rowin, rowin_next;
-wire [152:0] rowout;
+logic [147:0] rowin, rowin_next;
+wire [147:0] rowout;
 
 reg [31:0] s_dat_o_next;
 reg [4:0] state, state_next;
 reg [7:0] initaddr, initaddr_next;
 
-wire [19:0] tag_in, tag_cache;
+wire [14:0] tag_in, tag_cache;
 wire [7:0] rowaddr;
 wire [1:0] wordsel;
 wire [3:0] dirty;
 wire valid, wren;
 wire [31:0] word0, word1, word2, word3;
 
-localparam VALID = 'd152, DIRTY0 = 'd148, DIRTY1 = 'd149, DIRTY2 = 'd150, DIRTY3 = 'd151;
+localparam VALID = 'd147, 
+  DIRTY0 = 'd143, DIRTY1 = 'd144,
+  DIRTY2 = 'd145, DIRTY3 = 'd146;
 
-assign { tag_in, rowaddr, wordsel } = s_adr_i[31:2];
+assign { tag_in, rowaddr, wordsel } = s_adr_i;
 assign { valid, dirty, tag_cache, word3, word2, word1, word0 } = rowout;
 
 wire hit = (tag_cache == tag_in) & valid;
@@ -53,7 +55,7 @@ always @(posedge clk_i or posedge rst_i)
 begin
   if (rst_i) begin
     state <= STATE_INIT;
-    rowin <= 153'h0;
+    rowin <= 148'h0;
     s_dat_o <= 32'h0;
     initaddr <= 8'hff;
   end else begin
@@ -73,7 +75,7 @@ begin
   m_we_o = 1'h0;
   m_cyc_o = 1'h0;
   m_dat_o = 32'h0;
-  m_adr_o = 32'h0;
+  m_adr_o = 25'h0;
   wren = 1'b0;
   
   case (state)
@@ -142,8 +144,8 @@ begin
     STATE_FILL: begin
       rowin_next[VALID] = 1'b1;
       rowin_next[DIRTY0] = 1'b0; // clean
-      rowin_next[147:128] = tag_in;
-      m_adr_o = { tag_in, rowaddr, 4'h0 };
+      rowin_next[142:128] = tag_in;
+      m_adr_o = { tag_in, rowaddr, 2'h0 };
       m_cyc_o = 1'b1;
       rowin_next[31:0] = m_dat_i;
       if (m_ack_i)
@@ -151,7 +153,7 @@ begin
     end
     STATE_FILL2: state_next = STATE_FILL3;
     STATE_FILL3: begin
-      m_adr_o = { tag_in, rowaddr, 4'h4 };
+      m_adr_o = { tag_in, rowaddr, 2'h1 };
       m_cyc_o = 1'b1;
       rowin_next[DIRTY1] = 1'b0; // clean
       rowin_next[63:32] = m_dat_i;
@@ -160,7 +162,7 @@ begin
     end
     STATE_FILL4: state_next = STATE_FILL5;
     STATE_FILL5: begin
-      m_adr_o = { tag_in, rowaddr, 4'h8 };
+      m_adr_o = { tag_in, rowaddr, 2'h2 };
       m_cyc_o = 1'b1;
       rowin_next[DIRTY2] = 1'b0; // clean
       rowin_next[95:64] = m_dat_i;
@@ -169,7 +171,7 @@ begin
     end
     STATE_FILL6: state_next = STATE_FILL7;
     STATE_FILL7: begin
-      m_adr_o = { tag_in, rowaddr, 4'hc };
+      m_adr_o = { tag_in, rowaddr, 2'h3 };
       m_cyc_o = 1'b1;
       rowin_next[DIRTY3] = 1'b0; // clean
       rowin_next[127:96] = m_dat_i;
@@ -182,7 +184,7 @@ begin
     end
     STATE_FLUSH: begin
       if (dirty[0]) begin
-        m_adr_o = { tag_cache, rowaddr, 4'h0 };
+        m_adr_o = { tag_cache, rowaddr, 2'h0 };
         m_dat_o = word0;
         m_cyc_o = 1'b1;
         m_we_o = 1'b1;
@@ -196,7 +198,7 @@ begin
     STATE_FLUSH2: state_next = STATE_FLUSH3;
     STATE_FLUSH3: begin
       if (dirty[1]) begin
-        m_adr_o = { tag_cache, rowaddr, 4'h4 };
+        m_adr_o = { tag_cache, rowaddr, 2'h1 };
         m_dat_o = word1;
         m_cyc_o = 1'b1;
         m_we_o = 1'b1;
@@ -210,7 +212,7 @@ begin
     STATE_FLUSH4: state_next = STATE_FLUSH5;
     STATE_FLUSH5: begin
       if (dirty[2]) begin
-        m_adr_o = { tag_cache, rowaddr, 4'h8 };
+        m_adr_o = { tag_cache, rowaddr, 2'h2 };
         m_dat_o = word2;
         m_cyc_o = 1'b1;
         m_we_o = 1'b1;
@@ -224,7 +226,7 @@ begin
     STATE_FLUSH6: state_next = STATE_FLUSH7;
     STATE_FLUSH7: begin
       if (dirty[3]) begin
-        m_adr_o = { tag_cache, rowaddr, 4'hc };
+        m_adr_o = { tag_cache, rowaddr, 2'h3 };
         m_dat_o = word3;
         m_cyc_o = 1'b1;
         m_we_o = 1'b1;

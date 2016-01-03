@@ -30,7 +30,7 @@ always @* begin
       out = sqrt_out;
       overflow = sqrt_ov;
     end
-    FPU_NEG: out = 32'h0;
+    FPU_NEG: out = in2 ^ 32'h80000000;
     FPU_ADD: begin
       out = addsub_out;
       overflow = addsub_ov;
@@ -63,7 +63,7 @@ fp_cvtis fp_cvtis0(.clock(clk_i), .dataa(in2), .result(cvtis_out));
 fp_cvtsi fp_cvtsi0(.clock(clk_i), .dataa(in2), .result(cvtsi_out));
 fp_addsub fp_addsub0(.clock(clk_i), .aclr(rst_i),
 		     .dataa(in1), .datab(in2),
-		     .add_sub(func[0]),
+		     .add_sub(~func[0]),
 		     .result(addsub_out),
 		     .nan(addsub_nan),
 		     .overflow(addsub_ov),

@@ -114,7 +114,7 @@ begin
 	a_write = 1'b1; // A <= SP
         reg_read_addr1 = REG_SP;
         mdrsel = MDR_PC;
-	state_next = S_EXC3;
+	state_next = S_EXC2;
       end
     end // case: S_EXC
     S_EXC2: begin

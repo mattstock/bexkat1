@@ -14,7 +14,7 @@ APPS = pretty vga bootstrap memtests rtc fileio tests ps2
 
 .PHONY: all clean lib gcctests kernel install
 
-all: boot.o lib bootstrap.mif gcctests kernel $(APPS)
+all: boot.o lib bootstrap.mif tests.mif $(APPS)
 
 install: $(APPS)
 	cp $(APPS) kernel/kernel /media/mstock/19D5-2529/

@@ -148,7 +148,7 @@ assign fs_databus = (chipselect == 4'h6 && ~ssram_we_n ? ssram_dataout :
                       (chipselect == 4'h8 && ~fl_we_n ? { 16'h0000, flash_dataout } : 32'hzzzzzzzz));
 
 // System Blinknlights
-assign LEDR = { 15'h0, cpu_halt, mmu_fault, cpu_cyc };
+assign LEDR = { SW[17], SW[16], 13'h0, cpu_halt, mmu_fault, cpu_cyc };
 
 // Internal bus wiring
 wire [3:0] chipselect;
@@ -156,7 +156,7 @@ wire [26:0] ssram_addrout, flash_addrout;
 wire [31:0] cpu_address, vga_address, flash_readdata, ssram_readdata, ssram_dataout, vga_readdata;
 wire [15:0] flash_dataout;
 wire [31:0] cpu_readdata, cpu_writedata, mon_readdata, mandelbrot_readdata, matrix_readdata, rom_readdata;
-wire [31:0] vect_readdata, io_readdata, sdram_readdata, sdram_dataout, vga_writedata;
+wire [31:0] vect_readdata, io_readdata, sdram_readdata, sdram_dataout, vga_writedata, rom2_readdata;
 wire [3:0] cpu_be, vga_sel, exception;
 wire [1:0] io_interrupt;
 wire [2:0] cpu_interrupt;
@@ -204,7 +204,7 @@ begin
 end
 
 assign cpu_readdata = (chipselect == 4'h1 ? vect_readdata : 32'h0) |
-                      (chipselect == 4'h2 ? rom_readdata : 32'h0) |
+                      (chipselect == 4'h2 ? (SW[16] ? rom2_readdata : rom_readdata) : 32'h0) |
                       (chipselect == 4'h3 ? mandelbrot_readdata : 32'h0) |
                       (chipselect == 4'h4 ? io_readdata : 32'h0) |
                       (chipselect == 4'h5 ? matrix_readdata : 32'h0) |
@@ -231,30 +231,11 @@ bexkat2 bexkat0(.clk_i(sysclock), .rst_i(rst_i), .adr_o(cpu_address), .cyc_o(cpu
 
 mmu mmu0(.adr_i(cpu_address), .cyc_i(cpu_cyc), .chipselect(chipselect), .fault(mmu_fault), .cache_enable(cache_enable));
 
-/*
-wire [31:0] cache_address, cache_writedata, cache_readdata;
-wire [3:0] cache_sel;
-wire cache_cyc, cache_write, cache_ack, cache_stb;
-
-
-cache sdram_cache(.clk_i(sysclock), .rst_i(rst_i), .s_adr_i(cpu_address), .s_dat_i(cpu_writedata),
-  .s_dat_o((cache_en ? sdram_readdata : cache_readdata)),
-  .s_stb_i(chipselect == 4'h7), .s_cyc_i(cpu_cyc), .s_ack_o((cache_en ? sdram_ack : cache_ack)), .s_sel_i(cpu_be), .s_we_i(cpu_write),
-  .m_adr_o(cache_address), .m_dat_o(cache_writedata), .m_dat_i(cache_readdata), .m_stb_o(cache_stb), .m_cyc_o(cache_cyc),
-  .m_ack_i(cache_ack), .m_sel_o(cache_sel), .m_we_o(cache_write));
-
-sdram_controller sdram0(.clk_i(sysclock), .mem_clk_o(sdram_clk), .rst_i(rst_i), .adr_i((cache_en ? cache_address[26:2] : cpu_address[26:2])),
-  .dat_i((cache_en ? cache_writedata : cpu_writedata)), .dat_o(sdram_readdata),
-  .stb_i((cache_en ? cache_stb : chipselect == 4'h7)), .cyc_i((cache_en ? cache_cyc : cpu_cyc)),
-  .ack_o(sdram_ack), .sel_i((cache_en ? cache_sel : cpu_be)), .we_i((cache_en ? cache_write : cpu_write)),
-  .we_n(sdram_we_n), .cs_n(sdram_cs_n), .cke(sdram_cke), .cas_n(sdram_cas_n), .ras_n(sdram_ras_n), .dqm(sdram_dqm), .ba(sdram_ba),
-  .addrbus_out(sdram_addrbus), .databus_in(sdram_databus), .databus_out(sdram_dataout));
-*/
-sdram_controller sdram0(.clk_i(sysclock), .mem_clk_o(sdram_clk), .rst_i(rst_i), .adr_i(cpu_address[26:2]),
+sdram_controller_cache sdram0(.clk_i(sysclock), .mem_clk_o(sdram_clk), .rst_i(rst_i), .adr_i(cpu_address[26:2]),
   .dat_i(cpu_writedata), .dat_o(sdram_readdata), .stb_i(chipselect == 4'h7), .cyc_i(cpu_cyc),
   .ack_o(sdram_ack), .sel_i(cpu_be), .we_i(cpu_write),
   .we_n(sdram_we_n), .cs_n(sdram_cs_n), .cke(sdram_cke), .cas_n(sdram_cas_n), .ras_n(sdram_ras_n), .dqm(sdram_dqm), .ba(sdram_ba),
-  .addrbus_out(sdram_addrbus), .databus_in(sdram_databus), .databus_out(sdram_dataout));
+  .addrbus_out(sdram_addrbus), .databus_in(sdram_databus), .databus_out(sdram_dataout), .cache_en(SW[17]));
 led_matrix rgbmatrix0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cpu_writedata), .dat_o(matrix_readdata),
   .adr_i(cpu_address[11:2]), .sel_i(cpu_be), .we_i(cpu_write), .stb_i(chipselect == 4'h5), .cyc_i(cpu_cyc), .ack_o(matrix_ack),
   .demux({matrix_a, matrix_b, matrix_c}), .matrix0(matrix0), .matrix1(matrix1), .matrix_stb(matrix_stb), .matrix_clk(matrix_clk), .oe_n(matrix_oe_n));
@@ -268,6 +249,8 @@ iocontroller io0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cpu_writedata), .dat_o(
 //mandunit mand0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cpu_writedata), .dat_o(mandelbrot_readdata), .cyc_i(cpu_cyc),
 //  .adr_i(cpu_address[18:0]), .we_i(cpu_write), , .stb_i(chipselect == 4'h3), .sel_i(cpu_be), .ack_o(mandelbrot_ack));
 monitor rom0(.clock(sysclock), .q(rom_readdata), .rden(rom_read), .address(cpu_address[16:2]));
+testrom rom1(.clock(sysclock), .q(rom2_readdata), .rden(rom_read), .address(cpu_address[16:2]));
+
 vectors vecram0(.clock(sysclock), .q(vect_readdata), .rden(vect_read), .address(cpu_address[6:2]));
 
 wire [31:0] fs_adr;
