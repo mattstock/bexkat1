@@ -29,7 +29,6 @@ reg tx_start;
 wire tx_done;
 wire [7:0] rx_in;
 
-reg [7:0] tx_byte, tx_byte_next;
 reg [7:0] rx_byte, rx_byte_next;
 reg [7:0] selects_next;
 reg [7:0] conf, conf_next;
@@ -45,7 +44,6 @@ localparam STATE_IDLE = 1'h0, STATE_DONE = 1'h1;
 always @(posedge clk_i or posedge rst_i)
 begin
   if (rst_i) begin
-    tx_byte <= 8'h00;
     rx_byte <= 8'h00;
     selects <= 'hff;
     conf <= 'h00;
@@ -54,7 +52,6 @@ begin
     tx_busy <= 1'b0;
     state <= STATE_IDLE;
   end else begin
-    tx_byte <= tx_byte_next;
     rx_byte <= rx_byte_next;
     selects <= selects_next;
     conf <= conf_next;
@@ -67,7 +64,6 @@ end
 
 always @(*)
 begin
-  tx_byte_next = tx_byte;
   rx_byte_next = rx_byte;
   conf_next = conf;
   selects_next = selects;
@@ -85,7 +81,6 @@ begin
             if (we_i) begin
               if (~tx_busy) begin
                 tx_start = 1'b1;
-                tx_byte_next = dat_i[7:0];
                 tx_busy_next = 1'b1;
               end
               state_next = STATE_DONE;
@@ -116,7 +111,7 @@ begin
   end
 end
 
-spi_xcvr #(.clockfreq(clockfreq)) xcvr0(.clk_i(clk_i), .rst_i(rst_i), .conf(conf), .start(tx_start), .rx(rx_in), .done(tx_done), .tx(tx_byte), 
+spi_xcvr #(.clockfreq(clockfreq)) xcvr0(.clk_i(clk_i), .rst_i(rst_i), .conf(conf), .start(tx_start), .rx(rx_in), .done(tx_done), .tx(dat_i[7:0]), 
   .miso(miso), .mosi(mosi), .sclk(sclk));
 
 endmodule

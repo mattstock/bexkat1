@@ -153,7 +153,7 @@ assign fs_databus = (chipselect == 4'h6 && ~ssram_we_n ? ssram_dataout :
                       (chipselect == 4'h8 && ~fl_we_n ? { 16'h0000, flash_dataout } : 32'hzzzzzzzz));
 
 // System Blinknlights
-assign LEDR = { SW[17], SW[16], 13'h0, cpu_halt, mmu_fault, cpu_cyc };
+assign LEDR = { SW[17], SW[16], 12'h0, ~rtc_ss, cpu_halt, mmu_fault, cpu_cyc };
 
 // Internal bus wiring
 wire [3:0] chipselect;

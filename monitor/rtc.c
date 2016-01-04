@@ -31,22 +31,21 @@ extern time_t _time(time_t *t);
 
 void main() {
   char buf[80];
-  unsigned char r;
+  unsigned char r = 0;
   unsigned int mo, d, dow, y, s,m,h;
   struct tm ts;
   time_t now;
 
-/*  iprintf("hour [0-23]: ");
-  scanf("%d", &h);
-  rtc_cmd(0x82, dec2bcd(h&0x3f));
-  iprintf("minute [0-59]: ");
-  scanf("%d", &m);
-  rtc_cmd(0x81, dec2bcd(m&0x7f));
-  iprintf("seconds [0-59]: ");
-  scanf("%d", &s);
-  rtc_cmd(0x80, dec2bcd(s&0x7f));
-  rtc_cmd(0x84, 0x05); */
-  rtc_cmd(0x83, 0x04);
+  s = rtc_cmd(0x00, 0xff);
+  m = rtc_cmd(0x01, 0xff);
+  h = rtc_cmd(0x02, 0xff);
+  dow = rtc_cmd(0x03, 0xff);
+  d = rtc_cmd(0x04, 0xff);
+  mo = rtc_cmd(0x05, 0xff);
+  y = rtc_cmd(0x06, 0xff);
+
+  iprintf("%02x / %02x / %02x  %02x  %02x:%02x:%02x\n",
+	  mo,d,y,dow,h,m,s);
   while (1) {
     now = time(0);
     iprintf("now = %d\n", now);
