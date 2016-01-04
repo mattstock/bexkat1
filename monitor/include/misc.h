@@ -10,6 +10,7 @@ extern volatile unsigned int *sysio;
 
 // misc functions
 extern void delay(unsigned int limit);
+extern unsigned int getstack(void);
 
 // conversion stuff
 extern char nibble2hex(char n);

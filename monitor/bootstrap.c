@@ -204,23 +204,20 @@ void sdcard_ls() {
 }
 
 void main(void) {
+  unsigned int foo;
   unsigned short size=20;
   char buf[20];
   char *msg;
   int val;
   int *ref;
+  unsigned int sp;
 
-  matrix_put(0,0,0xff);
+  matrix_init();
   serial_print(1, katherine);
-  matrix_put(1,0,0xff);
   spi_fast();
-  matrix_put(2,0,0xff);
   addr = 0xc0000000;
-  matrix_put(3,0,0xff);
   lcd_init();
-  matrix_put(4,0,0xff);
   lcd_print("Bexkat 1000");
-  matrix_put(5,0,0xff);
   lcd_pos(0,1);
   matrix_put(6,0,0xff);
   lcd_print("v4.0");

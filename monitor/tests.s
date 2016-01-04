@@ -7,6 +7,9 @@ main:
 	std.l %0, 0x20000000
 	std.l %0, 0x20000004
 	std.l %0, 0x20000008
+	std.l %0, 0x20000010
+	std.l %0, 0x20000018
+	std.l %0, 0x2000001c
 
 # register based tests
 	
@@ -645,6 +648,100 @@ loop3:	st.l %0, (%1)
 	ldi %0, 0xff00
 	std.l %0, 0x20000004	
 
+# semi-random cache memory test
+t15:	std.l %13, 0x30000000
+	ldi %0, 0xff
+	std.l %0, 0x20000010
+	ldi %1, 0x00000000
+	ldi %2, 0x00001000
+	ldi %6, 0xffff
+t15l1:	mov.b %3, %1
+	mov.b %0, %3
+	lsli %0, %0, 8
+	or %0, %0, %3
+	lsli %0, %0, 8
+	or %0, %0, %3
+	lsli %0, %0, 8
+	xor %0, %0, %1 
+	or %0, %0, %3
+	st %0, (%1)
+	and %0, %0, %6
+	ld %4, (%1)
+	cmp %0, %4
+	bne fail
+	addi %1, %1, 4
+	cmp %1, %2
+	bne t15l1
+	ldi %0, 0xff00
+	std.l %0, 0x20000010
+	ldi %0, 0xff
+	std.l %0, 0x20000014
+	ldi %1, 0x00000000
+t15l2:	mov.b %3, %1
+	mov.b %0, %3
+	lsli %0, %0, 8
+	or %0, %0, %3
+	lsli %0, %0, 8
+	or %0, %0, %3
+	lsli %0, %0, 8
+	xor %0, %0, %1 
+	or %0, %0, %3
+	and %0, %0, %6
+	ld %4, (%1)
+	cmp %0, %4
+	bne fail
+	addi %1, %1, 4
+	cmp %1, %2
+	bne t15l2
+	ldi %0, 0xff00
+	std.l %0, 0x20000014
+	ldi %0, 0xff
+	std.l %0, 0x20000018
+	ldi %1, 0x00000000
+	ldi %4, 0x00002000
+	ldiu %6, 0xff
+t15l3:	mov.b %3, %1
+	mov.b %0, %3
+	lsli %0, %0, 8
+	or %0, %0, %3
+	lsli %0, %0, 8
+	or %0, %0, %3
+	lsli %0, %0, 8
+	xor %0, %0, %1 
+	or %0, %0, %3
+	st.b %0, (%1)
+	and %0, %0, %6
+	ld.b %2, (%1)
+	cmp %0, %2
+	bne fail
+	addi %1, %1, 4
+	cmp %1, %4
+	bne t15l3
+	ldi %0, 0xff00
+	std.l %0, 0x20000018
+	ldi %0, 0xff
+	std.l %0, 0x2000001c
+	ldi %1, 0x00000000
+	ldi %4, 0x00002000
+t15l4:	mov.b %3, %1
+	mov.b %0, %3
+	lsli %0, %0, 8
+	or %0, %0, %3
+	lsli %0, %0, 8
+	or %0, %0, %3
+	lsli %0, %0, 8
+	xor %0, %0, %1 
+	or %0, %0, %3
+	and %0, %0, %6
+	ld.b %2, (%1)
+	cmp %0, %2
+	bne fail
+	addi %1, %1, 4
+	cmp %1, %4
+	bne t15l4
+	ldi %0, 0xff00
+	std.l %0, 0x2000001c
+	
 	bra pass
 	
 jsrpos:	addi %13, %13, 1

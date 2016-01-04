@@ -68,6 +68,9 @@ module soc(
   input gen_miso,
   output gen_mosi,
   output rtc_ss,
+  output codec_xdcs,
+  output codec_cs,
+  input codec_irq,
   input rtc_miso,
   output rtc_mosi,
   output rtc_sclk,
@@ -114,14 +117,16 @@ wire [7:0] spi_selects;
 wire miso, mosi, sclk;
 
 assign rtc_ss = spi_selects[4];
+assign codec_cs = spi_selects[3];
+assign codec_xdcs = spi_selects[2];
 assign sd_ss = spi_selects[0];
 assign gen_mosi = mosi;
 assign sd_mosi = mosi;
 assign rtc_mosi = mosi;
 assign miso = (~spi_selects[0] ? sd_miso : 1'b0) |
               (~spi_selects[1] ? gen_miso : 1'b0) |
-              (~spi_selects[2] ? gen_miso : 1'b0) |
-              (~spi_selects[3] ? gen_miso : 1'b0) |
+              (~spi_selects[2] ? rtc_miso : 1'b0) |
+              (~spi_selects[3] ? rtc_miso : 1'b0) |
               (~spi_selects[4] ? rtc_miso : 1'b0) |
               (~spi_selects[5] ? rtc_miso : 1'b0);
 assign gen_sclk = sclk;

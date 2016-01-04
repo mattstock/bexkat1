@@ -93,6 +93,7 @@ begin
     STATE_BUSY: state_next = (hit ? STATE_HIT : STATE_MISS);
     STATE_HIT: begin
       if (s_we_i) begin
+        rowin_next = rowout;
         case (wordsel)
           2'h0: begin
             rowin_next[DIRTY0] = 1'b1;

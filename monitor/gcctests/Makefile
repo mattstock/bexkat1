@@ -1,13 +1,13 @@
 CC = bexkat1-elf-gcc
-LCC = ~/lcc/lcc
-MCC = moxie-elf-gcc
+#LCC = ~/lcc/lcc
+#MCC = moxie-elf-gcc
 CFLAGS = -I../include
 #GCCFLAGS = -dP
 #CFLAGS = -I../include -B/home/mstock/projects/gcc-build/gcc -B/usr/local/bexkat1-elf/bin/ -B/usr/local/bexkat1-elf/lib/
 
 .PHONY: all clean
 
-all: types.s conditionals.s types-moxie.s fib.s fib-moxie.s fib-lcc.s frametests.s frametests-moxie.s frametests-lcc.s fp.s
+all: types.s conditionals.s fib.s frametests.s fp.s
 
 clean:
 	rm -f *.o *.s *.expand *.gkd types.c.* conditionals.c.*

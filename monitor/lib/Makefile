@@ -13,7 +13,7 @@ TEMP := $(shell mktemp)
 all: libsupport.a
 
 clean:
-	rm -f *.o *.a *.s
+	rm -f *.o *.a
 
 %.s: %.c
 	$(CC) -S $(CFLAGS) -o $@ $^
@@ -21,6 +21,6 @@ clean:
 %.o: %.s
 	$(AS) -EB -o $@ $^
 
-libsupport.a: serial.o misc.o matrix.o lcd.o mmc.o ff.o gettime.o itd.o vectors.o spi.o rtc.o
+libsupport.a: serial.o misc.o matrix.o lcd.o mmc.o ff.o gettime.o itd.o vectors.o spi.o rtc.o debug.o
 	$(AR) rcs -o $@ $^
 	$(RANLIB) $@
