@@ -27,8 +27,8 @@ void timer1(void) {
   timers[5] += 50000000; // reset timer1 interval
 }
 
-void timer0() __attribute__ ((exception_handler));
-void timer1() __attribute__ ((exception_handler));
+void timer0() __attribute__ ((interrupt_handler));
+void timer1() __attribute__ ((interrupt_handler));
   
 void main(void) {
   unsigned v;
