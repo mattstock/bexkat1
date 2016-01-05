@@ -135,7 +135,7 @@ begin
   endcase
 end
 
-wire pixeldouble = setupreg[0];
+wire pixeldouble = (setupreg[1:0] == 2'b01);
 
 always_comb
 begin
