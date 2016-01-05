@@ -219,11 +219,11 @@ begin
             state_next = S_EXC;
           end
 	end
-	4'h3: begin // cli
+	4'h2: begin // cli
           interrupts_enabled_next = 1'b0;
 	  state_next = S_FETCH;
 	end
-	4'h4: begin // sti
+	4'h3: begin // sti
           interrupts_enabled_next = 1'b1;
 	  state_next = S_FETCH;
 	end
