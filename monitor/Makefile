@@ -43,5 +43,8 @@ kernel:
 tests: tests.o
 	$(CC) -T profile.ld -nostartfiles -o $@ $^ $(LDLIBS)
 
+fileio: fileio.o
+	$(CC) $(LDFLAGS) -o $@ $^
+
 bootstrap: bootstrap.o
 	$(CC) -T profile.ld -nostartfiles -o $@ $^ $(LDLIBS)

@@ -4,7 +4,7 @@
 #include "spi.h"
 #include "ff.h"
 #include "lcd.h"
-#include "itd.h"
+#include "rtc.h"
 #include "elf32.h"
 #include <string.h>
 
@@ -167,7 +167,6 @@ void sdcard_exec(char *name) {
   // Cleanly unmount sdcard
   f_close(&fp);
   f_mount((void *)0, "", 0);
-  // Bootstrap kernel
   execptr = (void *)header.e_entry;
   (*execptr)();
 }
@@ -203,6 +202,10 @@ void sdcard_ls() {
   f_mount((void *)0, "", 0);
 }
 
+void set_rtc() {
+  
+}
+
 void main(void) {
   unsigned int foo;
   unsigned short size=20;
@@ -214,18 +217,18 @@ void main(void) {
 
   matrix_init();
   serial_print(1, katherine);
+  serial_print(1, rebecca);
   spi_fast();
   addr = 0xc0000000;
   lcd_init();
   lcd_print("Bexkat 1000");
   lcd_pos(0,1);
-  matrix_put(6,0,0xff);
   lcd_print("v4.0");
-  matrix_put(7,0,0xff);
   if ((sysio[0] & 0x1) == 0x1) {
     sdcard_exec("/kernel");
     serial_print(0, "\nautoboot failed\n");
   }
+  
   while (1) {
     serial_print(0, "\nBexkat1 [");
     serial_printhex(0, addr);
@@ -233,6 +236,7 @@ void main(void) {
     sysctrl[0] = addr;
     msg = buf;
     serial_getline(0, msg, &size);
+    
     switch (msg[0]) {
     case '?':
       serial_print(0, helpmsg);
@@ -257,26 +261,11 @@ void main(void) {
       serial_print(0, "\nerasing flash...\n");
       flash_erase();
       break;
-    case 'l':
-      serial_print(0, "\nstarting up lcd...\n");
-      itd_init();
-      serial_print(0, "making a red rect\n");
-      itd_rect(10,10,20,20,color565(0xff,0,0));
-      serial_print(0, "making a blue rect\n");
-      itd_rect(100,130,110,150,color565(0,0,0xff));
-      serial_print(0, "making a random rect\n");
-      itd_rect(50,75,100,120,color565(0x10,0x10,0x30));
-      serial_print(0, "turning on backlight...\n");
-      itd_backlight(1);
-      break;
     case 'm':
       matrix_init();
       break;
     case 'r':
       serial_dumpmem(0, addr, 128);
-      break;
-    case 't':
-      memtest();
       break;
     case '.':
       addr += 4;

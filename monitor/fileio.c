@@ -1,5 +1,4 @@
-#include "misc.h"
-#include "matrix.h"
+#include "ff.h"
 #include <sys/types.h>
 #include <sys/stat.h>
 #include <fcntl.h>
@@ -12,14 +11,21 @@ char buf[] = "this is a test.\n";
 
 void main(void) {
   int fd;
+  FATFS f;
+  FRESULT foo;
+
+  iprintf("trying mount\n");
+  if (f_mount(&f, "", 1) != FR_OK)
+    iprintf("f_mount failed\n");
+  else {
+    iprintf("f_mount success\n");
+    f_mount((void *)0, "", 0);
+  }
 
   fd = open("/testnew.txt", O_CREAT|O_WRONLY);
   if (fd != 4)
     iprintf("I got %d as a file descriptor and errno is %d\n", fd, errno);
-  matrix[0] = 0xff;
   write(fd, buf, strlen(buf));
-  matrix[1] = 0xff;
   close(fd);
-  matrix[2] = 0xff;
   while (1);
 }

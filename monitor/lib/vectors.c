@@ -6,13 +6,13 @@ static void dummy(void) {
 
 isr _vectors_start[16] = {
   (void *)0x70000000, /* reset */
-  dummy, /* bus error */
-  dummy, /* page fault */
-  dummy, /* invalid opcode */
-  dummy, /* write fault */
-  dummy, /* halt */
-  dummy, /* recv */
-  dummy, /* interrupt */
+  dummy, /* mmu fault */
+  dummy, /* timer0 */
+  dummy, /* timer1 */
+  dummy, /* timer2 */
+  dummy, /* timer3 */
+  dummy, /* uart0 rx */
+  dummy, /* uart0 tx */
   dummy, /* trap 0 */
   dummy, /* trap 1 */
   dummy, /* trap 2 */

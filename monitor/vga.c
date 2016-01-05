@@ -6,22 +6,10 @@
 #include <math.h>
 #include "matrix.h"
 #include "misc.h"
+#include "vga.h"
 #include <math.h>
 
-unsigned char *vga = (unsigned char *)0xc0000000;
-unsigned int *vga_p = (unsigned int *)0x80000000;
 unsigned int *kbd = (unsigned int *)0x30004000;
-
-
-void vga_pallette(unsigned char idx, unsigned int color) {
-  vga_p[idx] = color;
-}
-
-void vga_point(int x, int y, unsigned char val) {
-  if (x < 0 || y < 0 || x > 639 || y > 479)
-    return;
-  vga[y*640+x] = val;
-}
 
 void mandelbrot(float cx, float cy, float scale) {
   float limit = 4.0f;
@@ -39,6 +27,8 @@ void mandelbrot(float cx, float cy, float scale) {
       lp = 0; 
       sysctrl[0] = ((x & 0xffff)) << 16 | (y & 0xffff);
       do {
+	if (kbd[1] != 0) // abort on keypress
+	  return;
         lp++;
         asq = a1*a1;
         bsq = b1*b1;
@@ -97,34 +87,46 @@ void main(void) {
   clear();
   printf("Defining palette 0\n");
   for (x=0; x < 256; x++)
-    vga_pallette(x, x << 16);
-  circle(20);
-  while (1) {
-    while (kbd[1] == 0);
-    switch (kbd[0]) { 
-      case 0x1c: 
-        a -= 0.1f;
-        break;
-      case 0x23: 
-        a += 0.1f;
-        break;
-      case 0x1b: 
-        b -= 0.1f;
-        break;
-      case 0x1d: 
-        b += 0.1f;
-        break;
-      case 0x2d:
-        c += 0.1f;
-        break;
-      case 0x2b:
-        c -= 0.1f;
-        break;
-    }
-     
-    printf("starting (%f, %f, %f)\n", a, b, c);
+    vga_palette(0, x, x << 16);
 
-    mandelbrot(a,b,c);
-    printf("done\n");
+  circle(20);
+
+  while (1) {
+    x = 1;
+    switch (kbd[0]) { 
+    case 0x1c: // a
+      a -= 0.1f;
+      break;
+    case 0x23: // d
+      a += 0.1f;
+      break;
+    case 0x1b: // s
+      b -= 0.1f;
+      break;
+    case 0x1d: // w
+      b += 0.1f;
+      break;
+    case 0x2d: // r
+      c += 0.001f;
+      break;
+    case 0x2b: // f
+      c -= 0.001f;
+      break;
+    default:
+      x = 0;
+    }
+
+    // eat key release
+    do {
+      while (kbd[1] == 0);
+    } while (kbd[0] < 256);
+
+    
+    if (x) {
+      printf("starting (%f, %f, %f)\n", a, b, c);
+      mandelbrot(a,b,c);
+      printf("done\n");
+    }
+    while (kbd[1] == 0);
   }
 }
