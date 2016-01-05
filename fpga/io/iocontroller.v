@@ -3,7 +3,7 @@ module iocontroller(input clk_i,
 		    input we_i,
 		    input cyc_i,
 		    input stb_i,
-		    input [15:0] adr_i,
+		    input [16:0] adr_i,
 		    output [31:0] dat_o,
 		    input [31:0] dat_i,
 		    input [3:0] sel_i,
@@ -24,7 +24,7 @@ module iocontroller(input clk_i,
 		    input sd_wp_n,
 		    output fan,
 		    output reg [7:0] spi_selects,
-		    output [1:0] interrupt,
+		    output [5:0] interrupts,
 		    input [15:0] sw,
 		    input [1:0] ps2mouse,
 		    input [1:0] ps2kbd,
@@ -43,13 +43,18 @@ reg [31:0] segreg, fanspeed, segreg_next, fanspeed_next, result, result_next;
 reg [1:0] state, state_next;
 reg [8:0] led_next;
 
-wire [31:0] lcd_out, uart1_out, uart0_out, spi_out, ps2mouse_out, ps2kbd_out;
-wire [3:0] selector;
-wire lcd_ack, uart0_ack, uart1_ack, spi_ack, ps2mouse_ack, ps2kbd_ack;
+wire [31:0] lcd_out, uart1_out, uart0_out, spi_out, ps2mouse_out, ps2kbd_out,
+	    timer_out;
+wire [4:0] selector;
+wire lcd_ack, uart0_ack, uart1_ack, spi_ack, ps2mouse_ack, ps2kbd_ack,
+     timer_ack;
+wire [3:0] timer_interrupts;
+wire [1:0] uart0_interrupts;
 
 assign ack_o = (state == STATE_DONE);
 assign dat_o = result;
-assign selector = adr_i[15:12];
+assign selector = adr_i[16:12];
+assign interrupts = { timer_interrupts, uart0_interrupts };
 
 localparam [1:0] STATE_IDLE = 2'h0, STATE_BUSY = 2'h1, STATE_DONE = 2'h2;
 
@@ -84,7 +89,7 @@ always @*
       end
       STATE_BUSY: begin
 	case (selector)
-          3'h0: begin
+          4'h0: begin
             // LED and fan in place
             if (we_i) begin
               if (adr_i[0] == 1'b0)
@@ -95,49 +100,55 @@ always @*
               result_next = (adr_i[0] ? fanspeed : segreg); 
             state_next = STATE_DONE;
           end
-          3'h1: begin // switches and leds
+          4'h1: begin // switches and leds
             if (we_i)
               led_next = dat_i[8:0];
             else
               result_next = { 16'h0000, sw };
             state_next = STATE_DONE;
           end
-          3'h2: begin // UART0
+          4'h2: begin // UART0
             if (~we_i)
               result_next = uart0_out;
             if (uart0_ack)
               state_next = STATE_DONE;
           end
-          3'h3: begin // UART1
+          4'h3: begin // UART1
             if (~we_i)
               result_next = uart1_out;
             if (uart1_ack)
               state_next = STATE_DONE;
           end
-          3'h4: begin // ps2 kbd
+          4'h4: begin // ps2 kbd
             if (~we_i)
               result_next = ps2kbd_out;
             if (ps2kbd_ack)
               state_next = STATE_DONE;
           end
-          3'h5: begin // ps2 mouse
+          4'h5: begin // ps2 mouse
             if (~we_i)
               result_next = ps2mouse_out;
             if (ps2mouse_ack)
               state_next = STATE_DONE;
           end
-          3'h6: begin // LCD
+          4'h6: begin // LCD
             if (~we_i)
               result_next = lcd_out;
             if (lcd_ack)
               state_next = STATE_DONE;
           end
-          3'h7: begin // SPI
+          4'h7: begin // SPI
             if (~we_i)
               result_next = spi_out;
             if (spi_ack)
               state_next = STATE_DONE;
           end
+	  4'h8: begin // timer
+	    if (~we_i)
+	      result_next = timer_out;
+	    if (timer_ack)
+	      state_next = STATE_DONE;
+	  end
           default: state_next = STATE_DONE;
 	endcase
       end
@@ -147,19 +158,20 @@ always @*
   end
 
 wire cyc_o = (state == STATE_BUSY);
-wire stb_uart0 = (selector == 3'h2);
-wire stb_uart1 = (selector == 3'h3);
-wire stb_ps2kbd = (selector == 3'h4);
-wire stb_ps2mouse = (selector == 3'h5);
-wire stb_lcd = (selector == 3'h6);
-wire stb_spi = (selector == 3'h7);
+wire stb_uart0 = (selector == 4'h2);
+wire stb_uart1 = (selector == 4'h3);
+wire stb_ps2kbd = (selector == 4'h4);
+wire stb_ps2mouse = (selector == 4'h5);
+wire stb_lcd = (selector == 4'h6);
+wire stb_spi = (selector == 4'h7);
+wire stb_timer = (selector == 4'h8);
 
 uart #(.baud(115200)) uart0(.clk_i(clk_i), .rst_i(rst_i), .we_i(we_i),
 			    .sel_i(sel_i), .stb_i(stb_uart0),
 			    .dat_i(dat_i), .dat_o(uart0_out), .cyc_i(cyc_o),
 			    .adr_i(adr_i[2]), .ack_o(uart0_ack),
 			    .rx(rx0), .tx(tx0), .rts(rts0), .cts(cts0),
-			    .interrupt(interrupt));
+			    .interrupt(uart0_interrupts));
 
 uart uart1(.clk_i(clk_i), .rst_i(rst_i), .we_i(we_i),
 	   .sel_i(sel_i), .stb_i(stb_uart1),
@@ -179,6 +191,11 @@ spi_master spi0(.clk_i(clk_i), .cyc_i(cyc_o), .rst_i(rst_i), .sel_i(sel_i), .we_
 
 ps2_kbd ps2kbd0(.clk_i(clk_i), .rst_i(rst_i), .cyc_i(cyc_o), .sel_i(sel_i), .we_i(we_i), .stb_i(stb_ps2kbd),
   .dat_i(dat_i), .dat_o(ps2kbd_out), .ack_o(ps2kbd_ack), .adr_i(adr_i[2]), .ps2_clock(ps2kbd[1]), .ps2_data(ps2kbd[0]));
+
+timerint timerint0(.clk_i(clk_i), .rst_i(rst_i), .cyc_i(cyc_o),
+		   .sel_i(sel_i), .we_i(we_i), .stb_i(stb_timer),
+		   .dat_i(dat_i), .dat_o(timer_out), .ack_o(timer_ack),
+		   .adr_i(adr_i[5:2]), .interrupt(timer_interrupts));
 
 //ps2_kbd ps2mouse0(.clk_i(clk_i), .rst_i(rst_i), .cyc_i(cyc_i), .sel_i(sel_i), .we_i(we_i), .stb_i(stb_ps2mouse),
 //  .dat_i(dat_i), .dat_o(ps2mouse_out), .ack_o(ps2mouse_ack), .adr_i(adr_i[3:2]), .ps2_clock(ps2mouse[1]), .ps2_data(ps2mouse[0]));

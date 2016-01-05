@@ -153,7 +153,7 @@ assign fs_databus = (chipselect == 4'h6 && ~ssram_we_n ? ssram_dataout :
                       (chipselect == 4'h8 && ~fl_we_n ? { 16'h0000, flash_dataout } : 32'hzzzzzzzz));
 
 // System Blinknlights
-assign LEDR = { SW[17], SW[16], 12'h0, ~rtc_ss, cpu_halt, mmu_fault, cpu_cyc };
+assign LEDR = { SW[17], SW[16], io_interrupts, 4'h0, ~codec_cs, ~codec_xdcs, ~sd_ss, cpu_halt, mmu_fault, cpu_cyc };
 
 // Internal bus wiring
 wire [3:0] chipselect;
@@ -163,7 +163,7 @@ wire [15:0] flash_dataout;
 wire [31:0] cpu_readdata, cpu_writedata, mon_readdata, mandelbrot_readdata, matrix_readdata, rom_readdata;
 wire [31:0] vect_readdata, io_readdata, sdram_readdata, sdram_dataout, vga_writedata, rom2_readdata;
 wire [3:0] cpu_be, vga_sel, exception;
-wire [1:0] io_interrupt;
+wire [5:0] io_interrupts;
 wire [2:0] cpu_interrupt;
 wire [7:0] lcd_dataout;
 wire cpu_write, cpu_cyc, cpu_ack, cpu_halt;
@@ -197,15 +197,21 @@ begin
   end
 end
 
-// interrupt hierarchy
-always @(*)
+// interrupt priority encoder
+always_comb
 begin
-  if (mmu_fault)
-    cpu_interrupt = 3'h0; // for now
-  else if (|io_interrupt)
-    cpu_interrupt = { 1'b1, io_interrupt };
-  else
-    cpu_interrupt = 3'h0;
+  cpu_interrupt = 3'h0;
+  if (int_en)
+    casex ({ mmu_fault, io_interrupts })
+      7'b1xxxxxx: cpu_interrupt = 3'h1; // MMU error
+      7'b01xxxxx: cpu_interrupt = 3'h2; // timer0
+      7'b001xxxx: cpu_interrupt = 3'h3; // timer1
+      7'b0001xxx: cpu_interrupt = 3'h4; // timer2
+      7'b0000100: cpu_interrupt = 3'h5; // timer3
+      7'b000001x: cpu_interrupt = 3'h6; // uart0 rx
+      7'b0000001: cpu_interrupt = 3'h7; // uart0 tx
+      7'b0000000: cpu_interrupt = 3'h0;
+    endcase
 end
 
 assign cpu_readdata = (chipselect == 4'h1 ? vect_readdata : 32'h0) |
@@ -244,10 +250,10 @@ sdram_controller_cache sdram0(.clk_i(sysclock), .mem_clk_o(sdram_clk), .rst_i(rs
 led_matrix rgbmatrix0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cpu_writedata), .dat_o(matrix_readdata),
   .adr_i(cpu_address[11:2]), .sel_i(cpu_be), .we_i(cpu_write), .stb_i(chipselect == 4'h5), .cyc_i(cpu_cyc), .ack_o(matrix_ack),
   .demux({matrix_a, matrix_b, matrix_c}), .matrix0(matrix0), .matrix1(matrix1), .matrix_stb(matrix_stb), .matrix_clk(matrix_clk), .oe_n(matrix_oe_n));
-iocontroller io0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cpu_writedata), .dat_o(io_readdata), .we_i(cpu_write), .adr_i(cpu_address[15:0]),
+iocontroller io0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cpu_writedata), .dat_o(io_readdata), .we_i(cpu_write), .adr_i(cpu_address[16:0]),
   .stb_i(chipselect == 4'h4), .cyc_i(cpu_cyc), .ack_o(io_ack), .sel_i(cpu_be),
   .miso(miso), .mosi(mosi), .sclk(sclk), .spi_selects(spi_selects), .sd_wp_n(sd_wp_n), .fan(fan_ctrl),
-  .lcd_e(lcd_e), .lcd_data(lcd_dataout), .lcd_rs(lcd_rs), .lcd_on(lcd_on), .lcd_rw(lcd_rw), .interrupt(io_interrupt),
+  .lcd_e(lcd_e), .lcd_data(lcd_dataout), .lcd_rs(lcd_rs), .lcd_on(lcd_on), .lcd_rw(lcd_rw), .interrupts(io_interrupts),
   .rx0(serial0_rx), .tx0(serial0_tx), .rts0(serial0_rts), .cts0(serial0_cts), .tx1(serial1_tx), .sw(SW[15:0]),
   .ps2mouse({ps2mouse_clk, ps2mouse_data}), .ps2kbd({ps2kbd_clk, ps2kbd_data}), .led(LEDG),
   .hex0(HEX0), .hex1(HEX1), .hex2(HEX2), .hex3(HEX3), .hex4(HEX4), .hex5(HEX5), .hex6(HEX6), .hex7(HEX7));
