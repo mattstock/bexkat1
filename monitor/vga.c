@@ -53,20 +53,20 @@ void clear() {
       vga_point(x,y,0x00);
 }
 
-void circle(int size) {
+void circle(int a, int b, int size) {
   int d = 1 - size;
   int x = size;
   int y = 0;
 
   while (y <= x) {
-    vga_point(x+320,y+240, 0xff);
-    vga_point(y+320,x+240, 0xff);
-    vga_point(320-x,y+240, 0xff);
-    vga_point(320-y,x+240, 0xff);
-    vga_point(320-x,240-y, 0xff);
-    vga_point(320-y,240-x, 0xff);
-    vga_point(x+320,240-y, 0xff);
-    vga_point(y+320,240-x, 0xff);
+    vga_point(x+a,y+b, 0xff);
+    vga_point(y+a,x+b, 0xff);
+    vga_point(a-x,y+b, 0xff);
+    vga_point(a-y,x+b, 0xff);
+    vga_point(a-x,b-y, 0xff);
+    vga_point(a-y,b-x, 0xff);
+    vga_point(x+a,b-y, 0xff);
+    vga_point(y+a,b-x, 0xff);
     y++;
     if (d <= 0) {
       d += 2*y+1;
@@ -87,9 +87,11 @@ void main(void) {
   clear();
   printf("Defining palette 0\n");
   for (x=0; x < 256; x++)
-    vga_palette(0, x, x << 16);
-
-  circle(20);
+    vga_palette(0, x, x | (x << 16) | (x << 8));
+  
+  vga_set_mode(VGA_MODE_DOUBLE);
+  
+  circle(40,40,20);
 
   while (1) {
     x = 1;

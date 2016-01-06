@@ -9,7 +9,7 @@ module vga_master(
   output [3:0] master_sel_o,
   input master_ack_i,
   output master_stb_o,
-  input [10:0] slave_adr_i,
+  input [9:0] slave_adr_i,
   input [31:0] slave_dat_i,
   output reg [31:0] slave_dat_o,
   input slave_cyc_i,
@@ -28,10 +28,10 @@ module vga_master(
 
 // Configuration registers
 // 0x000 - palette memory 1
-// 0x100 - palette memory 2
-// 0x200 - font memory 1
-// 0x500 - video memory base address
-// 0x501 - video mode, palette select
+// 0x400 - palette memory 2
+// 0x800 - font memory 1
+// 0xc00 - video memory base address
+// 0xc01 - video mode, palette select
 
 localparam [1:0] STATE_IDLE = 2'h0, STATE_BUS = 2'h1, STATE_PALETTE = 2'h2, STATE_STORE = 2'h3;
 localparam [2:0] SSTATE_IDLE = 3'h0, SSTATE_PALETTE = 3'h1, SSTATE_PALETTE2 = 3'h2, SSTATE_FONT = 3'h3, SSTATE_DONE = 3'h4;
@@ -87,13 +87,13 @@ begin
   case (sstate)
     SSTATE_IDLE:
       if (slave_cyc_i & slave_stb_i)
-        case (slave_adr_i[10:8])
-          3'h0: sstate_next = SSTATE_PALETTE;
-          3'h1: sstate_next = SSTATE_PALETTE2;
-          3'h2: sstate_next = SSTATE_FONT;
-          3'h5: begin
+        case (slave_adr_i[9:8])
+          2'h0: sstate_next = SSTATE_PALETTE;
+          2'h1: sstate_next = SSTATE_PALETTE2;
+          2'h2: sstate_next = SSTATE_FONT;
+          2'h3: begin
             case (slave_adr_i[7:0])
-              8'h00: begin
+              8'h0: begin
                 if (slave_we_i) begin
                   if (slave_sel_i[3])
                     vgabase_next[31:24] = slave_dat_i[31:24];
@@ -106,7 +106,7 @@ begin
                 end else
                   slave_dat_o_next = vgabase;
               end
-              8'h01: begin
+              8'h1: begin
                 if (slave_we_i) begin
                   if (slave_sel_i[3])
                     setupreg_next[31:24] = slave_dat_i[31:24];
