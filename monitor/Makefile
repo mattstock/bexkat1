@@ -1,7 +1,6 @@
 CC = bexkat1-elf-gcc
-CFLAGS = -Iinclude
 LDFLAGS = -specs=de2.specs
-LDLIBS = -Llib -lsupport -lm
+LDLIBS = -lsupport -lm
 OBJCOPY = bexkat1-elf-objcopy
 OBJDUMP = bexkat1-elf-objdump
 AS = bexkat1-elf-as
@@ -12,21 +11,17 @@ TEMP := $(shell mktemp)
 OBJECTS = boot.o bootstrap.o pretty.o vga.o memtests.o rtc.o fileio.o tests.o ps2.o fib.o
 APPS = pretty vga bootstrap memtests rtc fileio tests ps2 fib
 
-.PHONY: all clean lib gcctests kernel install
+.PHONY: all clean gcctests kernel install
 
-all: boot.o lib bootstrap.mif tests.mif $(APPS)
+all: boot.o bootstrap.mif tests.mif $(APPS)
 
 install: $(APPS)
 	cp $(APPS) /media/mstock/A5BC-530B/
 
 clean:
-	cd lib; make clean
 	cd gcctests; make clean
 	cd kernel; make clean
 	rm -f *.o *.hex *.mif *.gkd *.expand $(APPS)
-
-lib:
-	cd lib; make
 
 gcctests:
 	cd gcctests; make

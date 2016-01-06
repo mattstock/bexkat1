@@ -22,3 +22,7 @@ isr _vectors_start[16] = {
   dummy, /* trap 6 */
   dummy  /* trap 7 */
 };
+
+void set_interrupt_handler(interrupt_slot s, isr f) {
+  _vectors_start[s] = f;
+}
