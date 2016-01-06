@@ -107,9 +107,9 @@ begin
       state_next = S_EXC;
     end
     S_EXC: begin
-      // for everyone except reset, we need to push the PC onto the stack
+      // for everyone except reset, we need to push the PC and CCR onto the stack
       if (exception == 4'h0)
-        state_next = S_EXC5;
+        state_next = S_EXC9;
       else begin
 	a_write = 1'b1; // A <= SP
         reg_read_addr1 = REG_SP;
@@ -136,33 +136,58 @@ begin
         state_next = S_EXC5;
     end
     S_EXC5: begin
-      pcsel = PC_EXC; // load exception_next handler address into PC
-      state_next = S_EXC6;
+      a_write = 1'b1; // A <= SP
+      reg_read_addr1 = REG_SP;
+      mdrsel = MDR_CCR;
+	    state_next = S_EXC6;
     end
     S_EXC6: begin
-      bus_cyc = 1'b1;
-      marsel = MAR_BUS;
-      if (bus_ack)
+        alu2sel = ALU_4;
+        alu_func = ALU_SUB;
         state_next = S_EXC7;
     end
     S_EXC7: begin
+      marsel = MAR_ALU;
+      reg_write_addr = REG_SP;
+      reg_write = REG_WRITE_DW;
+      state_next = S_EXC8;
+    end
+    S_EXC8: begin
+      addrsel = ADDR_MAR;
+      bus_cyc = 1'b1;
+      bus_write = 1'b1;       
+      if (bus_ack)
+        state_next = S_EXC9;
+    end
+    S_EXC9: begin
+      pcsel = PC_EXC; // load exception_next handler address into PC
+      state_next = S_EXC10;
+    end
+    S_EXC10: begin
+      bus_cyc = 1'b1;
+      marsel = MAR_BUS;
+      if (bus_ack)
+        state_next = S_EXC11;
+    end
+    S_EXC11: begin
       pcsel = PC_MAR;
       state_next = S_FETCH;
     end
     S_FETCH: begin
       bus_cyc = 1'b1;
       ir_write = 1'b1; // latch bus into ir
+      if (bus_ack)
+        state_next = S_FETCH2;
+    end // case: S_FETCH
+    S_FETCH2: begin
       if (|interrupt && interrupts_enabled) begin
         state_next = S_EXC;
         interrupts_enabled_next = 1'b0;
         exception_next = { 1'b0, interrupt};
-      end else
-        if (bus_ack)
-          state_next = S_FETCH2;
-    end // case: S_FETCH
-    S_FETCH2: begin
-      pcsel = PC_NEXT;
-      state_next = S_EVAL;
+      end else begin
+        pcsel = PC_NEXT;
+        state_next = S_EVAL;
+      end
     end
     S_EVAL: begin
       if (ir_size)
@@ -202,7 +227,7 @@ begin
 	T_PUSH: state_next = S_PUSH2;
 	T_STORE: state_next = S_STORED;
 	T_LOAD: state_next = S_LOADD;
-	T_JUMP: state_next = S_EXC7;
+	T_JUMP: state_next = S_EXC11;
 	T_LDI: state_next = S_MDR2RA;
 	default: state_next = S_HALT;
       endcase
@@ -299,8 +324,10 @@ begin
       reg_write = REG_WRITE_DW; // SP <= aluout
       reg_write_addr = REG_SP;
       case (ir_op)
-	4'h0: state_next = S_POP4;
-	default: state_next = S_RTS;
+        4'h0: state_next = S_POP4;
+        4'h1: state_next = S_RTS;
+        4'h2: state_next = S_RTI;
+        default: state_next = S_RTS;
       endcase
     end
     S_POP4: begin
@@ -309,6 +336,29 @@ begin
       mdrsel = MDR_BUS;
       if (bus_ack)
         state_next = S_MDR2RA;
+    end
+    S_RTI: begin // rti - pop CCR off of stack
+      addrsel = ADDR_MAR;
+      mdrsel = MDR_BUS;
+      bus_cyc = 1'b1;
+      if (bus_ack)
+        state_next = S_RTI2;
+    end
+    S_RTI2: begin
+      ccrsel = CCR_MDR;
+      reg_read_addr1 = REG_SP;
+      a_write = 1'b1;
+      state_next = S_RTI3;
+    end
+    S_RTI3: begin
+      alu2sel = ALU_4;
+      marsel = MAR_A;
+      state_next = S_RTI4;
+    end
+    S_RTI4: begin
+      reg_write = REG_WRITE_DW; // SP <= aluout
+      reg_write_addr = REG_SP;
+      state_next = S_RTS;
     end
     S_RTS: begin // rts
       pcsel = PC_MAR;
@@ -342,7 +392,7 @@ begin
     end
     S_CMP3: begin
       alu_func = ALU_SUB; // hold so we select the correct CCR value TODO fix
-      ccrsel = 2'h1;
+      ccrsel = CCR_ALU;
       state_next = S_FETCH;
     end
     S_CMPS: state_next = S_CMPS2; // cmp.s

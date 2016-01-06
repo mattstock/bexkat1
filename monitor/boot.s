@@ -23,4 +23,5 @@ addi %0, %0, 4
 .LC4:
 cmp %0, %1
 bltu .LC5
+setint _vectors_start
 jmpd main

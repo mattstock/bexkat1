@@ -204,10 +204,10 @@ begin
   if (int_en)
     casex ({ mmu_fault, io_interrupts })
       7'b1xxxxxx: cpu_interrupt = 3'h1; // MMU error
-      7'b01xxxxx: cpu_interrupt = 3'h2; // timer0
-      7'b001xxxx: cpu_interrupt = 3'h3; // timer1
-      7'b0001xxx: cpu_interrupt = 3'h4; // timer2
-      7'b0000100: cpu_interrupt = 3'h5; // timer3
+      7'b01xxxxx: cpu_interrupt = 3'h5; // timer3
+      7'b001xxxx: cpu_interrupt = 3'h4; // timer2
+      7'b0001xxx: cpu_interrupt = 3'h3; // timer1
+      7'b00001xx: cpu_interrupt = 3'h2; // timer0
       7'b000001x: cpu_interrupt = 3'h6; // uart0 rx
       7'b0000001: cpu_interrupt = 3'h7; // uart0 tx
       7'b0000000: cpu_interrupt = 3'h0;

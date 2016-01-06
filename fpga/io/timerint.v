@@ -13,7 +13,7 @@ module timerint(
     
 assign dat_o = result;
 assign ack_o = (state == STATE_DONE);
-assign interrupt = { status[0] & control[4], status[1] & control[5], status[2] & control[6], status[3] & control[7] };
+assign interrupt = { status[3] & control[7], status[2] & control[6], status[1] & control[5], status[0] & control[4] };
 
 localparam [1:0] STATE_IDLE = 2'h0, STATE_BUSY = 2'h1, STATE_DONE = 2'h2;
 

@@ -79,6 +79,8 @@ always @(posedge clk_i or posedge rst_i) begin
   end
 end
 
+wire [31:0] exceptionval = vectoff + { exception, 2'b00 };
+
 // All of the datapath options
 always @* begin
   status_next = status;
@@ -88,7 +90,7 @@ always @* begin
     PC_MAR:  pc_next = { 1'b0, mar };
     PC_REL:  pc_next = { 1'b0, pc } + { ir_sval[29:0], 2'b00 };
     PC_ALU:  pc_next = { 1'b0, alu_out }; // reg offset
-    PC_EXC: pc_next = { 1'b0, vectoff } + { exception, 2'b00 };
+    PC_EXC: pc_next = { 1'b0, exceptionval };
     default: pc_next = pc;
   endcase // case (pcsel)
   case (marsel)
@@ -140,6 +142,7 @@ always @* begin
     MDR_INT: mdr_next = int_out;
     MDR_FPU: mdr_next = fpu_out;
     MDR_ALU: mdr_next = alu_out;
+    MDR_CCR: mdr_next = { 29'h0, ccr};
     default: mdr_next = mdr;
   endcase
   case (regsel)
@@ -162,7 +165,7 @@ always @* begin
     CCR_CCR: ccr_next = ccr;
     CCR_ALU: ccr_next = { alu_carry, alu_negative ^ alu_overflow, alu_zero };
     CCR_FPU: ccr_next = { fp_alb, fp_alb, fp_aeb };
-    default: ccr_next = ccr;
+    CCR_MDR: ccr_next = mdr[2:0];
   endcase
   fpccr_next =  (fpccr_write ? { fp_nan, fp_overflow, fp_underflow, fp_divzero } : fpccr);
 end

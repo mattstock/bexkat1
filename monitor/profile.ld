@@ -1,6 +1,5 @@
 MEMORY
 {
-  vectors : ORIGIN = 0xffffffc0, LENGTH = 64
   rom : ORIGIN = 0x70000000, LENGTH = 128K
   ram : ORIGIN = 0x07ff0000, LENGTH = 64K
 }
@@ -37,10 +36,4 @@ SECTIONS
       *(.bss)
       _bend = . ;
     } > ram
-  .vectors :
-    {
-      _vectors_start = . ;
-      *(.vectors);
-      _vectors_end = . ;
-    } > vectors
 }
