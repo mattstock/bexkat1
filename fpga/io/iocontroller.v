@@ -28,6 +28,7 @@ module iocontroller(input clk_i,
 		    input [15:0] sw,
 		    input [1:0] ps2mouse,
 		    input [1:0] ps2kbd,
+        input codec_irq,
 		    output [6:0] hex0,
 		    output [6:0] hex1,
 		    output [6:0] hex2,
@@ -186,7 +187,7 @@ lcd_module lcd0(.clk_i(clk_i), .rst_i(rst_i), .we_i(we_i), .sel_i(sel_i),
 
 spi_master spi0(.clk_i(clk_i), .cyc_i(cyc_o), .rst_i(rst_i), .sel_i(sel_i), .we_i(we_i),
 		.stb_i(stb_spi), .dat_i(dat_i), .dat_o(spi_out), .ack_o(spi_ack),
-		.adr_i(adr_i[2]), .miso(miso), .mosi(mosi),
+		.adr_i(adr_i[2]), .miso(miso), .mosi(mosi), .codec_irq(codec_irq),
 		.sclk(sclk), .selects(spi_selects), .wp_n(sd_wp_n));
 
 ps2_kbd ps2kbd0(.clk_i(clk_i), .rst_i(rst_i), .cyc_i(cyc_o), .sel_i(sel_i), .we_i(we_i), .stb_i(stb_ps2kbd),

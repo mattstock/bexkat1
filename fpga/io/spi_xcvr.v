@@ -11,8 +11,10 @@ module spi_xcvr(
   output reg sclk);
 
 parameter clockfreq = 50000000; // 50MHz
-parameter hispeed =  8000000; //  16MHz
-parameter lospeed =  500000; //  1Mhz
+parameter speed3 =    30000000; // 13MHz
+parameter speed2 =    20000000; // 8MHz
+parameter speed1 =    10000000; // 4.167MHz
+parameter speed0 =     1000000; // 1MHz
 
 reg [8:0] buffer, buffer_next;
 reg done_next;
@@ -29,11 +31,19 @@ assign done = (state == STATE_IDLE);
 assign mosi = buffer[8];
 assign rx = (cpha ? buffer[7:0] : buffer[8:1]);
 
-wire [31:0] maxval;
-wire speedselect, cpol, cpha;
+logic [31:0] maxval;
+wire cpol, cpha;
+wire [1:0] speedselect;
 
-assign {speedselect, cpol, cpha} = conf[2:0];
-assign maxval = (speedselect ? clockfreq/hispeed : clockfreq/lospeed);
+assign {speedselect, cpol, cpha} = conf[3:0];
+
+always_comb
+  case (speedselect)
+    2'b00: maxval = clockfreq/speed0;
+    2'b01: maxval = clockfreq/speed1;
+    2'b10: maxval = clockfreq/speed2;
+    2'b11: maxval = clockfreq/speed3;
+  endcase
 
 always @(posedge clk_i or posedge rst_i)
 begin

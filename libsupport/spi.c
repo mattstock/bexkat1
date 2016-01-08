@@ -3,32 +3,25 @@
 volatile unsigned int *spi = (unsigned int *)0x30007000;
 
 void spi_fast() {
-  SET_BIT(SPI_CTL, SPI_SPEED);
+  spi_speed(SPI_SPEED3);
 }
 
 void spi_slow() {
-  CLEAR_BIT(SPI_CTL, SPI_SPEED);
+  spi_speed(SPI_SPEED0);
 }
 
-void spi_mode(int mode) {
-  switch (mode) {
-    case SPI_MODE0:
-      CLEAR_BIT(SPI_CTL, SPI_CPOL);
-      CLEAR_BIT(SPI_CTL, SPI_CPHA);
-      break;
-    case SPI_MODE1:
-      CLEAR_BIT(SPI_CTL, SPI_CPOL);
-      SET_BIT(SPI_CTL, SPI_CPHA);
-      break;
-    case SPI_MODE2:
-      SET_BIT(SPI_CTL, SPI_CPOL);
-      CLEAR_BIT(SPI_CTL, SPI_CPHA);
-      break;
-    case SPI_MODE3:
-      SET_BIT(SPI_CTL, SPI_CPOL);
-      SET_BIT(SPI_CTL, SPI_CPHA);
-      break;
-  }
+void spi_speed(unsigned int speed) {
+  if (speed > 3)
+    return;
+  speed <<= 18;
+  SPI_CTL = SPI_CTL & (~SPI_SPEED) | speed;
+}
+
+void spi_mode(unsigned int mode) {
+  if (mode > 3)
+    return;
+  mode <<= 16;
+  SPI_CTL = SPI_CTL & (~SPI_MODE) | mode;
 }
 
 char spi_xfer(char tx) {

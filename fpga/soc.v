@@ -153,7 +153,7 @@ assign fs_databus = (chipselect == 4'h6 && ~ssram_we_n ? ssram_dataout :
                       (chipselect == 4'h8 && ~fl_we_n ? { 16'h0000, flash_dataout } : 32'hzzzzzzzz));
 
 // System Blinknlights
-assign LEDR = { SW[17], SW[16], io_interrupts, 4'h0, ~codec_cs, ~codec_xdcs, ~sd_ss, cpu_halt, mmu_fault, cpu_cyc };
+assign LEDR = { SW[17], SW[16], io_interrupts, miso, mosi, sclk, ~codec_irq, ~codec_cs, ~codec_xdcs, ~sd_ss, cpu_halt, mmu_fault, cpu_cyc };
 
 // Internal bus wiring
 wire [3:0] chipselect;
@@ -255,7 +255,7 @@ iocontroller io0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cpu_writedata), .dat_o(
   .miso(miso), .mosi(mosi), .sclk(sclk), .spi_selects(spi_selects), .sd_wp_n(sd_wp_n), .fan(fan_ctrl),
   .lcd_e(lcd_e), .lcd_data(lcd_dataout), .lcd_rs(lcd_rs), .lcd_on(lcd_on), .lcd_rw(lcd_rw), .interrupts(io_interrupts),
   .rx0(serial0_rx), .tx0(serial0_tx), .rts0(serial0_rts), .cts0(serial0_cts), .tx1(serial1_tx), .sw(SW[15:0]),
-  .ps2mouse({ps2mouse_clk, ps2mouse_data}), .ps2kbd({ps2kbd_clk, ps2kbd_data}), .led(LEDG),
+  .ps2mouse({ps2mouse_clk, ps2mouse_data}), .ps2kbd({ps2kbd_clk, ps2kbd_data}), .led(LEDG), .codec_irq(codec_irq),
   .hex0(HEX0), .hex1(HEX1), .hex2(HEX2), .hex3(HEX3), .hex4(HEX4), .hex5(HEX5), .hex6(HEX6), .hex7(HEX7));
 //mandunit mand0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cpu_writedata), .dat_o(mandelbrot_readdata), .cyc_i(cpu_cyc),
 //  .adr_i(cpu_address[18:0]), .we_i(cpu_write), , .stb_i(chipselect == 4'h3), .sel_i(cpu_be), .ack_o(mandelbrot_ack));

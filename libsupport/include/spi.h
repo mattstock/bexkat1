@@ -3,16 +3,14 @@
 
 #include "misc.h"
 
-#define JOY_SEL 29
 #define RTC_SEL 28
-#define SD2_SEL 27
-#define TOUCH_SEL 26
-#define LCD_SEL 25
+#define CODEC_COMMAND_SEL 27
+#define CODEC_DATA_SEL 26
 #define SD_SEL 24
-#define SPI_SPEED 18
-#define SPI_CPOL 17
-#define SPI_CPHA 16
+#define SPI_SPEED 0xc0000
+#define SPI_MODE  0x30000
 
+#define CODEC_READY 3
 #define TX_READY 1
 #define RX_READY 0
 
@@ -21,8 +19,14 @@
 #define SPI_MODE2 2
 #define SPI_MODE3 3
 
+#define SPI_SPEED0 0
+#define SPI_SPEED1 1
+#define SPI_SPEED2 2
+#define SPI_SPEED3 3
+
 #define SPI_CTL (spi[1])
 #define SPI_DATA (spi[0])
+#define SPI_CODEC_READY (SPI_CTL & (1 << CODEC_READY))
 #define SPI_TX_READY (SPI_CTL & (1 << TX_READY))
 #define SPI_RX_READY (SPI_CTL & (1 << RX_READY))
 
@@ -31,6 +35,7 @@ extern volatile unsigned int *spi;
 extern char spi_xfer(char tx);
 extern void spi_fast(void);
 extern void spi_slow(void);
-extern void spi_mode(int mode);
+extern void spi_mode(unsigned int mode);
+extern void spi_speed(unsigned int speed);
 
 #endif
