@@ -21,8 +21,8 @@
 #define	CS_HIGH()	SET_BIT(SPI_CTL, SD_SEL)	/* CS=high */
 #define MMC_CD		1                               /* Card detected.   yes:true, no:false, default:true */
 #define MMC_WP		(SPI_CTL & 0x00000004)		/* Write protected. yes:true, no:false, default:false */
-#define	FCLK_SLOW()	CLEAR_BIT(SPI_CTL, SPI_SPEED)	/* Set slow clock (F_CPU / 64) */
-#define	FCLK_FAST()	SET_BIT(SPI_CTL, SPI_SPEED)	/* Set fast clock (F_CPU / 2) */
+#define	FCLK_SLOW()	spi_speed(SPI_SPEED0)	/* Set slow clock (F_CPU / 64) */
+#define	FCLK_FAST()	spi_speed(SPI_SPEED3)	/* Set fast clock (F_CPU / 2) */
 
 
 /*--------------------------------------------------------------------------
@@ -290,7 +290,7 @@ BYTE send_cmd (		/* Returns R1 resp (bit7==1:Send failed) */
 INTERRUPT_HANDLER(timer3)
 static void timer3(void) {
   disk_timerproc();
-  timers[1] &= 0xfffffff7; // clear the interrupt
+  timers[1] = 0x8; // clear the interrupt
   timers[7] += 500000; // reset timer3 interval
 }
 
@@ -314,7 +314,7 @@ DSTATUS disk_initialize (
 	timers[7] = timers[12] + 500000; // 100Hz
 	set_interrupt_handler(intr_timer3, timer3);
 	timers[0] |= 0x88; // enable timer and interrupt
-	asm("sti");
+	sti();
 
 	if (pdrv) return STA_NOINIT;		/* Supports only single drive */
 	power_off();						/* Turn off the socket power to reset the card */

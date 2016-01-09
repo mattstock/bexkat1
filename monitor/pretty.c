@@ -31,7 +31,7 @@ void matrix_fade(void) {
 unsigned int joystick() {
   unsigned char a0,a1;
   unsigned int ret;
-
+#if 0
   spi_slow();
   CLEAR_BIT(SPI_CTL, JOY_SEL);
   a0 = spi_xfer(0x78);
@@ -44,6 +44,8 @@ unsigned int joystick() {
   SET_BIT(SPI_CTL, JOY_SEL);
   ret |= ((a0 << 8) | a1) & 0x3ff;
   return ret;
+#endif
+  return 0;
 }
  
 void main(void) {

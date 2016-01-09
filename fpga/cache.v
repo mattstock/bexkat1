@@ -7,6 +7,7 @@ module cache(
   input [3:0] s_sel_i,
   input [31:0] s_dat_i,
   output reg [31:0] s_dat_o,
+  output [1:0] cache_status,
   input s_stb_i,
   output s_ack_o,
   output reg m_cyc_o,
@@ -36,6 +37,7 @@ localparam VALID = 'd147,
   DIRTY0 = 'd143, DIRTY1 = 'd144,
   DIRTY2 = 'd145, DIRTY3 = 'd146;
 
+assign cache_status = { state == STATE_HIT, state == STATE_MISS };
 assign { tag_in, rowaddr, wordsel } = s_adr_i;
 assign { valid, dirty, tag_cache, word3, word2, word1, word0 } = rowout;
 

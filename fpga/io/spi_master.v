@@ -9,7 +9,7 @@ module spi_master(
   output ack_o,
   output reg [7:0] selects,
   input codec_irq,
-  input wp_n,
+  input wp,
   input [3:0] sel_i,
   input [31:0] dat_i,
   output reg [31:0] dat_o,
@@ -98,7 +98,7 @@ begin
               if (sel_i[2])
                 conf_next = dat_i[23:16];
             end else
-              dat_o_next = { selects, conf, 12'h00, codec_irq, ~wp_n, tx_busy, rx_unread };
+              dat_o_next = { selects, conf, 12'h00, codec_irq, wp, tx_busy, rx_unread };
             state_next = STATE_DONE;
           end
         endcase

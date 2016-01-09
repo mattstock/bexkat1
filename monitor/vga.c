@@ -7,11 +7,45 @@
 #include "matrix.h"
 #include "misc.h"
 #include "vga.h"
+#include "keyboard.h"
 #include <math.h>
 
-unsigned int *kbd = (unsigned int *)0x30004000;
+void mandelbrot_double(double cx, double cy, double scale) {
+  double limit = 4.0;
+  int x,y,lp;
+  double ax,ay;
+  double a1,b1,a2,b2;
+  double res,asq,bsq;
 
-void mandelbrot(float cx, float cy, float scale) {
+  for (x=-120; x < 120; x++) {
+    ax = cx+x*scale;
+    for (y=-160; y < 160; y++) {
+      ay = cy+y*scale;
+      a1 = ax;
+      b1 = ay;
+      lp = 0; 
+      sysctrl[0] = ((x & 0xffff)) << 16 | (y & 0xffff);
+      do {
+	if (keyboard_count() != 0) // abort on keypress
+	  return;
+        lp++;
+        asq = a1*a1;
+        bsq = b1*b1;
+        a2 = asq - bsq + ax;
+        b2 = 2.0*a1*b1+ay;
+        a1 = a2;
+        b1 = b2;
+        res = a1*a1 + b1*b1;
+      } while ((lp <= 255) && (res <= limit));
+      if (lp > 255)
+        vga_point(x+320, y+240, 0);
+      else
+        vga_point(x+320, y+240, lp);
+    }
+  }
+}
+
+void mandelbrot_float(float cx, float cy, float scale) {
   float limit = 4.0f;
   int x,y,lp;
   float ax,ay;
@@ -27,7 +61,7 @@ void mandelbrot(float cx, float cy, float scale) {
       lp = 0; 
       sysctrl[0] = ((x & 0xffff)) << 16 | (y & 0xffff);
       do {
-	if (kbd[1] != 0) // abort on keypress
+	if (keyboard_count() != 0) // abort on keypress
 	  return;
         lp++;
         asq = a1*a1;
@@ -78,9 +112,9 @@ void circle(int a, int b, int size) {
 }
 
 void main(void) {
-  float a = 0.1f;
-  float b = 0.0f;
-  float c = 0.008f;
+  double a = 0.1;
+  double b = 0.0;
+  double c = 0.008;
   int x = 0;
 
   printf("Clearing screen\n");
@@ -89,13 +123,13 @@ void main(void) {
   for (x=0; x < 256; x++)
     vga_palette(0, x, x | (x << 16) | (x << 8));
   
-  vga_set_mode(VGA_MODE_DOUBLE);
+  vga_set_mode(VGA_MODE_NORMAL);
   
   circle(40,40,20);
 
   while (1) {
     x = 1;
-    switch (kbd[0]) { 
+    switch (keyboard_getevent()) { 
     case 0x1c: // a
       a -= 0.1f;
       break;
@@ -120,15 +154,17 @@ void main(void) {
 
     // eat key release
     do {
-      while (kbd[1] == 0);
-    } while (kbd[0] < 256);
+      while (keyboard_count() == 0);
+    } while (keyboard_getevent() < 256);
 
     
     if (x) {
       printf("starting (%f, %f, %f)\n", a, b, c);
-      mandelbrot(a,b,c);
+      mandelbrot_float(a,b,c);
+      printf("now doubles\n");
+      mandelbrot_double(a,b,c);
       printf("done\n");
     }
-    while (kbd[1] == 0);
+    while (keyboard_count() == 0);
   }
 }

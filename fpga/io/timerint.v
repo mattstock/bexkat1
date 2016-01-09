@@ -82,10 +82,10 @@ begin
         4'b0001: begin
           if (we_i)
             begin
-              status_next[7:0] = (sel_i[0] ? dat_i[7:0] : status[7:0]);
-              status_next[15:8] = (sel_i[1] ? dat_i[15:8] : status[15:8]);
-              status_next[23:16] = (sel_i[2] ? dat_i[23:16] : status[23:16]);
-              status_next[31:24] = (sel_i[3] ? dat_i[31:24] : status[31:24]);
+              status_next[7:0] = (sel_i[0] ? dat_i[7:0] ^ status[7:0] : status[7:0]);
+              status_next[15:8] = (sel_i[1] ? dat_i[15:8] ^ status[15:8] : status[15:8]);
+              status_next[23:16] = (sel_i[2] ? dat_i[23:16] ^ status[23:16] : status[23:16]);
+              status_next[31:24] = (sel_i[3] ? dat_i[31:24] ^ status[31:24] : status[31:24]);
             end
           else
             result_next = status;

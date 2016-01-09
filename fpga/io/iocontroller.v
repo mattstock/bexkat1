@@ -21,7 +21,7 @@ module iocontroller(input clk_i,
 		    input miso,
 		    output mosi,
 		    output sclk,
-		    input sd_wp_n,
+		    input sd_wp,
 		    output fan,
 		    output reg [7:0] spi_selects,
 		    output [5:0] interrupts,
@@ -188,7 +188,7 @@ lcd_module lcd0(.clk_i(clk_i), .rst_i(rst_i), .we_i(we_i), .sel_i(sel_i),
 spi_master spi0(.clk_i(clk_i), .cyc_i(cyc_o), .rst_i(rst_i), .sel_i(sel_i), .we_i(we_i),
 		.stb_i(stb_spi), .dat_i(dat_i), .dat_o(spi_out), .ack_o(spi_ack),
 		.adr_i(adr_i[2]), .miso(miso), .mosi(mosi), .codec_irq(codec_irq),
-		.sclk(sclk), .selects(spi_selects), .wp_n(sd_wp_n));
+		.sclk(sclk), .selects(spi_selects), .wp(sd_wp));
 
 ps2_kbd ps2kbd0(.clk_i(clk_i), .rst_i(rst_i), .cyc_i(cyc_o), .sel_i(sel_i), .we_i(we_i), .stb_i(stb_ps2kbd),
   .dat_i(dat_i), .dat_o(ps2kbd_out), .ack_o(ps2kbd_ack), .adr_i(adr_i[2]), .ps2_clock(ps2kbd[1]), .ps2_data(ps2kbd[0]));
