@@ -25,6 +25,11 @@ D Symbole general de connecteur
 K CONN
 $ENDCMP
 #
+$CMP JACK_TRS_3PINS
+D audio jack TRS 3 pins
+K audio jack connector TRS
+$ENDCMP
+#
 $CMP LM1117-3.3
 D Linear Regulator +3.3V
 K POWER REGUL
