@@ -4,7 +4,7 @@ MEMORY
   ram : ORIGIN = 0x07ff0000, LENGTH = 64K
 }
 
-STARTUP(boot.o)
+STARTUP(boot-de1.o)
 ENTRY(_start)
 SECTIONS
 {

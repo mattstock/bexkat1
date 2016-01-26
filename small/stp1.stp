@@ -1,0 +1,1429 @@
+<session jtag_chain="USB-Blaster [2-2.2]" jtag_device="@1: EP2C(15|20) (0x020B30DD)" sof_file="">
+  <display_tree gui_logging_enabled="0">
+    <display_branch instance="auto_signaltap_0" log="USE_GLOBAL_TEMP" signal_set="USE_GLOBAL_TEMP" trigger="USE_GLOBAL_TEMP"/>
+  </display_tree>
+  <instance entity_name="sld_signaltap" is_auto_node="yes" is_expanded="true" name="auto_signaltap_0" source_file="sld_signaltap.vhd">
+    <node_ip_info instance_id="0" mfg_id="110" node_id="0" version="6"/>
+    <signal_set global_temp="1" is_expanded="true" name="signal_set: 2016/01/25 18:12:37  #0">
+      <clock name="bexkat2:bexkat0|clk_i" polarity="posedge" tap_mode="classic"/>
+      <config ram_type="M4K" reserved_data_nodes="0" reserved_storage_qualifier_nodes="0" reserved_trigger_nodes="0" sample_depth="128" trigger_in_enable="no" trigger_out_enable="no"/>
+      <top_entity/>
+      <signal_vec>
+        <trigger_input_vec>
+          <wire name="bexkat2:bexkat0|ack_i" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[0]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[10]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[11]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[12]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[13]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[14]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[15]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[16]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[17]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[18]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[19]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[1]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[20]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[21]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[22]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[23]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[24]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[25]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[26]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[27]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[28]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[29]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[2]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[30]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[31]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[3]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[4]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[5]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[6]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[7]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[8]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[9]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|cyc_o" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[0]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[10]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[11]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[12]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[13]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[14]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[15]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[16]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[17]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[18]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[19]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[1]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[20]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[21]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[22]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[23]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[24]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[25]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[26]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[27]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[28]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[29]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[2]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[30]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[31]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[3]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[4]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[5]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[6]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[7]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[8]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[9]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[0]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[10]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[11]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[12]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[13]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[14]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[15]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[16]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[17]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[18]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[19]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[1]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[20]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[21]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[22]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[23]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[24]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[25]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[26]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[27]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[28]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[29]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[2]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[30]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[31]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[3]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[4]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[5]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[6]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[7]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[8]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[9]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|mdr[0]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[10]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[11]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[12]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[13]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[14]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[15]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[16]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[17]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[18]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[19]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[1]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[20]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[21]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[22]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[23]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[24]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[25]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[26]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[27]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[28]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[29]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[2]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[30]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[31]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[3]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[4]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[5]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[6]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[7]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[8]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[9]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[0]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[10]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[11]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[12]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[13]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[14]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[15]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[16]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[17]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[18]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[19]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[1]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[20]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[21]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[22]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[23]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[24]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[25]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[26]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[27]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[28]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[29]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[2]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[30]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[31]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[3]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[4]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[5]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[6]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[7]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[8]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[9]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|rst_i" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|we_o" tap_mode="classic" type="combinatorial"/>
+          <wire name="fl_addrbus[0]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[10]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[11]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[12]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[13]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[14]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[15]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[16]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[17]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[18]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[19]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[1]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[20]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[21]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[2]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[3]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[4]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[5]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[6]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[7]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[8]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[9]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_databus[0]" tap_mode="classic" type="bidir pin"/>
+          <wire name="fl_databus[1]" tap_mode="classic" type="bidir pin"/>
+          <wire name="fl_databus[2]" tap_mode="classic" type="bidir pin"/>
+          <wire name="fl_databus[3]" tap_mode="classic" type="bidir pin"/>
+          <wire name="fl_databus[4]" tap_mode="classic" type="bidir pin"/>
+          <wire name="fl_databus[5]" tap_mode="classic" type="bidir pin"/>
+          <wire name="fl_databus[6]" tap_mode="classic" type="bidir pin"/>
+          <wire name="fl_databus[7]" tap_mode="classic" type="bidir pin"/>
+          <wire name="flash_controller:flash0|addrbus_out[0]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[10]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[11]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[12]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[13]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[14]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[15]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[16]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[17]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[18]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[19]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[1]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[20]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[21]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[2]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[3]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[4]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[5]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[6]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[7]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[8]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[9]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|b[0]" tap_mode="classic" type="register"/>
+          <wire name="flash_controller:flash0|b[1]" tap_mode="classic" type="register"/>
+          <wire name="flash_controller:flash0|dat_o[0]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[10]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[11]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[12]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[13]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[14]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[15]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[16]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[17]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[18]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[19]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[1]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[20]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[21]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[22]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[23]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[24]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[25]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[26]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[27]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[28]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[29]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[2]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[30]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[31]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[3]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[4]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[5]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[6]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[7]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[8]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[9]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|state.STATE_DONE" tap_mode="classic" type="state machine"/>
+          <wire name="flash_controller:flash0|state.STATE_IDLE" tap_mode="classic" type="state machine"/>
+          <wire name="flash_controller:flash0|state.STATE_READ" tap_mode="classic" type="state machine"/>
+          <wire name="flash_controller:flash0|state.STATE_WAIT" tap_mode="classic" type="state machine"/>
+          <wire name="flash_controller:flash0|state.STATE_WAIT2" tap_mode="classic" type="state machine"/>
+          <wire name="flash_controller:flash0|state.STATE_WAIT3" tap_mode="classic" type="state machine"/>
+          <wire name="flash_controller:flash0|state.STATE_WAIT4" tap_mode="classic" type="state machine"/>
+        </trigger_input_vec>
+        <data_input_vec>
+          <wire name="bexkat2:bexkat0|ack_i" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[0]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[10]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[11]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[12]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[13]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[14]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[15]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[16]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[17]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[18]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[19]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[1]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[20]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[21]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[22]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[23]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[24]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[25]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[26]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[27]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[28]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[29]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[2]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[30]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[31]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[3]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[4]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[5]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[6]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[7]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[8]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[9]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|cyc_o" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[0]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[10]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[11]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[12]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[13]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[14]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[15]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[16]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[17]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[18]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[19]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[1]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[20]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[21]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[22]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[23]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[24]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[25]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[26]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[27]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[28]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[29]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[2]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[30]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[31]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[3]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[4]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[5]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[6]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[7]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[8]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[9]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[0]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[10]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[11]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[12]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[13]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[14]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[15]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[16]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[17]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[18]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[19]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[1]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[20]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[21]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[22]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[23]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[24]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[25]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[26]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[27]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[28]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[29]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[2]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[30]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[31]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[3]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[4]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[5]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[6]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[7]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[8]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[9]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|mdr[0]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[10]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[11]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[12]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[13]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[14]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[15]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[16]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[17]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[18]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[19]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[1]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[20]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[21]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[22]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[23]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[24]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[25]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[26]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[27]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[28]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[29]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[2]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[30]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[31]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[3]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[4]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[5]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[6]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[7]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[8]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[9]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[0]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[10]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[11]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[12]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[13]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[14]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[15]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[16]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[17]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[18]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[19]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[1]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[20]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[21]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[22]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[23]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[24]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[25]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[26]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[27]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[28]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[29]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[2]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[30]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[31]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[3]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[4]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[5]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[6]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[7]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[8]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[9]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|rst_i" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|we_o" tap_mode="classic" type="combinatorial"/>
+          <wire name="fl_addrbus[0]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[10]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[11]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[12]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[13]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[14]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[15]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[16]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[17]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[18]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[19]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[1]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[20]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[21]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[2]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[3]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[4]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[5]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[6]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[7]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[8]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[9]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_databus[0]" tap_mode="classic" type="bidir pin"/>
+          <wire name="fl_databus[1]" tap_mode="classic" type="bidir pin"/>
+          <wire name="fl_databus[2]" tap_mode="classic" type="bidir pin"/>
+          <wire name="fl_databus[3]" tap_mode="classic" type="bidir pin"/>
+          <wire name="fl_databus[4]" tap_mode="classic" type="bidir pin"/>
+          <wire name="fl_databus[5]" tap_mode="classic" type="bidir pin"/>
+          <wire name="fl_databus[6]" tap_mode="classic" type="bidir pin"/>
+          <wire name="fl_databus[7]" tap_mode="classic" type="bidir pin"/>
+          <wire name="flash_controller:flash0|addrbus_out[0]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[10]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[11]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[12]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[13]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[14]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[15]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[16]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[17]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[18]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[19]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[1]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[20]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[21]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[2]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[3]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[4]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[5]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[6]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[7]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[8]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[9]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|b[0]" tap_mode="classic" type="register"/>
+          <wire name="flash_controller:flash0|b[1]" tap_mode="classic" type="register"/>
+          <wire name="flash_controller:flash0|dat_o[0]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[10]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[11]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[12]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[13]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[14]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[15]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[16]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[17]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[18]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[19]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[1]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[20]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[21]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[22]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[23]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[24]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[25]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[26]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[27]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[28]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[29]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[2]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[30]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[31]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[3]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[4]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[5]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[6]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[7]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[8]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[9]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|state.STATE_DONE" tap_mode="classic" type="state machine"/>
+          <wire name="flash_controller:flash0|state.STATE_IDLE" tap_mode="classic" type="state machine"/>
+          <wire name="flash_controller:flash0|state.STATE_READ" tap_mode="classic" type="state machine"/>
+          <wire name="flash_controller:flash0|state.STATE_WAIT" tap_mode="classic" type="state machine"/>
+          <wire name="flash_controller:flash0|state.STATE_WAIT2" tap_mode="classic" type="state machine"/>
+          <wire name="flash_controller:flash0|state.STATE_WAIT3" tap_mode="classic" type="state machine"/>
+          <wire name="flash_controller:flash0|state.STATE_WAIT4" tap_mode="classic" type="state machine"/>
+        </data_input_vec>
+        <storage_qualifier_input_vec>
+          <wire name="bexkat2:bexkat0|ack_i" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[0]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[10]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[11]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[12]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[13]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[14]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[15]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[16]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[17]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[18]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[19]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[1]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[20]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[21]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[22]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[23]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[24]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[25]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[26]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[27]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[28]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[29]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[2]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[30]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[31]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[3]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[4]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[5]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[6]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[7]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[8]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|adr_o[9]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|cyc_o" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[0]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[10]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[11]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[12]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[13]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[14]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[15]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[16]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[17]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[18]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[19]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[1]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[20]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[21]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[22]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[23]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[24]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[25]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[26]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[27]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[28]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[29]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[2]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[30]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[31]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[3]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[4]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[5]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[6]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[7]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[8]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_i[9]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[0]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[10]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[11]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[12]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[13]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[14]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[15]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[16]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[17]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[18]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[19]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[1]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[20]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[21]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[22]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[23]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[24]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[25]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[26]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[27]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[28]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[29]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[2]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[30]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[31]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[3]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[4]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[5]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[6]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[7]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[8]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|dat_o[9]" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|mdr[0]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[10]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[11]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[12]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[13]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[14]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[15]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[16]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[17]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[18]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[19]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[1]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[20]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[21]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[22]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[23]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[24]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[25]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[26]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[27]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[28]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[29]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[2]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[30]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[31]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[3]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[4]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[5]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[6]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[7]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[8]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|mdr[9]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[0]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[10]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[11]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[12]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[13]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[14]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[15]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[16]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[17]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[18]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[19]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[1]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[20]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[21]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[22]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[23]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[24]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[25]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[26]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[27]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[28]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[29]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[2]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[30]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[31]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[3]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[4]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[5]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[6]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[7]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[8]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|pc[9]" tap_mode="classic" type="register"/>
+          <wire name="bexkat2:bexkat0|rst_i" tap_mode="classic" type="combinatorial"/>
+          <wire name="bexkat2:bexkat0|we_o" tap_mode="classic" type="combinatorial"/>
+          <wire name="fl_addrbus[0]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[10]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[11]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[12]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[13]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[14]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[15]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[16]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[17]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[18]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[19]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[1]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[20]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[21]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[2]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[3]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[4]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[5]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[6]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[7]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[8]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_addrbus[9]" tap_mode="classic" type="output pin"/>
+          <wire name="fl_databus[0]" tap_mode="classic" type="bidir pin"/>
+          <wire name="fl_databus[1]" tap_mode="classic" type="bidir pin"/>
+          <wire name="fl_databus[2]" tap_mode="classic" type="bidir pin"/>
+          <wire name="fl_databus[3]" tap_mode="classic" type="bidir pin"/>
+          <wire name="fl_databus[4]" tap_mode="classic" type="bidir pin"/>
+          <wire name="fl_databus[5]" tap_mode="classic" type="bidir pin"/>
+          <wire name="fl_databus[6]" tap_mode="classic" type="bidir pin"/>
+          <wire name="fl_databus[7]" tap_mode="classic" type="bidir pin"/>
+          <wire name="flash_controller:flash0|addrbus_out[0]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[10]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[11]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[12]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[13]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[14]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[15]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[16]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[17]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[18]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[19]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[1]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[20]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[21]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[2]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[3]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[4]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[5]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[6]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[7]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[8]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|addrbus_out[9]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|b[0]" tap_mode="classic" type="register"/>
+          <wire name="flash_controller:flash0|b[1]" tap_mode="classic" type="register"/>
+          <wire name="flash_controller:flash0|dat_o[0]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[10]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[11]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[12]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[13]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[14]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[15]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[16]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[17]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[18]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[19]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[1]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[20]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[21]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[22]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[23]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[24]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[25]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[26]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[27]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[28]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[29]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[2]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[30]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[31]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[3]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[4]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[5]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[6]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[7]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[8]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|dat_o[9]" tap_mode="classic" type="combinatorial"/>
+          <wire name="flash_controller:flash0|state.STATE_DONE" tap_mode="classic" type="state machine"/>
+          <wire name="flash_controller:flash0|state.STATE_IDLE" tap_mode="classic" type="state machine"/>
+          <wire name="flash_controller:flash0|state.STATE_READ" tap_mode="classic" type="state machine"/>
+          <wire name="flash_controller:flash0|state.STATE_WAIT" tap_mode="classic" type="state machine"/>
+          <wire name="flash_controller:flash0|state.STATE_WAIT2" tap_mode="classic" type="state machine"/>
+          <wire name="flash_controller:flash0|state.STATE_WAIT3" tap_mode="classic" type="state machine"/>
+          <wire name="flash_controller:flash0|state.STATE_WAIT4" tap_mode="classic" type="state machine"/>
+        </storage_qualifier_input_vec>
+      </signal_vec>
+      <presentation>
+        <data_view>
+          <net is_signal_inverted="no" name="bexkat2:bexkat0|ack_i"/>
+          <bus is_signal_inverted="no" link="all" name="bexkat2:bexkat0|adr_o" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[31]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[30]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[29]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[28]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[27]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[26]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[25]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[24]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[23]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[22]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[21]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[20]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[19]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[18]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[17]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[16]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[15]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[14]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[13]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[12]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[11]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[10]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[9]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[8]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[7]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[6]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[5]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[4]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[3]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[2]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[1]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[0]"/>
+          </bus>
+          <net is_signal_inverted="no" name="bexkat2:bexkat0|cyc_o"/>
+          <bus is_signal_inverted="no" link="all" name="bexkat2:bexkat0|dat_i" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[31]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[30]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[29]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[28]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[27]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[26]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[25]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[24]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[23]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[22]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[21]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[20]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[19]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[18]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[17]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[16]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[15]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[14]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[13]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[12]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[11]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[10]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[9]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[8]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[7]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[6]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[5]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[4]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[3]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[2]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[1]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[0]"/>
+          </bus>
+          <bus is_signal_inverted="no" link="all" name="bexkat2:bexkat0|dat_o" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[31]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[30]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[29]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[28]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[27]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[26]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[25]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[24]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[23]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[22]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[21]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[20]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[19]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[18]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[17]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[16]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[15]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[14]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[13]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[12]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[11]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[10]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[9]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[8]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[7]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[6]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[5]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[4]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[3]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[2]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[1]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[0]"/>
+          </bus>
+          <bus is_signal_inverted="no" link="all" name="bexkat2:bexkat0|mdr" order="msb_to_lsb" radix="hex" state="collapse" type="register">
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[31]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[30]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[29]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[28]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[27]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[26]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[25]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[24]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[23]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[22]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[21]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[20]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[19]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[18]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[17]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[16]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[15]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[14]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[13]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[12]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[11]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[10]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[9]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[8]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[7]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[6]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[5]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[4]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[3]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[2]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[1]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[0]"/>
+          </bus>
+          <bus is_signal_inverted="no" link="all" name="bexkat2:bexkat0|pc" order="msb_to_lsb" radix="hex" state="collapse" type="register">
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[31]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[30]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[29]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[28]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[27]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[26]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[25]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[24]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[23]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[22]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[21]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[20]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[19]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[18]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[17]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[16]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[15]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[14]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[13]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[12]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[11]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[10]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[9]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[8]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[7]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[6]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[5]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[4]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[3]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[2]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[1]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[0]"/>
+          </bus>
+          <net is_signal_inverted="no" name="bexkat2:bexkat0|rst_i"/>
+          <net is_signal_inverted="no" name="bexkat2:bexkat0|we_o"/>
+          <bus is_signal_inverted="no" link="all" name="fl_addrbus" order="msb_to_lsb" radix="hex" state="collapse" type="output pin">
+            <net is_signal_inverted="no" name="fl_addrbus[21]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[20]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[19]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[18]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[17]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[16]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[15]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[14]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[13]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[12]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[11]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[10]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[9]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[8]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[7]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[6]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[5]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[4]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[3]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[2]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[1]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[0]"/>
+          </bus>
+          <bus is_signal_inverted="no" link="all" name="fl_databus" order="msb_to_lsb" radix="hex" state="collapse" type="bidir pin">
+            <net is_signal_inverted="no" name="fl_databus[7]"/>
+            <net is_signal_inverted="no" name="fl_databus[6]"/>
+            <net is_signal_inverted="no" name="fl_databus[5]"/>
+            <net is_signal_inverted="no" name="fl_databus[4]"/>
+            <net is_signal_inverted="no" name="fl_databus[3]"/>
+            <net is_signal_inverted="no" name="fl_databus[2]"/>
+            <net is_signal_inverted="no" name="fl_databus[1]"/>
+            <net is_signal_inverted="no" name="fl_databus[0]"/>
+          </bus>
+          <bus is_signal_inverted="no" link="all" name="flash_controller:flash0|addrbus_out" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[21]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[20]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[19]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[18]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[17]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[16]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[15]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[14]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[13]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[12]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[11]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[10]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[9]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[8]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[7]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[6]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[5]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[4]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[3]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[2]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[1]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[0]"/>
+          </bus>
+          <bus is_signal_inverted="no" link="all" name="flash_controller:flash0|dat_o" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[31]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[30]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[29]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[28]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[27]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[26]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[25]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[24]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[23]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[22]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[21]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[20]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[19]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[18]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[17]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[16]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[15]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[14]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[13]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[12]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[11]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[10]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[9]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[8]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[7]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[6]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[5]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[4]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[3]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[2]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[1]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[0]"/>
+          </bus>
+          <bus is_signal_inverted="no" link="all" mnemonics="state_table (1)" name="flash_controller:flash0|state" order="lsb_to_msb" state="collapse" type="state machine">
+            <net is_signal_inverted="no" name="flash_controller:flash0|state.STATE_DONE"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|state.STATE_IDLE"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|state.STATE_READ"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|state.STATE_WAIT"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|state.STATE_WAIT2"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|state.STATE_WAIT3"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|state.STATE_WAIT4"/>
+          </bus>
+          <bus is_signal_inverted="no" link="all" name="flash_controller:flash0|b" order="msb_to_lsb" radix="hex" state="collapse" type="register">
+            <net is_signal_inverted="no" name="flash_controller:flash0|b[1]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|b[0]"/>
+          </bus>
+        </data_view>
+        <setup_view>
+          <net is_signal_inverted="no" name="bexkat2:bexkat0|ack_i"/>
+          <bus is_signal_inverted="no" link="all" name="bexkat2:bexkat0|adr_o" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[31]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[30]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[29]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[28]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[27]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[26]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[25]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[24]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[23]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[22]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[21]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[20]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[19]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[18]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[17]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[16]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[15]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[14]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[13]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[12]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[11]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[10]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[9]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[8]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[7]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[6]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[5]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[4]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[3]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[2]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[1]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|adr_o[0]"/>
+          </bus>
+          <net is_signal_inverted="no" name="bexkat2:bexkat0|cyc_o"/>
+          <bus is_signal_inverted="no" link="all" name="bexkat2:bexkat0|dat_i" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[31]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[30]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[29]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[28]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[27]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[26]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[25]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[24]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[23]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[22]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[21]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[20]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[19]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[18]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[17]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[16]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[15]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[14]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[13]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[12]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[11]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[10]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[9]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[8]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[7]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[6]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[5]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[4]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[3]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[2]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[1]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_i[0]"/>
+          </bus>
+          <bus is_signal_inverted="no" link="all" name="bexkat2:bexkat0|dat_o" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[31]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[30]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[29]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[28]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[27]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[26]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[25]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[24]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[23]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[22]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[21]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[20]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[19]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[18]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[17]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[16]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[15]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[14]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[13]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[12]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[11]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[10]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[9]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[8]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[7]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[6]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[5]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[4]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[3]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[2]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[1]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|dat_o[0]"/>
+          </bus>
+          <bus is_signal_inverted="no" link="all" name="bexkat2:bexkat0|mdr" order="msb_to_lsb" radix="hex" state="collapse" type="register">
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[31]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[30]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[29]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[28]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[27]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[26]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[25]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[24]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[23]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[22]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[21]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[20]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[19]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[18]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[17]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[16]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[15]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[14]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[13]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[12]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[11]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[10]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[9]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[8]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[7]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[6]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[5]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[4]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[3]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[2]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[1]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|mdr[0]"/>
+          </bus>
+          <bus is_signal_inverted="no" link="all" name="bexkat2:bexkat0|pc" order="msb_to_lsb" radix="hex" state="collapse" type="register">
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[31]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[30]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[29]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[28]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[27]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[26]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[25]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[24]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[23]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[22]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[21]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[20]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[19]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[18]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[17]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[16]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[15]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[14]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[13]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[12]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[11]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[10]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[9]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[8]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[7]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[6]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[5]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[4]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[3]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[2]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[1]"/>
+            <net is_signal_inverted="no" name="bexkat2:bexkat0|pc[0]"/>
+          </bus>
+          <net is_signal_inverted="no" name="bexkat2:bexkat0|rst_i"/>
+          <net is_signal_inverted="no" name="bexkat2:bexkat0|we_o"/>
+          <bus is_signal_inverted="no" link="all" name="fl_addrbus" order="msb_to_lsb" radix="hex" state="collapse" type="output pin">
+            <net is_signal_inverted="no" name="fl_addrbus[21]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[20]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[19]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[18]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[17]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[16]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[15]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[14]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[13]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[12]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[11]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[10]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[9]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[8]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[7]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[6]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[5]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[4]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[3]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[2]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[1]"/>
+            <net is_signal_inverted="no" name="fl_addrbus[0]"/>
+          </bus>
+          <bus is_signal_inverted="no" link="all" name="fl_databus" order="msb_to_lsb" radix="hex" state="collapse" type="bidir pin">
+            <net is_signal_inverted="no" name="fl_databus[7]"/>
+            <net is_signal_inverted="no" name="fl_databus[6]"/>
+            <net is_signal_inverted="no" name="fl_databus[5]"/>
+            <net is_signal_inverted="no" name="fl_databus[4]"/>
+            <net is_signal_inverted="no" name="fl_databus[3]"/>
+            <net is_signal_inverted="no" name="fl_databus[2]"/>
+            <net is_signal_inverted="no" name="fl_databus[1]"/>
+            <net is_signal_inverted="no" name="fl_databus[0]"/>
+          </bus>
+          <bus is_signal_inverted="no" link="all" name="flash_controller:flash0|addrbus_out" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[21]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[20]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[19]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[18]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[17]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[16]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[15]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[14]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[13]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[12]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[11]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[10]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[9]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[8]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[7]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[6]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[5]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[4]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[3]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[2]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[1]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|addrbus_out[0]"/>
+          </bus>
+          <bus is_signal_inverted="no" link="all" name="flash_controller:flash0|dat_o" order="msb_to_lsb" radix="hex" state="collapse" type="combinatorial">
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[31]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[30]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[29]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[28]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[27]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[26]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[25]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[24]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[23]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[22]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[21]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[20]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[19]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[18]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[17]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[16]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[15]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[14]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[13]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[12]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[11]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[10]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[9]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[8]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[7]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[6]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[5]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[4]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[3]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[2]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[1]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|dat_o[0]"/>
+          </bus>
+          <bus is_signal_inverted="no" link="all" mnemonics="state_table (1)" name="flash_controller:flash0|state" order="lsb_to_msb" state="collapse" type="state machine">
+            <net is_signal_inverted="no" name="flash_controller:flash0|state.STATE_DONE"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|state.STATE_IDLE"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|state.STATE_READ"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|state.STATE_WAIT"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|state.STATE_WAIT2"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|state.STATE_WAIT3"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|state.STATE_WAIT4"/>
+          </bus>
+          <bus is_signal_inverted="no" link="all" name="flash_controller:flash0|b" order="msb_to_lsb" radix="hex" state="collapse" type="register">
+            <net is_signal_inverted="no" name="flash_controller:flash0|b[1]"/>
+            <net is_signal_inverted="no" name="flash_controller:flash0|b[0]"/>
+          </bus>
+        </setup_view>
+      </presentation>
+      <trigger CRC="D1EF69C5" attribute_mem_mode="false" gap_record="true" global_temp="1" is_expanded="true" name="trigger: 2016/01/26 11:07:15  #0" position="pre" power_up_trigger_mode="false" record_data_gap="true" segment_size="128" storage_mode="off" storage_qualifier_disabled="no" storage_qualifier_port_is_pin="false" storage_qualifier_port_name="auto_stp_external_storage_qualifier" storage_qualifier_port_tap_mode="classic" trigger_in="dont_care" trigger_out="active high" trigger_type="circular">
+        <power_up_trigger position="pre" storage_qualifier_disabled="no" trigger_in="dont_care" trigger_out="active high"/>
+        <events use_custom_flow_control="no">
+          <level enabled="yes" name="condition1" type="basic">'bexkat2:bexkat0|adr_o[0]' == low &amp;&amp; 'bexkat2:bexkat0|adr_o[10]' == low &amp;&amp; 'bexkat2:bexkat0|adr_o[11]' == low &amp;&amp; 'bexkat2:bexkat0|adr_o[12]' == low &amp;&amp; 'bexkat2:bexkat0|adr_o[13]' == low &amp;&amp; 'bexkat2:bexkat0|adr_o[14]' == low &amp;&amp; 'bexkat2:bexkat0|adr_o[15]' == low &amp;&amp; 'bexkat2:bexkat0|adr_o[16]' == low &amp;&amp; 'bexkat2:bexkat0|adr_o[17]' == low &amp;&amp; 'bexkat2:bexkat0|adr_o[18]' == low &amp;&amp; 'bexkat2:bexkat0|adr_o[19]' == low &amp;&amp; 'bexkat2:bexkat0|adr_o[1]' == low &amp;&amp; 'bexkat2:bexkat0|adr_o[20]' == low &amp;&amp; 'bexkat2:bexkat0|adr_o[21]' == low &amp;&amp; 'bexkat2:bexkat0|adr_o[22]' == low &amp;&amp; 'bexkat2:bexkat0|adr_o[23]' == low &amp;&amp; 'bexkat2:bexkat0|adr_o[24]' == high &amp;&amp; 'bexkat2:bexkat0|adr_o[25]' == high &amp;&amp; 'bexkat2:bexkat0|adr_o[26]' == high &amp;&amp; 'bexkat2:bexkat0|adr_o[27]' == low &amp;&amp; 'bexkat2:bexkat0|adr_o[28]' == low &amp;&amp; 'bexkat2:bexkat0|adr_o[29]' == low &amp;&amp; 'bexkat2:bexkat0|adr_o[2]' == low &amp;&amp; 'bexkat2:bexkat0|adr_o[30]' == low &amp;&amp; 'bexkat2:bexkat0|adr_o[31]' == low &amp;&amp; 'bexkat2:bexkat0|adr_o[3]' == high &amp;&amp; 'bexkat2:bexkat0|adr_o[4]' == low &amp;&amp; 'bexkat2:bexkat0|adr_o[5]' == low &amp;&amp; 'bexkat2:bexkat0|adr_o[6]' == low &amp;&amp; 'bexkat2:bexkat0|adr_o[7]' == low &amp;&amp; 'bexkat2:bexkat0|adr_o[8]' == low &amp;&amp; 'bexkat2:bexkat0|adr_o[9]' == low
+            <power_up enabled="yes">
+            </power_up><op_node/>
+          </level>
+        </events>
+        <storage_qualifier_events>
+          <transitional>00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000
+            <pwr_up_transitional>00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000</pwr_up_transitional>
+          </transitional>
+          <storage_qualifier_level type="basic">
+            <power_up>
+            </power_up>
+            <op_node/>
+          </storage_qualifier_level>
+          <storage_qualifier_level type="basic">
+            <power_up>
+            </power_up>
+            <op_node/>
+          </storage_qualifier_level>
+          <storage_qualifier_level type="basic">
+            <power_up>
+            </power_up>
+            <op_node/>
+          </storage_qualifier_level>
+        </storage_qualifier_events>
+        <log>
+          <data global_temp="1" name="log: 2016/01/26 11:12:18  #0" power_up_mode="false" sample_depth="127" trigger_position="-1">00101101100101010011000100100101110000000000000000000000000100000100000000000000000000000000000000011010100000000000000010001011000101101100101010011000100100101100010110110010101100101111111111010110110010101100101100000000000000000010000100000000000100000001011011001010100110001001001011100000000000000000000000001000001000000000000000000000000000000000110101000000000000000100010110001011011001010100110001001001011000101101100101011001011111111110101101100101011001011000000000000000000100001000000000001000000010110110010101001100010010010111000000000000000000000000010000010000000000000000000000000000000001101010000000000000001000101100010110110010101001100010010010110001011011001010110010111111111101011011001010110010110000000000000000001000010000000000010000000101101100101010011000100100101110000000000000000000000000100000100000000000000000000000000000000011010100000000000000010001011000101101100101010011000100100101100010110110010101100101111111111010110110010101100101100000000000000000010000100000000000100000001011011001010100110001001001011100000000000000000000000001000001000000000000000000000000000000000110101000000000000000100010110001011011001010100110001001001011000101101100101011001011111111110101101100101011001011000000000000000000100001000000000001000000010110110010101001100010010010111000000000000000000000000010000010000000000000000000000000000000001101010000000000000001000101100010110110010101001100010010010110001011011001010110010111111111101011011001010110010110000000000000000001000010000000000010000000101101100101010011000100100101110000000000000000000000000100000100000000000000000000000000000000011010100000000000000010001011000101101100101010011000100100101100010110110010101100101111111111010110110010101100101100000000000000000010000100000000000100000001011011001010100110001001001011100000000000000000000000001000001000000000000000000000000000000000110101000000000000000100010110001011011001010100110001001001011000101101100101011001011111111110101101100101011001011000000000000000000100001000000000001000000010110110010101001100010010010111000000000000000000000000010000010000000000000000000000000000000001101010000000000000001000101100010110110010101001100010010010110001011011001010110010111111111101011011001010110010110000000000000000001000010000000000010000000101101100101010011000100100101110000000000000000000000000100000100000000000000000000000000000000011010100000000000000010001011000101101100101010011000100100101100010110110010101100101111111111010110110010101100101100000000000000000010000100000000000100000001011011001010100110001001001011100000000000000000000000001000001000000000000000000000000000000000110101000000000000000100010110001011011001010100110001001001011000101101100101011001011111111110101101100101011001011000000000000000000100001000000000001000000010110110010101001100010010010111000000000000000000000000010000010000000000000000000000000000000001101010000000000000001000101100010110110010101001100010010010110001011011001010110010111111111101011011001010110010110000000000000000001000010000000000010000000101101100101010011000100100101110000000000000000000000000100000100000000000000000000000000000000011010100000000000000010001011000101101100101010011000100100101100010110110010101100101111111111010110110010101100101100000000000000000010000100000000000100000001011011001010100110001001001011100000000000000000000000001000001000000000000000000000000000000000110101000000000000000100010110001011011001010100110001001001011000101101100101011001011111111110101101100101011001011000000000000000000100001000000000001000000010110110010101001100010010010111000000000000000000000000010000010000000000000000000000000000000001101010000000000000001000101100010110110010101001100010010010110001011011001010110010111111111101011011001010110010110000000000000000001000010000000000010000010101101100101010011000100100101110100001000000000000000100100010000000000000000000000000000000000011010100000000000000010001011000101101100101010011000100100101100010110110010101100101111111111010110110010101100101100000000000000000010000100000000000100000001011011001010100110001001001011000000000000000000000000000000000000000000000000000000000000000000110101000000000000000100010110001011011001010100110001001001011000101101100101011001011111111110101101100101011001011000000000000000000100001000000000001000000010110110010101001100000001010110000000000000000000000000000000000000000000000000000000000000000001101010000000000000001000101100010110110010101001100000001010110001011011001010110010111111111101011011001010110010110000000000000000001000010000000000010000000101101100101010011000000010101100000000000000000000000000000000000000000000000000000000000000000011010100000000000000010001011000101101100101010011000000010101100010110110010100010101111111111010110110010100010101100000000000000000010000100000000000100000001011011001010100110000000101011100000000000000000000001000101101000000000000000000000000000000000110101000000000000000100010110001011011001010100110000000101011000101101100101000101011111111110101101100101000101011000000000000000000100001000000000001000000010110110010101001100000001010111000000000000000000000010001011010000000000000000000000000000000001101010000000000000001000101100010110110010101001100000001010110001011011001010001010111111111101011011001010001010110000000000000000001000010000000000010000000101101100101010011000000010101110000000000000000000000100010110100000000000000000000000000000000011010100000000000000010001011000101101100101010011000000010101100010110110010100010101111111111010110110010100010101100000000000000000010000100000000000100000001011011001010100110000000101011100000000000000000000001000101101000000000000000000000000000000000110101000000000000000100010110001011011001010100110000000101011000101101100101000101011111111110101101100101000101011000000000000000000100001000000000001000000010110110010101001100000001010111000000000000000000000010001011010000000000000000000000000000000001101010000000000000001000101100010110110010101001100000001010110001011011001010001010111111111101011011001010001010110000000000000000001000010000000000010000000101101100101010011000000010101110000000000000000000000100010110100000000000000000000000000000000011010100000000000000010001011000101101100101010011000000010101100010110110010100010101111111111010110110010100010101100000000000000000010000100000000000100000001011011001010100110000000101011100000000000000000000001000101101000000000000000000000000000000000110101000000000000000100010110001011011001010100110000000101011000101101100101000101011111111110101101100101000101011000000000000000000100001000000000001000000010110110010101001100000001010111000000000000000000000010000011010000000000000000000000000000000001101010000000000000001000101100010110110010101001100000001010110001011011001010001010111111111101011011001010001010110000000000000000001000010000000000010000000101101100101010011000000010101110000000000000000000000100000110100000000000000000000000000000000011010100000000000000010001011000101101100101010011000000010101100010110110010100010101111111111010110110010100010101100000000000000000010000100000000000100000001011011001010100110000000101011100000000000000000000001000001101000000000000000000000000000000000110101000000000000000100010110001011011001010100110000000101011000101101100101000101011111111110101101100101000101011000000000000000000100001000000000001000000010110110010101001100000001010111000000000000000000000010000011010000000000000000000000000000000001101010000000000000001000101100010110110010101001100000001010110001011011001010001010111111111101011011001010001010110000000000000000001000010000000000010000000101101100101010011000000010101110000000000000000000000100000110100000000000000000000000000000000011010100000000000000010001011000101101100101010011000000010101100010110110010100010101111111111010110110010100010101100000000000000000010000100000000000100000001011011001010100110000000101011100000000000000000000001000001101000000000000000000000000000000000110101000000000000000100010110001011011001010100110000000101011000101101100101000101011111111110101101100101000101011000000000000000000100001000000000001000000010110110010101001100000001010111000000000000000000000010000011010000000000000000000000000000000001101010000000000000001000101100010110110010101001100000001010110001011011001010001010111111111101011011001010001010110000000000000000001000010000000000010000000101101100101010011000000010101110000000000000000000000100000110100000000000000000000000000000000011010100000000000000010001011000101101100101010011000000010101100010110110010100010101111111111010110110010100010101100000000000000000010000100000000000100000001011011001010100110000000101011100000000000000000000001000001101000000000000000000000000000000000110101000000000000000100010110001011011001010100110000000101011000101101100101000101011111111110101101100101000101011000000000000000000100001000000000001000001010110110010101001100000001010111010001000001000000000010010001010000000000000000000000000000000001101010000000000000001000101100010110110010101001100000001010110001011011001010001010111111111101011011001010001010110000000000000000001000010000000000010000000101101100101010011000000010101100000000000000000000000000000000000000000000000000000000000000000011010100000000000000010001011000101101100101010011000000010101100010110110010100010101111111111010110110010100010101100000000000000000010000100000000000100000001011011001010100110001000101011000000000000000000000000000000000000000000000000000000000000000000110101000000000000000100010110001011011001010100110001000101011000101101100101000101011111111110101101100101000101011000000000000000000100001000000000001000000010110110010101001100010001010110000000000000000000000000000000000000000000000000000000000000000001101010000000000000001000101100010110110010101001100010001010110001011011001010101010111111111101011011001010101010110000000000000000001000010000000000010000000101101100101010011000100010101110010010000000000000000100000010100000000000000000000000000000000011010100000000000000010001011000101101100101010011000100010101100010110110010101010101111111111010110110010101010101100000000000000000010000100000000000100000001011011001010100110001000101011100100100000000000000001000001101000000000000000000000000000000000110101000000000000000100010110001011011001010100110001000101011000101101100101010101011111111110101101100101010101011000000000000000000100001000000000001000000010110110010101001100010001010111001001000000000000000010000011010000000000000000000000000000000001101010000000000000001000101100010110110010101001100010001010110001011011001010101010111111111101011011001010101010110000000000000000001000010000000000010000000101101100101010011000100010101110010010000000000000000100000110100000000000000000000000000000000011010100000000000000010001011000101101100101010011000100010101100010110110010101010101111111111010110110010101010101100000000000000000010000100000000000100000001011011001010100110001000101011100100100000000000000001000001101000000000000000000000000000000000110101000000000000000100010110001011011001010100110001000101011000101101100101010101011111111110101101100101010101011000000000000000000100001000000000001000000010110110010101001100010001010111001001000000000000000010000011010000000000000000000000000000000001101010000000000000001000101100010110110010101001100010001010110001011011001010101010111111111101011011001010101010110000000000000000001000010000000000010000000101101100101010011000100010101110010010000000000000000100000110100000000000000000000000000000000011010100000000000000010001011000101101100101010011000100010101100010110110010101010101111111111010110110010101010101100000000000000000010000100000000000100000001011011001010100110001000101011100100100000000000000001000001101000000000000000000000000000000000110101000000000000000100010110001011011001010100110001000101011000101101100101010101011111111110101101100101010101011000000000000000000100001000000000001000000010110110010101001100010001010111001001000000000000000010000011010000000000000000000000000000000001101010000000000000001000101100010110110010101001100010001010110001011011001010101010111111111101011011001010101010110000000000000000001000010000000000010000000101101100101010011000100010101110010010000000000000000100000110100000000000000000000000000000000011010100000000000000010001011000101101100101010011000100010101100010110110010101010101111111111010110110010101010101100000000000000000010000100000000000100000001011011001010100110001000101011100100100000000000000001000001101000000000000000000000000000000000110101000000000000000100010110001011011001010100110001000101011000101101100101010101011111111110101101100101010101011000000000000000000100001000000000001000000010110110010101001100010001010111001001000000000000000010000011010000000000000000000000000000000001101010000000000000001000101100010110110010101001100010001010110001011011001010101010111111111101011011001010101010110000000000000000001000010000000000010000000101101100101010011000100010101110010010000000000000000100000110100000000000000000000000000000000011010100000000000000010001011000101101100101010011000100010101100010110110010101010101111111111010110110010101010101100000000000000000010000100000000000100000001011011001010100110001000101011100100100000000000000001000001101000000000000000000000000000000000110101000000000000000100010110001011011001010100110001000101011000101101100101010101011111111110101101100101010101011000000000000000000100001000000000001000000010110110010101001100010001010111001001000000000000000010000010010000000000000000000000000000000001101010000000000000001000101100010110110010101001100010001010110001011011001010101010111111111101011011001010101010110000000000000000001000010000000000010000000101101100101010011000100010101110010010000000000000000100000100100000000000000000000000000000000011010100000000000000010001011000101101100101010011000100010101100010110110010101010101111111111010110110010101010101100000000000000000010000100000000000100000101011011001010100110001000101011101100110000000000000001000001110000000000000000000000000000000000110101000000000000000100010110001011011001010100110001000101011000101101100101010101011111111110101101100101010101011000000000000000000100001000000000001000000010110110010101001100010001010110000000000000000000000000000000000000000000000000000000000000000001101010000000000000001000101100010110110010101001100010001010110001011011001010101010111111111101011011001010101010110000000000000000001000010000000000010000000101101100101010011000000110101100000000000000000000000000000000000000000000000000000000000000000011010100000000000000010001011000101101100101010011000000110101100010110110010101010101111111111010110110010101010101100000000000000000010000100000000000100000001011011001010100110000001101011000000000000000000000000000000000000000000000000000000000000000000110101000000000000000100010110001011011001010100110000001101011000101101100101001101011111111110101101100101001101011000000000000000000100001000000000001000000010110110010101001100000011010111000000000000000000000000010001010000000000000000000000000000000001101010000000000000001000101100010110110010101001100000011010110001011011001010011010111111111101011011001010011010110000000000000000001000010000000000010000000101101100101010011000000110101110000000000000000000000000100010100000000000000000000000000000000011010100000000000000010001011000101101100101010011000000110101100010110110010100110101111111111010110110010100110101100000000000000000010000100000000000100000001011011001010100110000001101011100000000000000000000000001000101000000000000000000000000000000000110101000000000000000100010110001011011001010100110000001101011000101101100101001101011111111110101101100101001101011000000000000000000100001000000000001000000010110110010101001100000011010111000000000000000000000000010001010000000000000000000000000000000001101010000000000000001000101100010110110010101001100000011010110001011011001010011010111111111101011011001010011010110000000000000000001000010000000000010000000101101100101010011000000110101110000000000000000000000000100010100000000000000000000000000000000011010100000000000000010001011000101101100101010011000000110101100010110110010100110101111111111010110110010100110101100000000000000000010000100000000000100000001011011001010100110000001101011100000000000000000000000001000101000000000000000000000000000000000110101000000000000000100010110001011011001010100110000001101011000101101100101001101011111111110101101100101001101011000000000000000000100001000000000001000000010110110010101001100000011010111000000000000000000000000010001010000000000000000000000000000000001101010000000000000001000101100010110110010101001100000011010110001011011001010011010111111111101011011001010011010110000000000000000001000010000000000010000000101101100101010011000000110101110000000000000000000000000100010100000000000000000000000000000000011010100000000000000010001011000101101100101010011000000110101100010110110010100110101111111111010110110010100110101100000000000000000010000100000000000100000001011011001010100110000001101011100000000000000000000000001000101000000000000000000000000000000000110101000000000000000100010110001011011001010100110000001101011000101101100101001101011111111110101101100101001101011000000000000000000100001000000000001000000010110110010101001100000011010111000000000000000000000000010001010000000000000000000000000000000001101010000000000000001000101100010110110010101001100000011010110001011011001010011010111111111101011011001010011010110000000000000000001000010000000000010000000101101100101010011000000110101110000000000000000000000000100010100000000000000000000000000000000011010100000000000000010001011000101101100101010011000000110101100010110110010100110101111111111010110110010100110101100000000000000000010000100000000000100000001011011001010100110000001101011100000000000000000000000001000101000000000000000000000000000000000110101000000000000000100010110001011011001010100110000001101011000101101100101001101011111111110101101100101001101011000000000000000000100001000000000001000000010110110010101001100000011010111000000000000000000000000010001010000000000000000000000000000000001101010000000000000001000101100010110110010101001100000011010110001011011001010011010111111111101011011001010011010110000000000000000001000010000000000010000000101101100101010011000000110101110000000000000000000000000100010100000000000000000000000000000000011010100000000000000010001011000101101100101010011000000110101100010110110010100110101111111111010110110010100110101100000000000000000010000100000000000100000001011011001010100110000001101011100000000000000000000000001000101000000000000000000000000000000000110101000000000000000100010110001011011001010100110000001101011000101101100101001101011111111110101101100101001101011000000000000000000100001000000000001000000010110110010101001100000011010111000000000000000000000000010001010000000000000000000000000000000001101010000000000000001000101100010110110010101001100000011010110001011011001010011010111111111101011011001010011010110000000000000000001000010000000000010000010101101100101010011000000110101110110110000000000000000100000110100000000000000000000000000000000011010100000000000000010001011000101101100101010011000000110101100010110110010100110101111111111010110110010100110101100000000000000000010000100000000000100000001011011001010100110000001101011000000000000000000000000000000000000000000000000000000000000000000110101000000000000000100010110001011011001010100110000001101011000101101100101001101011111111110101101100101001101011000000000000000000100001000000000001000000010110110010101001100010011010110000000000000000000000000000000000000000000000000000000000000000001101010000000000000001000101100010110110010101001100010011010110001011011001010011010111111111101011011001010011010110000000000000000001000010000000000010000000101101100101010011000100110101100000000000000000000000000000000000000000000000000000000000000000011010100000000000000010001011000101101100101010011000100110101100010110110010101110101111111111010110110010101110101100000000000000000010000100000000000100000001011011001010100110001001101011100000000000000000000001001001101000000000000000000000000000000000110101000000000000000100010110001011011001010100110001001101011000101101100101011101011111111110101101100101011101011000000000000000000100001000000000001000000010110110010101001100010011010111000000000000000000000010010011010000000000000000000000000000000001101010000000000000001000101100010110110010101001100010011010110001011011001010111010111111111101011011001010111010110000000000000000001000010000000000010000000101101100101010011000100110101110000000000000000000000100100110100000000000000000000000000000000011010100000000000000010001011000101101100101010011000100110101100010110110010101110101111111111010110110010101110101100000000000000000010000100000000000100000001011011001010100110001001101011100000000000000000000001001001101000000000000000000000000000000000110101000000000000000100010110001011011001010100110001001101011000101101100101011101011111111110101101100101011101011000000000000000000100001000000000001000000010110110010101001100010011010111000000000000000000000010010011010000000000000000000000000000000001101010000000000000001000101100010110110010101001100010011010110001011011001010111010111111111101011011001010111010110000000000000000001000010000000000010000000101101100101010011000100110101110000000000000000000000100100110100000000000000000000000000000000011010100000000000000010001011000101101100101010011000100110101100010110110010101110101111111111010110110010101110101100000000000000000010000100000000000100000001011011001010100110001001101011100000000000000000000001001001101000000000000000000000000000000000110101000000000000000100010110001011011001010100110001001101011000101101100101011101011111111110101101100101011101011000000000000000000100001000000000001000000010110110010101001100010011010111000000000000000000000010010011010000000000000000000000000000000001101010000000000000001000101100010110110010101001100010011010110001011011001010111010111111111101011011001010111010110000000000000000001000010000000000010000000101101100101010011000100110101110000000000000000000000100100110100000000000000000000000000000000011010100000000000000010001011000101101100101010011000100110101100010110110010101110101111111111010110110010101110101100000000000000000010000100000000000100000001011011001010100110001001101011100000000000000000000001001001101000000000000000000000000000000000110101000000000000000100010110001011011001010100110001001101011000101101100101011101011111111110101101100101011101011000000000000000000100001000000000001000000010110110010101001100010011010111000000000000000000000010010011010000000000000000000000000000000001101010000000000000001000101100010110110010101001100010011010110001011011001010111010111111111101011011001010111010110000000000000000001000010000000000010000000101101100101010011000100110101110000000000000000000000100100110100000000000000000000000000000000011010100000000000000010001011000101101100101010011000100110101100010110110010101110101111111111010110110010101110101100000000000000000010000100000000000100000001011011001010100110001001101011100000000000000000000001001001101000000000000000000000000000000000110101000000000000000100010110001011011001010100110001001101011000101101100101011101011111111110101101100101011101011000000000000000000100001000000000001000000010110110010101001100010011010111000000000000000000000010010011010000000000000000000000000000000001101010000000000000001000101100010110110010101001100010011010110001011011001010111010111111111101011011001010111010110000000000000000001000010000000000010000000101101100101010011000100110101110000000000000000000000100100110100000000000000000000000000000000011010100000000000000010001011000101101100101010011000100110101100010110110010101110101111111111010110110010101110101100000000000000000010000100000000000100000001011011001010100110001001101011100000000000000000000001001001101000000000000000000000000000000000110101000000000000000100010110001011011001010100110001001101011000101101100101011101011111111110101101100101011101011000000000000000000100001000000000001000001010110110010101001100010011010111001001100001000000000010010011100000000000000000000000000000000001101010000000000000001000101100010110110010101001100010011010110001011011001010111010111111111101011011001010111010110000000000000000001000010000000000010000000101101100101010011000100110101100000000000000000000000000000000000000000000000000000000000000000011010100000000000000010001011000101101100101010011000100110101100010110110010101110101111111111010110110010101110101100000000000000000010000100000000000100000001011011001010100110000000011011000000000000000000000000000000000000000000000000000000000000000000110101000000000000000100010110001011011001010100110000000011011000101101100101011101011111111110101101100101011101011000000000000000000100001000000000001000000010110110010101001100000000110110000000000000000000000000000000000000000000000000000000000000000001101010000000000000001000101100010110110010101001100000000110110001011011001010000110111111111101011011001010000110110000000000000000001000010000000000010000000101101100101010011000000001101110000000000000000000000100000010100000000000000000000000000000000011010100000000000000010001011000101101100101010011000000001101100010110110010100001101111111111010110110010100001101100000000000000000010000100000000000100000001011011001010100110000000011011100000000000000000000001000000101000000000000000000000000000000000110101000000000000000100010110001011011001010100110000000011011000101101100101000011011111111110101101100101000011011000000000000000000100001000000000001000000010110110010101001100000000110111000000000000000000000010000011010000000000000000000000000000000001101010000000000000001000101100010110110010101001100000000110110001011011001010000110111111111101011011001010000110110000000000000000001000010000000000010000000101101100101010011000000001101110000000000000000000000100000110100000000000000000000000000000000011010100000000000000010001011000101101100101010011000000001101100010110110010100001101111111111010110110010100001101100000000000000000010000100000000000100000001011011001010100110000000011011100000000000000000000001000001101000000000000000000000000000000000110101000000000000000100010110001011011001010100110000000011011000101101100101000011011111111110101101100101000011011000000000000000000100001000000000001000000010110110010101001100000000110111000000000000000000000010000011010000000000000000000000000000000001101010000000000000001000101100010110110010101001100000000110110001011011001010000110111111111101011011001010000110110000000000000000001000010000000000010000000101101100101010011000000001101110000000000000000000000100000110100000000000000000000000000000000011010100000000000000010001011000101101100101010011000000001101100010110110010100001101111111111010110110010100001101100000000000000000010000100000000000100000001011011001010100110000000011011100000000000000000000001000001101000000000000000000000000000000000110101000000000000000100010110001011011001010100110000000011011000101101100101000011011111111110101101100101000011011000000000000000000100001000000000001000000010110110010101001100000000110111000000000000000000000010000011010000000000000000000000000000000001101010000000000000001000101100010110110010101001100000000110110001011011001010000110111111111101011011001010000110110000000000000000001000010000000000010000000101101100101010011000000001101110000000000000000000000100000110100000000000000000000000000000000011010100000000000000010001011000101101100101010011000000001101100010110110010100001101111111111010110110010100001101100000000000000000010000100000000000100000001011011001010100110000000011011100000000000000000000001000001101000000000000000000000000000000000110101000000000000000100010110001011011001010100110000000011011000101101100101000011011111111110101101100101000011011000000000000000000100001000000000001000000010110110010101001100000000110111000000000000000000000010000011010000000000000000000000000000000001101010000000000000001000101100010110110010101001100000000110110001011011001010000110111111111101011011001010000110110000000000000000001000010000000000010000000101101100101010011000000001101110000000000000000000000100000110100000000000000000000000000000000011010100000000000000010001011000101101100101010011000000001101100010110110010100001101111111111010110110010100001101100000000000000000010000100000000000100000001011011001010100110000000011011100000000000000000000001000001101000000000000000000000000000000000110101000000000000000100010110001011011001010100110000000011011000101101100101000011011111111110101101100101000011011000000000000000000100001000000000001000000010110110010101001100000000110111000000000000000000000010000000010000000000000000000000000000000001101010000000000000001000101100010110110010101001100000000110110001011011001010000110111111111101011011001010000110110000000000000000001000010000000000010000000101101100101010011000000001101110000000000000000000000100000000100000000000000000000000000000000011010100000000000000010001011000101101100101010011000000001101100010110110010100001101111111111010110110010100001101100000000000000000010000100000000000100000101011011001010100110000000011011101000110000000000000001001011100000000000000000000000000000000000110101000000000000000100010110001011011001010100110000000011011000101101100101000011011111111110101101100101000011011000000000000000000100001000000000001000000010110110010101001100000000110110000000000000000000000000000000000000000000000000000000000000000001101010000000000000001000101100010110110010101001100000000110110001011011001010000110111111111101011011001010000110110000000000000000001000010000000000010000000101101100101010011000100001101100000000000000000000000000000000000000000000000000000000000000000011010100000000000000010001011000101101100101010011000100001101100010110110010100001101111111111010110110010100001101100000000000000000010000100000000000100000001011011001010100110001000011011000000000000000000000000000000000000000000000000000000000000000000110101000000000000000100010110001011011001010100110001000011011000101101100101010011011111111110101101100101010011011000000000000000000100001000000000001000000010110110010101001100010000110111001000000000000000000010010011010000000000000000000000000000000001101010000000000000001000101100010110110010101001100010000110110001011011001010100110111111111101011011001010100110110000000000000000001000010000000000010000000101101100101010011000100001101110010000000000000000000100100110100000000000000000000000000000000011010100000000000000010001011000101101100101010011000100001101100010110110010101001101111111111010110110010101001101100000000000000000010000100000000000100000001011011001010100110001000011011100100000000000000000001001001101000000000000000000000000000000000110101000000000000000100010110001011011001010100110001000011011000101101100101010011011111111110101101100101010011011000000000000000000100001000000000001000000010110110010101001100010000110111001000000000000000000010010011010000000000000000000000000000000001101010000000000000001000101100010110110010101001100010000110110001011011001010100110111111111101011011001010100110110000000000000000001000010000000000010000000101101100101010011000100001101110010000000000000000000100100110100000000000000000000000000000000011010100000000000000010001011000101101100101010011000100001101100010110110010101001101111111111010110110010101001101100000000000000000010000100000000000100000001011011001010100110001000011011100100000000000000000001001001101000000000000000000000000000000000110101000000000000000100010110001011011001010100110001000011011000101101100101010011011111111110101101100101010011011000000000000000000100001000000000001000000010110110010101001100010000110111001000000000000000000010010011010000000000000000000000000000000001101010000000000000001000101100010110110010101001100010000110110001011011001010100110111111111101011011001010100110110000000000000000001000010000000000010000000101101100101010011000100001101110010000000000000000000100100110100000000000000000000000000000000011010100000000000000010001011000101101100101010011000100001101100010110110010101001101111111111010110110010101001101100000000000000000010000100000000000100000</data>
+          <extradata>1111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111111</extradata>
+        </log>
+      </trigger>
+    </signal_set>
+    <position_info>
+      <single attribute="active tab" value="0"/>
+      <single attribute="data horizontal scroll position" value="51"/>
+      <single attribute="data vertical scroll position" value="0"/>
+      <single attribute="setup horizontal scroll position" value="0"/>
+      <single attribute="setup vertical scroll position" value="0"/>
+      <single attribute="zoom level denominator" value="1"/>
+      <single attribute="zoom level numerator" value="4"/>
+      <single attribute="zoom offset denominator" value="1"/>
+      <single attribute="zoom offset numerator" value="32736"/>
+    </position_info>
+  </instance>
+  <mnemonics>
+    <table name="state_table" width="4">
+      <symbol name="STATE_DONE" value="0001"/>
+      <symbol name="STATE_IDLE" value="0010"/>
+      <symbol name="STATE_READ" value="0100"/>
+      <symbol name="STATE_WAIT" value="1000"/>
+    </table>
+    <table name="state_table (1)" width="7">
+      <symbol name="STATE_DONE" value="0000001"/>
+      <symbol name="STATE_IDLE" value="0000010"/>
+      <symbol name="STATE_READ" value="0000100"/>
+      <symbol name="STATE_WAIT" value="0001000"/>
+      <symbol name="STATE_WAIT2" value="0010000"/>
+      <symbol name="STATE_WAIT3" value="0100000"/>
+      <symbol name="STATE_WAIT4" value="1000000"/>
+    </table>
+  </mnemonics>
+  <static_plugin_mnemonics/>
+  <global_info>
+    <single attribute="active instance" value="0"/>
+    <single attribute="config widget visible" value="1"/>
+    <single attribute="data log widget visible" value="1"/>
+    <single attribute="hierarchy widget height" value="2"/>
+    <single attribute="hierarchy widget visible" value="1"/>
+    <single attribute="instance widget visible" value="1"/>
+    <single attribute="jtag widget visible" value="1"/>
+    <multi attribute="frame size" size="2" value="1367,682"/>
+    <multi attribute="jtag widget size" size="2" value="433,145"/>
+  </global_info>
+</session>

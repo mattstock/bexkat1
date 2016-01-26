@@ -1,5 +1,6 @@
 CC = bexkat1-elf-gcc
-LDFLAGS = -specs=de2.specs
+BOARD = de1
+LDFLAGS = -specs=$(BOARD).specs
 LDLIBS = -lsupport -lm
 OBJCOPY = bexkat1-elf-objcopy
 OBJDUMP = bexkat1-elf-objdump
@@ -8,12 +9,12 @@ LD = bexkat1-elf-ld
 
 TEMP := $(shell mktemp)
 
-OBJECTS = boot.o bootstrap.o pretty.o vga.o memtests.o rtc.o fileio.o tests.o ps2.o fib.o audiogen.o
+OBJECTS = boot-$(BOARD).o bootstrap.o pretty.o vga.o memtests.o rtc.o fileio.o tests.o ps2.o fib.o audiogen.o
 APPS = pretty vga bootstrap memtests rtc fileio tests ps2 fib audiogen
 
 .PHONY: all clean gcctests kernel install
 
-all: boot.o bootstrap.mif tests.mif $(APPS)
+all: boot-$(BOARD).o bootstrap.mif bootstrap.bin tests.mif $(APPS)
 
 install: $(APPS)
 	cp $(APPS) /media/mstock/A5BC-530B/
@@ -21,7 +22,7 @@ install: $(APPS)
 clean:
 	cd gcctests; make clean
 	cd kernel; make clean
-	rm -f *.o *.hex *.mif *.gkd *.expand $(APPS)
+	rm -f *.o *.hex *.bin *.mif *.gkd *.expand $(APPS)
 
 gcctests:
 	cd gcctests; make
@@ -35,11 +36,15 @@ kernel:
 %.mif: %
 	$(OBJCOPY) -O mif $< $@
 
+%.bin: %
+	$(OBJCOPY) -j .text -O binary $< $@
+
 tests: tests.o
-	$(CC) -T profile.ld -nostartfiles -o $@ $^ $(LDLIBS)
+	$(CC) -T profile-$(BOARD).ld -nostartfiles -o $@ $^ $(LDLIBS)
 
 fileio: fileio.o
 	$(CC) $(LDFLAGS) -o $@ $^
 
+
 bootstrap: bootstrap.o
-	$(CC) -T profile.ld -nostartfiles -o $@ $^ $(LDLIBS)
+	$(CC) -T profile-$(BOARD).ld -nostartfiles -o $@ $^ $(LDLIBS)
