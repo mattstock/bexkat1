@@ -77,8 +77,8 @@ wire [3:0] cpu_be;
 wire int_en, cpu_ack, cpu_halt, cpu_cyc, cpu_we;
 wire [7:0] exception;
 wire [3:0] cpu_interrupt;
-wire [31:0] cpu_address, cpu_readdata, cpu_writedata, sdram_readdata, fl_readdata, v_readdata;
-wire sdram_ack, fl_ack, fl_stb, v_stb, sdram_stb;
+wire [31:0] cpu_address, cpu_readdata, cpu_writedata, sdram_readdata, fl_readdata, v_readdata, rom_readdata, io_readdata;
+wire sdram_ack, fl_ack, fl_stb, v_stb, sdram_stb, rom_stb, io_stb, io_ack;
 wire [7:0] fl_dataout;
 
 // External SDRAM, SSRAM & flash bus wiring
@@ -96,17 +96,20 @@ hexdisp h1(.in(cpu_address[7:4]), .out(HEX1));
 hexdisp h0(.in(cpu_address[3:0]), .out(HEX0));
 
 // two cycles for reading onboard memory
-reg [2:0] v_ack;
+reg [2:0] v_ack, rom_ack;
 
 always @(posedge sysclock or posedge rst_i)
 begin
   if (rst_i) begin
     v_ack <= 3'h0;
+    rom_ack <= 3'h0;
   end else begin
     if (!cpu_cyc) begin
       v_ack <= 3'h0;
+      rom_ack <= 3'h0;
     end else begin
       v_ack <= { v_ack[1:0], v_stb };
+      rom_ack <= { rom_ack[1:0], rom_stb };
     end
   end
 end
@@ -115,9 +118,19 @@ always_comb
 begin
   fl_stb = 1'b0;
   v_stb = 1'b0;
+  rom_stb = 1'b0;
   sdram_stb = 1'b0;
+  io_stb = 1'b0;
   case (cpu_address[31:28])
+    4'h3: begin
+      io_stb = 1'b1;
+      cpu_readdata = io_readdata;
+      cpu_ack = io_ack;
+    end
     4'h7: begin
+//      rom_stb = 1'b1;
+//      cpu_readdata = rom_readdata;
+//      cpu_ack = rom_ack;
       fl_stb = 1'b1;
       cpu_readdata = fl_readdata;
       cpu_ack = fl_ack;
@@ -149,6 +162,13 @@ sdram_controller_cache sdram0(.clk_i(sysclock), .mem_clk_o(sdram_clk), .rst_i(rs
   .we_n(sdram_we_n), .cs_n(sdram_cs_n), .cke(sdram_cke), .cas_n(sdram_cas_n), .ras_n(sdram_ras_n), .dqm(sdram_dqm), .ba(sdram_ba),
   .addrbus_out(sdram_addrbus), .databus_in(sdram_databus), .databus_out(sdram_dataout), .cache_en(SW[9]));
 
+iocontroller io0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cpu_writedata), .dat_o(io_readdata), .we_i(cpu_we), .adr_i(cpu_address[16:0]),
+  .stb_i(io_stb), .cyc_i(cpu_cyc), .ack_o(io_ack), .sel_i(cpu_be),
+  .miso(miso), .mosi(mosi), .sclk(sclk), .spi_selects(spi_selects), .interrupts(io_interrupts),
+  .rx0(serial0_rx), .tx0(serial0_tx), .tx1(serial1_tx), .sw({ 8'h0, SW[7:0]}),
+  .ps2kbd({ps2kbd_clk, ps2kbd_data}));
+  
 vectors v0(.clock(sysclock), .address(cpu_address[5:2]), .q(v_readdata));
+testrom r0(.clock(sysclock), .address(cpu_address[10:2]), .q(rom_readdata));
 
 endmodule

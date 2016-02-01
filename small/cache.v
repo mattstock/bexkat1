@@ -39,7 +39,7 @@ wire [31:0] word0, word1, word2, word3;
 localparam VALID = CACHEW-1, 
   DIRTY0 = CACHEW-5, DIRTY1 = CACHEW-4,
   DIRTY2 = CACHEW-3, DIRTY3 = CACHEW-2,
-  TAG_END = CACHEW-6, TAG_START = TAG_END - TAGW;
+  TAG_END = CACHEW-6, TAG_START = TAG_END - TAGW + 1;
 
 assign cache_status = { state == STATE_HIT, state == STATE_MISS };
 assign { tag_in, rowaddr, wordsel } = s_adr_i;
