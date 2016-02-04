@@ -70,16 +70,18 @@ assign miso = (~spi_selects[0] ? sd_miso : 1'b0) |
 assign sd_sclk = sclk;
 assign rtc_sclk = sclk;
 
-wire [15:0] sdram_dataout, ssram_dataout;
-wire [1:0] cache_hitmiss;
-wire mmu_fault;
-wire [3:0] cpu_be;
-wire int_en, cpu_ack, cpu_halt, cpu_cyc, cpu_we;
-wire [7:0] exception;
-wire [3:0] cpu_interrupt;
-wire [31:0] cpu_address, cpu_readdata, cpu_writedata, sdram_readdata, fl_readdata, v_readdata, rom_readdata, io_readdata;
-wire sdram_ack, fl_ack, fl_stb, v_stb, sdram_stb, rom_stb, io_stb, io_ack;
-wire [7:0] fl_dataout;
+logic [15:0] sdram_dataout, ssram_dataout;
+logic [1:0] cache_hitmiss;
+logic mmu_fault;
+logic [5:0] io_interrupts;
+logic [3:0] cpu_be;
+logic int_en, cpu_ack, cpu_halt, cpu_cyc, cpu_we;
+logic [7:0] exception;
+logic [3:0] cpu_interrupt;
+logic [31:0] cpu_address, cpu_readdata, cpu_writedata, sdram_readdata, fl_readdata, v_readdata, rom_readdata, io_readdata;
+logic [31:0] matrix_readdata;
+logic sdram_ack, fl_ack, fl_stb, v_stb, sdram_stb, rom_stb, io_stb, io_ack, matrix_stb, matrix_ack;
+logic [7:0] fl_dataout;
 
 // External SDRAM, SSRAM & flash bus wiring
 assign sdram_databus = (~sdram_we_n ? sdram_dataout : 16'hzzzz);
@@ -87,8 +89,8 @@ assign sram_databus = (~sram_we_n ? ssram_dataout : 16'hzzzz);
 assign fl_databus = (~fl_we_n ? fl_dataout : 8'hzz);
 
 // System Blinknlights
-assign LEDR = { SW[9], 4'h0, cache_hitmiss, cpu_halt, mmu_fault, cpu_cyc };
-assign LEDG = 8'h0;
+assign LEDR = { SW[9], 1'b0, mmu_fault, io_interrupts, cpu_cyc };
+assign LEDG = { ~spi_selects[0], ~spi_selects[4], v_stb, fl_stb, sdram_stb, io_stb, matrix_stb, rom_stb };
 
 hexdisp h3(.in(cpu_address[31:28]), .out(HEX3));
 hexdisp h2(.in(cpu_address[11:8]), .out(HEX2));
@@ -114,38 +116,69 @@ begin
   end
 end
 
+// interrupt priority encoder
 always_comb
 begin
+  cpu_interrupt = 3'h0;
+  if (int_en)
+    casex ({ mmu_fault, io_interrupts })
+      7'b1xxxxxx: cpu_interrupt = 3'h1; // MMU error
+      7'b01xxxxx: cpu_interrupt = 3'h5; // timer3
+      7'b001xxxx: cpu_interrupt = 3'h4; // timer2
+      7'b0001xxx: cpu_interrupt = 3'h3; // timer1
+      7'b00001xx: cpu_interrupt = 3'h2; // timer0
+      7'b000001x: cpu_interrupt = 3'h6; // uart0 rx
+      7'b0000001: cpu_interrupt = 3'h7; // uart0 tx
+      7'b0000000: cpu_interrupt = 3'h0;
+    endcase
+end
+
+always_comb
+begin
+  mmu_fault = 1'b0;
   fl_stb = 1'b0;
   v_stb = 1'b0;
   rom_stb = 1'b0;
   sdram_stb = 1'b0;
   io_stb = 1'b0;
-  case (cpu_address[31:28])
-    4'h3: begin
-      io_stb = 1'b1;
-      cpu_readdata = io_readdata;
-      cpu_ack = io_ack;
-    end
-    4'h7: begin
-//      rom_stb = 1'b1;
-//      cpu_readdata = rom_readdata;
-//      cpu_ack = rom_ack;
-      fl_stb = 1'b1;
-      cpu_readdata = fl_readdata;
-      cpu_ack = fl_ack;
-    end
-    4'hf: begin
-      v_stb = 1'b1;
-      cpu_readdata = v_readdata;
-      cpu_ack = v_ack[2];
-    end
-    default: begin
-      sdram_stb = 1'b1;
-      cpu_readdata = sdram_readdata;
-      cpu_ack = sdram_ack;
-    end
-  endcase
+  matrix_stb = 1'b0;
+  cpu_readdata = 32'hdeadbeef;
+  cpu_ack = 1'b0;
+  if (cpu_cyc)
+    case (cpu_address[31:28])
+      4'h0: begin
+        sdram_stb = 1'b1;
+        cpu_readdata = sdram_readdata;
+        cpu_ack = sdram_ack;
+      end
+      4'h2: begin
+        matrix_stb = 1'b1;
+        cpu_readdata = matrix_readdata;
+        cpu_ack = matrix_ack;
+      end
+      4'h3: begin
+        io_stb = 1'b1;
+        cpu_readdata = io_readdata;
+        cpu_ack = io_ack;
+      end
+      4'h7: begin
+        fl_stb = 1'b1;
+        cpu_readdata = fl_readdata;
+        cpu_ack = fl_ack;
+      end
+      4'h8: begin  // just sink VGA for now
+        rom_stb = 1'b1;
+        cpu_ack = rom_ack[2];
+      end
+      4'hf: begin
+        v_stb = 1'b1;
+        cpu_readdata = v_readdata;
+        cpu_ack = v_ack[2];
+      end
+      default: begin
+        mmu_fault = 1'b1;
+      end
+    endcase
 end
 
 bexkat2 bexkat0(.clk_i(sysclock), .rst_i(rst_i), .adr_o(cpu_address), .cyc_o(cpu_cyc), .dat_i(cpu_readdata),
@@ -168,7 +201,10 @@ iocontroller io0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cpu_writedata), .dat_o(
   .rx0(serial0_rx), .tx0(serial0_tx), .tx1(serial1_tx), .sw({ 8'h0, SW[7:0]}),
   .ps2kbd({ps2kbd_clk, ps2kbd_data}));
   
+led_matrix matrix0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cpu_writedata), .dat_o(matrix_readdata), .we_i(cpu_we),
+  .adr_i(cpu_address[11:2]), .stb_i(matrix_stb), .cyc_i(cpu_cyc), .ack_o(matrix_ack), .sel_i(cpu_be));
+  
 vectors v0(.clock(sysclock), .address(cpu_address[5:2]), .q(v_readdata));
-testrom r0(.clock(sysclock), .address(cpu_address[10:2]), .q(rom_readdata));
+//testrom r0(.clock(sysclock), .address(cpu_address[10:2]), .q(rom_readdata));
 
 endmodule

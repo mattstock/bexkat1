@@ -37,7 +37,7 @@ kernel:
 	$(OBJCOPY) -O mif $< $@
 
 %.bin: %
-	$(OBJCOPY) -j .text -O binary $< $@
+	$(OBJCOPY) -O binary $< $@
 
 tests: tests.o
 	$(CC) -T profile-$(BOARD).ld -nostartfiles -o $@ $^ $(LDLIBS)
