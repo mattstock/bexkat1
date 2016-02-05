@@ -121,7 +121,7 @@ void main(void) {
   clear();
   printf("Defining palette 0\n");
   for (x=0; x < 256; x++)
-    vga_palette(0, x, x | (x << 16) | (x << 8));
+    vga_palette(0, x, x | (x << 8));
   
   vga_set_mode(VGA_MODE_NORMAL);
   
@@ -161,8 +161,8 @@ void main(void) {
     if (x) {
       printf("starting (%f, %f, %f)\n", a, b, c);
       mandelbrot_float(a,b,c);
-      printf("now doubles\n");
-      mandelbrot_double(a,b,c);
+      /*      printf("now doubles\n");
+	      mandelbrot_double(a,b,c); */
       printf("done\n");
     }
     while (keyboard_count() == 0);

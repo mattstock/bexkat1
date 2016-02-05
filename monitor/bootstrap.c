@@ -5,6 +5,8 @@
 #include "ff.h"
 #include "lcd.h"
 #include "rtc.h"
+#include "timers.h"
+#include "vectors.h"
 #include "elf32.h"
 #include <string.h>
 
@@ -167,6 +169,8 @@ void sdcard_exec(char *name) {
   // Cleanly unmount sdcard
   f_close(&fp);
   f_mount((void *)0, "", 0);
+  // Shut off interrupts
+  asm("cli");
   execptr = (void *)header.e_entry;
   (*execptr)();
 }
@@ -202,10 +206,6 @@ void sdcard_ls() {
   f_mount((void *)0, "", 0);
 }
 
-void set_rtc() {
-  
-}
-
 void main(void) {
   unsigned int foo;
   unsigned short size=20;
@@ -228,7 +228,7 @@ void main(void) {
     sdcard_exec("/kernel");
     serial_print(0, "\nautoboot failed\n");
   }
-  
+
   while (1) {
     serial_print(0, "\nBexkat1 [");
     serial_printhex(0, addr);
