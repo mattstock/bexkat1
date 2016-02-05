@@ -1,8 +1,8 @@
 #ifndef _MISC_H
 #define _MISC_H
 
-extern volatile unsigned int *sysctrl;
-extern volatile unsigned int *sysio;
+extern volatile unsigned int * const sysctrl;
+extern volatile unsigned int * const sysio;
 
 // helpers
 #define SET_BIT(x,b) x |= (1 << (b))

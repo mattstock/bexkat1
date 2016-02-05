@@ -30,7 +30,7 @@
 #define SPI_TX_READY (SPI_CTL & (1 << TX_READY))
 #define SPI_RX_READY (SPI_CTL & (1 << RX_READY))
 
-extern volatile unsigned int *spi;
+extern volatile unsigned int * const spi;
 
 extern char spi_xfer(char tx);
 extern void spi_fast(void);

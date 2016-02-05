@@ -1,0 +1,4 @@
+(fp_lib_table
+  (lib (name mstock)(type Legacy)(uri $KIPRJMOD/mstock.mod)(options "")(descr ""))
+  (lib (name mstock-pretty)(type KiCad)(uri $KIPRJMOD/mstock.pretty)(options "")(descr ""))
+)

@@ -7,7 +7,7 @@ typedef enum {
   VGA_MODE_TEXT
 } vga_mode_t;
 
-extern volatile unsigned char *vga_fb;
+extern volatile unsigned char * const vga_fb;
 
 extern void vga_palette(int pnum, unsigned char idx, unsigned int color);
 extern void vga_point(int x, int y, unsigned char val);

@@ -1,8 +1,8 @@
 #ifndef _SERIAL_H
 #define _SERIAL_H
 
-extern volatile unsigned int *serial0;
-extern volatile unsigned int *serial1;
+extern volatile unsigned int * const serial0;
+extern volatile unsigned int * const serial1;
 
 extern void serial_printf(unsigned port, const char *format, ...);
 extern void serial_putbin(unsigned port,

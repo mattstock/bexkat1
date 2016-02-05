@@ -1,10 +1,10 @@
 MEMORY
 {
   rom : ORIGIN = 0x70000000, LENGTH = 128K
-  ram : ORIGIN = 0x07ff0000, LENGTH = 64K
+  ram : ORIGIN = 0x007ff000, LENGTH = 4K
 }
 
-STARTUP(boot.o)
+STARTUP(boot-de1.o)
 ENTRY(_start)
 SECTIONS
 {
