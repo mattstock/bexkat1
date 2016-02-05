@@ -152,9 +152,11 @@ begin
         cpu_ack = sdram_ack;
       end
       4'h2: begin
-        matrix_stb = 1'b1;
-        cpu_readdata = matrix_readdata;
-        cpu_ack = matrix_ack;
+//        matrix_stb = 1'b1;
+//        cpu_readdata = matrix_readdata;
+//        cpu_ack = matrix_ack;
+        rom_stb = 1'b1;
+        cpu_ack = rom_ack[2];
       end
       4'h3: begin
         io_stb = 1'b1;
@@ -201,8 +203,8 @@ iocontroller io0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cpu_writedata), .dat_o(
   .rx0(serial0_rx), .tx0(serial0_tx), .tx1(serial1_tx), .sw({ 8'h0, SW[7:0]}),
   .ps2kbd({ps2kbd_clk, ps2kbd_data}));
   
-led_matrix matrix0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cpu_writedata), .dat_o(matrix_readdata), .we_i(cpu_we),
-  .adr_i(cpu_address[11:2]), .stb_i(matrix_stb), .cyc_i(cpu_cyc), .ack_o(matrix_ack), .sel_i(cpu_be));
+//led_matrix matrix0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cpu_writedata), .dat_o(matrix_readdata), .we_i(cpu_we),
+//  .adr_i(cpu_address[11:2]), .stb_i(matrix_stb), .cyc_i(cpu_cyc), .ack_o(matrix_ack), .sel_i(cpu_be));
   
 vectors v0(.clock(sysclock), .address(cpu_address[5:2]), .q(v_readdata));
 //testrom r0(.clock(sysclock), .address(cpu_address[10:2]), .q(rom_readdata));
