@@ -34,6 +34,11 @@ D audio jack TRS 3 pins
 K audio jack connector TRS
 $ENDCMP
 #
+$CMP LED_RGB
+D QLBP679E-RGB 6 pin RGB LED
+K RGB LED
+$ENDCMP
+#
 $CMP LM1117-3.3
 D Linear Regulator +3.3V
 K POWER REGUL
