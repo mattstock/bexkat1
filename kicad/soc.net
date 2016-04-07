@@ -1,8 +1,8 @@
 (export (version D)
   (design
     (source /home/mstock/projects/soc/kicad/soc.sch)
-    (date "Tue 23 Feb 2016 10:08:01 PM EST")
-    (tool "Eeschema 0.201602181416+6564~42~ubuntu15.10.1-product")
+    (date "Wed 06 Apr 2016 08:46:14 PM EDT")
+    (tool "Eeschema 0.201604021231+6659~43~ubuntu15.10.1-product")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
         (title "Bexkat 1000 Motherboard")
