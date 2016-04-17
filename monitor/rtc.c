@@ -36,19 +36,30 @@ void main() {
   struct tm ts;
   time_t now;
 
+
+#if 0
+  s = rtc_cmd(0x80, 0x00);
   s = rtc_cmd(0x00, 0xff);
+  m = rtc_cmd(0x81, 0x08);
   m = rtc_cmd(0x01, 0xff);
+  h = rtc_cmd(0x82, 0x01);
   h = rtc_cmd(0x02, 0xff);
+  dow = rtc_cmd(0x83, 0x06);
   dow = rtc_cmd(0x03, 0xff);
+  d = rtc_cmd(0x84, 0x17);
   d = rtc_cmd(0x04, 0xff);
+  mo = rtc_cmd(0x85, 0x84);
   mo = rtc_cmd(0x05, 0xff);
+  y = rtc_cmd(0x86, 0x16);
   y = rtc_cmd(0x06, 0xff);
 
   iprintf("%02x / %02x / %02x  %02x  %02x:%02x:%02x\n",
 	  mo,d,y,dow,h,m,s);
+#endif
+
   while (1) {
     now = time(0);
-    iprintf("now = %d\n", now);
+    iprintf("now = %u\n", now);
     ts = *localtime(&now);
     strftime(buf, sizeof(buf), "%a %m-%d-%Y %H:%M:%S %Z", &ts);
     iprintf("%s\n", buf);
