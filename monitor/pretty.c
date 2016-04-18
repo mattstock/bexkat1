@@ -28,50 +28,49 @@ void matrix_fade(void) {
   }
 }
 
-unsigned int joystick() {
-  unsigned char a0,a1;
-  unsigned int ret;
-#if 0
-  spi_slow();
-  CLEAR_BIT(SPI_CTL, JOY_SEL);
-  a0 = spi_xfer(0x78);
-  a1 = spi_xfer(0x00);
-  SET_BIT(SPI_CTL, JOY_SEL);
-  ret = (((a0 << 8) | a1) & 0x3ff) << 16;
-  CLEAR_BIT(SPI_CTL, JOY_SEL);
-  a0 = spi_xfer(0x68);
-  a1 = spi_xfer(0x00);
-  SET_BIT(SPI_CTL, JOY_SEL);
-  ret |= ((a0 << 8) | a1) & 0x3ff;
-  return ret;
-#endif
-  return 0;
-}
- 
 void main(void) {
   char c;
   unsigned val, pot;
   unsigned short x, y;
   unsigned tick = 0;
 
-  x = 16;
-  y = 8;
+  x = 0;
+  y = 0;
   val = 0x00808080;
 
   srand(39854);
   while (1) {
     tick++;
     matrix_fade();
+#if 0
+    switch (rand() % 4) {
+    case 0:
+      if (x < 31)
+	x++;
+      break;
+    case 1:
+      if (x > 1)
+	x--;
+      break;
+    case 2:
+      if (y < 15)
+	y++;
+      break;
+    case 3:
+      if (y > 1)
+	y--;
+      break;
+    }
+#endif
     if ((tick % 10) == 0) {
-      pot = joystick();
-      if (((pot & 0xffff) > 600) && (x < 31))
-        x++;
-      if (((pot & 0xffff) < 300) && (x > 0))
-        x--;
-      if (((pot >> 16) < 300) && (y < 15))
-        y++;
-      if (((pot >> 16) > 600) && (y > 0))
-        y--;
+      x++;
+      if (x == 32) {
+	x = 0;
+	if (y == 15)
+	  y = 0;
+	else
+	  y++;
+      }
     }
     c = (char) (rand() % 4);
     switch (c) {
