@@ -107,6 +107,6 @@ void main() {
       }
     }
 
-    delay(500);
+    delay(50000);
   }
 }

@@ -10,7 +10,7 @@
 #define RED 0xff
 #define BLACK 0x00
 
-#define ROCKS 7
+#define ROCKS 5
 
 unsigned ship[15] = { BLACK, BLACK, BLUE, BLACK, BLACK,
 		      BLACK, BLUE, BLUE, BLUE, BLACK,
@@ -107,7 +107,7 @@ void main(void) {
 #endif
     
     // create a rock 10% of the time
-    if ((random()%100) < 30) {
+    if ((random()%100) < 10) {
       for (int i=0; i < ROCKS; i++) {
 	if (rock[i].speed == 0) {
 	  iprintf("spawning rock %d\n", i);

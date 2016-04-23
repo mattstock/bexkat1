@@ -1,5 +1,5 @@
 CC = bexkat1-elf-gcc
-BOARD = de1
+BOARD = de2
 LDFLAGS = -specs=$(BOARD).specs
 LDLIBS = -lsupport -lm
 OBJCOPY = bexkat1-elf-objcopy
@@ -9,8 +9,8 @@ LD = bexkat1-elf-ld
 
 TEMP := $(shell mktemp)
 
-OBJECTS = boot-$(BOARD).o bootstrap.o pretty.o vga.o memtests.o rtc.o fileio.o tests.o ps2.o fib.o audiogen.o
-APPS = pretty vga bootstrap memtests rtc fileio tests ps2 fib audiogen
+OBJECTS = boot-$(BOARD).o bootstrap.o pretty.o vga.o memtests.o rtc.o fileio.o tests.o ps2.o fib.o audiogen.o clock.o fly.o
+APPS = pretty vga bootstrap memtests rtc fileio tests ps2 fib audiogen clock fly
 
 .PHONY: all clean gcctests kernel install
 
