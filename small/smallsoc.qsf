@@ -305,25 +305,6 @@ set_location_assignment PIN_B15 -to serial1_tx
 set_global_assignment -name USE_CONFIGURATION_DEVICE ON
 set_global_assignment -name CYCLONEII_RESERVE_NCEO_AFTER_CONFIGURATION "USE AS REGULAR IO"
 set_global_assignment -name RESERVE_ASDO_AFTER_CONFIGURATION "USE AS REGULAR IO"
-set_global_assignment -name QIP_FILE fp_cmp.qip
-set_global_assignment -name QIP_FILE fp_sqrt.qip
-set_global_assignment -name QIP_FILE fp_div.qip
-set_global_assignment -name QIP_FILE fp_mult.qip
-set_global_assignment -name QIP_FILE fp_addsub.qip
-set_global_assignment -name QIP_FILE fp_cvtis.qip
-set_global_assignment -name QIP_FILE fp_cvtsi.qip
-set_global_assignment -name QIP_FILE intsdiv.qip
-set_global_assignment -name QIP_FILE intudiv.qip
-set_global_assignment -name QIP_FILE intumult.qip
-set_global_assignment -name QIP_FILE intsmult.qip
-set_global_assignment -name QIP_FILE sysclock.qip
-set_global_assignment -name QIP_FILE cachemem.qip
-set_global_assignment -name QIP_FILE monitor.qip
-set_global_assignment -name QIP_FILE vectors.qip
-set_global_assignment -name QIP_FILE testrom.qip
-set_global_assignment -name QIP_FILE uart_fifo.qip
-set_global_assignment -name QIP_FILE ps2_kbd_fifo.qip
-set_global_assignment -name QIP_FILE matrixmem.qip
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[0] -to "bexkat2:bexkat0|ack_i" -section_id auto_signaltap_0
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[1] -to "bexkat2:bexkat0|adr_o[0]" -section_id auto_signaltap_0
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[2] -to "bexkat2:bexkat0|adr_o[10]" -section_id auto_signaltap_0
@@ -1633,3 +1614,22 @@ set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SEGMENT_SIZE=256"
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_NODE_CRC_HIWORD=7391" -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SAMPLE_DEPTH=256" -section_id auto_signaltap_0
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
+set_global_assignment -name QIP_FILE fp_cmp.qip
+set_global_assignment -name QIP_FILE fp_sqrt.qip
+set_global_assignment -name QIP_FILE fp_div.qip
+set_global_assignment -name QIP_FILE fp_mult.qip
+set_global_assignment -name QIP_FILE fp_addsub.qip
+set_global_assignment -name QIP_FILE fp_cvtis.qip
+set_global_assignment -name QIP_FILE fp_cvtsi.qip
+set_global_assignment -name QIP_FILE intsdiv.qip
+set_global_assignment -name QIP_FILE intudiv.qip
+set_global_assignment -name QIP_FILE intumult.qip
+set_global_assignment -name QIP_FILE intsmult.qip
+set_global_assignment -name QIP_FILE sysclock.qip
+set_global_assignment -name QIP_FILE cachemem.qip
+set_global_assignment -name QIP_FILE monitor.qip
+set_global_assignment -name QIP_FILE vectors.qip
+set_global_assignment -name QIP_FILE testrom.qip
+set_global_assignment -name QIP_FILE uart_fifo.qip
+set_global_assignment -name QIP_FILE ps2_kbd_fifo.qip
+set_global_assignment -name QIP_FILE matrixmem.qip
