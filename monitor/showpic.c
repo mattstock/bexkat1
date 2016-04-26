@@ -8,6 +8,7 @@
 #include <errno.h>
 #include <vga.h>
 #include <matrix.h>
+#include <serial.h>
 
 uint16_t swap_uint16(uint16_t val) {
   return (val << 8) | (val >> 8);
@@ -115,6 +116,9 @@ struct colormap *make_histogram(uint32_t width, uint32_t height) {
 
 void main(void) {
   int x,y,idx;
+  unsigned zx = 50;
+  unsigned zy = 460;
+    
   struct colormap *l, *cm;
   struct h {
     uint32_t size;
@@ -154,7 +158,6 @@ void main(void) {
     read_uint32(fh);
     bmpcore.colors = read_uint32(fh);
     iprintf("colors = %u\n", bmpcore.colors);
-    read_uint32(fh);
 
     vga_set_mode(0);
 
@@ -220,7 +223,7 @@ void main(void) {
 	int subpixel = y*(bmpcore.width << 2) + (x << 2);
 	uint32_t color = (buffer[subpixel+2] << 16) |
 	  (buffer[subpixel+1] << 8) | buffer[subpixel];
-	matrix_put(x-320,bmpcore.height-y-1-240, color);
+	matrix_put(x-zx,bmpcore.height-y-1-zy, color);
 	idx = 0;
 	l = cm;
 	while (l != NULL) {
@@ -229,9 +232,39 @@ void main(void) {
 	  l = l->next;
 	  idx++;
 	}
-	vga_point(x,bmpcore.height-y-1, idx);
+	if ((x == zx && x == (zx+32) && y >= zy && y <= zy+16) ||
+	    (y == zy && y == (zy+16) && x >= zx && x <= zx+32))
+	  vga_point(x,bmpcore.height-y-1, 0);
+	else
+	  vga_point(x,bmpcore.height-y-1, idx);
       }
   }
   iprintf("done\n");
-  while (1);
+  
+  while (1) {
+    char a = serial_getchar(0);
+    switch (a) {
+    case 'a':
+      zx--;
+      break;
+    case 'd':
+      zx++;
+      break;
+    case 'w':
+      zy--;
+      break;
+    case 's':
+      zy++;
+      break;
+    }
+    
+    iprintf("(%u, %u)\n", zx, zy);
+    for (x=0; x < 32; x++)
+      for (y=0; y < 16; y++) {
+	int subpixel = (bmpcore.height-1-(zy+y))*(bmpcore.width << 2) + ((zx+x) << 2);
+	uint32_t color = (buffer[subpixel+2] << 16) |
+	  (buffer[subpixel+1] << 8) | buffer[subpixel];
+	matrix_put(x,y,color);
+      }
+  }
 }
