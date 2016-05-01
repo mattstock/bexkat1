@@ -10,6 +10,14 @@
 #include "keyboard.h"
 #include <math.h>
 
+volatile float * const xpos = (float *)0xd0000000;
+volatile float * const ypos = (float *)0xd0000400;
+volatile float * const xout = (float *)0xd0000800;
+volatile float * const yout = (float *)0xd0000c00;
+volatile float * const x1out = (float *)0xd0001000;
+volatile float * const y1out = (float *)0xd0001400;
+volatile unsigned int * const mandreg = (unsigned int *)0xd0001c00;
+
 void mandelbrot_double(double cx, double cy, double scale) {
   double limit = 4.0;
   int x,y,lp;
@@ -68,6 +76,7 @@ void mandelbrot_float(float cx, float cy, float scale) {
         bsq = b1*b1;
         a2 = asq - bsq + ax;
         b2 = 2.0f*a1*b1+ay;
+	printf("(%d, %d) iteration %d (a1,b1)=(%8x, %8x)  (asq,bsq)=(%8x, %8x)  (a2,b2)=(%8x, %8x)\n", x,y,lp, a1, b1, asq, bsq, a2, b2);
         a1 = a2;
         b1 = b2;
         res = a1*a1 + b1*b1;
@@ -125,10 +134,16 @@ void main(void) {
   
   vga_set_mode(VGA_MODE_NORMAL);
   
-  circle(40,40,20);
-
   while (1) {
     x = 1;
+    if (x) {
+      printf("starting (%f, %f, %f)\n", a, b, c);
+      mandelbrot_float(a,b,c);
+      /*      printf("now doubles\n");
+	      mandelbrot_double(a,b,c); */
+      printf("done\n");
+    }
+    while (keyboard_count() == 0);
     switch (keyboard_getevent()) { 
     case 0x1c: // a
       a -= 0.1f;
@@ -151,20 +166,10 @@ void main(void) {
     default:
       x = 0;
     }
-
+    
     // eat key release
     do {
       while (keyboard_count() == 0);
     } while (keyboard_getevent() < 256);
-
-    
-    if (x) {
-      printf("starting (%f, %f, %f)\n", a, b, c);
-      mandelbrot_float(a,b,c);
-      /*      printf("now doubles\n");
-	      mandelbrot_double(a,b,c); */
-      printf("done\n");
-    }
-    while (keyboard_count() == 0);
   }
 }
