@@ -33,8 +33,10 @@ localparam [2:0] STATE_IDLE = 3'h0, STATE_MEMOP = 3'h1, STATE_DONE = 3'h2, STATE
 wire [31:0] posx_out, posy_out, xn_out, yn_out, mand_xn, mand_yn, yn1_out, xn1_out;
 wire [31:0] posx_bus_out, posy_bus_out, xn_bus_out, yn_bus_out, xn1_bus_out, yn1_bus_out;
 wire posx_write, posy_write, yn_write, xn_write, mand_write, active, xn1_write, yn1_write;
+wire [9:0] head, tail;
 
-reg [9:0] index, index_next;
+reg [10:0] index [32:0];
+reg [10:0] index_next;
 reg [2:0] state, state_next;
 reg [31:0] result, result_next;
 
@@ -47,16 +49,21 @@ assign xn_write = (state == STATE_MEMOP && adr_i[12:10] == 3'h2 && we_i);
 assign yn_write = (state == STATE_MEMOP && adr_i[12:10] == 3'h3 && we_i);
 assign xn1_write = (state == STATE_MEMOP && adr_i[12:10] == 3'h4 && we_i);
 assign yn1_write = (state == STATE_MEMOP && adr_i[12:10] == 3'h5 && we_i);
-assign mand_write = (index != 0);
+assign mand_write = (index[0] != 11'h400);
+assign head = index[32][9:0];
+assign tail = index[0][9:0];
 
 always @(posedge clk_i or posedge rst_i)
 begin
   if (rst_i) begin
-    index <= 10'h0;
+    for (int i=0; i < 33; i = i + 1)
+      index[i] <= 11'h0;
     state <= STATE_IDLE;
     result <= 32'h0;
   end else begin
-    index <= index_next;
+    for (int i=0; i < 32; i = i + 1)
+      index[i] <= index[i+1];
+    index[32] <= index_next;
     state <= state_next;
     result <= result_next;
   end
@@ -64,10 +71,10 @@ end
 
 always @*
 begin
-  if (index != 10'h0)
-    index_next = index - 1'b1;
+  if (head != 11'h400)
+    index_next = head + 1'b1;
   else
-    index_next = 10'h0;
+    index_next = 11'h400;
   state_next = state;
   result_next = result;
   
@@ -93,8 +100,8 @@ begin
     end
     STATE_COPROC: begin
       if (we_i)
-        index_next = 10'h3ff;
-      result_next = index;
+        index_next = 11'h0;
+      result_next = index[0];
       state_next = STATE_DONE;  
     end
     STATE_DONE: begin
@@ -106,18 +113,18 @@ end
 
 mandmem posx(.clock(clk_i), .wren_a(posx_write), .address_a(adr_i[9:0]),
   .data_a(dat_i), .byteena_a(sel_i), .q_a(posx_bus_out),
-  .address_b(index), .wren_b(1'b0), .q_b(posx_out));
+  .address_b(head), .wren_b(1'b0), .q_b(posx_out));
 mandmem posy(.clock(clk_i), .wren_a(posy_write), .address_a(adr_i[9:0]),
   .data_a(dat_i), .byteena_a(sel_i), .q_a(posy_bus_out),
-  .address_b(index), .wren_b(1'b0), .q_b(posy_out));
+  .address_b(head), .wren_b(1'b0), .q_b(posy_out));
 mandmem xn(.clock(clk_i), .wren_a(xn_write), .data_a(dat_i), .address_a(adr_i[9:0]), .q_a(xn_bus_out),
-  .address_b(index), .data_b(32'h0), .wren_b(1'b0), .q_b(xn_out));
+  .address_b(head), .data_b(32'h0), .wren_b(1'b0), .q_b(xn_out));
 mandmem yn(.clock(clk_i), .wren_a(yn_write), .data_a(dat_i), .address_a(adr_i[9:0]), .q_a(yn_bus_out),
-  .address_b(index), .data_b(32'h0), .wren_b(1'b0), .q_b(yn_out));
+  .address_b(head), .data_b(32'h0), .wren_b(1'b0), .q_b(yn_out));
 mandmem xn1(.clock(clk_i), .wren_a(xn1_write), .address_a(adr_i[9:0]), .q_a(xn1_bus_out),
-  .address_b(index), .data_b(mand_xn), .wren_b(mand_write), .q_b(xn1_out));
+  .address_b(tail), .data_b(mand_xn), .wren_b(mand_write), .q_b(xn1_out));
 mandmem yn1(.clock(clk_i), .wren_a(yn1_write), .address_a(adr_i[9:0]), .q_a(yn1_bus_out),
-  .address_b(index), .data_b(mand_yn), .wren_b(mand_write), .q_b(yn1_out));
+  .address_b(tail), .data_b(mand_yn), .wren_b(mand_write), .q_b(yn1_out));
 mandelbrot mand0(.clock(clk_i), .rst_n(~rst_i), .x0(posx_out), .y0(posy_out), .xn(xn_out), .yn(yn_out), .xn1(mand_xn), .yn1(mand_yn));
 
 endmodule

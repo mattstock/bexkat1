@@ -10,14 +10,6 @@
 #include "keyboard.h"
 #include <math.h>
 
-volatile float * const xpos = (float *)0xd0000000;
-volatile float * const ypos = (float *)0xd0000400;
-volatile float * const xout = (float *)0xd0000800;
-volatile float * const yout = (float *)0xd0000c00;
-volatile float * const x1out = (float *)0xd0001000;
-volatile float * const y1out = (float *)0xd0001400;
-volatile unsigned int * const mandreg = (unsigned int *)0xd0001c00;
-
 void mandelbrot_double(double cx, double cy, double scale) {
   double limit = 4.0;
   int x,y,lp;
@@ -67,7 +59,6 @@ void mandelbrot_float(float cx, float cy, float scale) {
       a1 = ax;
       b1 = ay;
       lp = 0; 
-      sysctrl[0] = ((x & 0xffff)) << 16 | (y & 0xffff);
       do {
 	if (keyboard_count() != 0) // abort on keypress
 	  return;
@@ -76,7 +67,6 @@ void mandelbrot_float(float cx, float cy, float scale) {
         bsq = b1*b1;
         a2 = asq - bsq + ax;
         b2 = 2.0f*a1*b1+ay;
-	printf("(%d, %d) iteration %d (a1,b1)=(%8x, %8x)  (asq,bsq)=(%8x, %8x)  (a2,b2)=(%8x, %8x)\n", x,y,lp, a1, b1, asq, bsq, a2, b2);
         a1 = a2;
         b1 = b2;
         res = a1*a1 + b1*b1;
