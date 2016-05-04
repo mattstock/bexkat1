@@ -10,6 +10,22 @@
 #include "keyboard.h"
 #include <math.h>
 
+volatile float * const mand =  (float *)0xd0000000;
+volatile unsigned int * const mand_control = (unsigned int *)0xd0000020;
+
+#define MAND_X0   0
+#define MAND_Y0   1
+#define MAND_XN   2
+#define MAND_YN   3
+#define MAND_RES  4
+#define MAND_PUSH 0
+#define MAND_POP  1
+
+typedef union {
+  float f;
+  unsigned int i;
+} mixel;
+
 void mandelbrot_double(double cx, double cy, double scale) {
   double limit = 4.0;
   int x,y,lp;
@@ -51,7 +67,6 @@ void mandelbrot_float(float cx, float cy, float scale) {
   float ax,ay;
   float a1,b1,a2,b2;
   float res,asq,bsq;
-
   for (x=-320; x < 320; x++) {
     ax = cx+x*scale;
     for (y=-240; y < 240; y++) {

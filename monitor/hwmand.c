@@ -4,65 +4,129 @@
 #include <vga.h>
 #include <keyboard.h>
 
-volatile float * const xpos =  (float *)0xd0000000;
-volatile float * const ypos =  (float *)0xd0001000;
-volatile float * const xout =  (float *)0xd0002000;
-volatile float * const yout =  (float *)0xd0003000;
-volatile float * const x1out = (float *)0xd0004000;
-volatile float * const y1out = (float *)0xd0005000;
-volatile unsigned int * const mandreg = (unsigned int *)0xd0007000;
+volatile float * const mand =  (float *)0xd0000000;
+volatile unsigned int * const mand_control = (unsigned int *)0xd0000020;
+
+#define MAND_X0   0
+#define MAND_Y0   1
+#define MAND_XN   2
+#define MAND_YN   3
+#define MAND_RES  4
+#define MAND_PUSH 0
+#define MAND_POP  1
+
+#define MAX_DEPTH 255
 
 typedef union {
   float f;
   unsigned int i;
 } mixel;
 
-void main(void) {
-  int x,y,lp, found;
-  float ax, ay;
-  float res;
-  int *val = (int *)malloc(2000*sizeof(int));
+typedef struct {
+  unsigned active;
+  unsigned x;
+  unsigned y;
+  float sx;
+  float sy;
+  unsigned loop;
+} node;
 
-  printf("starting\n");
+void main(void) {
+  int x,y,active,load_complete;
+  node *pool = (node *)malloc(256*sizeof(node));
+  float cx, cy, scale, limit;
+
+  cx = 0.1f;
+  cy = 0.0f;
+  scale = 0.008f;
+  limit = 4.0f;
+  
+  printf("init palette\n");
   for (x=0; x < 256; x++)
     vga_palette(0, x, x | (x<<8));
-
   vga_set_mode(VGA_MODE_NORMAL);
-  
-  for (y=0; y < 480; y++) {
-    ay = (y-240)*0.008f;
-    printf("row %d\n", y);
-    for (x=0; x < 640; x++) {
-      ax = 0.1f + (x-320)*0.008f;
-      val[x] = 0;
-      ypos[x] = ay;
-      yout[x] = ay;
-      xpos[x] = ax;
-      xout[x] = ax;
-      x1out[x] = 0.0f;
-      y1out[x] = 0.0f;
-      vga_point(x, y, 0);
+
+  printf("init pixel markers\n");
+  x = 0;
+  y = 0;
+  for (active=0; active < 256; active++)
+    pool[active].active = 0;
+  active=0;
+  load_complete = 0;
+
+  printf("clearing queue\n");
+  while (mand_control[MAND_POP] != 0)
+    mand_control[MAND_POP] = 1;
+
+  do {
+    // keep 256 pixels in the hopper
+    int seek=0;
+    while (!load_complete && active < MAX_DEPTH) {
+      // we don't reset the seek value since we're gap-filling
+      for (;seek < MAX_DEPTH; seek++)
+	if (pool[seek].active == 0)
+	  break;
+      if (seek == MAX_DEPTH) {
+	printf("an unpossible state!\n");
+	exit(1);
+      }
+      pool[seek].active = 1;
+      pool[seek].x = x;
+      pool[seek].y = y;
+      pool[seek].loop = 0;
+      pool[seek].sx = cx + (x-320)*scale;
+      pool[seek].sy = cy + (y-240)*scale;
+      mand[MAND_X0] = pool[seek].sx;
+      mand[MAND_Y0] = pool[seek].sy;
+      mand[MAND_XN] = pool[seek].sx;
+      mand[MAND_YN] = pool[seek].sy;
+      mand_control[MAND_PUSH] = 1;
+      vga_point(x,y,0);
+      active++;
+      x++;
+      if (x == 640) {
+	x=0;
+	y++;
+	if (y == 480)
+	  load_complete=1;
+      }
     }
 
-    lp = 0;
-    found = 0;
-    do {
-      lp++;
-      mandreg[0] = 1;
-      while (mandreg[0] < 0x400);
-      for (x=0; x < 640; x++) {
-	yout[x] = y1out[x];
-	xout[x] = x1out[x];
-	if (val[x] == 0) {
-	  res = yout[x]*yout[x] + xout[x]*xout[x];
-	  if (res > 4.0f || fpclassify(res) == FP_INFINITE) {
-	    val[x] = lp;
-	    vga_point(x, y, lp);
-	    found++;
-	  }
-	}
+    while (mand_control[MAND_POP] != 0) {
+      mand_control[MAND_POP] = 1;
+      float result = mand[MAND_RES];
+      int work;
+      mixel a,b,c,d;
+      for (work=0; work < MAX_DEPTH; work++) {
+	if (pool[work].active == 0)
+	  continue;
+#if 0	
+	a.f = pool[work].sx;
+	b.f = pool[work].sy;
+	c.f = mand[MAND_X0];
+	d.f = mand[MAND_Y0];
+	printf("%d: looking at %08x %08x %08x %08x\n", work, a.i, b.i, c.i, d.i);
+#endif
+	if (pool[work].sx == mand[MAND_X0] && pool[work].sy == mand[MAND_Y0])
+	  break;
       }
-    } while (lp < 256 && found < 640);
-    printf("found = %d\n", found);
-  }
+      if (work == MAX_DEPTH) {
+	printf("a second unpossibility.\n");
+	exit(1);
+      }
+
+      pool[work].loop++;
+      
+      if (pool[work].loop == 256 ||
+	  result > limit ||
+	  fpclassify(result) == FP_INFINITE) {
+	vga_point(pool[work].x, pool[work].y, pool[work].loop % 256);
+	pool[work].active = 0;
+	active--;
+      } else {
+	mand_control[MAND_PUSH] = 1; // give it another go
+      }
+    }
+  } while (!load_complete);
+  printf("done\n");
 }

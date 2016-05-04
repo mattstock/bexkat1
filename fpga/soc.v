@@ -260,7 +260,7 @@ iocontroller io0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cpu_writedata), .dat_o(
   .ps2mouse({ps2mouse_clk, ps2mouse_data}), .ps2kbd({ps2kbd_clk, ps2kbd_data}), .codec_irq(codec_irq),
   .hex0(HEX0), .hex1(HEX1), .hex2(HEX2), .hex3(HEX3), .hex4(HEX4), .hex5(HEX5), .hex6(HEX6), .hex7(HEX7));
 mandunit mand0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cpu_writedata), .dat_o(mandelbrot_readdata), .cyc_i(cpu_cyc),
-  .adr_i(cpu_address[14:2]), .we_i(cpu_write), .stb_i(chipselect == 4'h3), .sel_i(cpu_be), .ack_o(mandelbrot_ack));
+  .adr_i(cpu_address[5:2]), .we_i(cpu_write), .stb_i(chipselect == 4'h3), .sel_i(cpu_be), .ack_o(mandelbrot_ack));
 monitor rom0(.clock(sysclock), .q(rom_readdata), .rden(rom_read), .address(cpu_address[16:2]));
 testrom rom1(.clock(sysclock), .q(rom2_readdata), .rden(rom_read), .address(cpu_address[16:2]));
 
