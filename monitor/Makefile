@@ -9,8 +9,8 @@ LD = bexkat1-elf-ld
 
 TEMP := $(shell mktemp)
 
-OBJECTS = boot-$(BOARD).o bootstrap.o pretty.o vga.o memtests.o rtc.o fileio.o tests.o ps2.o fib.o audiogen.o clock.o fly.o showpic.o setjmp.o hwmand.o
-APPS = pretty vga bootstrap memtests rtc fileio tests ps2 fib audiogen clock fly showpic setjmp hwmand
+OBJECTS = boot-$(BOARD).o bootstrap.o pretty.o fmand.o memtests.o rtc.o fileio.o tests.o ps2.o fib.o audiogen.o clock.o fly.o showpic.o setjmp.o hwmand.o
+APPS = pretty fmand bootstrap memtests rtc fileio tests ps2 fib audiogen clock fly showpic setjmp hwmand
 
 .PHONY: all clean gcctests kernel install
 
