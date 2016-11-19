@@ -65,17 +65,18 @@ module soc(
   output sd_mosi,
   output sd_ss,
   output sd_sclk,
-  input gen_miso,
-  output gen_mosi,
   output rtc_ss,
-  output codec_xdcs,
-  output codec_cs,
-  input codec_irq,
+  output codec_pbdat,
+  input codec_reclrc,
+  input codec_pblrc,
+  input codec_recdat,
+  inout codec_sdin,
+  inout codec_sclk,
+  input codec_bclk,
+  output codec_mclk,
   input rtc_miso,
   output rtc_mosi,
   output rtc_sclk,
-  output gen_sclk,
-  output rst_n,
   input sd_wp_n,
   output fan_ctrl, 
   output [2:0] matrix0,
@@ -86,10 +87,10 @@ module soc(
   output matrix_b,
   output matrix_c,
   output matrix_stb,
+  output serial1_tx,
   input serial0_rx,
   input serial0_cts,
   output serial0_tx,
-  output serial1_tx,
   output serial0_rts,
   output vga_hs,
   output vga_vs,
@@ -99,15 +100,12 @@ module soc(
   output [7:0] vga_r,
   output [7:0] vga_g,
   output [7:0] vga_b,
-  input ps2mouse_clk,
   input ps2kbd_clk,
-  input ps2mouse_data,
   input ps2kbd_data);
 
 // System clock
 wire sysclock, locked, rst_i;
 
-assign rst_n = locked;
 assign rst_i = ~locked;
 
 sysclock pll0(.inclk0(raw_clock_50), .c0(sysclock), .areset(~KEY[0]), .locked(locked));
@@ -117,21 +115,21 @@ wire [7:0] spi_selects;
 wire miso, mosi, sclk;
 
 assign rtc_ss = spi_selects[4];
-assign codec_cs = spi_selects[3];
-assign codec_xdcs = spi_selects[2];
 assign sd_ss = spi_selects[0];
-assign gen_mosi = mosi;
 assign sd_mosi = mosi;
 assign rtc_mosi = mosi;
 assign miso = (~spi_selects[0] ? sd_miso : 1'b0) |
-              (~spi_selects[1] ? gen_miso : 1'b0) |
+              (~spi_selects[1] ? rtc_miso : 1'b0) |
               (~spi_selects[2] ? rtc_miso : 1'b0) |
               (~spi_selects[3] ? rtc_miso : 1'b0) |
               (~spi_selects[4] ? rtc_miso : 1'b0) |
               (~spi_selects[5] ? rtc_miso : 1'b0);
-assign gen_sclk = sclk;
 assign sd_sclk = sclk;
 assign rtc_sclk = sclk;
+
+// I2C
+assign codec_sdin = (~i2c_tx ? 1'b0 : 1'bz);
+assign codec_sclk = (~i2c_clock ? 1'b0 : 1'bz);
 
 // ethernet stubs TODO
 assign enet_tx_data = 4'hz;
@@ -153,7 +151,7 @@ assign fs_databus = (chipselect == 4'h6 && ~ssram_we_n ? ssram_dataout :
                       (chipselect == 4'h8 && ~fl_we_n ? { 16'h0000, flash_dataout } : 32'hzzzzzzzz));
 
 // System Blinknlights
-assign LEDR = { SW[17], SW[16], io_interrupts, miso, mosi, sclk, ~codec_irq, ~codec_cs, ~codec_xdcs, ~sd_ss, cpu_halt, mmu_fault, cpu_cyc };
+assign LEDR = { SW[17], SW[16], io_interrupts, miso, mosi, sclk, 3'b0, ~sd_ss, cpu_halt, mmu_fault, cpu_cyc };
 assign LEDG = { 7'h0, cache_hitmiss };
 
 // Internal bus wiring
@@ -179,6 +177,7 @@ wire matrix_read, matrix_write, matrix_ack;
 wire ssram_ack;
 wire int_en, cache_enable, mmu_fault;
 wire [1:0] cache_hitmiss;
+wire i2c_tx, i2c_clock;
 
 // only need one cycle for reading onboard memory
 reg [1:0] rom_ack, vect_ack;
@@ -257,8 +256,10 @@ iocontroller io0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cpu_writedata), .dat_o(
   .miso(miso), .mosi(mosi), .sclk(sclk), .spi_selects(spi_selects), .sd_wp(sd_wp_n), .fan(fan_ctrl),
   .lcd_e(lcd_e), .lcd_data(lcd_dataout), .lcd_rs(lcd_rs), .lcd_on(lcd_on), .lcd_rw(lcd_rw), .interrupts(io_interrupts),
   .rx0(serial0_rx), .tx0(serial0_tx), .rts0(serial0_rts), .cts0(serial0_cts), .tx1(serial1_tx), .sw(SW[15:0]),
-  .ps2mouse({ps2mouse_clk, ps2mouse_data}), .ps2kbd({ps2kbd_clk, ps2kbd_data}), .codec_irq(codec_irq),
-  .hex0(HEX0), .hex1(HEX1), .hex2(HEX2), .hex3(HEX3), .hex4(HEX4), .hex5(HEX5), .hex6(HEX6), .hex7(HEX7));
+  .ps2kbd({ps2kbd_clk, ps2kbd_data}), .hex({HEX7,HEX6,HEX5,HEX4, HEX3, HEX2, HEX1, HEX0}),
+  .codec_pbdat(codec_pbdat), .codec_mclk(codec_mclk), .codec_recdat(codec_recdat),
+  .codec_reclrc(codec_reclrc), .codec_pblrc(codec_pblrc),
+  .i2c_dataout(i2c_tx), .i2c_datain(codec_sdin), .i2c_scl(i2c_clock));
 mandunit mand0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cpu_writedata), .dat_o(mandelbrot_readdata), .cyc_i(cpu_cyc),
   .adr_i(cpu_address[4:2]), .we_i(cpu_write), .stb_i(chipselect == 4'h3), .sel_i(cpu_be), .ack_o(mandelbrot_ack));
 monitor rom0(.clock(sysclock), .q(rom_readdata), .rden(rom_read), .address(cpu_address[16:2]));

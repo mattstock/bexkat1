@@ -43,8 +43,8 @@ begin
       xnbuf[i] <= xnbuf[i+1];
       ynbuf[i] <= ynbuf[i+1];
     end
-    xnbuf[19] = xn1;
-    ynbuf[19] = yn1;
+    xnbuf[19] <= xn1;
+    ynbuf[19] <= yn1;
   end
 end
 

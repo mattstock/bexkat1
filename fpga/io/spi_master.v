@@ -98,7 +98,8 @@ begin
               if (sel_i[2])
                 conf_next = dat_i[23:16];
             end else
-              dat_o_next = { selects, conf, 12'h00, codec_irq, wp, tx_busy, rx_unread };
+//              dat_o_next = { selects, conf, 12'h00, codec_irq, wp, tx_busy, rx_unread };
+                dat_o_next = { selects, conf, 12'h00, 1'b1, wp, tx_busy, rx_unread };
             state_next = STATE_DONE;
           end
         endcase

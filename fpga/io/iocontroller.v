@@ -26,17 +26,17 @@ module iocontroller(input clk_i,
 		    output reg [7:0] spi_selects,
 		    output [5:0] interrupts,
 		    input [15:0] sw,
-		    input [1:0] ps2mouse,
 		    input [1:0] ps2kbd,
-        input codec_irq,
-		    output [6:0] hex0,
-		    output [6:0] hex1,
-		    output [6:0] hex2,
-		    output [6:0] hex3,
-		    output [6:0] hex4,
-		    output [6:0] hex5,
-		    output [6:0] hex6,
-		    output [6:0] hex7,
+          output codec_pbdat,
+          input codec_reclrc,
+          input codec_pblrc,
+          input codec_recdat,
+          input codec_bclk,
+          output codec_mclk,
+			 output i2c_dataout,
+			 output i2c_scl,
+			 input i2c_datain,
+		    output [55:0] hex,
 		    output reg [8:0] led);
 
 // various programmable registers
@@ -44,20 +44,23 @@ reg [31:0] segreg, fanspeed, segreg_next, fanspeed_next, result, result_next;
 reg [1:0] state, state_next;
 reg [8:0] led_next;
 
-wire [31:0] lcd_out, uart1_out, uart0_out, spi_out, ps2mouse_out, ps2kbd_out,
-	    timer_out;
-wire [4:0] selector;
-wire lcd_ack, uart0_ack, uart1_ack, spi_ack, ps2mouse_ack, ps2kbd_ack,
-     timer_ack;
+wire [31:0] lcd_out, uart1_out, uart0_out, spi_out, ps2kbd_out,
+	    timer_out, i2c_out;
+wire [3:0] selector;
+wire lcd_ack, uart0_ack, uart1_ack, spi_ack, ps2kbd_ack,
+     timer_ack, i2c_ack;
 wire [3:0] timer_interrupts;
 wire [1:0] uart0_interrupts;
 
 assign ack_o = (state == STATE_DONE);
 assign dat_o = result;
-assign selector = adr_i[16:12];
+assign selector = adr_i[15:12];
 assign interrupts = { timer_interrupts, uart0_interrupts };
 
 localparam [1:0] STATE_IDLE = 2'h0, STATE_BUSY = 2'h1, STATE_DONE = 2'h2;
+
+always codec_pbdat = 1'b0;
+codec_pll pll1(.inclk0(clk_i), .c0(codec_mclk), .areset(rst_i));
 
 always @(posedge clk_i or posedge rst_i)
   begin
@@ -126,11 +129,10 @@ always @*
             if (ps2kbd_ack)
               state_next = STATE_DONE;
           end
-          4'h5: begin // ps2 mouse
+          4'h5: begin // CODEC
             if (~we_i)
-              result_next = ps2mouse_out;
-            if (ps2mouse_ack)
-              state_next = STATE_DONE;
+              result_next = 32'h0;
+            state_next = STATE_DONE;
           end
           4'h6: begin // LCD
             if (~we_i)
@@ -144,12 +146,18 @@ always @*
             if (spi_ack)
               state_next = STATE_DONE;
           end
-	  4'h8: begin // timer
-	    if (~we_i)
-	      result_next = timer_out;
-	    if (timer_ack)
-	      state_next = STATE_DONE;
-	  end
+	       4'h8: begin // timer
+				if (~we_i)
+					result_next = timer_out;
+				if (timer_ack)
+					state_next = STATE_DONE;
+			 end
+	       4'h9: begin // i2c
+				if (~we_i)
+					result_next = i2c_out;
+				if (i2c_ack)
+					state_next = STATE_DONE;
+			 end
           default: state_next = STATE_DONE;
 	endcase
       end
@@ -162,10 +170,11 @@ wire cyc_o = (state == STATE_BUSY);
 wire stb_uart0 = (selector == 4'h2);
 wire stb_uart1 = (selector == 4'h3);
 wire stb_ps2kbd = (selector == 4'h4);
-wire stb_ps2mouse = (selector == 4'h5);
+wire stb_codec = (selector == 4'h5);
 wire stb_lcd = (selector == 4'h6);
 wire stb_spi = (selector == 4'h7);
 wire stb_timer = (selector == 4'h8);
+wire stb_i2c = (selector == 4'h9);
 
 uart #(.baud(115200)) uart0(.clk_i(clk_i), .rst_i(rst_i), .we_i(we_i),
 			    .sel_i(sel_i), .stb_i(stb_uart0),
@@ -185,9 +194,13 @@ lcd_module lcd0(.clk_i(clk_i), .rst_i(rst_i), .we_i(we_i), .sel_i(sel_i),
 		.adr_i(adr_i[8:2]), .dat_o(lcd_out), .e(lcd_e),
 		.data_out(lcd_data), .rs(lcd_rs), .on(lcd_on), .rw(lcd_rw));
 
+i2c_master i2c0(.clk_i(clk_i), .rst_i(rst_i), .we_i(we_i), .sel_i(sel_i),
+		.stb_i(stb_i2c), .cyc_i(cyc_o), .dat_i(dat_i), .ack_o(i2c_ack),
+		.adr_i(adr_i[3:2]), .dat_o(i2c_out), .tx(i2c_dataout), .rx(i2c_datain), .scl(i2c_scl));
+		
 spi_master spi0(.clk_i(clk_i), .cyc_i(cyc_o), .rst_i(rst_i), .sel_i(sel_i), .we_i(we_i),
 		.stb_i(stb_spi), .dat_i(dat_i), .dat_o(spi_out), .ack_o(spi_ack),
-		.adr_i(adr_i[2]), .miso(miso), .mosi(mosi), .codec_irq(codec_irq),
+		.adr_i(adr_i[2]), .miso(miso), .mosi(mosi),
 		.sclk(sclk), .selects(spi_selects), .wp(sd_wp));
 
 ps2_kbd ps2kbd0(.clk_i(clk_i), .rst_i(rst_i), .cyc_i(cyc_o), .sel_i(sel_i), .we_i(we_i), .stb_i(stb_ps2kbd),
@@ -198,11 +211,8 @@ timerint timerint0(.clk_i(clk_i), .rst_i(rst_i), .cyc_i(cyc_o),
 		   .dat_i(dat_i), .dat_o(timer_out), .ack_o(timer_ack),
 		   .adr_i(adr_i[5:2]), .interrupt(timer_interrupts));
 
-//ps2_kbd ps2mouse0(.clk_i(clk_i), .rst_i(rst_i), .cyc_i(cyc_i), .sel_i(sel_i), .we_i(we_i), .stb_i(stb_ps2mouse),
-//  .dat_i(dat_i), .dat_o(ps2mouse_out), .ack_o(ps2mouse_ack), .adr_i(adr_i[3:2]), .ps2_clock(ps2mouse[1]), .ps2_data(ps2mouse[0]));
-
 fan_ctrl fan0(.clk_i(clk_i), .rst_i(rst_i), .speed(fanspeed), .fan_pwm(fan));
 
-segdigits segdigits0(.in(segreg), .out0(hex0), .out1(hex1), .out2(hex2), .out3(hex3), .out4(hex4), .out5(hex5), .out6(hex6), .out7(hex7));
+segdigits segdigits0(.in(segreg), .out0(hex[6:0]), .out1(hex[13:7]), .out2(hex[20:14]), .out3(hex[27:21]), .out4(hex[34:28]), .out5(hex[41:35]), .out6(hex[48:42]), .out7(hex[55:49]));
 
 endmodule

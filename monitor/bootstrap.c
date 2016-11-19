@@ -216,8 +216,6 @@ void main(void) {
   unsigned int sp;
 
   matrix_init();
-  serial_print(1, katherine);
-  serial_print(1, rebecca);
   spi_fast();
   addr = 0xc0000000;
   lcd_init();

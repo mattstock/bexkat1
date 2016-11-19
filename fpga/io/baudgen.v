@@ -13,11 +13,11 @@ reg baudclk;
   
 always @(posedge clk_i)
 begin
-  baudclk = 1'b0;
   if (enable) begin
-    if (counter < clkfreq/baud)
+    if (counter < clkfreq/baud) begin
+	   baudclk <= 1'b0;
       counter <= counter + 1'b1;
-    else begin
+    end else begin
       baudclk <= 1'b1;
       counter <= 16'h0;
     end
