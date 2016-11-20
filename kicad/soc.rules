@@ -11,7 +11,7 @@
     (via_costs 50)
     (plane_via_costs 5)
     (start_ripup_costs 100)
-    (start_pass_no 4050)
+    (start_pass_no 3293)
     (layer_rule Top
       (active on)
       (preferred_direction horizontal)
@@ -69,10 +69,10 @@
     "Net-(C13-Pad2)" "Net-(C10-Pad2)" "Net-(C14-Pad2)" "Net-(C11-Pad2)" "Net-(C3-Pad1)" "Net-(C4-Pad1)" "Net-(C7-Pad1)" "Net-(C8-Pad1)"
     "Net-(C10-Pad1)" "Net-(C11-Pad1)" "Net-(C12-Pad2)" "Net-(C12-Pad1)" "Net-(C14-Pad1)" "Net-(C15-Pad2)" "Net-(C15-Pad1)" /SDIN
     /BCLK /SCLK /PBLRC /PBDAT /RECLRC /RECDAT "Net-(R3-Pad1)" "Net-(J2-Pad6)"
-    "Net-(J2-Pad2)" "Net-(P1-Pad12)" "Net-(P2-Pad33)" "Net-(P2-Pad32)" "Net-(P2-Pad31)" /Serial1 "Net-(U1-Pad22)" "Net-(U1-Pad21)"
-    "Net-(U1-Pad6)" "Net-(U1-Pad2)" "Net-(U1-Pad1)" "Net-(U2-Pad14)" "Net-(U2-Pad13)" "Net-(U2-Pad12)" "Net-(U2-Pad11)" "Net-(U2-Pad10)"
-    "Net-(U2-Pad9)" "Net-(U2-Pad8)" "Net-(U2-Pad7)" "Net-(U2-Pad6)" "Net-(U2-Pad5)" "Net-(U2-Pad3)" "Net-(U2-Pad2)" "Net-(P2-Pad40)"
-    "Net-(P2-Pad39)" "Net-(P2-Pad38)" "Net-(P2-Pad37)" "Net-(P2-Pad35)" "Net-(J2-Pad5)" "Net-(J2-Pad1)" "Net-(P2-Pad36)" "Net-(P2-Pad34)"
+    "Net-(J2-Pad2)" "Net-(P1-Pad12)" "Net-(P2-Pad33)" "Net-(P2-Pad32)" /Serial1 "Net-(U1-Pad22)" "Net-(U1-Pad21)" "Net-(U1-Pad6)"
+    "Net-(U1-Pad2)" "Net-(U2-Pad14)" "Net-(U2-Pad13)" "Net-(U2-Pad12)" "Net-(U2-Pad11)" "Net-(U2-Pad10)" "Net-(U2-Pad9)" "Net-(U2-Pad8)"
+    "Net-(U2-Pad7)" "Net-(U2-Pad6)" "Net-(U2-Pad5)" "Net-(U2-Pad3)" "Net-(U2-Pad2)" "Net-(P2-Pad40)" "Net-(P2-Pad39)" "Net-(P2-Pad38)"
+    "Net-(P2-Pad37)" "Net-(P2-Pad35)" "Net-(J2-Pad5)" "Net-(J2-Pad1)" "Net-(P2-Pad36)" "Net-(P2-Pad34)" /MCLK
     (clearance_class "kicad_default")
     (via_rule kicad_default)
     (rule
