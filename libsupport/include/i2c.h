@@ -8,9 +8,10 @@
 
 extern volatile unsigned int * const i2c;
 
-extern void i2c_addr(char addr);
-extern void i2c_write(char data);
-extern char i2c_writeread(char data);
-extern char i2c_read();
+extern void i2c_addr(unsigned char addr);
+extern void i2c_write(unsigned char data);
+extern unsigned char i2c_regread(unsigned char data);
+extern void i2c_regwrite(unsigned char data, unsigned char data2);
+extern unsigned char i2c_read();
 
 #endif

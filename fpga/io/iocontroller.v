@@ -59,7 +59,7 @@ assign interrupts = { timer_interrupts, uart0_interrupts };
 
 localparam [1:0] STATE_IDLE = 2'h0, STATE_BUSY = 2'h1, STATE_DONE = 2'h2;
 
-always codec_pbdat = 1'b0;
+always codec_pbdat = codec_recdat;
 codec_pll pll1(.inclk0(clk_i), .c0(codec_mclk), .areset(rst_i));
 
 always @(posedge clk_i or posedge rst_i)

@@ -24,14 +24,15 @@ wire baud_en, baudclk;
 // When we run the baud clock.  If we let it free run, we can get short cycles.
 assign baud_en = (state != STATE_IDLE);
 
-localparam [3:0] STATE_IDLE = 4'h0, STATE_WRITE = 4'h1, STATE_READ = 4'h2, STATE_START = 4'h3, STATE_STOP = 4'h4, STATE_DONE = 4'h5, STATE_READ3 = 4'h6, STATE_WRITE2 = 4'h7,
-  STATE_RESTART = 4'h8, STATE_COMPLETE = 4'h9, STATE_SLAVE_ACK = 4'ha, STATE_SLAVE_ACK2 = 4'hb, STATE_READ2 = 4'hc, STATE_MASTER_ACK = 4'hd, STATE_RESTART2 = 4'he;
+localparam [3:0] STATE_IDLE = 4'h0, STATE_WRITE = 4'h1, STATE_READ = 4'h2, STATE_START = 4'h3, STATE_STOP = 4'h4, STATE_DONE = 4'h5, STATE_WRITE2 = 4'h6,
+  STATE_COMPLETE = 4'h7, STATE_SLAVE_ACK = 4'h8, STATE_SLAVE_ACK2 = 4'h9, STATE_READ2 = 4'ha, STATE_MASTER_ACK = 4'hb, STATE_START2 = 4'hc, STATE_SLAVE_NAK = 4'hd;
 
 reg [3:0] state, state_next;
 reg [31:0] result, result_next;
 reg [7:0] addr, addr_next, data, data_next, txbyte, txbyte_next, rxbyte, rxbyte_next;
 reg scl_next;
 reg tx_next;
+reg err, err_next;
 reg [3:0] bcnt, bcnt_next;
 
 always @(posedge clk_i or posedge rst_i)
@@ -46,6 +47,7 @@ begin
 	 bcnt <= 4'h0;
 	 txbyte <= 8'h0;
 	 rxbyte <= 8'h0;
+	 err <= 1'b0;
   end else begin
     state <= state_next;
     result <= result_next;
@@ -56,6 +58,7 @@ begin
 	 bcnt <= bcnt_next;
 	 txbyte <= txbyte_next;
 	 rxbyte <= rxbyte_next;
+	 err <= err_next;
   end
 end
 
@@ -71,6 +74,7 @@ begin
   rxbyte_next = rxbyte;
   tx_next = tx;
   scl_next = scl;
+  err_next = err;
   case (state)
     STATE_IDLE: begin
       if (cyc_i & stb_i) begin
@@ -89,7 +93,7 @@ begin
 			   if (we_i) begin
 				  if (sel_i[0]) begin
 				    case (dat_i[1:0])
-					   2'h0: state_next = (scl ? STATE_START : STATE_RESTART);
+					   2'h0: state_next = STATE_START;
 						2'h1: state_next = STATE_STOP;
 						2'h2: begin
 						  bcnt_next = 4'h7;
@@ -105,7 +109,7 @@ begin
 				  end else
 				    state_next = STATE_DONE;
 				end else begin
-				  result_next = { 29'h0, rx, tx, scl };
+				  result_next = { 28'h0, scl, rx, tx, err };
 				  state_next = STATE_DONE;
 				end
 			 end
@@ -113,19 +117,15 @@ begin
         endcase
       end
     end
-	 STATE_RESTART: begin
+	 STATE_START: begin // start or restart
+	   err_next = 1'b0;
 	   tx_next = 1'b1;
-	   if (baudclk)
-		  state_next = STATE_RESTART2;
+		scl_next = 1'b1;
+	   if (baudclk) // we should also test for bus in use
+		  state_next = STATE_START2;
 	 end
-	 STATE_RESTART2: begin
-	   scl_next = 1'b1;
-		if (baudclk)
-		  state_next = STATE_START;
-	 end
-	 STATE_START: begin
+	 STATE_START2: begin
 	   tx_next = 1'b0;
-	   scl_next = 1'b1;
 		if (baudclk) begin
 		  scl_next = 1'h0;
 		  bcnt_next = 4'h7;
@@ -157,8 +157,12 @@ begin
 	 STATE_SLAVE_ACK2: begin
 	   if (baudclk) begin
 		  scl_next = 1'h0;
-	     state_next = STATE_COMPLETE; // for now, ignore errors
+	     state_next = (rx ? STATE_SLAVE_NAK : STATE_COMPLETE);
 		end
+	 end
+	 STATE_SLAVE_NAK: begin
+	   err_next = 1'b1;
+	   state_next = STATE_COMPLETE;
 	 end
 	 STATE_COMPLETE: begin
 	   if (baudclk) begin
@@ -167,11 +171,12 @@ begin
 		end
 	 end
 	 STATE_STOP: begin
-	   scl_next = 1'h1;
+	   tx_next = 1'b0;
+	   scl_next = 1'b1;
 		if (baudclk) begin
-		  tx_next = 1'h1;
+		  tx_next = 1'b1;
 		  state_next = STATE_DONE;
-	   end
+		end
 	 end
     STATE_READ: begin
 	   if (baudclk) begin
@@ -188,12 +193,15 @@ begin
 		end
 	 end
 	 STATE_MASTER_ACK: begin
-	   state_next = STATE_DONE;
+	   tx_next = 1'h0;
+		if (baudclk) begin
+		  scl_next = 1'h1;
+	     state_next = STATE_COMPLETE;
+		end
     end
     STATE_DONE: state_next = STATE_IDLE;
   endcase
 end
-
 
 baudgen #(.clkfreq(clkfreq), .baud(baud)) txbaud(.clk_i(clk_i), .enable(baud_en), .baudclk(baudclk));
 
