@@ -216,12 +216,14 @@ void main(void) {
   unsigned int sp;
 
   matrix_init();
+  serial_print(1, katherine);
   spi_fast();
   addr = 0xc0000000;
   lcd_init();
   lcd_print("Bexkat 1000");
   lcd_pos(0,1);
-  lcd_print("v4.0");
+  lcd_print("v2.1");
+  serial_print(1, rebecca);
   if ((sysio[0] & 0x1) == 0x1) {
     sdcard_exec("/kernel");
     serial_print(0, "\nautoboot failed\n");
