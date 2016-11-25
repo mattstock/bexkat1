@@ -11,34 +11,39 @@ module i2c_master(
   input [1:0] adr_i,
   input rx,
   output reg tx,
-  output reg scl);
+  output reg scl,
+  input clkin);
 
 parameter clkfreq = 50000000;
-parameter baud = 200000; // I need 2x the bitrate to handle the transitions I want.
+parameter baud = 200000; // 4x the desired bitrate so that I can handle timing.
 
 assign dat_o = result;
-assign ack_o = (state == STATE_DONE);
+assign ack_o = (state == DONE);
 
 wire baud_en, baudclk;
 
 // When we run the baud clock.  If we let it free run, we can get short cycles.
-assign baud_en = (state != STATE_IDLE);
+assign baud_en = (state != IDLE);
 
-localparam [3:0] STATE_IDLE = 4'h0, STATE_WRITE = 4'h1, STATE_READ = 4'h2, STATE_START = 4'h3, STATE_STOP = 4'h4, STATE_DONE = 4'h5, STATE_WRITE2 = 4'h6,
-  STATE_COMPLETE = 4'h7, STATE_SLAVE_ACK = 4'h8, STATE_SLAVE_ACK2 = 4'h9, STATE_READ2 = 4'ha, STATE_MASTER_ACK = 4'hb, STATE_START2 = 4'hc, STATE_SLAVE_NAK = 4'hd;
+localparam [4:0] IDLE = 'h0, WRITE = 'h1, WRITE2 = 'h2, WRITE3 = 'h3, WRITE4 = 'h4, READ = 'h5, READ2 = 'h6, READ3 = 'h7, READ4 = 'h8,
+  START = 'h9, START2 = 'ha, START3 = 'hb, START4 = 'hc,
+  STOP = 'hd, STOP2 = 'he, STOP3 = 'hf, STOP4 = 'h10, DONE = 'h11, 
+  SLAVE_ACK = 'h12, SLAVE_ACK2 = 'h13, SLAVE_ACK3 = 'h14, SLAVE_ACK4 = 'h15,
+  MASTER_ACK = 'h16, MASTER_ACK2 = 'h17, MASTER_ACK3 = 'h18, MASTER_ACK4 = 'h19, SLAVE_NAK ='h1a;
 
-reg [3:0] state, state_next;
+reg [4:0] state, state_next;
 reg [31:0] result, result_next;
 reg [7:0] addr, addr_next, data, data_next, txbyte, txbyte_next, rxbyte, rxbyte_next;
 reg scl_next;
 reg tx_next;
 reg err, err_next;
+reg mack, mack_next;
 reg [3:0] bcnt, bcnt_next;
 
 always @(posedge clk_i or posedge rst_i)
 begin
   if (rst_i) begin
-    state <= STATE_IDLE;
+    state <= IDLE;
     addr <= 8'h0;
 	 data <= 8'h0;
     result <= 32'h0;
@@ -48,6 +53,7 @@ begin
 	 txbyte <= 8'h0;
 	 rxbyte <= 8'h0;
 	 err <= 1'b0;
+	 mack <= 1'b0;
   end else begin
     state <= state_next;
     result <= result_next;
@@ -59,6 +65,7 @@ begin
 	 txbyte <= txbyte_next;
 	 rxbyte <= rxbyte_next;
 	 err <= err_next;
+	 mack <= mack_next;
   end
 end
 
@@ -75,131 +82,198 @@ begin
   tx_next = tx;
   scl_next = scl;
   err_next = err;
+  mack_next = mack;
   case (state)
-    STATE_IDLE: begin
+    IDLE: begin
       if (cyc_i & stb_i) begin
         case (adr_i)
           2'h0: begin
             if (we_i) begin
+				  if (sel_i[2])
+				    mack_next = dat_i[16];
               if (sel_i[1])
                 addr_next = dat_i[15:8];
 				  if (sel_i[0])
 				    data_next = dat_i[7:0];
             end else
               result_next = { 16'h0, addr, rxbyte };
-            state_next = STATE_DONE;
+            state_next = DONE;
           end
 			 2'h1: begin
 			   if (we_i) begin
 				  if (sel_i[0]) begin
 				    case (dat_i[1:0])
-					   2'h0: state_next = STATE_START;
-						2'h1: state_next = STATE_STOP;
+					   2'h0: state_next = START;
+						2'h1: state_next = STOP;
 						2'h2: begin
 						  bcnt_next = 4'h7;
 						  tx_next = 1'b1;
-						  state_next = STATE_READ;
+						  state_next = READ;
 						end
 						2'h3: begin
 						  bcnt_next = 4'h7;
 						  txbyte_next = data;
-						  state_next = STATE_WRITE;
+						  state_next = WRITE;
 						end
 				    endcase
 				  end else
-				    state_next = STATE_DONE;
+				    state_next = DONE;
 				end else begin
-				  result_next = { 28'h0, scl, rx, tx, err };
-				  state_next = STATE_DONE;
+				  result_next = { 27'h0, mack, scl, rx, tx, err };
+				  state_next = DONE;
 				end
 			 end
-			 default: state_next = STATE_DONE;
+			 default: state_next = DONE;
         endcase
       end
     end
-	 STATE_START: begin // start or restart
+	 START: begin // start or restart
 	   err_next = 1'b0;
+	   scl_next = 1'b1;
 	   tx_next = 1'b1;
-		scl_next = 1'b1;
 	   if (baudclk) // we should also test for bus in use
-		  state_next = STATE_START2;
+		  state_next = START2;
 	 end
-	 STATE_START2: begin
-	   tx_next = 1'b0;
+	 START2: begin
+	   if (baudclk) begin
+	     tx_next = 1'b0;
+		  state_next = START3;
+		end
+    end
+	 START3: begin
+		if (baudclk)
+		  state_next = START4;
+    end
+	 START4: begin
 		if (baudclk) begin
 		  scl_next = 1'h0;
 		  bcnt_next = 4'h7;
 		  txbyte_next = addr;
-		  state_next = STATE_WRITE;
+		  state_next = WRITE;
 	   end
     end
-	 STATE_WRITE: begin // clock is low
-	   tx_next = txbyte[bcnt];
+	 WRITE: begin // start of low
  	   if (baudclk) begin
-		  scl_next = 1'h1;
-		  state_next = STATE_WRITE2;
+		  tx_next = txbyte[bcnt];
+		  state_next = WRITE2;
 		end
     end
-	 STATE_WRITE2: begin // clock is high
+	 WRITE2: begin // low
+	   if (baudclk) begin
+		  scl_next = 1'h1;
+		  state_next = WRITE3;
+		end
+	 end
+	 WRITE3: begin // start of high
+	   if (baudclk) begin
+		  state_next = WRITE4;
+		end
+    end
+	 WRITE4: begin // high
 	   if (baudclk) begin
 		  scl_next = 1'h0;
 		  bcnt_next = bcnt - 1'b1;
-		  state_next = (bcnt ? STATE_WRITE : STATE_SLAVE_ACK);
+		  state_next = (bcnt ? WRITE : SLAVE_ACK);
 		end
     end
-	 STATE_SLAVE_ACK: begin // listen for ack
+	 SLAVE_ACK: begin
 	   tx_next = 1'b1;
 		if (baudclk) begin
-		  scl_next = 1'h1;
-		  state_next = STATE_SLAVE_ACK2;
+		  state_next = SLAVE_ACK2;
 		end
     end
-	 STATE_SLAVE_ACK2: begin
+	 SLAVE_ACK2: begin
+	   if (baudclk) begin
+		  scl_next = 1'h1;
+		  state_next = SLAVE_ACK3;
+		end
+	 end
+	 SLAVE_ACK3: begin
+	   if (baudclk) begin
+		  state_next = SLAVE_ACK4;
+		end
+    end
+	 SLAVE_ACK4: begin
 	   if (baudclk) begin
 		  scl_next = 1'h0;
-	     state_next = (rx ? STATE_SLAVE_NAK : STATE_COMPLETE);
+	     state_next = (rx ? SLAVE_NAK : DONE);
 		end
 	 end
-	 STATE_SLAVE_NAK: begin
+	 SLAVE_NAK: begin
 	   err_next = 1'b1;
-	   state_next = STATE_COMPLETE;
+	   state_next = DONE;
 	 end
-	 STATE_COMPLETE: begin
-	   if (baudclk) begin
-		  tx_next = 1'b0;
-		  state_next = STATE_DONE;
-		end
-	 end
-	 STATE_STOP: begin
+	 STOP: begin
 	   tx_next = 1'b0;
-	   scl_next = 1'b1;
 		if (baudclk) begin
+		  state_next = STOP2;
+		end
+	 end
+	 STOP2: begin
+		if (baudclk) begin
+		  scl_next = 1'b1;
+		  state_next = STOP3;
+		end
+	 end
+	 STOP3: begin
+	   if (baudclk) begin
 		  tx_next = 1'b1;
-		  state_next = STATE_DONE;
+		  state_next = STOP4;
 		end
 	 end
-    STATE_READ: begin
+	 STOP4: begin
 	   if (baudclk) begin
-		  scl_next = 1'h1;
-		  state_next = STATE_READ2;
+		  state_next = DONE;
+		end
+	 end
+    READ: begin
+	   if (baudclk) begin
+		  state_next = READ2;
 		end
     end
-	 STATE_READ2: begin
+	 READ2: begin
 	   if (baudclk) begin
-	     scl_next = 1'h0;
-		  rxbyte_next = { rxbyte[6:0], rx };
-		  bcnt_next = bcnt - 1'b1;
-		  state_next = (bcnt ? STATE_READ : STATE_MASTER_ACK);
+		  scl_next = 1'b1;
+		  state_next = READ3;
 		end
 	 end
-	 STATE_MASTER_ACK: begin
-	   tx_next = 1'h0;
+	 READ3: begin
+	   if (baudclk) begin
+		  rxbyte_next = { rxbyte[6:0], rx };
+		  state_next = READ4;
+		end
+	 end
+	 READ4: begin
+	   if (baudclk) begin
+		  state_next = (bcnt ? READ : MASTER_ACK);
+		  bcnt_next = bcnt - 1'b1;
+		  scl_next = 1'b0;
+		end
+	 end
+	 MASTER_ACK: begin
+	   if (baudclk) begin
+		  tx_next = mack;
+		  state_next = MASTER_ACK2;
+		end
+    end
+	 MASTER_ACK2: begin
 		if (baudclk) begin
 		  scl_next = 1'h1;
-	     state_next = STATE_COMPLETE;
+	     state_next = MASTER_ACK3;
 		end
     end
-    STATE_DONE: state_next = STATE_IDLE;
+    MASTER_ACK3: begin
+	   if (baudclk & clkin) begin
+		  state_next = MASTER_ACK4;
+		end
+    end
+	 MASTER_ACK4: begin
+	   if (baudclk) begin
+		  scl_next = 1'h0;
+		  state_next = DONE;
+		end
+	 end
+    DONE: state_next = IDLE;
   endcase
 end
 

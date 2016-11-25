@@ -8,6 +8,7 @@ void i2c_addr(unsigned char addr) {
 
 unsigned char i2c_regread(unsigned char data) {
   int count = 10;
+  unsigned char result;
 
   while (count) {
     I2C_DATA = (I2C_DATA & 0xfe00) | data;
@@ -19,9 +20,12 @@ unsigned char i2c_regread(unsigned char data) {
         I2C_CTL = 0; // start
         if ((I2C_CTL & 0x1) == 0) {
           I2C_CTL = 2; // read
+          result = I2C_DATA & 0xff;
+          I2C_DATA = I2C_DATA | 0x10000;
+          I2C_CTL = 2; // read high byte
           if ((I2C_CTL & 0x1) == 0) {
             I2C_CTL = 1; // stop
-            return (I2C_DATA & 0xff);
+            return result;
           }
         }
       }

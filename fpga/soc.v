@@ -101,7 +101,15 @@ module soc(
   output [7:0] vga_g,
   output [7:0] vga_b,
   input ps2kbd_clk,
-  input ps2kbd_data);
+  input ps2kbd_data,
+  input irda_rxd,
+  input [7:0] td_data,
+  input td_hs,
+  input td_vs,
+  input td_clk27,
+  output td_reset_n,
+  inout td_sclk,
+  inout td_sdat);
 
 // System clock
 wire sysclock, locked, rst_i;
@@ -131,6 +139,11 @@ assign rtc_sclk = sclk;
 assign codec_sdin = (~i2c_tx ? 1'b0 : 1'bz);
 assign codec_sclk = (~i2c_clock ? 1'b0 : 1'bz);
 
+// TD Decoder
+assign td_sdat = (~td_tx ? 1'b0 : 1'bz);
+assign td_sclk = (~td_clock ? 1'b0 : 1'bz);
+assign td_reset_n = ~rst_i;
+
 // ethernet stubs TODO
 assign enet_tx_data = 4'hz;
 assign enet_gtx_clk = 1'bz;
@@ -151,7 +164,7 @@ assign fs_databus = (chipselect == 4'h6 && ~ssram_we_n ? ssram_dataout :
                       (chipselect == 4'h8 && ~fl_we_n ? { 16'h0000, flash_dataout } : 32'hzzzzzzzz));
 
 // System Blinknlights
-assign LEDR = { SW[17], SW[16], io_interrupts, miso, mosi, sclk, 3'b0, ~sd_ss, cpu_halt, mmu_fault, cpu_cyc };
+assign LEDR = { SW[17], SW[16], io_interrupts, miso, mosi, sclk, i2c_clock, i2c_tx, td_sdat, ~sd_ss, cpu_halt, mmu_fault, cpu_cyc };
 assign LEDG = { 7'h0, cache_hitmiss };
 
 // Internal bus wiring
@@ -178,6 +191,7 @@ wire ssram_ack;
 wire int_en, cache_enable, mmu_fault;
 wire [1:0] cache_hitmiss;
 wire i2c_tx, i2c_clock;
+wire td_tx, td_clock;
 
 // only need one cycle for reading onboard memory
 reg [1:0] rom_ack, vect_ack;
@@ -259,7 +273,7 @@ iocontroller io0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cpu_writedata), .dat_o(
   .ps2kbd({ps2kbd_clk, ps2kbd_data}), .hex({HEX7,HEX6,HEX5,HEX4, HEX3, HEX2, HEX1, HEX0}),
   .codec_pbdat(codec_pbdat), .codec_mclk(codec_mclk), .codec_recdat(codec_recdat),
   .codec_reclrc(codec_reclrc), .codec_pblrc(codec_pblrc),
-  .i2c_dataout(i2c_tx), .i2c_datain(codec_sdin), .i2c_scl(i2c_clock));
+  .i2c_dataout(i2c_tx), .i2c_datain(codec_sdin), .i2c_scl(i2c_clock), .i2c_clkin(codec_sclk));
 mandunit mand0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cpu_writedata), .dat_o(mandelbrot_readdata), .cyc_i(cpu_cyc),
   .adr_i(cpu_address[4:2]), .we_i(cpu_write), .stb_i(chipselect == 4'h3), .sel_i(cpu_be), .ack_o(mandelbrot_ack));
 monitor rom0(.clock(sysclock), .q(rom_readdata), .rden(rom_read), .address(cpu_address[16:2]));

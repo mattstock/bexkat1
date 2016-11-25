@@ -36,6 +36,7 @@ module iocontroller(input clk_i,
 			 output i2c_dataout,
 			 output i2c_scl,
 			 input i2c_datain,
+			 input i2c_clkin,
 		    output [55:0] hex,
 		    output reg [8:0] led);
 
@@ -196,7 +197,7 @@ lcd_module lcd0(.clk_i(clk_i), .rst_i(rst_i), .we_i(we_i), .sel_i(sel_i),
 
 i2c_master i2c0(.clk_i(clk_i), .rst_i(rst_i), .we_i(we_i), .sel_i(sel_i),
 		.stb_i(stb_i2c), .cyc_i(cyc_o), .dat_i(dat_i), .ack_o(i2c_ack),
-		.adr_i(adr_i[3:2]), .dat_o(i2c_out), .tx(i2c_dataout), .rx(i2c_datain), .scl(i2c_scl));
+		.adr_i(adr_i[3:2]), .dat_o(i2c_out), .tx(i2c_dataout), .rx(i2c_datain), .scl(i2c_scl), .clkin(i2c_clkin));
 		
 spi_master spi0(.clk_i(clk_i), .cyc_i(cyc_o), .rst_i(rst_i), .sel_i(sel_i), .we_i(we_i),
 		.stb_i(stb_spi), .dat_i(dat_i), .dat_o(spi_out), .ack_o(spi_ack),

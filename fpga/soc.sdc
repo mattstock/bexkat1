@@ -7,7 +7,6 @@ create_clock -period 200ns -name led_clk
 
 create_generated_clock -name spi_sclk_reg -source pll0|altpll_component|auto_generated|pll1|clk[0] -divide_by 2 [get_registers {iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|sclk}]
 create_generated_clock -name sd_sclk_pin -source [get_registers {iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|sclk}] [get_ports {sd_sclk}]
-create_generated_clock -name gen_sclk_pin -source [get_registers {iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|sclk}] [get_ports {gen_sclk}]
 create_generated_clock -name rtc_sclk_pin -source [get_registers {iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|sclk}] [get_ports {rtc_sclk}]
 create_generated_clock -name ssram_clk_pin -source pll0|altpll_component|auto_generated|pll1|clk[0] -add [get_ports ssram_clk]
 create_generated_clock -name sdram_clk_pin -source pll0|altpll_component|auto_generated|pll1|clk[0] -invert -add [get_ports sdram_clk]
@@ -69,8 +68,6 @@ set_output_delay -clock pll0|altpll_component|auto_generated|pll1|clk[0] -min 0n
 
 set_input_delay -clock sd_sclk_pin -min 0ns [get_ports sd_miso]
 set_input_delay -clock sd_sclk_pin -max 0ns [get_ports sd_miso]
-set_input_delay -clock gen_sclk_pin -min 0ns [get_ports gen_miso]
-set_input_delay -clock gen_sclk_pin -max 0ns [get_ports gen_miso]
 set_input_delay -clock rtc_sclk_pin -min 0ns [get_ports rtc_miso]
 set_input_delay -clock rtc_sclk_pin -max 0ns [get_ports rtc_miso]
 set_output_delay -clock sd_sclk_pin -min 0ns [get_ports sd_mosi]
