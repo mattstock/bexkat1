@@ -16,7 +16,7 @@ module spi_master(
   input we_i,
   input adr_i);
 
-parameter clockfreq = 50000000;
+parameter clockfreq = 100000000;
 
 // write
 // 'h0: xxxxxxdd : spi byte out

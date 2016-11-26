@@ -41,6 +41,8 @@ module iocontroller(input clk_i,
 		    output reg [8:0] led,
 			 input irda);
 
+parameter clkfreq = 100000000;
+
 // various programmable registers
 reg [31:0] segreg, fanspeed, segreg_next, fanspeed_next, result, result_next;
 reg [1:0] state, state_next;
@@ -69,7 +71,7 @@ always @(posedge clk_i or posedge rst_i)
   begin
     if (rst_i) begin
       segreg <= 32'h0;
-      fanspeed <= 32'h00010000;
+      fanspeed <= 32'h00008000;
       led <= 9'h0;
       result <= 32'h0;
       state <= STATE_IDLE;
@@ -200,14 +202,14 @@ assign stb_i2c[0] = (selector == 4'h9);
 assign stb_i2c[1] = (selector == 4'ha);
 assign stb_i2c[2] = (selector == 4'hb);
 
-uart #(.baud(115200)) uart0(.clk_i(clk_i), .rst_i(rst_i), .we_i(we_i),
+uart #(.baud(115200), .clkfreq(clkfreq)) uart0(.clk_i(clk_i), .rst_i(rst_i), .we_i(we_i),
 			    .sel_i(sel_i), .stb_i(stb_uart0),
 			    .dat_i(dat_i), .dat_o(uart0_out), .cyc_i(cyc_o),
 			    .adr_i(adr_i[2]), .ack_o(uart0_ack),
 			    .rx(rx0), .tx(tx0), .rts(rts0), .cts(cts0),
 			    .interrupt(uart0_interrupts));
 
-uart uart1(.clk_i(clk_i), .rst_i(rst_i), .we_i(we_i),
+uart #(.clkfreq(clkfreq)) uart1(.clk_i(clk_i), .rst_i(rst_i), .we_i(we_i),
 	   .sel_i(sel_i), .stb_i(stb_uart1),
 	   .dat_i(dat_i), .dat_o(uart1_out), .cyc_i(cyc_o),
 	   .adr_i(adr_i[2]), .ack_o(uart1_ack),
