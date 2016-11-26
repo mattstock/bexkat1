@@ -46,7 +46,8 @@ reg [1:0] state, state_next;
 reg [8:0] led_next;
 
 wire [31:0] lcd_out, uart1_out, uart0_out, spi_out, ps2kbd_out,
-	    timer_out, i2c_out;
+	    timer_out;
+wire [7:0] i2c_out;
 wire [3:0] selector;
 wire lcd_ack, uart0_ack, uart1_ack, spi_ack, ps2kbd_ack,
      timer_ack, i2c_ack;
@@ -155,7 +156,7 @@ always @*
 			 end
 	       4'h9: begin // i2c
 				if (~we_i)
-					result_next = i2c_out;
+					result_next = {24'h0, i2c_out};
 				if (i2c_ack)
 					state_next = STATE_DONE;
 			 end
@@ -195,9 +196,9 @@ lcd_module lcd0(.clk_i(clk_i), .rst_i(rst_i), .we_i(we_i), .sel_i(sel_i),
 		.adr_i(adr_i[8:2]), .dat_o(lcd_out), .e(lcd_e),
 		.data_out(lcd_data), .rs(lcd_rs), .on(lcd_on), .rw(lcd_rw));
 
-i2c_master i2c0(.clk_i(clk_i), .rst_i(rst_i), .we_i(we_i), .sel_i(sel_i),
-		.stb_i(stb_i2c), .cyc_i(cyc_o), .dat_i(dat_i), .ack_o(i2c_ack),
-		.adr_i(adr_i[3:2]), .dat_o(i2c_out), .tx(i2c_dataout), .rx(i2c_datain), .scl(i2c_scl), .clkin(i2c_clkin));
+i2c_master_top i2c0(.wb_clk_i(clk_i), .arst_i(1'b1), .wb_rst_i(rst_i), .wb_we_i(we_i),
+		.wb_stb_i(stb_i2c), .wb_cyc_i(cyc_o), .wb_dat_i(dat_i[7:0]), .wb_ack_o(i2c_ack),
+		.wb_adr_i(adr_i[4:2]), .wb_dat_o(i2c_out), .sda_padoen_o(i2c_dataout), .sda_pad_i(i2c_datain), .scl_padoen_o(i2c_scl), .scl_pad_i(i2c_clkin));
 		
 spi_master spi0(.clk_i(clk_i), .cyc_i(cyc_o), .rst_i(rst_i), .sel_i(sel_i), .we_i(we_i),
 		.stb_i(stb_spi), .dat_i(dat_i), .dat_o(spi_out), .ack_o(spi_ack),

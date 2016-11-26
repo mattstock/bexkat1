@@ -3,15 +3,18 @@
 
 #include "misc.h"
 
-#define I2C_CTL (i2c[1])
-#define I2C_DATA (i2c[0])
+#define I2C_PRERL 0
+#define I2C_PRERH 1
+#define I2C_CTR 2
+#define I2C_TXR 3
+#define I2C_RXR 3
+#define I2C_CR 4
+#define I2C_SR 4
 
 extern volatile unsigned int * const i2c;
 
-extern void i2c_addr(unsigned char addr);
-extern void i2c_write(unsigned char data);
-extern unsigned char i2c_regread(unsigned char data);
-extern void i2c_regwrite(unsigned char data, unsigned char data2);
-extern unsigned char i2c_read();
+extern void i2c_init(unsigned int speed);
+extern unsigned char i2c_regread(unsigned char addr, unsigned char data);
+extern unsigned char i2c_regwrite(unsigned char addr, unsigned char reg, unsigned char data);
 
 #endif
