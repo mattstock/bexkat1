@@ -109,7 +109,10 @@ module soc(
   input td_clk27,
   output td_reset_n,
   inout td_sclk,
-  inout td_sdat);
+  inout td_sdat,
+  input accel_int1,
+  inout accel_sclk,
+  inout accel_sdat);
 
 // System clock
 wire sysclock, locked, rst_i;
@@ -135,9 +138,13 @@ assign miso = (~spi_selects[0] ? sd_miso : 1'b0) |
 assign sd_sclk = sclk;
 assign rtc_sclk = sclk;
 
-// I2C
+// codec/external I2C
 assign codec_sdin = (~i2c_tx ? 1'b0 : 1'bz);
 assign codec_sclk = (~i2c_clock ? 1'b0 : 1'bz);
+
+// accelerometer I2C
+assign accel_sdat = (~accel_tx ? 1'b0 : 1'bz);
+assign accel_sclk = (~accel_clock ? 1'b0 : 1'bz);
 
 // TD Decoder
 assign td_sdat = (~td_tx ? 1'b0 : 1'bz);
@@ -192,6 +199,7 @@ wire int_en, cache_enable, mmu_fault;
 wire [1:0] cache_hitmiss;
 wire i2c_tx, i2c_clock;
 wire td_tx, td_clock;
+wire accel_tx, accel_clock;
 
 // only need one cycle for reading onboard memory
 reg [1:0] rom_ack, vect_ack;
@@ -273,7 +281,9 @@ iocontroller io0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cpu_writedata), .dat_o(
   .ps2kbd({ps2kbd_clk, ps2kbd_data}), .hex({HEX7,HEX6,HEX5,HEX4, HEX3, HEX2, HEX1, HEX0}),
   .codec_pbdat(codec_pbdat), .codec_mclk(codec_mclk), .codec_recdat(codec_recdat),
   .codec_reclrc(codec_reclrc), .codec_pblrc(codec_pblrc),
-  .i2c_dataout(i2c_tx), .i2c_datain(codec_sdin), .i2c_scl(i2c_clock), .i2c_clkin(codec_sclk));
+  .i2c_dataout({accel_tx, td_tx, i2c_tx}), .i2c_datain({accel_sdat, td_sdat, codec_sdin}),
+  .i2c_scl({accel_clock, td_clock, i2c_clock}), .i2c_clkin({accel_sclk, td_sclk, codec_sclk}),
+  .irda(irda_rxd));
 mandunit mand0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cpu_writedata), .dat_o(mandelbrot_readdata), .cyc_i(cpu_cyc),
   .adr_i(cpu_address[4:2]), .we_i(cpu_write), .stb_i(chipselect == 4'h3), .sel_i(cpu_be), .ack_o(mandelbrot_ack));
 monitor rom0(.clock(sysclock), .q(rom_readdata), .rden(rom_read), .address(cpu_address[16:2]));

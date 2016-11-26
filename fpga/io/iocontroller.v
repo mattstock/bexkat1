@@ -33,12 +33,13 @@ module iocontroller(input clk_i,
           input codec_recdat,
           input codec_bclk,
           output codec_mclk,
-			 output i2c_dataout,
-			 output i2c_scl,
-			 input i2c_datain,
-			 input i2c_clkin,
+			 output [2:0] i2c_dataout,
+			 output [2:0] i2c_scl,
+			 input [2:0] i2c_datain,
+			 input [2:0] i2c_clkin,
 		    output [55:0] hex,
-		    output reg [8:0] led);
+		    output reg [8:0] led,
+			 input irda);
 
 // various programmable registers
 reg [31:0] segreg, fanspeed, segreg_next, fanspeed_next, result, result_next;
@@ -47,10 +48,10 @@ reg [8:0] led_next;
 
 wire [31:0] lcd_out, uart1_out, uart0_out, spi_out, ps2kbd_out,
 	    timer_out;
-wire [7:0] i2c_out;
+wire [7:0] i2c_out[2:0];
 wire [3:0] selector;
 wire lcd_ack, uart0_ack, uart1_ack, spi_ack, ps2kbd_ack,
-     timer_ack, i2c_ack;
+     timer_ack, i2c_ack[2:0];
 wire [3:0] timer_interrupts;
 wire [1:0] uart0_interrupts;
 
@@ -90,18 +91,18 @@ always @*
     state_next = state;
     case (state)
       STATE_IDLE: begin
-	if (cyc_i && stb_i)
+	     if (cyc_i && stb_i)
           state_next = STATE_BUSY;
-      end
+        end
       STATE_BUSY: begin
-	case (selector)
+	     case (selector)
           4'h0: begin
             // LED and fan in place
             if (we_i) begin
               if (adr_i[0] == 1'b0)
-		segreg_next = dat_i;
+		          segreg_next = dat_i;
               else
-		fanspeed_next = dat_i;
+		          fanspeed_next = dat_i;
             end else
               result_next = (adr_i[0] ? fanspeed : segreg); 
             state_next = STATE_DONE;
@@ -154,14 +155,31 @@ always @*
 				if (timer_ack)
 					state_next = STATE_DONE;
 			 end
-	       4'h9: begin // i2c
+	       4'h9: begin // external i2c
 				if (~we_i)
-					result_next = {24'h0, i2c_out};
-				if (i2c_ack)
+					result_next = {24'h0, i2c_out[0]};
+				if (i2c_ack[0])
 					state_next = STATE_DONE;
 			 end
+			 4'ha: begin // video capture i2c
+			   if (~we_i)
+				  result_next = {24'h0, i2c_out[1]};
+				if (i2c_ack[1])
+				  state_next = STATE_DONE;
+			 end
+			 4'hb: begin // accelerometer i2c
+			   if (~we_i)
+				  result_next = {24'h0, i2c_out[2]};
+				if (i2c_ack[2])
+				  state_next = STATE_DONE;
+			 end
+			 4'hc: begin // irda
+			   if (~we_i)
+				  result_next = {31'h0, irda};
+				state_next = STATE_DONE;
+			 end
           default: state_next = STATE_DONE;
-	endcase
+	     endcase
       end
       STATE_DONE: state_next = STATE_IDLE;
       default: state_next = STATE_IDLE;
@@ -176,7 +194,11 @@ wire stb_codec = (selector == 4'h5);
 wire stb_lcd = (selector == 4'h6);
 wire stb_spi = (selector == 4'h7);
 wire stb_timer = (selector == 4'h8);
-wire stb_i2c = (selector == 4'h9);
+wire stb_i2c[2:0];
+
+assign stb_i2c[0] = (selector == 4'h9);
+assign stb_i2c[1] = (selector == 4'ha);
+assign stb_i2c[2] = (selector == 4'hb);
 
 uart #(.baud(115200)) uart0(.clk_i(clk_i), .rst_i(rst_i), .we_i(we_i),
 			    .sel_i(sel_i), .stb_i(stb_uart0),
@@ -197,8 +219,16 @@ lcd_module lcd0(.clk_i(clk_i), .rst_i(rst_i), .we_i(we_i), .sel_i(sel_i),
 		.data_out(lcd_data), .rs(lcd_rs), .on(lcd_on), .rw(lcd_rw));
 
 i2c_master_top i2c0(.wb_clk_i(clk_i), .arst_i(1'b1), .wb_rst_i(rst_i), .wb_we_i(we_i),
-		.wb_stb_i(stb_i2c), .wb_cyc_i(cyc_o), .wb_dat_i(dat_i[7:0]), .wb_ack_o(i2c_ack),
-		.wb_adr_i(adr_i[4:2]), .wb_dat_o(i2c_out), .sda_padoen_o(i2c_dataout), .sda_pad_i(i2c_datain), .scl_padoen_o(i2c_scl), .scl_pad_i(i2c_clkin));
+		.wb_stb_i(stb_i2c[0]), .wb_cyc_i(cyc_o), .wb_dat_i(dat_i[7:0]), .wb_ack_o(i2c_ack[0]),
+		.wb_adr_i(adr_i[4:2]), .wb_dat_o(i2c_out[0]), .sda_padoen_o(i2c_dataout[0]), .sda_pad_i(i2c_datain[0]), .scl_padoen_o(i2c_scl[0]), .scl_pad_i(i2c_clkin[0]));
+
+i2c_master_top i2c1(.wb_clk_i(clk_i), .arst_i(1'b1), .wb_rst_i(rst_i), .wb_we_i(we_i),
+		.wb_stb_i(stb_i2c[1]), .wb_cyc_i(cyc_o), .wb_dat_i(dat_i[7:0]), .wb_ack_o(i2c_ack[1]),
+		.wb_adr_i(adr_i[4:2]), .wb_dat_o(i2c_out[1]), .sda_padoen_o(i2c_dataout[1]), .sda_pad_i(i2c_datain[1]), .scl_padoen_o(i2c_scl[1]), .scl_pad_i(i2c_clkin[1]));
+
+i2c_master_top i2c2(.wb_clk_i(clk_i), .arst_i(1'b1), .wb_rst_i(rst_i), .wb_we_i(we_i),
+		.wb_stb_i(stb_i2c[2]), .wb_cyc_i(cyc_o), .wb_dat_i(dat_i[7:0]), .wb_ack_o(i2c_ack[2]),
+		.wb_adr_i(adr_i[4:2]), .wb_dat_o(i2c_out[2]), .sda_padoen_o(i2c_dataout[2]), .sda_pad_i(i2c_datain[2]), .scl_padoen_o(i2c_scl[2]), .scl_pad_i(i2c_clkin[2]));
 		
 spi_master spi0(.clk_i(clk_i), .cyc_i(cyc_o), .rst_i(rst_i), .sel_i(sel_i), .we_i(we_i),
 		.stb_i(stb_spi), .dat_i(dat_i), .dat_o(spi_out), .ack_o(spi_ack),
