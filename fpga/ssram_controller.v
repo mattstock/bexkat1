@@ -36,14 +36,14 @@ assign databus_out = dat_i;
 assign bus_clock = clk_i;
 assign gw_n = 1'b1;
 assign adv_n = 1'b1;
-assign adsp_n = 1'b1;
-assign adsc_n = ~(state == STATE_ADDRLATCH);
+assign adsc_n = 1'b1;
+assign adsp_n = ~(state == STATE_ADDRLATCH);
 assign ce0_n = ~(select && ~adr_i[21]);
 assign ce1_n = ~(select && adr_i[21]);
 assign address_out = { 6'h00, adr_i[20:0] };
 assign we_n = ~buswrite;
 assign be_out = (buswrite ? ~sel_i : 4'hf);
-assign oe_n = ~((state == STATE_POST) && ~we_i);
+assign oe_n = we_i;
 
 reg [1:0] state, state_next;
 

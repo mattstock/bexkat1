@@ -1,28 +1,7 @@
 { "" "" "" "Family doesn't support jitter analysis." {  } {  } 0 332153 "" 0 0 "Design Software" 0 -1 0 ""}
-{ "" "" "" "Ignored Virtual Pin assignment on output enabled pin \"fs_addrbus\[0\]\"" {  } {  } 0 15728 "" 0 0 "Design Software" 0 -1 0 ""}
-{ "" "" "" "Some pins have incomplete I/O assignments. Refer to the I/O Assignment Warnings report for details" {  } {  } 0 15714 "" 0 0 "Design Software" 0 -1 0 ""}
 { "" "" "" "Word addressed memory initialization file \"fp_div.hex\" was read in the byte-addressed format" {  } {  } 0 113006 "" 0 0 "Design Software" 0 -1 0 ""}
 { "" "" "" "Verilog HDL Declaration information at cache.v(33): object \"valid\" differs only in case from object \"VALID\" in the same scope" {  } {  } 0 10281 "" 0 0 "Design Software" 0 -1 0 ""}
 { "" "" "" "Output pin \"pre_syn.bp.io0_i2c0_rx\" driven by bidirectional pin \"codec_sdin\" cannot be tri-stated" {  } {  } 0 14632 "" 0 0 "Design Software" 0 -1 0 ""}
-{ "" "" "" "*" {  } {  } 0 15706 "" 0 0 "Design Software" 0 -1 0 ""}
 { "" "" "" "*" {  } {  } 0 292013 "" 0 0 "Design Software" 0 -1 0 ""}
-{ "" "" "" "*" {  } {  } 0 14284 "" 0 0 "Design Software" 0 -1 0 ""}
 { "" "" "" "*" {  } {  } 0 169177 "" 0 0 "Design Software" 0 -1 0 ""}
-{ "" "" "" "*" {  } {  } 0 169178 "" 0 0 "Design Software" 0 -1 0 ""}
-{ "" "" "" "*" {  } {  } 0 10037 "" 0 0 "Design Software" 0 -1 0 ""}
-{ "" "" "" "*" {  } {  } 0 12128 "" 0 0 "Design Software" 0 -1 0 ""}
-{ "" "" "" "*" {  } {  } 0 12133 "" 0 0 "Design Software" 0 -1 0 ""}
-{ "" "" "" "*" {  } {  } 0 12130 "" 0 0 "Design Software" 0 -1 0 ""}
-{ "" "" "" "*" {  } {  } 0 20030 "" 0 0 "Design Software" 0 -1 0 ""}
-{ "" "" "" "*" {  } {  } 0 12021 "" 0 0 "Design Software" 0 -1 0 ""}
-{ "" "" "" "*" {  } {  } 0 12127 "" 0 0 "Design Software" 0 -1 0 ""}
-{ "" "" "" "*" {  } {  } 0 276034 "" 0 0 "Design Software" 0 -1 0 ""}
-{ "" "" "" "*" {  } {  } 0 17036 "" 0 0 "Design Software" 0 -1 0 ""}
-{ "" "" "" "*" {  } {  } 0 13000 "" 0 0 "Design Software" 0 -1 0 ""}
-{ "" "" "" "*" {  } {  } 0 13003 "" 0 0 "Design Software" 0 -1 0 ""}
-{ "" "" "" "*" {  } {  } 0 17049 "" 0 0 "Design Software" 0 -1 0 ""}
-{ "" "" "" "*" {  } {  } 0 144001 "" 0 0 "Design Software" 0 -1 0 ""}
-{ "" "" "" "*" {  } {  } 0 11172 "" 0 0 "Design Software" 0 -1 0 ""}
 { "" "" "" "*" {  } {  } 0 18236 "" 0 0 "Design Software" 0 -1 0 ""}
-{ "" "" "" "*" {  } {  } 0 11170 "" 0 0 "Design Software" 0 -1 0 ""}
-{ "" "" "" "*" {  } {  } 0 113028 "" 0 0 "Design Software" 0 -1 0 ""}

@@ -41,37 +41,42 @@ void main(void) {
   srand(39854);
   while (1) {
     tick++;
-    matrix_fade();
-#if 0
-    switch (rand() % 4) {
-    case 0:
-      if (x < 31)
-	x++;
-      break;
-    case 1:
-      if (x > 1)
-	x--;
-      break;
-    case 2:
-      if (y < 15)
-	y++;
-      break;
-    case 3:
-      if (y > 1)
-	y--;
-      break;
-    }
-#endif
-    if ((tick % 10) == 0) {
-      x++;
-      if (x == 32) {
-	x = 0;
-	if (y == 15)
-	  y = 0;
-	else
+    if (sysio[0] & 0x4)
+      matrix_fade();
+    else 
+      delay(1000);
+    if (sysio[0] & 0x2) {
+      switch (rand() % 4) {
+      case 0:
+        if (x < 31)
+  	  x++;
+        break;
+      case 1:
+        if (x > 0)
+	  x--;
+        break;
+      case 2:
+        if (y < 15)
 	  y++;
+        break;
+      case 3:
+        if (y > 0)
+	  y--;
+        break;
+      }
+    } else {
+      if ((tick % 10) == 0) {
+        x++;
+        if (x == 32) {
+	  x = 0;
+	  if (y == 15)
+	    y = 0;
+	  else
+	    y++;
+        }
       }
     }
+
     c = (char) (rand() % 4);
     switch (c) {
       case 0:

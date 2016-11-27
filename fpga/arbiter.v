@@ -36,8 +36,8 @@ begin
         state_next = STATE_VGA_GRANT;
       else if (cpu_cyc_i)
         state_next = STATE_CPU_GRANT;
-    STATE_VGA_GRANT: if (!vga_cyc_i || ack_i) state_next = STATE_IDLE;
-    STATE_CPU_GRANT: if (!cpu_cyc_i || ack_i) state_next = STATE_IDLE;
+    STATE_VGA_GRANT: if (!vga_cyc_i) state_next = STATE_IDLE;
+    STATE_CPU_GRANT: if (!cpu_cyc_i) state_next = STATE_IDLE;
     default: state_next = STATE_IDLE;
   endcase
 end

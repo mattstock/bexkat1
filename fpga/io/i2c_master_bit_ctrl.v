@@ -182,8 +182,8 @@ module i2c_master_bit_ctrl (
 
 
     // state machine variable
-    reg [17:0] c_state; // synopsys enum_state
-
+    reg [17:0] c_state;
+	 
     //
     // module body
     //
@@ -254,8 +254,8 @@ module i2c_master_bit_ctrl (
     always @(posedge clk or negedge nReset)
       if      (!nReset     ) filter_cnt <= 14'h0;
       else if (rst || !ena ) filter_cnt <= 14'h0;
-      else if (~|filter_cnt) filter_cnt <= clk_cnt >> 2; //16x I2C bus frequency
-      else                   filter_cnt <= filter_cnt -1;
+      else if (~|filter_cnt) filter_cnt <= clk_cnt[15:2]; //16x I2C bus frequency
+      else                   filter_cnt <= filter_cnt - 14'h1;
 
 
     always @(posedge clk or negedge nReset)
@@ -407,7 +407,7 @@ module i2c_master_bit_ctrl (
                     // idle state
                     idle:
                     begin
-                        case (cmd) // synopsys full_case parallel_case
+                        case (cmd) // synopsys parallel_case
                              `I2C_CMD_START: c_state <= #1 start_a;
                              `I2C_CMD_STOP:  c_state <= #1 stop_a;
                              `I2C_CMD_WRITE: c_state <= #1 wr_a;

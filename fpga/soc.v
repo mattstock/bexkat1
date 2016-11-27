@@ -88,6 +88,7 @@ module soc(
   output matrix_c,
   output matrix_stb,
   output serial1_tx,
+  input serial1_rx,
   input serial0_rx,
   input serial0_cts,
   output serial0_tx,
@@ -277,7 +278,7 @@ iocontroller io0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cpu_writedata), .dat_o(
   .stb_i(chipselect == 4'h4), .cyc_i(cpu_cyc), .ack_o(io_ack), .sel_i(cpu_be),
   .miso(miso), .mosi(mosi), .sclk(sclk), .spi_selects(spi_selects), .sd_wp(sd_wp_n), .fan(fan_ctrl),
   .lcd_e(lcd_e), .lcd_data(lcd_dataout), .lcd_rs(lcd_rs), .lcd_on(lcd_on), .lcd_rw(lcd_rw), .interrupts(io_interrupts),
-  .rx0(serial0_rx), .tx0(serial0_tx), .rts0(serial0_rts), .cts0(serial0_cts), .tx1(serial1_tx), .sw(SW[15:0]),
+  .rx0(serial0_rx), .tx0(serial0_tx), .rts0(serial0_rts), .cts0(serial0_cts), .tx1(serial1_tx), .rx1(serial1_rx), .sw(SW[15:0]),
   .ps2kbd({ps2kbd_clk, ps2kbd_data}), .hex({HEX7,HEX6,HEX5,HEX4, HEX3, HEX2, HEX1, HEX0}),
   .codec_pbdat(codec_pbdat), .codec_mclk(codec_mclk), .codec_recdat(codec_recdat),
   .codec_reclrc(codec_reclrc), .codec_pblrc(codec_pblrc),
@@ -302,7 +303,7 @@ assign fs_we = (cpu_gnt ? cpu_write : vga_we);
 assign ssram_stb = cpu_gnt | vga_gnt;
 
 arbiter arb0(.clk_i(sysclock), .rst_i(rst_i), .cpu_cyc_i(chipselect == 4'h6), 
-  .vga_cyc_i(vga_cyc), .cyc_o(arb_cyc), .cpu_gnt(cpu_gnt), .vga_gnt(vga_gnt), .ack_i(ssram_ack));
+  .vga_cyc_i(vga_cyc & ~SW[15]), .cyc_o(arb_cyc), .cpu_gnt(cpu_gnt), .vga_gnt(vga_gnt), .ack_i(ssram_ack));
 
 vga_master vga0(.clk_i(sysclock), .rst_i(rst_i), .master_adr_o(vga_address), .master_cyc_o(vga_cyc), .master_dat_i(ssram_readdata),
   .master_we_o(vga_we), .master_dat_o(vga_writedata), .master_sel_o(vga_sel), .master_ack_i(vga_gnt & ssram_ack), .master_stb_o(vga_stb),

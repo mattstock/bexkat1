@@ -18,6 +18,7 @@ module iocontroller(input clk_i,
 		    input cts0,
 		    output rts0,
 		    output tx1,
+			 input rx1,
 		    input miso,
 		    output mosi,
 		    output sclk,
@@ -213,7 +214,7 @@ uart #(.clkfreq(clkfreq)) uart1(.clk_i(clk_i), .rst_i(rst_i), .we_i(we_i),
 	   .sel_i(sel_i), .stb_i(stb_uart1),
 	   .dat_i(dat_i), .dat_o(uart1_out), .cyc_i(cyc_o),
 	   .adr_i(adr_i[2]), .ack_o(uart1_ack),
-	   .tx(tx1));
+	   .rx(rx1), .tx(tx1));
 
 lcd_module lcd0(.clk_i(clk_i), .rst_i(rst_i), .we_i(we_i), .sel_i(sel_i),
 		.stb_i(stb_lcd), .cyc_i(cyc_o), .dat_i(dat_i), .ack_o(lcd_ack),
