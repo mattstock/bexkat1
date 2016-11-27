@@ -172,7 +172,7 @@ assign fs_databus = (chipselect == 4'h6 && ~ssram_we_n ? ssram_dataout :
 
 // System Blinknlights
 assign LEDR = { SW[17], SW[16], io_interrupts, miso, mosi, sclk, i2c_clock, i2c_tx, td_sdat, ~sd_ss, cpu_halt, mmu_fault, cpu_cyc };
-assign LEDG = { 7'h0, cache_hitmiss };
+assign LEDG = { ~irda_rxd, 6'h0, cache_hitmiss };
 
 // Internal bus wiring
 wire [3:0] chipselect;
@@ -294,7 +294,7 @@ vectors vecram0(.clock(sysclock), .q(vect_readdata), .rden(vect_read), .address(
 wire [31:0] fs_adr;
 wire [3:0] fs_sel;
 wire fs_we;
-wire ssram_stb;
+wire ssram_stb, ssram_stall;
 
 assign fs_adr = (cpu_gnt ? cpu_address : vga_address);
 assign fs_sel = (cpu_gnt ? cpu_be : vga_sel);
@@ -311,7 +311,7 @@ vga_master vga0(.clk_i(sysclock), .rst_i(rst_i), .master_adr_o(vga_address), .ma
   .vs(vga_vs), .hs(vga_hs), .r(vga_r), .g(vga_g), .b(vga_b), .blank_n(vga_blank_n), .vga_clock(vga_clock), .sync_n(vga_sync_n));
 
 ssram_controller ssram0(.clk_i(sysclock), .rst_i(rst_i), 
-  .stb_i(ssram_stb), .cyc_i(arb_cyc), .we_i(fs_we), 
+  .stb_i(ssram_stb), .cyc_i(arb_cyc), .we_i(fs_we),
   .ack_o(ssram_ack), .dat_i(cpu_writedata), .dat_o(ssram_readdata),
   .sel_i(fs_sel), .adr_i(fs_adr[21:0]),
   .databus_in(fs_databus), .databus_out(ssram_dataout),
