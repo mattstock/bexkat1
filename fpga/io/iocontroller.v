@@ -33,7 +33,6 @@ module iocontroller(input clk_i,
           input codec_pblrc,
           input codec_recdat,
           input codec_bclk,
-          output codec_mclk,
 			 output [2:0] i2c_dataout,
 			 output [2:0] i2c_scl,
 			 input [2:0] i2c_datain,
@@ -66,7 +65,6 @@ assign interrupts = { timer_interrupts, uart0_interrupts };
 localparam [1:0] STATE_IDLE = 2'h0, STATE_BUSY = 2'h1, STATE_DONE = 2'h2;
 
 always codec_pbdat = codec_recdat;
-codec_pll pll1(.inclk0(clk_i), .c0(codec_mclk), .areset(rst_i));
 
 always @(posedge clk_i or posedge rst_i)
   begin
@@ -233,7 +231,7 @@ i2c_master_top i2c2(.wb_clk_i(clk_i), .arst_i(1'b1), .wb_rst_i(rst_i), .wb_we_i(
 		.wb_stb_i(stb_i2c[2]), .wb_cyc_i(cyc_o), .wb_dat_i(dat_i[7:0]), .wb_ack_o(i2c_ack[2]),
 		.wb_adr_i(adr_i[4:2]), .wb_dat_o(i2c_out[2]), .sda_padoen_o(i2c_dataout[2]), .sda_pad_i(i2c_datain[2]), .scl_padoen_o(i2c_scl[2]), .scl_pad_i(i2c_clkin[2]));
 		
-spi_master spi0(.clk_i(clk_i), .cyc_i(cyc_o), .rst_i(rst_i), .sel_i(sel_i), .we_i(we_i),
+spi_master #(.clkfreq(clkfreq)) spi0(.clk_i(clk_i), .cyc_i(cyc_o), .rst_i(rst_i), .sel_i(sel_i), .we_i(we_i),
 		.stb_i(stb_spi), .dat_i(dat_i), .dat_o(spi_out), .ack_o(spi_ack),
 		.adr_i(adr_i[2]), .miso(miso), .mosi(mosi),
 		.sclk(sclk), .selects(spi_selects), .wp(sd_wp));

@@ -8,8 +8,12 @@ create_clock -period 100ns -name led_clk
 create_generated_clock -name spi_sclk_reg -source pll0|altpll_component|auto_generated|pll1|clk[0] -divide_by 2 [get_registers {iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|sclk}]
 create_generated_clock -name sd_sclk_pin -source [get_registers {iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|sclk}] [get_ports {sd_sclk}]
 create_generated_clock -name rtc_sclk_pin -source [get_registers {iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|sclk}] [get_ports {rtc_sclk}]
+#create_generated_clock -name accel_sclk_pin -source [get_registers {iocontroller:io0|i2c_master_top:i2c2|i2c_master_byte_ctrl:byte_controller|i2c_master_bit_ctrl:bit_controller|scl_oen}] [get_ports {accel_sclk}]
+#create_generated_clock -name codec_sclk_pin -source [get_registers {iocontroller:io0|i2c_master_top:i2c0|i2c_master_byte_ctrl:byte_controller|i2c_master_bit_ctrl:bit_controller|scl_oen}] [get_ports {codec_sclk}]
+#create_generated_clock -name td_sclk_pin -source [get_registers {iocontroller:io0|i2c_master_top:i2c1|i2c_master_byte_ctrl:byte_controller|i2c_master_bit_ctrl:bit_controller|scl_oen}] [get_ports {td_sclk}]
 create_generated_clock -name ssram_clk_pin -source pll0|altpll_component|auto_generated|pll1|clk[0] -add [get_ports ssram_clk]
 create_generated_clock -name sdram_clk_pin -source pll0|altpll_component|auto_generated|pll1|clk[0] -invert -add [get_ports sdram_clk]
+
 
 # 0 - 50MHz
 
@@ -23,7 +27,7 @@ set_output_delay -clock altera_reserved_tck 20 [ get_ports altera_reserved_tdo ]
   
 # all async user input and really slow stuff
 set_false_path -from [get_ports {KEY*}] -to *
-set_false_path -from [get_ports {SW*}] -to *
+set_false_path -from [get_ports {SW* irda_rxd}] -to *
 set_false_path -from * -to [get_ports {LED*}]
 set_false_path -from * -to [get_ports {HEX*}]
 set_false_path -from [get_ports {serial*}] -to *
@@ -57,6 +61,19 @@ set_multicycle_path -through [get_pins -compatibility_mode {*intcalc*}] -setup -
 set_multicycle_path -through [get_pins -compatibility_mode {*intcalc*}] -hold -start 7
 set_multicycle_path -through [get_pins -compatibility_mode {*fp_*}] -setup -start 8
 set_multicycle_path -through [get_pins -compatibility_mode {*fp_*}] -hold -start 7
+
+set_input_delay -clock td_sclk_pin -min 0ns [get_ports td_sclk]
+set_input_delay -clock td_sclk_pin -max 0ns [get_ports td_sclk]
+set_input_delay -clock accel_sclk_pin -min 0ns [get_ports accel_sclk]
+set_input_delay -clock accel_sclk_pin -max 0ns [get_ports accel_sclk]
+set_input_delay -clock codec_sclk_pin -min 0ns [get_ports codec_sclk]
+set_input_delay -clock codec_sclk_pin -max 0ns [get_ports codec_sclk]
+set_output_delay -clock td_sclk_pin -min 0ns [get_ports td_sclk]
+set_output_delay -clock td_sclk_pin -max 0ns [get_ports td_sclk]
+set_output_delay -clock accel_sclk_pin -min 0ns [get_ports accel_sclk]
+set_output_delay -clock accel_sclk_pin -max 0ns [get_ports accel_sclk]
+set_output_delay -clock codec_sclk_pin -min 0ns [get_ports codec_sclk]
+set_output_delay -clock codec_sclk_pin -max 0ns [get_ports codec_sclk]
 
 set_input_delay -clock sd_sclk_pin -min 0ns [get_ports sd_miso]
 set_input_delay -clock sd_sclk_pin -max 0ns [get_ports sd_miso]

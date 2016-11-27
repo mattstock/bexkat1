@@ -24,7 +24,7 @@ module vga_master(
   output [7:0] b,
   output blank_n,
   output sync_n,
-  output vga_clock);
+  input vga_clock);
 
 // Configuration registers
 // 0x000 - palette memory 1
@@ -235,6 +235,6 @@ vgalinebuf scanline3(.wrclock(clk_i), .wraddress(idx[9:2]), .wren(state == STATE
   .rdclock(vga_clock), .rdaddress((pixeldouble ? scanaddr[10:3] : scanaddr[9:2])), .q(buf3_out));
 
 vga_controller vga0(.active(blank_n), .vs(vs), .hs(hs), .clock(vga_clock), .reset_n(~rst_i), .x(x_raw), .y(y_raw));
-vgapll vgapll0(.inclk0(clk_i), .areset(rst_i), .c0(vga_clock));
+
 
 endmodule

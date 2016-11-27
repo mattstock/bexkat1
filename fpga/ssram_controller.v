@@ -27,7 +27,7 @@ wire buswrite;
 wire select;
 
 assign select = cyc_i & stb_i;
-assign ack_o = (state == STATE_POST);
+assign ack_o = (state == STATE_POST || state == STATE_WRITE);
 
 assign buswrite = (state == STATE_WRITE) && we_i;
 
@@ -45,9 +45,9 @@ assign we_n = ~buswrite;
 assign be_out = (buswrite ? ~sel_i : 4'hf);
 assign oe_n = we_i;
 
-reg [1:0] state, state_next;
+reg [2:0] state, state_next;
 
-localparam [1:0] STATE_IDLE = 2'h0, STATE_ADDRLATCH = 2'h1, STATE_WRITE = 2'h2, STATE_POST = 2'h3;
+localparam [2:0] STATE_IDLE = 'h0, STATE_ADDRLATCH = 'h1, STATE_WRITE = 'h2, STATE_POST = 'h3, STATE_READ = 'h4;
 
 always @(posedge clk_i or posedge rst_i)
 begin
@@ -65,8 +65,9 @@ begin
     STATE_IDLE:
       if (select)
         state_next = STATE_ADDRLATCH;
-    STATE_ADDRLATCH: state_next = STATE_WRITE;
-    STATE_WRITE: state_next = STATE_POST;
+    STATE_ADDRLATCH: state_next = (we_i ? STATE_WRITE : STATE_READ);
+    STATE_WRITE: state_next = STATE_IDLE;
+	 STATE_READ: state_next = STATE_POST;
     STATE_POST: state_next = STATE_IDLE;
   endcase
 end

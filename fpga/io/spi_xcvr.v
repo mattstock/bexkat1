@@ -10,7 +10,7 @@ module spi_xcvr(
   output mosi,
   output reg sclk);
 
-parameter clockfreq = 50000000; // 50MHz
+parameter clkfreq = 50000000; // 50MHz
 parameter speed3 =    30000000; // 13MHz
 parameter speed2 =    20000000; // 8MHz
 parameter speed1 =    10000000; // 4.167MHz
@@ -39,10 +39,10 @@ assign {speedselect, cpol, cpha} = conf[3:0];
 
 always_comb
   case (speedselect)
-    2'b00: maxval = clockfreq/speed0;
-    2'b01: maxval = clockfreq/speed1;
-    2'b10: maxval = clockfreq/speed2;
-    2'b11: maxval = clockfreq/speed3;
+    2'b00: maxval = clkfreq/speed0;
+    2'b01: maxval = clkfreq/speed1;
+    2'b10: maxval = clkfreq/speed2;
+    2'b11: maxval = clkfreq/speed3;
   endcase
 
 always @(posedge clk_i or posedge rst_i)

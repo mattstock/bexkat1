@@ -16,7 +16,7 @@ module spi_master(
   input we_i,
   input adr_i);
 
-parameter clockfreq = 100000000;
+parameter clkfreq = 100000000;
 
 // write
 // 'h0: xxxxxxdd : spi byte out
@@ -113,7 +113,7 @@ begin
   end
 end
 
-spi_xcvr #(.clockfreq(clockfreq)) xcvr0(.clk_i(clk_i), .rst_i(rst_i), .conf(conf), .start(tx_start), .rx(rx_in), .done(tx_done), .tx(dat_i[7:0]), 
+spi_xcvr #(.clkfreq(clkfreq)) xcvr0(.clk_i(clk_i), .rst_i(rst_i), .conf(conf), .start(tx_start), .rx(rx_in), .done(tx_done), .tx(dat_i[7:0]), 
   .miso(miso), .mosi(mosi), .sclk(sclk));
 
 endmodule
