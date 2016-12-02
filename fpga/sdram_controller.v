@@ -25,21 +25,24 @@ assign {cs_n, cas_n, ras_n, we_n} = cmd;
 
 localparam [3:0] CMD_DESL = 4'hf, CMD_NOP = 4'h7, CMD_READ = 4'h3, CMD_WRITE = 4'h2, CMD_ACTIVATE = 4'h5, CMD_PRECHARGE = 4'h4, CMD_REFRESH = 4'h1,
   CMD_MRS = 4'h0;
-localparam [4:0] STATE_INIT_WAIT = 5'h0, STATE_INIT_PRECHARGE = 5'h1, STATE_INIT_REFRESH1 = 5'h2, STATE_INIT_REFRESH1_WAIT = 5'h3,
-  STATE_INIT_MODE_WAIT = 5'h4, STATE_INIT_MODE = 5'h5, STATE_IDLE = 5'h6, STATE_ACTIVATE = 5'h7, STATE_RW = 5'h8,
-  STATE_READ_WAIT = 5'h9, STATE_READ_WAIT2 = 5'ha, STATE_REFRESH = 5'hb;
+localparam [4:0] STATE_INIT_WAIT = 'h0, STATE_INIT_PRECHARGE = 'h1, STATE_INIT_REFRESH1 = 'h2, STATE_INIT_REFRESH1_WAIT = 'h3,
+  STATE_INIT_MODE_WAIT = 'h4, STATE_INIT_MODE = 'h5, STATE_IDLE = 'h6, STATE_ACTIVATE = 'h7, STATE_READ = 'h8,
+  STATE_READ_WAIT = 'h9, STATE_READ_WAIT2 = 'ha, STATE_REFRESH = 'hb, STATE_READ2 = 'hc, STATE_READ3 = 'hd, STATE_READ4 = 'he,
+  STATE_WRITE2 = 'hf, STATE_WRITE3 = 'h10, STATE_WRITE4 = 'h11, STATE_WRITE = 'h12, STATE_WRITE5 = 'h13, STATE_WRITE6 = 'h14,
+  STATE_WRITE7 = 'h15;
 
 wire select;
 
 assign mem_clk_o = ~clk_i;
-assign ack_o = (state == STATE_RW);
+assign ack_o = (state == STATE_READ || state == STATE_READ2 || state == STATE_READ3 || state == STATE_READ4 ||
+                state == STATE_WRITE || state == STATE_WRITE2 || state == STATE_WRITE3 || state == STATE_WRITE4);
 assign dat_o = (select & ~we_i ? databus_in : 32'h0);
 assign cke = ~rst_i;
 assign select = cyc_i & stb_i;
 
 reg [1:0] ba_next;
 reg [3:0] cmd, cmd_next;
-reg [3:0] state, state_next;
+reg [4:0] state, state_next;
 reg [15:0] delay, delay_next;
 reg [12:0] addrbus_out_next;
 reg [3:0] dqm_next;
@@ -106,7 +109,7 @@ begin
     STATE_INIT_MODE: begin
       ba_next = 2'b00;
       cmd_next = CMD_MRS;
-      addrbus_out_next = 13'b0001000100000; // CAS = 2, sequential, read burst length = 1, write single location
+      addrbus_out_next = 13'b0000000100010; // CAS = 2, sequential, write/read burst length = 4
       delay_next = 16'h3;
       state_next = STATE_INIT_MODE_WAIT;
     end
@@ -148,7 +151,7 @@ begin
         addrbus_out_next[10] = 1'b1; // auto precharge
         addrbus_out_next[9:0] = adr_i[9:0]; // read/write column
         if (we_i) begin
-          state_next = STATE_RW;
+          state_next = STATE_WRITE;
           databus_out_next = dat_i;
         end else begin
           state_next = STATE_READ_WAIT;
@@ -159,13 +162,21 @@ begin
       cmd_next = CMD_NOP;
       state_next = STATE_READ_WAIT2;
     end
-    STATE_READ_WAIT2: begin
-      state_next = STATE_RW;
-    end
-    STATE_RW: begin
+    STATE_READ_WAIT2: state_next = STATE_READ;
+    STATE_READ: state_next = STATE_READ2;
+	 STATE_READ2: state_next = STATE_READ3;
+	 STATE_READ3: state_next = STATE_READ4;
+	 STATE_READ4: state_next = STATE_IDLE;
+    STATE_WRITE: begin
       cmd_next = CMD_NOP;
-      state_next = STATE_IDLE;
+      state_next = STATE_WRITE2;
     end
+	 STATE_WRITE2: state_next = STATE_WRITE3;
+	 STATE_WRITE3: state_next = STATE_WRITE4;
+	 STATE_WRITE4: state_next = STATE_WRITE5;
+	 STATE_WRITE5: state_next = STATE_WRITE6;
+	 STATE_WRITE6: state_next = STATE_WRITE7;
+	 STATE_WRITE7: state_next = STATE_IDLE;
     default: state_next = STATE_IDLE;
   endcase
 end

@@ -54,9 +54,8 @@ assign s_ack_o = (bus_state == BUS_STATE_DONE);
 
 localparam [4:0] STATE_IDLE = 5'h0, STATE_BUSY = 5'h1, STATE_HIT = 5'h2, STATE_MISS = 5'h3,
   STATE_FILL = 5'h4, STATE_FILL2 = 5'h5, STATE_FILL3 = 5'h6, STATE_FILL4 = 5'h7, STATE_FILL5 = 5'h8,
-  STATE_FILL6 = 5'h9, STATE_FILL7 = 5'ha, STATE_FILL8 = 5'hb, STATE_FLUSH = 5'hc, STATE_FLUSH2 = 5'hd,
-  STATE_FLUSH3 = 5'he, STATE_FLUSH4 = 5'hf, STATE_FLUSH5 = 5'h10, STATE_FLUSH6 = 5'h11, STATE_FLUSH7 = 5'h12,
-  STATE_FLUSH8 = 5'h13, STATE_DONE = 5'h14, STATE_INIT = 5'h15, STATE_BUSY2 = 5'h16;
+  STATE_FLUSH = 5'h9, STATE_FLUSH2 = 5'ha, STATE_FLUSH3 = 5'hb, STATE_FLUSH4 = 5'hc, STATE_FLUSH5 = 5'hd,
+  STATE_DONE = 5'he, STATE_INIT = 5'hf, STATE_BUSY2 = 5'h10;
 
 always @(posedge clk_i or posedge rst_i)
 begin
@@ -185,94 +184,75 @@ begin
       if (m_ack_i)
         state_next = STATE_FILL2;
     end
-    STATE_FILL2: state_next = STATE_FILL3;
-    STATE_FILL3: begin
+    STATE_FILL2: begin
       m_adr_o = { tag_in, rowaddr, 2'h1 };
       m_cyc_o = 1'b1;
       rowin_next[DIRTY1] = 1'b0; // clean
       rowin_next[63:32] = m_dat_i;
       if (m_ack_i)
-        state_next = STATE_FILL4;
+        state_next = STATE_FILL3;
     end
-    STATE_FILL4: state_next = STATE_FILL5;
-    STATE_FILL5: begin
+    STATE_FILL3: begin
       m_adr_o = { tag_in, rowaddr, 2'h2 };
       m_cyc_o = 1'b1;
       rowin_next[DIRTY2] = 1'b0; // clean
       rowin_next[95:64] = m_dat_i;
       if (m_ack_i)
-        state_next = STATE_FILL6;
+        state_next = STATE_FILL4;
     end
-    STATE_FILL6: state_next = STATE_FILL7;
-    STATE_FILL7: begin
+    STATE_FILL4: begin
       m_adr_o = { tag_in, rowaddr, 2'h3 };
       m_cyc_o = 1'b1;
       rowin_next[DIRTY3] = 1'b0; // clean
       rowin_next[127:96] = m_dat_i;
       if (m_ack_i)
-        state_next = STATE_FILL8;
+        state_next = STATE_FILL5;
     end
-    STATE_FILL8: begin
+    STATE_FILL5: begin
       wren = 1'b1;
       state_next = STATE_BUSY;
     end
     STATE_FLUSH: begin
-      if (dirty[0]) begin
-        m_adr_o = { tag_cache, rowaddr, 2'h0 };
-        m_dat_o = word0;
-        m_cyc_o = 1'b1;
-        m_we_o = 1'b1;
-        if (m_ack_i) begin
-          rowin_next[DIRTY0] = 1'b0;
-          state_next = STATE_FLUSH2;
-        end
-      end else
-        state_next = STATE_FLUSH3;
-    end
-    STATE_FLUSH2: state_next = STATE_FLUSH3;
-    STATE_FLUSH3: begin
-      if (dirty[1]) begin
-        m_adr_o = { tag_cache, rowaddr, 2'h1 };
-        m_dat_o = word1;
-        m_cyc_o = 1'b1;
-        m_we_o = 1'b1;
-        if (m_ack_i) begin
-          rowin_next[DIRTY1] = 1'b0;
-          state_next = STATE_FLUSH4;
-        end
-      end else
-        state_next = STATE_FLUSH5;
-    end
-    STATE_FLUSH4: state_next = STATE_FLUSH5;
-    STATE_FLUSH5: begin
-      if (dirty[2]) begin
-        m_adr_o = { tag_cache, rowaddr, 2'h2 };
-        m_dat_o = word2;
-        m_cyc_o = 1'b1;
-        m_we_o = 1'b1;
-        if (m_ack_i) begin
-          rowin_next[DIRTY2] = 1'b0;
-          state_next = STATE_FLUSH6;
-        end
-      end else
-        state_next = STATE_FLUSH7;
-    end
-    STATE_FLUSH6: state_next = STATE_FLUSH7;
-    STATE_FLUSH7: begin
-      if (dirty[3]) begin
-        m_adr_o = { tag_cache, rowaddr, 2'h3 };
-        m_dat_o = word3;
-        m_cyc_o = 1'b1;
-        m_we_o = 1'b1;
-        if (m_ack_i) begin
-          rowin_next[DIRTY3] = 1'b0;
-          state_next = STATE_FLUSH8;
-        end
-      end else begin
-        state_next = STATE_FILL;
+      m_adr_o = { tag_cache, rowaddr, 2'h0 };
+      m_dat_o = word0;
+      m_cyc_o = 1'b1;
+      m_we_o = 1'b1;
+      if (m_ack_i) begin
+        rowin_next[DIRTY0] = 1'b0;
+        state_next = STATE_FLUSH2;
       end
     end
-    STATE_FLUSH8: begin
+    STATE_FLUSH2: begin
+      m_adr_o = { tag_cache, rowaddr, 2'h1 };
+      m_dat_o = word1;
+      m_cyc_o = 1'b1;
+      m_we_o = 1'b1;
+      if (m_ack_i) begin
+        rowin_next[DIRTY1] = 1'b0;
+        state_next = STATE_FLUSH3;
+      end
+    end
+    STATE_FLUSH3: begin
+      m_adr_o = { tag_cache, rowaddr, 2'h2 };
+      m_dat_o = word2;
+      m_cyc_o = 1'b1;
+      m_we_o = 1'b1;
+      if (m_ack_i) begin
+        rowin_next[DIRTY2] = 1'b0;
+        state_next = STATE_FLUSH4;
+      end
+    end
+    STATE_FLUSH4: begin
+      m_adr_o = { tag_cache, rowaddr, 2'h3 };
+      m_dat_o = word3;
+      m_cyc_o = 1'b1;
+      m_we_o = 1'b1;
+      if (m_ack_i) begin
+        rowin_next[DIRTY3] = 1'b0;
+        state_next = STATE_FLUSH5;
+      end
+    end
+    STATE_FLUSH5: begin
       wren = 1'b1;
       state_next = STATE_FILL;
     end
