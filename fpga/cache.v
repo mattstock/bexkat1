@@ -19,15 +19,15 @@ module cache(
   output reg m_stb_o,
   input m_ack_i);
   
-logic [147:0] rowin, rowin_next;
-wire [147:0] rowout;
+logic [145:0] rowin, rowin_next;
+wire [145:0] rowout;
 
 reg [31:0] s_dat_o_next;
 reg [4:0] state, state_next;
-reg [7:0] initaddr, initaddr_next;
+reg [9:0] initaddr, initaddr_next;
 
-wire [14:0] tag_in, tag_cache;
-wire [7:0] rowaddr;
+wire [12:0] tag_in, tag_cache;
+wire [9:0] rowaddr;
 wire [1:0] wordsel;
 wire [3:0] dirty;
 wire valid, wren;
@@ -38,9 +38,9 @@ wire [24:0] fifo_adr_i;
 wire [3:0] fifo_sel_i;
 wire fifo_we_i;
 
-localparam VALID = 'd147, 
-  DIRTY0 = 'd143, DIRTY1 = 'd144,
-  DIRTY2 = 'd145, DIRTY3 = 'd146;
+localparam VALID = 'd145, 
+  DIRTY0 = 'd141, DIRTY1 = 'd142,
+  DIRTY2 = 'd143, DIRTY3 = 'd144;
 
 assign cache_status = { state == STATE_HIT, state == STATE_MISS };
 assign { tag_in, rowaddr, wordsel } = fifo_adr_i;
@@ -63,9 +63,9 @@ begin
   if (rst_i) begin
     state <= STATE_INIT;
 	 bus_state <= BUS_STATE_IDLE;
-    rowin <= 148'h0;
+    rowin <= 146'h0;
     s_dat_o <= 32'h0;
-    initaddr <= 8'hff;
+    initaddr <= 10'h3ff;
   end else begin
     bus_state <= bus_state_next;
     state <= state_next;
@@ -118,7 +118,7 @@ begin
       rowin_next[VALID] = 1'b0;
       wren = 1'b1;
       initaddr_next = initaddr - 1'b1;
-      if (initaddr == 8'h00)
+      if (initaddr == 10'h00)
         state_next = STATE_IDLE;
     end
 	 STATE_IDLE: if (~fifo_empty) state_next = STATE_BUSY;
@@ -178,7 +178,7 @@ begin
     STATE_FILL: begin
       rowin_next[VALID] = 1'b1;
       rowin_next[DIRTY0] = 1'b0; // clean
-      rowin_next[142:128] = tag_in;
+      rowin_next[140:128] = tag_in;
       m_adr_o = { tag_in, rowaddr, 2'h0 };
       m_cyc_o = 1'b1;
       rowin_next[31:0] = m_dat_i;

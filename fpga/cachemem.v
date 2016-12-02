@@ -46,11 +46,11 @@ module cachemem (
 	q);
 
 	input	  aclr;
-	input	[7:0]  address;
+	input	[9:0]  address;
 	input	  clock;
-	input	[147:0]  data;
+	input	[145:0]  data;
 	input	  wren;
-	output	[147:0]  q;
+	output	[145:0]  q;
 `ifndef ALTERA_RESERVED_QIS
 // synopsys translate_off
 `endif
@@ -60,8 +60,8 @@ module cachemem (
 // synopsys translate_on
 `endif
 
-	wire [147:0] sub_wire0;
-	wire [147:0] q = sub_wire0[147:0];
+	wire [145:0] sub_wire0;
+	wire [145:0] q = sub_wire0[145:0];
 
 	altsyncram	altsyncram_component (
 				.aclr0 (aclr),
@@ -93,14 +93,14 @@ module cachemem (
 		altsyncram_component.intended_device_family = "Cyclone IV GX",
 		altsyncram_component.lpm_hint = "ENABLE_RUNTIME_MOD=YES,INSTANCE_NAME=SDCA",
 		altsyncram_component.lpm_type = "altsyncram",
-		altsyncram_component.numwords_a = 256,
+		altsyncram_component.numwords_a = 1024,
 		altsyncram_component.operation_mode = "SINGLE_PORT",
 		altsyncram_component.outdata_aclr_a = "CLEAR0",
 		altsyncram_component.outdata_reg_a = "UNREGISTERED",
 		altsyncram_component.power_up_uninitialized = "FALSE",
 		altsyncram_component.read_during_write_mode_port_a = "NEW_DATA_NO_NBE_READ",
-		altsyncram_component.widthad_a = 8,
-		altsyncram_component.width_a = 148,
+		altsyncram_component.widthad_a = 10,
+		altsyncram_component.width_a = 146,
 		altsyncram_component.width_byteena_a = 1;
 
 
@@ -129,7 +129,7 @@ endmodule
 // Retrieval info: PRIVATE: JTAG_ID STRING "SDCA"
 // Retrieval info: PRIVATE: MAXIMUM_DEPTH NUMERIC "0"
 // Retrieval info: PRIVATE: MIFfilename STRING ""
-// Retrieval info: PRIVATE: NUMWORDS_A NUMERIC "256"
+// Retrieval info: PRIVATE: NUMWORDS_A NUMERIC "1024"
 // Retrieval info: PRIVATE: RAM_BLOCK_TYPE NUMERIC "0"
 // Retrieval info: PRIVATE: READ_DURING_WRITE_MODE_PORT_A NUMERIC "3"
 // Retrieval info: PRIVATE: RegAddr NUMERIC "1"
@@ -139,8 +139,8 @@ endmodule
 // Retrieval info: PRIVATE: SingleClock NUMERIC "1"
 // Retrieval info: PRIVATE: UseDQRAM NUMERIC "1"
 // Retrieval info: PRIVATE: WRCONTROL_ACLR_A NUMERIC "0"
-// Retrieval info: PRIVATE: WidthAddr NUMERIC "8"
-// Retrieval info: PRIVATE: WidthData NUMERIC "148"
+// Retrieval info: PRIVATE: WidthAddr NUMERIC "10"
+// Retrieval info: PRIVATE: WidthData NUMERIC "146"
 // Retrieval info: PRIVATE: rden NUMERIC "0"
 // Retrieval info: LIBRARY: altera_mf altera_mf.altera_mf_components.all
 // Retrieval info: CONSTANT: CLOCK_ENABLE_INPUT_A STRING "BYPASS"
@@ -148,27 +148,27 @@ endmodule
 // Retrieval info: CONSTANT: INTENDED_DEVICE_FAMILY STRING "Cyclone IV GX"
 // Retrieval info: CONSTANT: LPM_HINT STRING "ENABLE_RUNTIME_MOD=YES,INSTANCE_NAME=SDCA"
 // Retrieval info: CONSTANT: LPM_TYPE STRING "altsyncram"
-// Retrieval info: CONSTANT: NUMWORDS_A NUMERIC "256"
+// Retrieval info: CONSTANT: NUMWORDS_A NUMERIC "1024"
 // Retrieval info: CONSTANT: OPERATION_MODE STRING "SINGLE_PORT"
 // Retrieval info: CONSTANT: OUTDATA_ACLR_A STRING "CLEAR0"
 // Retrieval info: CONSTANT: OUTDATA_REG_A STRING "UNREGISTERED"
 // Retrieval info: CONSTANT: POWER_UP_UNINITIALIZED STRING "FALSE"
 // Retrieval info: CONSTANT: READ_DURING_WRITE_MODE_PORT_A STRING "NEW_DATA_NO_NBE_READ"
-// Retrieval info: CONSTANT: WIDTHAD_A NUMERIC "8"
-// Retrieval info: CONSTANT: WIDTH_A NUMERIC "148"
+// Retrieval info: CONSTANT: WIDTHAD_A NUMERIC "10"
+// Retrieval info: CONSTANT: WIDTH_A NUMERIC "146"
 // Retrieval info: CONSTANT: WIDTH_BYTEENA_A NUMERIC "1"
 // Retrieval info: USED_PORT: aclr 0 0 0 0 INPUT GND "aclr"
-// Retrieval info: USED_PORT: address 0 0 8 0 INPUT NODEFVAL "address[7..0]"
+// Retrieval info: USED_PORT: address 0 0 10 0 INPUT NODEFVAL "address[9..0]"
 // Retrieval info: USED_PORT: clock 0 0 0 0 INPUT VCC "clock"
-// Retrieval info: USED_PORT: data 0 0 148 0 INPUT NODEFVAL "data[147..0]"
-// Retrieval info: USED_PORT: q 0 0 148 0 OUTPUT NODEFVAL "q[147..0]"
+// Retrieval info: USED_PORT: data 0 0 146 0 INPUT NODEFVAL "data[145..0]"
+// Retrieval info: USED_PORT: q 0 0 146 0 OUTPUT NODEFVAL "q[145..0]"
 // Retrieval info: USED_PORT: wren 0 0 0 0 INPUT NODEFVAL "wren"
 // Retrieval info: CONNECT: @aclr0 0 0 0 0 aclr 0 0 0 0
-// Retrieval info: CONNECT: @address_a 0 0 8 0 address 0 0 8 0
+// Retrieval info: CONNECT: @address_a 0 0 10 0 address 0 0 10 0
 // Retrieval info: CONNECT: @clock0 0 0 0 0 clock 0 0 0 0
-// Retrieval info: CONNECT: @data_a 0 0 148 0 data 0 0 148 0
+// Retrieval info: CONNECT: @data_a 0 0 146 0 data 0 0 146 0
 // Retrieval info: CONNECT: @wren_a 0 0 0 0 wren 0 0 0 0
-// Retrieval info: CONNECT: q 0 0 148 0 @q_a 0 0 148 0
+// Retrieval info: CONNECT: q 0 0 146 0 @q_a 0 0 146 0
 // Retrieval info: GEN_FILE: TYPE_NORMAL cachemem.v TRUE
 // Retrieval info: GEN_FILE: TYPE_NORMAL cachemem.inc FALSE
 // Retrieval info: GEN_FILE: TYPE_NORMAL cachemem.cmp FALSE

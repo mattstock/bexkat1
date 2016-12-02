@@ -174,8 +174,8 @@ assign fs_databus = (chipselect == 4'h6 && ~ssram_we_n ? ssram_dataout :
                       (chipselect == 4'h8 && ~fl_we_n ? { 16'h0000, flash_dataout } : 32'hzzzzzzzz));
 
 // System Blinknlights
-assign LEDR = { SW[17], SW[16], io_interrupts, miso, mosi, sclk, i2c_clock, i2c_tx, td_sdat, ~sd_ss, cpu_halt, mmu_fault, cpu_cyc };
-assign LEDG = { ~irda_rxd, 6'h0, cache_hitmiss };
+assign LEDR = { 1'h0 , SW[16], io_interrupts, 3'h0, ~irda_rxd, 2'h0, ~td_sdat, cpu_halt, mmu_fault, 1'b0 };
+assign LEDG = { cpu_cyc, ~i2c_clock, ~i2c_tx, miso, mosi, sclk, ~sd_ss, cache_hitmiss };
 
 // Internal bus wiring
 wire [3:0] chipselect;
