@@ -83,7 +83,7 @@ wire fifo_write = (bus_state == BUS_STATE_IDLE) & ~fifo_full & s_cyc_i & s_stb_i
 always_comb
 begin
   bus_state_next = bus_state;
-  case (bus_state)  
+  case (bus_state)
     BUS_STATE_IDLE: begin
       if (s_cyc_i & s_stb_i)
 		  if (~fifo_full)

@@ -20,7 +20,7 @@ module sdram_controller_cache(input 		clk_i,
 			      input [31:0] 	databus_in,
 			      output [31:0] databus_out,
             output [1:0] cache_status,
-			      input cache_en);
+				input cache_mode);
 
 wire [24:0] cache_adr_o, sdram_adr_i;
 wire [31:0] cache_dat_o, sdram_dat_o, sdram_dat_i, sd_cache_dat_o;
@@ -28,15 +28,15 @@ wire [3:0] cache_sel_o, sdram_sel_i;
 wire cache_cyc_o, cache_stb_o, cache_we_o, cache_stb_i, cache_ack_o;
 wire sdram_cyc_i, sdram_stb_i, sdram_ack_o, sdram_we_i;
 
-assign dat_o = (cache_en ? cache_dat_o : sdram_dat_o);
-assign ack_o = (cache_en ? cache_ack_o : sdram_ack_o);
-assign cache_stb_i = stb_i & cache_en;
-assign sdram_adr_i = (cache_en ? cache_adr_o : adr_i);
-assign sdram_dat_i = (cache_en ? sd_cache_dat_o : dat_i);
-assign sdram_cyc_i = (cache_en ? cache_cyc_o : cyc_i);
-assign sdram_stb_i = (cache_en ? cache_stb_o : stb_i);
-assign sdram_sel_i = (cache_en ? cache_sel_o : sel_i);
-assign sdram_we_i = (cache_en ? cache_we_o : we_i);
+assign dat_o = cache_dat_o;
+assign ack_o = cache_ack_o;
+assign cache_stb_i = stb_i;
+assign sdram_adr_i = cache_adr_o;
+assign sdram_dat_i = sd_cache_dat_o;
+assign sdram_cyc_i = cache_cyc_o;
+assign sdram_stb_i = cache_stb_o;
+assign sdram_sel_i = cache_sel_o;
+assign sdram_we_i = cache_we_o;
 
 cache cache0(.clk_i(clk_i), .rst_i(rst_i), .s_adr_i(adr_i), .s_dat_i(dat_i),
 	     .s_dat_o(cache_dat_o), .s_stb_i(cache_stb_i), .s_cyc_i(cyc_i),

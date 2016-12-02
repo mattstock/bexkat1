@@ -10,11 +10,11 @@ module spi_xcvr(
   output mosi,
   output reg sclk);
 
-parameter clkfreq = 50000000; // 50MHz
-parameter speed3 =    30000000; // 13MHz
-parameter speed2 =    20000000; // 8MHz
-parameter speed1 =    10000000; // 4.167MHz
-parameter speed0 =     1000000; // 1MHz
+parameter clkfreq =  100000000; // 100MHz
+parameter speed3 =    30000000;
+parameter speed2 =    20000000; // 16MHz
+parameter speed1 =    10000000; // 8MHz
+parameter speed0 =     1000000; // 2MHz
 
 reg [8:0] buffer, buffer_next;
 reg done_next;
