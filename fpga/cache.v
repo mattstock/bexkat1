@@ -43,8 +43,17 @@ localparam VALID = 'd145,
   DIRTY2 = 'd143, DIRTY3 = 'd144;
 
 assign cache_status = { state == STATE_HIT, state == STATE_MISS };
-assign { tag_in, rowaddr, wordsel } = fifo_adr_i;
-assign { valid, dirty, tag_cache, word3, word2, word1, word0 } = rowout;
+assign tag_in = fifo_adr_i[24:3];
+assign rowaddr = fifo_adr_i[2];
+assign wordsel = fifo_adr_i[1:0];
+
+assign valid = rowout[VALID];
+assign dirty = rowout[DIRTY3:DIRTY0];
+assign tag_cache = rowout[140:128];
+assign word3 = rowout[127:96];
+assign word2 = rowout[95:64];
+assign word1 = rowout[63:32];
+assign word0 = rowout[31:0];
 
 wire hit = (tag_cache == tag_in) & valid;
 
@@ -172,12 +181,12 @@ begin
       state_next = STATE_IDLE;
     end
     STATE_MISS: begin
-      state_next = (valid ? STATE_FLUSH : STATE_FILL);
+	   rowin_next[140:128] = tag_in;
+      state_next = (valid & |dirty  ? STATE_FLUSH : STATE_FILL);
     end
     STATE_FILL: begin
       rowin_next[VALID] = 1'b1;
       rowin_next[DIRTY0] = 1'b0; // clean
-      rowin_next[140:128] = tag_in;
       m_adr_o = { tag_in, rowaddr, 2'h0 };
       m_cyc_o = 1'b1;
       rowin_next[31:0] = m_dat_i;
@@ -185,7 +194,6 @@ begin
         state_next = STATE_FILL2;
     end
     STATE_FILL2: begin
-      m_adr_o = { tag_in, rowaddr, 2'h1 };
       m_cyc_o = 1'b1;
       rowin_next[DIRTY1] = 1'b0; // clean
       rowin_next[63:32] = m_dat_i;
@@ -193,7 +201,6 @@ begin
         state_next = STATE_FILL3;
     end
     STATE_FILL3: begin
-      m_adr_o = { tag_in, rowaddr, 2'h2 };
       m_cyc_o = 1'b1;
       rowin_next[DIRTY2] = 1'b0; // clean
       rowin_next[95:64] = m_dat_i;
@@ -201,7 +208,6 @@ begin
         state_next = STATE_FILL4;
     end
     STATE_FILL4: begin
-      m_adr_o = { tag_in, rowaddr, 2'h3 };
       m_cyc_o = 1'b1;
       rowin_next[DIRTY3] = 1'b0; // clean
       rowin_next[127:96] = m_dat_i;
@@ -223,7 +229,6 @@ begin
       end
     end
     STATE_FLUSH2: begin
-      m_adr_o = { tag_cache, rowaddr, 2'h1 };
       m_dat_o = word1;
       m_cyc_o = 1'b1;
       m_we_o = 1'b1;
@@ -233,7 +238,6 @@ begin
       end
     end
     STATE_FLUSH3: begin
-      m_adr_o = { tag_cache, rowaddr, 2'h2 };
       m_dat_o = word2;
       m_cyc_o = 1'b1;
       m_we_o = 1'b1;
@@ -243,7 +247,6 @@ begin
       end
     end
     STATE_FLUSH4: begin
-      m_adr_o = { tag_cache, rowaddr, 2'h3 };
       m_dat_o = word3;
       m_cyc_o = 1'b1;
       m_we_o = 1'b1;
@@ -253,7 +256,7 @@ begin
       end
     end
     STATE_FLUSH5: begin
-      wren = 1'b1;
+      wren = 1'b1; // to clear the dirty flags
       state_next = STATE_FILL;
     end
     default: state_next = STATE_IDLE;

@@ -167,15 +167,15 @@ assign enet_rst_n = ~rst_i;
 assign lcd_data = (lcd_rw ? 8'hzz : lcd_dataout);
 
 // External SDRAM, SSRAM & flash bus wiring
-assign sdram_databus = (~sdram_we_n ? sdram_dataout : 32'hzzzzzzzz);
+assign sdram_databus = (sdram_dir ? sdram_dataout : 32'hzzzzzzzz);
 assign fl_rst_n = ~rst_i;
 assign fs_addrbus = (chipselect == 4'h8 ? flash_addrout : ssram_addrout);
 assign fs_databus = (chipselect == 4'h6 && ~ssram_we_n ? ssram_dataout : 
                       (chipselect == 4'h8 && ~fl_we_n ? { 16'h0000, flash_dataout } : 32'hzzzzzzzz));
 
 // System Blinknlights
-assign LEDR = { 1'h0 , SW[16], io_interrupts, 3'h0, ~irda_rxd, 2'h0, ~td_sdat, cpu_halt, mmu_fault, 1'b0 };
-assign LEDG = { cpu_cyc, ~i2c_clock, ~i2c_tx, miso, mosi, sclk, ~sd_ss, cache_hitmiss };
+assign LEDR = { SW[17], SW[16], io_interrupts, miso, mosi, sclk, i2c_clock, i2c_tx, td_sdat, ~sd_ss, cpu_halt, mmu_fault, cpu_cyc };
+assign LEDG = { ~irda_rxd, 6'h0, cache_hitmiss };
 
 // Internal bus wiring
 wire [3:0] chipselect;
@@ -203,6 +203,7 @@ wire [1:0] cache_hitmiss;
 wire i2c_tx, i2c_clock;
 wire td_tx, td_clock;
 wire accel_tx, accel_clock;
+wire sdram_dir;
 
 // only need one cycle for reading onboard memory
 reg [1:0] rom_ack, vect_ack;
@@ -272,7 +273,7 @@ sdram_controller_cache sdram0(.clk_i(sysclock), .mem_clk_o(sdram_clk), .rst_i(rs
   .dat_i(cpu_writedata), .dat_o(sdram_readdata), .stb_i(chipselect == 4'h7), .cyc_i(cpu_cyc),
   .ack_o(sdram_ack), .sel_i(cpu_be), .we_i(cpu_write), .cache_status(cache_hitmiss),
   .we_n(sdram_we_n), .cs_n(sdram_cs_n), .cke(sdram_cke), .cas_n(sdram_cas_n), .ras_n(sdram_ras_n), .dqm(sdram_dqm), .ba(sdram_ba),
-  .addrbus_out(sdram_addrbus), .databus_in(sdram_databus), .databus_out(sdram_dataout), .cache_mode(SW[17]));
+  .addrbus_out(sdram_addrbus), .databus_in(sdram_databus), .databus_out(sdram_dataout), .databus_dir(sdram_dir), .cache_mode(SW[17]));
 led_matrix rgbmatrix0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cpu_writedata), .dat_o(matrix_readdata),
   .adr_i(cpu_address[11:2]), .sel_i(cpu_be), .we_i(cpu_write), .stb_i(chipselect == 4'h5), .cyc_i(cpu_cyc), .ack_o(matrix_ack),
   .demux({matrix_a, matrix_b, matrix_c}), .matrix0(matrix0), .matrix1(matrix1), .matrix_stb(matrix_stb), .matrix_clk(matrix_clk), .oe_n(matrix_oe_n));
