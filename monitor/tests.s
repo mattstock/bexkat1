@@ -1,77 +1,92 @@
+	.set matrix_base,  0x20000000
+	.set seg_base,     0x30000000
+	.set ssram_base,   0xc0000000
+	.set sdram_base,   0x00000000
+	.set sw_base,      0x30001000
+	.set sp_start,     0x08000000
+	.set lcd_base,     0x30006000
+	.set serial0_base, 0x30002000
+	
+# reserve register 12,13 for the macros
+	.macro print_test d,s=0
+	ldi %13, \d
+	lsli %13, %13, 24
+	addi %13, %13, \s
+	std.l %13, seg_base
+	.endm
+
+	.macro test_branch reg, val, dest
+	ldiu %13, \val
+	cmp \reg, %13
+	beq \dest
+	.endm
+
 .globl main
 main:
-	ldi %sp, 0x08000000	# reset to known stack
-	ldi %14, 0x20000000	# base matrix
-	ldi %13, 0x00000100     # test number
-	ldiu %0, 0x0
-	std.l %0, 0x20000000
-	std.l %0, 0x20000004
-	std.l %0, 0x20000008
-	std.l %0, 0x20000010
-	std.l %0, 0x20000018
-	std.l %0, 0x2000001c
-
+	ldi %sp, sp_start	# reset to known stack
+	ldd.l %0, sw_base
+	ldi %0, 0
+	std.l %0, matrix_base
+	ldi %3, 0x11aa065f
+	jsrd matrix_print3
+	test_branch %0, 0, reg_tests
+	test_branch %0, 2, alu_tests
+	test_branch %0, 4, mem_tests
+	test_branch %0, 8, fp_tests
+	bra main
+	
 # register based tests
 	
+reg_tests:	
 # mov.l, com, neg
-t1:	std.l %13, 0x30000000
+t1:	print_test 1,1
 	ldi %0, 0xff00ff00
 	mov.l %1, %0
 	cmp %0, %1
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 1,2
 	com %1, %0
 	ldi %2, 0x00ff00ff
 	cmp %1, %2
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 1,3
 	ldi %0, 0x12f8
 	ldi %2, 0xffffed08
 	neg %1, %0
 	cmp %1, %2
 	bne fail
-	ldi %0, 0xffffff00
-	and %13, %13, %0
-	addi %13, %13, 0x100
 
 # ext.b, mov.b
-t2:	std.l %13, 0x30000000
+t2:	print_test 2,1
 	ldi %0, 0x123454f5
 	ldi %2, 0xfffffff5
 	ext.b %1, %0
 	cmp %1, %2
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 2,2
 	ldi %2, 0x000000f5
 	mov.b %1, %0
 	cmp %1, %2
 	bne fail
+	print_test 2,3
 	ldi %0, 0x12345465
 	ldi %2, 0x00000065
 	ext.b %1, %0
 	cmp %1, %2
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 2,4
 	mov.b %1, %0
 	cmp %1, %2
 	bne fail
-	ldi %0, 0xffffff00
-	and %13, %13, %0
-	addi %13, %13, 0x100
 
 # ext, mov
-t3:	std.l %13, 0x30000000
+t3:	print_test 3,1
 	ldi %0, 0x123484f5
 	ldi %2, 0xffff84f5
 	ext %1, %0
 	cmp %1, %2
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 3,2
 	ldi %2, 0x000084f5
 	mov %1, %0
 	cmp %1, %2
@@ -81,220 +96,207 @@ t3:	std.l %13, 0x30000000
 	ext %1, %0
 	cmp %1, %2
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 3,2
 	mov %1, %0
 	cmp %1, %2
 	bne fail
-	ldi %0, 0xffffff00
-	and %13, %13, %0
-	addi %13, %13, 0x100
 
 # ALU reg ops
 
+alu_tests:
+	
 # add, sub, lsl, asr, lsr
-t4:	std.l %13, 0x30000000
+t4:	print_test 4,1
 	ldi %0, 0x30005006
 	ldi %1, 0x00000004
 	add %2, %0, %1
 	ldi %3, 0x3000500a
 	cmp %2, %3
 	bne fail
+	print_test 4,2
 	addi %13, %13, 1
-	std.l %13, 0x30000000
 	sub %2, %0, %1
 	ldi %3, 0x30005002
 	cmp %2, %3
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 4,3
 	lsl %2, %0, %1
 	ldi %3, 0x00050060
 	cmp %2, %3
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 4,4
 	asr %2, %0, %1
 	ldi %3, 0x03000500
 	cmp %2, %3
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 4,5
 	lsr %2, %0, %1
 	ldi %3, 0x03000500
 	cmp %2, %3
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 4,6
 	ldi %0, 0x90040500
 	asr %2, %0, %1
 	ldi %3, 0xf9004050
 	cmp %2, %3
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 4,7
 	lsr %2, %0, %1
 	ldi %3, 0x09004050
 	cmp %2, %3
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000	
-	ldi %0, 0xffffff00
-	and %13, %13, %0
-	addi %13, %13, 0x100
 
 # or, and, xor
-t5:	std.l %13, 0x30000000
+t5:	print_test 5,1
 	ldi %0, 0x30f05006
 	ldi %1, 0x00ff0004
 	or %2, %0, %1
 	ldi %3, 0x30ff5006
 	cmp %2, %3
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 5,2
 	and %2, %0, %1
 	ldi %3, 0x00f00004
 	cmp %2, %3
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 5,3
 	xor %2, %0, %1
 	ldi %3, 0x300f5002
 	cmp %2, %3
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
-	ldi %0, 0xffffff00
-	and %13, %13, %0
-	addi %13, %13, 0x100
 
 # add, sub, lsl, asr, lsr immediate
-t6:	std.l %13, 0x30000000
+t6:	print_test 6,1
 	ldi %0, 0x30005006
 	addi %2, %0, 4
 	ldi %3, 0x3000500a
 	cmp %2, %3
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 6,2
 	subi %2, %0, 4
 	ldi %3, 0x30005002
 	cmp %2, %3
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 6,3
 	lsli %2, %0, 4
 	ldi %3, 0x00050060
 	cmp %2, %3
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 6,4
 	asri %2, %0, 4
 	ldi %3, 0x03000500
 	cmp %2, %3
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 6,5
 	lsri %2, %0, 4
 	ldi %3, 0x03000500
 	cmp %2, %3
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 6,6
 	ldi %0, 0x90040500
 	asri %2, %0, 4
 	ldi %3, 0xf9004050
 	cmp %2, %3
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 6,7
 	lsri %2, %0, 4
 	ldi %3, 0x09004050
 	cmp %2, %3
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000	
-	ldi %0, 0xffffff00
-	and %13, %13, %0
-	addi %13, %13, 0x100
+	print_test 6,8
 
 # or, and, xor
-t7:	std.l %13, 0x30000000
+t7:	print_test 7,1
 	ldi %0, 0x30f05006
 	ori %2, %0, 0x00f4
 	ldi %3, 0x30f050f6
 	cmp %2, %3
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 7,2
 	andi %2, %0, 0x00f4
 	ldi %3, 0x00000004
 	cmp %2, %3
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 7,3
 	xori %2, %0, 0x00f4
 	ldi %3, 0x30f050f2
 	cmp %2, %3
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
-	ldi %0, 0xffffff00
-	and %13, %13, %0
-	addi %13, %13, 0x100
 	
 # register/memory tests
 
+mem_tests:	
 # relative read/write word with 0 offset
-t8:	std.l %13, 0x30000000
-	ldi %1, 0x00001000
+t8:	print_test 8,1
+	ldi %1, sdram_base+0x1000
 	ldi %2, 0xaabb33dd
 	st.l %2, (%1)
 	ld.l %0, (%1)
 	cmp %2, %0
 	bne fail
-	addi %13, %13, 0x100
+	print_test 8,2
+	ldi %1, ssram_base+0x1000
+	ldi %2, 0xaabb33dd
+	st.l %2, (%1)
+	ld.l %0, (%1)
+	cmp %2, %0
+	bne fail
 
 # relative r/w word with pos offset
-t9:	std.l %13, 0x30000000
-	ldi %1, 0x00001000
+t9:	print_test 9,1
+	ldi %1, sdram_base+0x200
 	ldi %2, 0x5533ddf3
 	st.l %2, 8(%1)
 	ld.l %0, 8(%1)
 	cmp %2, %0
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 9,2
 	addi %1, %1, 8
 	ld.l %0, (%1)
 	cmp %2, %0
 	bne fail
-	ldi %0, 0xffffff00
-	and %13, %13, %0
-	addi %13, %13, 0x100
+	print_test 9,3
+	ldi %1, ssram_base+0x200
+	ldi %2, 0x5533ddf3
+	st.l %2, 8(%1)
+	ld.l %0, 8(%1)
+	cmp %2, %0
+	bne fail
+	print_test 9,4
+	addi %1, %1, 8
+	ld.l %0, (%1)
+	cmp %2, %0
+	bne fail
 	
 # relative r/w word with neg offset
-ta:	std.l %13, 0x30000000
-	ldi %1, 0x00001000
+ta:	print_test 10,1
+	ldi %1, sdram_base+0x300
 	ldi %2, 0x6627df87
 	st.l %2, -12(%1)
 	ld.l %0, -12(%1)
 	cmp %2, %0
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 10,2
 	subi %1, %1, 12
 	ld.l %0, (%1)
 	cmp %2, %0
 	bne fail
-	ldi %0, 0xffffff00
-	and %13, %13, %0
-	addi %13, %13, 0x100
+	print_test 10,3
+	ldi %1, ssram_base+0x300
+	ldi %2, 0x6627df87
+	st.l %2, -12(%1)
+	ld.l %0, -12(%1)
+	cmp %2, %0
+	bne fail
+	print_test 10,4
+	subi %1, %1, 12
+	ld.l %0, (%1)
+	cmp %2, %0
+	bne fail
 
 # relative r/w half word with offsets
-tb:	std.l %13, 0x30000000
-	ldi %1, 0x00002000
+tb:	print_test 11,1
+	ldi %1, sdram_base+0x400
 	ldi %2, 0x6627df87
 	ldi %3, 0x0000df87
 	ldi %4, 0x11223344
@@ -303,26 +305,42 @@ tb:	std.l %13, 0x30000000
 	ld %0, (%1)
 	cmp %3, %0
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 11,2
 	ld.l %0, (%1)
 	ldi %4, 0xdf873344
 	cmp %4, %0
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 11,3
 	st %2, 2(%1)
 	ld.l %0, (%1)
 	ldi %4, 0xdf87df87
 	cmp %4, %0
 	bne fail
-	ldi %0, 0xffffff00
-	and %13, %13, %0
-	addi %13, %13, 0x100
+	print_test 11,4
+	ldi %1, sdram_base+0x400
+	ldi %2, 0x6627df87
+	ldi %3, 0x0000df87
+	ldi %4, 0x11223344
+	st.l %4, (%1)
+	st %2, (%1)
+	ld %0, (%1)
+	cmp %3, %0
+	bne fail
+	print_test 11,5
+	ld.l %0, (%1)
+	ldi %4, 0xdf873344
+	cmp %4, %0
+	bne fail
+	print_test 11,6
+	st %2, 2(%1)
+	ld.l %0, (%1)
+	ldi %4, 0xdf87df87
+	cmp %4, %0
+	bne fail
 
 # relative r/w byte with offsets
-tc:	std.l %13, 0x30000000
-	ldi %1, 0x00003000
+tc:	print_test 12,1
+	ldi %1, sdram_base+0x500
 	ldi %2, 0x6627df87
 	ldi %4, 0x11223344
 	st.l %4, (%1)
@@ -331,141 +349,147 @@ tc:	std.l %13, 0x30000000
 	ldi %3, 0x00000087
 	cmp %3, %0
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 12,2
 	ld.l %0, (%1)
 	ldi %3, 0x87223344
 	cmp %3, %0
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 12,3
 	st.b %2, 1(%1)
 	ld.l %0, (%1)
 	ldi %3, 0x87873344
 	cmp %3, %0
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 12,4
 	st.b %2, 2(%1)
 	ld.l %0, (%1)
 	ldi %3, 0x87878744
 	cmp %3, %0
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 12,5
 	st.b %2, 3(%1)
 	ld.l %0, (%1)
 	ldi %3, 0x87878787
 	cmp %3, %0
 	bne fail
-	ldi %0, 0xffffff00
-	and %13, %13, %0
-	addi %13, %13, 0x100
-	
+	print_test 12,6
+	ldi %1, sdram_base+0x500
+	ldi %2, 0x6627df87
+	ldi %4, 0x11223344
+	st.l %4, (%1)
+	st.b %2, (%1)
+	ld.b %0, (%1)
+	ldi %3, 0x00000087
+	cmp %3, %0
+	bne fail
+	print_test 12,7
+	ld.l %0, (%1)
+	ldi %3, 0x87223344
+	cmp %3, %0
+	bne fail
+	print_test 12,8
+	st.b %2, 1(%1)
+	ld.l %0, (%1)
+	ldi %3, 0x87873344
+	cmp %3, %0
+	bne fail
+	print_test 12,9
+	st.b %2, 2(%1)
+	ld.l %0, (%1)
+	ldi %3, 0x87878744
+	cmp %3, %0
+	bne fail
+	print_test 12,10
+	st.b %2, 3(%1)
+	ld.l %0, (%1)
+	ldi %3, 0x87878787
+	cmp %3, %0
+	bne fail
+
 # push/pop stack test
-td:	std.l %13, 0x30000000
-	ldi %0, 0x00ffff00
-	ldi %1, 0x07fffff8
+td:	print_test 13,1
+	ldi %sp, sp_start
+	ldi %0, sp_start-4
+	ldi %1, sp_start-8
 	push %0
 	push %1
 	cmp %sp, %1
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 13,2
 	pop %2
 	cmp %2, %1
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 13,3
 	pop %2
 	cmp %2, %0
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
-	ldi %1, 0x08000000
+	print_test 13,4
+	ldi %1, sp_start
 	cmp %sp, %1
 	bne fail
-	ldi %0, 0xffffff00
-	and %13, %13, %0
-	addi %13, %13, 0x100
 
 # jmp, jmpd, jsr, jsrd, rts
-te:	std.l %13, 0x30000000
+te:	print_test 14,1
 	ldi %0, jmppos
 	ldi %1, jsrpos
 	jmp (%0)
 	bra fail
-jmppos:	addi %13, %13, 1
-	std.l %13, 0x30000000
+jmppos:	print_test 14,2
 	jmpd j2pos
 	bra fail
-j2pos:	addi %13, %13, 1
-	std.l %13, 0x30000000
+j2pos:	print_test 14,3
 	jsr (%1)
 	ldi %2, 0x08000000
 	cmp %sp, %2
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 14,4
 	jsrd jsrpos
 	ldi %2, 0x08000000
 	cmp %sp, %2
 	bne fail
-	ldi %0, 0xffffff00
-	and %13, %13, %0
-	addi %13, %13, 0x100
 
 # mul, div, mod
-tf:	std.l %13, 0x30000000
+tf:	print_test 15,1
 	ldi %0, 154780
 	ldi %1, 4039
 	mulu %2, %1, %0
 	ldi %3, 625156420
 	cmp %2, %3
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 15,2
 	divu %2, %0, %1
 	ldi %3, 38
 	cmp %2, %3
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 15,3
 	modu %2, %0, %1
 	ldi %3, 1298
 	cmp %2, %3
 	bne fail
-	ldi %0, 0xffffff00
-	and %13, %13, %0
-	addi %13, %13, 0x100
 
+fp_tests:	
 # cvtis, cvtsi
-t10:	std.l %13, 0x30000000
+t10:	print_test 16,1
 	ldi %0, -30
 	cvtis %1, %0
 	ldi %2, 0xc1f00000
 	cmp %1, %2
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 16,2
 	ldiu %0, 25
 	cvtis %1, %0
 	ldi %2, 0x41c80000
 	cmp %1, %2
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 16,3
 	ldi %0, 0xc0c11687
 	cvtsi %1, %0
 	ldi %2, -6
 	cmp %1, %2
 	bne fail
-	ldi %0, 0xffffff00
-	and %13, %13, %0
-	addi %13, %13, 0x100
 
 # float math
-t11:	std.l %13, 0x30000000
+t11:	print_test 17,1
 	ldi %0, 0x420eaf0a         # 35.670937
 	ldi %1, 0x427537cf         # 61.3045
 	ldi %2, 0x4508aca0         # 2186.789 (mul)
@@ -476,145 +500,105 @@ t11:	std.l %13, 0x30000000
 	neg.s %10, %0
 	cmp.s %10, %6
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 17,2
 	mul.s %10, %0, %1
 	cmp.s %10, %2
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 17,3
 	div.s %10, %0, %1
 	cmp.s %10, %3
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 17,4
 	add.s %10, %0, %1
 	cmp.s %10, %4
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 17,5
 	sub.s %10, %0, %1
 	cmp.s %10, %5
 	bne fail
-	ldi %0, 0xffffff00
-	and %13, %13, %0
-	addi %13, %13, 0x100
 
 # branch tests 
-t12:	std.l %13, 0x30000000
+t12:	print_test 18,1
 	ldi %0, -10
 	ldi %1, 20
 	ldi %2, 6
 	ldi %3, -8
 	cmp %0, %1
 	brn fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 18,2
 # (-10 and 20)	
 	beq fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 18,3
 	bleu fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 18,4
 	bltu fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 18,5
 	bge fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 18,6
 	bgt fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 18,7
 # (20 and 6)
 	cmp %1, %2
 	beq fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 18,8
 	bleu fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 18,9
 	bltu fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 18,10
 	ble fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 18,11
 	blt fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 18,12
 # (6 and -8)
 	cmp %2, %3
 	beq fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 18,13
 	bgeu fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 18,14
 	bgtu fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 18,15
 	ble fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 18,16
 	blt fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
-
+	print_test 18,17
 # (-8 and -20)
 	cmp %3, %0
 	beq fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 18,18
 	bleu fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 18,19
 	bltu fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 18,20
 	ble fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 18,21
 	blt fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
-
+	print_test 18,22
 # (-8 and -8)
 	cmp %3, %3
 	bne fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 18,23
 	blt fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 18,24
 	bltu fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 18,25
 	bgt fail
-	addi %13, %13, 1
-	std.l %13, 0x30000000
+	print_test 18,26
 	bgtu fail
-	ldi %0, 0xffffff00
-	and %13, %13, %0
-	addi %13, %13, 0x100
+	print_test 18,27
 
 # block memory test
-t13:	std.l %13, 0x30000000
-	ldi %0, 0xff
-	std.l %0, 0x20000000
+t13:	print_test 19,1
 	ldi %0, 0x01234567
-	ldi %1, 0x00000000
-	ldi %2, 0x08000000
+	ldi %1, sdram_base
+	ldi %2, sdram_base+0x4000
 loop1:	st.l %0, (%1)
 	addi %1, %1, 4
 	addi %0, %0, 3
 	cmp %1, %2
 	bne loop1
-	ldi %0, 0xff00
-	std.l %0, 0x20000000
 	ldi %0, 0x01234567
-	ldi %1, 0x00000000
-	ldi %2, 0x08000000
+	ldi %1, sdram_base
+	ldi %2, sdram_base+0x4000
 loop2:	ld.l %3, (%1)
 	cmp %0, %3
 	bne fail
@@ -622,18 +606,12 @@ loop2:	ld.l %3, (%1)
 	addi %0, %0, 3
 	cmp %1, %2
 	bne loop2
-	
-	ldi %0, 0xffffff00
-	and %13, %13, %0
-	addi %13, %13, 0x100
 
 # individual memory test
-t14:	std.l %13, 0x30000000
-	ldi %0, 0xff
-	std.l %0, 0x20000004
+t14:	print_test 20,1
 	ldi %0, 0x01234567
-	ldi %1, 0x00000000
-	ldi %2, 0x08000000
+	ldi %1, sdram_base
+	ldi %2, sdram_base+0x40000
 loop3:	st.l %0, (%1)
 	ld.l %3, (%1)
 	cmp %0, %3
@@ -642,18 +620,11 @@ loop3:	st.l %0, (%1)
 	addi %0, %0, 7
 	cmp %1, %2
 	bne loop3
-	ldi %0, 0xffffff00
-	and %13, %13, %0
-	addi %13, %13, 0x100
-	ldi %0, 0xff00
-	std.l %0, 0x20000004	
 
 # semi-random cache memory test
-t15:	std.l %13, 0x30000000
-	ldi %0, 0xff
-	std.l %0, 0x20000010
-	ldi %1, 0x00000000
-	ldi %2, 0x00001000
+t15:	print_test 21,1
+	ldi %1, sdram_base
+	ldi %2, sdram_base+0x4000
 	ldi %6, 0xffff
 t15l1:	mov.b %3, %1
 	mov.b %0, %3
@@ -672,11 +643,8 @@ t15l1:	mov.b %3, %1
 	addi %1, %1, 4
 	cmp %1, %2
 	bne t15l1
-	ldi %0, 0xff00
-	std.l %0, 0x20000010
-	ldi %0, 0xff
-	std.l %0, 0x20000014
-	ldi %1, 0x00000000
+	print_test 21,2
+	ldi %1, sdram_base
 t15l2:	mov.b %3, %1
 	mov.b %0, %3
 	lsli %0, %0, 8
@@ -693,12 +661,9 @@ t15l2:	mov.b %3, %1
 	addi %1, %1, 4
 	cmp %1, %2
 	bne t15l2
-	ldi %0, 0xff00
-	std.l %0, 0x20000014
-	ldi %0, 0xff
-	std.l %0, 0x20000018
-	ldi %1, 0x00000000
-	ldi %4, 0x00002000
+	print_test 21,3
+	ldi %1, sdram_base
+	ldi %4, sdram_base+0x4000
 	ldiu %6, 0xff
 t15l3:	mov.b %3, %1
 	mov.b %0, %3
@@ -717,12 +682,9 @@ t15l3:	mov.b %3, %1
 	addi %1, %1, 4
 	cmp %1, %4
 	bne t15l3
-	ldi %0, 0xff00
-	std.l %0, 0x20000018
-	ldi %0, 0xff
-	std.l %0, 0x2000001c
-	ldi %1, 0x00000000
-	ldi %4, 0x00002000
+	print_test 21,4
+	ldi %1, sdram_base
+	ldi %4, sdram_base+0x4000
 t15l4:	mov.b %3, %1
 	mov.b %0, %3
 	lsli %0, %0, 8
@@ -739,24 +701,48 @@ t15l4:	mov.b %3, %1
 	addi %1, %1, 4
 	cmp %1, %4
 	bne t15l4
-	ldi %0, 0xff00
-	std.l %0, 0x2000001c
 	
 	bra pass
 	
-jsrpos:	addi %13, %13, 1
-	std.l %13, 0x30000000
-	ldi %2, 0x07fffffc
+jsrpos:	ldi %2, 0x07fffffc
 	cmp %sp, %2
 	bne fail
 	rts
 	bra fail
 	
 fail:	ldi %0, 0xff0000
-	std.l %0, 0x20000008
+	std.l %0, matrix_base
+	jsrd matrix_print3
 	bra fail
 
-pass:	ldiu %0, 0xff
-	std.l %0, 0x20000008
+pass:	ldi %0, 0xff00
+	std.l %0, matrix_base
 	bra pass	
+
+# print %3 in binary on the second line of matrix
+matrix_print3:
+	ldi %13, 0xff
+	ldiu %12, 0
+	ldi %11, matrix_base+(32*4)
+	ldi %10, 32
+	lsli %9, %10, 2
+	add %9, %11, %9
+mp1:	subi %9, %9, 4
+	st.l %12, (%9)
+	andi %8, %3, 0x1
+	cmp  %3, %8
+	beq mp2
+	st.l %13, (%9)
+mp2:	lsri %3, %3, 1
+	cmp %9, %11
+	bne mp1
+	rts
 	
+putchar:
+	ldi %11, 0
+busy:	ldd.l %10, serial0_base
+	andi %10, %10, 0x2000
+	cmp %11, %10
+	bne busy
+	std.l %0, serial0_base
+	rts
