@@ -2,6 +2,7 @@
 	.set seg_base,     0x30000000
 	.set ssram_base,   0xc0000000
 	.set sdram_base,   0x00000000
+	.set sdram_test,   0x07ff0000
 	.set sw_base,      0x30001000
 	.set sp_start,     0x08000000
 	.set lcd_base,     0x30006000
@@ -27,8 +28,6 @@ main:
 	ldd.l %0, sw_base
 	ldi %0, 0
 	std.l %0, matrix_base
-	ldi %3, 0x11aa065f
-	jsrd matrix_print3
 	test_branch %0, 0, reg_tests
 	test_branch %0, 2, alu_tests
 	test_branch %0, 4, mem_tests
@@ -590,7 +589,7 @@ t12:	print_test 18,1
 t13:	print_test 19,1
 	ldi %0, 0x01234567
 	ldi %1, sdram_base
-	ldi %2, sdram_base+0x4000
+	ldi %2, sdram_test
 loop1:	st.l %0, (%1)
 	addi %1, %1, 4
 	addi %0, %0, 3
@@ -598,7 +597,6 @@ loop1:	st.l %0, (%1)
 	bne loop1
 	ldi %0, 0x01234567
 	ldi %1, sdram_base
-	ldi %2, sdram_base+0x4000
 loop2:	ld.l %3, (%1)
 	cmp %0, %3
 	bne fail
@@ -611,7 +609,7 @@ loop2:	ld.l %3, (%1)
 t14:	print_test 20,1
 	ldi %0, 0x01234567
 	ldi %1, sdram_base
-	ldi %2, sdram_base+0x40000
+	ldi %2, sdram_test
 loop3:	st.l %0, (%1)
 	ld.l %3, (%1)
 	cmp %0, %3
@@ -624,7 +622,7 @@ loop3:	st.l %0, (%1)
 # semi-random cache memory test
 t15:	print_test 21,1
 	ldi %1, sdram_base
-	ldi %2, sdram_base+0x4000
+	ldi %2, sdram_test
 	ldi %6, 0xffff
 t15l1:	mov.b %3, %1
 	mov.b %0, %3
@@ -663,7 +661,7 @@ t15l2:	mov.b %3, %1
 	bne t15l2
 	print_test 21,3
 	ldi %1, sdram_base
-	ldi %4, sdram_base+0x4000
+	ldi %4, sdram_test
 	ldiu %6, 0xff
 t15l3:	mov.b %3, %1
 	mov.b %0, %3
@@ -684,7 +682,7 @@ t15l3:	mov.b %3, %1
 	bne t15l3
 	print_test 21,4
 	ldi %1, sdram_base
-	ldi %4, sdram_base+0x4000
+	ldi %4, sdram_test
 t15l4:	mov.b %3, %1
 	mov.b %0, %3
 	lsli %0, %0, 8
@@ -701,7 +699,6 @@ t15l4:	mov.b %3, %1
 	addi %1, %1, 4
 	cmp %1, %4
 	bne t15l4
-	
 	bra pass
 	
 jsrpos:	ldi %2, 0x07fffffc
@@ -712,15 +709,18 @@ jsrpos:	ldi %2, 0x07fffffc
 	
 fail:	ldi %0, 0xff0000
 	std.l %0, matrix_base
-	jsrd matrix_print3
+	ldi %13, 0x00803010
+	jsrd print_matrix
 	bra fail
 
 pass:	ldi %0, 0xff00
 	std.l %0, matrix_base
 	bra pass	
 
-# print %3 in binary on the second line of matrix
-matrix_print3:
+# print %1 in binary on the second line of matrix
+# use the contents of %13 as the color
+print_matrix:
+	push %1
 	ldi %13, 0xff
 	ldiu %12, 0
 	ldi %11, matrix_base+(32*4)
@@ -729,13 +729,14 @@ matrix_print3:
 	add %9, %11, %9
 mp1:	subi %9, %9, 4
 	st.l %12, (%9)
-	andi %8, %3, 0x1
-	cmp  %3, %8
+	andi %8, %1, 0x1
+	cmp  %12, %8
 	beq mp2
 	st.l %13, (%9)
-mp2:	lsri %3, %3, 1
+mp2:	lsri %1, %1, 1
 	cmp %9, %11
 	bne mp1
+	pop %1
 	rts
 	
 putchar:
