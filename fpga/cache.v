@@ -43,8 +43,8 @@ localparam VALID = 'd145,
   DIRTY2 = 'd143, DIRTY3 = 'd144;
 
 assign cache_status = { state == STATE_HIT, state == STATE_MISS };
-assign tag_in = fifo_adr_i[24:3];
-assign rowaddr = fifo_adr_i[2];
+assign tag_in = fifo_adr_i[24:12];
+assign rowaddr = fifo_adr_i[11:2];
 assign wordsel = fifo_adr_i[1:0];
 
 assign valid = rowout[VALID];
