@@ -11,7 +11,7 @@
 # reserve register 12,13 for the macros
 	.macro print_test d,s=0
 	ldi %13, \d
-	lsli %13, %13, 24
+	lsli %13, %13, 16
 	addi %13, %13, \s
 	std.l %13, seg_base
 	.endm

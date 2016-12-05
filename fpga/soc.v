@@ -282,7 +282,7 @@ iocontroller #(.clkfreq(clkfreq)) io0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cp
   .miso(miso), .mosi(mosi), .sclk(sclk), .spi_selects(spi_selects), .sd_wp(sd_wp_n), .fan(fan_ctrl),
   .lcd_e(lcd_e), .lcd_data(lcd_dataout), .lcd_rs(lcd_rs), .lcd_on(lcd_on), .lcd_rw(lcd_rw), .interrupts(io_interrupts),
   .rx0(serial0_rx), .tx0(serial0_tx), .rts0(serial0_rts), .cts0(serial0_cts), .tx1(serial1_tx), .rx1(serial1_rx), .sw(SW[15:0]),
-  .ps2kbd({ps2kbd_clk, ps2kbd_data}), .hex({HEX7,HEX6,HEX5,HEX4, HEX3, HEX2, HEX1, HEX0}),
+  .ps2kbd({ps2kbd_clk, ps2kbd_data}), .hex7(HEX7), .hex6(HEX6), .hex5(HEX5), .hex4(HEX4), .hex3(HEX3), .hex2(HEX2), .hex1(HEX1), .hex0(HEX0),
   .codec_pbdat(codec_pbdat), .codec_recdat(codec_recdat),
   .codec_reclrc(codec_reclrc), .codec_pblrc(codec_pblrc),
   .i2c_dataout({accel_tx, td_tx, i2c_tx}), .i2c_datain({accel_sdat, td_sdat, codec_sdin}),

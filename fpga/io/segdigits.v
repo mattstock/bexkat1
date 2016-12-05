@@ -1,13 +1,13 @@
 module segdigits(
   input [31:0] in,
-  output [6:0] out0,
-  output [6:0] out1,
-  output [6:0] out2,
-  output [6:0] out3,
-  output [6:0] out4,
-  output [6:0] out5,
-  output [6:0] out6,
-  output [6:0] out7);
+  output [7:0] out0,
+  output [7:0] out1,
+  output [7:0] out2,
+  output [7:0] out3,
+  output [7:0] out4,
+  output [7:0] out5,
+  output [7:0] out6,
+  output [7:0] out7);
 
 hexdisp h0(.in(in[3:0]), .out(out0));  
 hexdisp h1(.in(in[7:4]), .out(out1));  

@@ -37,7 +37,14 @@ module iocontroller(input clk_i,
 			 output [2:0] i2c_scl,
 			 input [2:0] i2c_datain,
 			 input [2:0] i2c_clkin,
-		    output [55:0] hex,
+		    output [7:0] hex0,
+		    output [7:0] hex1,
+		    output [7:0] hex2,
+		    output [7:0] hex3,
+		    output [7:0] hex4,
+		    output [7:0] hex5,
+		    output [7:0] hex6,
+		    output [7:0] hex7,
 		    output reg [8:0] led,
 			 input irda);
 
@@ -246,6 +253,6 @@ timerint timerint0(.clk_i(clk_i), .rst_i(rst_i), .cyc_i(cyc_o),
 
 fan_ctrl fan0(.clk_i(clk_i), .rst_i(rst_i), .speed(fanspeed), .fan_pwm(fan));
 
-segdigits segdigits0(.in(segreg), .out0(hex[6:0]), .out1(hex[13:7]), .out2(hex[20:14]), .out3(hex[27:21]), .out4(hex[34:28]), .out5(hex[41:35]), .out6(hex[48:42]), .out7(hex[55:49]));
+segdigits segdigits0(.in(segreg), .out0(hex0), .out1(hex1), .out2(hex2), .out3(hex3), .out4(hex4), .out5(hex5), .out6(hex6), .out7(hex7));
 
 endmodule
