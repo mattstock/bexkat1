@@ -590,6 +590,60 @@ set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ENABLE_ADVANCED_T
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[24] -to cpu|vcc -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[29] -to cpu|gnd -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[22] -to cpu|vcc -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[23] -to cpu|gnd -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[9] -to cpu|gnd -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[16] -to cpu|vcc -section_id cpu
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STORAGE_QUALIFIER_GAP_RECORD=1" -section_id cpu
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STORAGE_QUALIFIER_MODE=TRANSITIONAL" -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[0] -to cpu|vcc -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[7] -to cpu|vcc -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[8] -to cpu|vcc -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[10] -to cpu|gnd -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[0] -to "bexkat2:bexkat0|rst_i" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[0] -to "bexkat2:bexkat0|rst_i" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[0] -to "bexkat2:bexkat0|rst_i" -section_id cpu
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SEGMENT_SIZE=4096" -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[1] -to cpu|gnd -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[5] -to cpu|gnd -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[12] -to cpu|vcc -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[17] -to cpu|vcc -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[19] -to cpu|gnd -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[20] -to cpu|gnd -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[27] -to cpu|gnd -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[31] -to cpu|gnd -section_id cpu
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SAMPLE_DEPTH=4096" -section_id cpu
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_DATA_BITS=1" -section_id cpu
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_BITS=1" -section_id cpu
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STORAGE_QUALIFIER_BITS=1" -section_id cpu
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK=0000000000000000000000000000000" -section_id cpu
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK_LENGTH=31" -section_id cpu
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STORAGE_QUALIFIER_INVERSION_MASK_LENGTH=2" -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[2] -to cpu|vcc -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[3] -to cpu|vcc -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[4] -to cpu|vcc -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[6] -to cpu|vcc -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[11] -to cpu|vcc -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[13] -to cpu|vcc -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[14] -to cpu|vcc -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[15] -to cpu|vcc -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[18] -to cpu|vcc -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[21] -to cpu|vcc -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[25] -to cpu|gnd -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[26] -to cpu|gnd -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[28] -to cpu|vcc -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[30] -to cpu|vcc -section_id cpu
+set_global_assignment -name VERILOG_FILE sdram/sdram_controller_cache.v
+set_global_assignment -name VERILOG_FILE sdram/sdram_controller.v
+set_global_assignment -name VERILOG_FILE sdram/cachemem.v
+set_global_assignment -name QIP_FILE sdram/cachemem.qip
+set_global_assignment -name VERILOG_FILE sdram/cachefifo.v
+set_global_assignment -name QIP_FILE sdram/cachefifo.qip
+set_global_assignment -name VERILOG_FILE sdram/cache.v
+set_global_assignment -name VERILOG_FILE io/matrixpll.v
+set_global_assignment -name QIP_FILE io/matrixpll.qip
+set_global_assignment -name VERILOG_FILE io/matrixmem.v
+set_global_assignment -name QIP_FILE io/matrixmem.qip
+set_global_assignment -name VERILOG_FILE io/led_matrix.v
 set_global_assignment -name VERILOG_FILE io/timescale.v
 set_global_assignment -name VERILOG_FILE io/i2c_master_top.v
 set_global_assignment -name VERILOG_FILE io/i2c_master_defines.v
@@ -598,7 +652,6 @@ set_global_assignment -name VERILOG_FILE io/i2c_master_bit_ctrl.v
 set_global_assignment -name VERILOG_FILE io/timerint.v
 set_global_assignment -name MIF_FILE ../monitor/bootstrap.mif
 set_global_assignment -name MIF_FILE ../monitor/tests.mif
-set_global_assignment -name VERILOG_FILE sdram_controller_cache.v
 set_global_assignment -name VERILOG_INCLUDE_FILE cpu/bexkat2.vh
 set_global_assignment -name VERILOG_FILE cpu/fpu.v
 set_global_assignment -name VERILOG_FILE io/ps2_kbd.v
@@ -610,7 +663,6 @@ set_global_assignment -name VERILOG_FILE cpu/bexkat1.v
 set_global_assignment -name VERILOG_FILE cpu/control2.v
 set_global_assignment -name QIP_FILE vgalinebuf.qip
 set_global_assignment -name VERILOG_FILE vga_controller.v
-set_global_assignment -name VERILOG_FILE sdram_controller.v
 set_global_assignment -name VERILOG_FILE mmu.v
 set_global_assignment -name VERILOG_FILE io/spi_xcvr.v
 set_global_assignment -name VERILOG_FILE io/lcd_module.v
@@ -628,11 +680,8 @@ set_global_assignment -name VERILOG_FILE cpu/intsdiv.v
 set_global_assignment -name QIP_FILE cpu/intsdiv.qip
 set_global_assignment -name VERILOG_FILE cpu/intcalc.v
 set_global_assignment -name VERILOG_FILE cpu/alu.v
-set_global_assignment -name VERILOG_FILE matrixmem.v
-set_global_assignment -name QIP_FILE matrixmem.qip
 set_global_assignment -name QIP_FILE monitor.qip
 set_global_assignment -name VERILOG_FILE monitor.v
-set_global_assignment -name VERILOG_FILE led_matrix.v
 set_global_assignment -name SDC_FILE soc.sdc
 set_global_assignment -name VERILOG_FILE soc.v
 set_global_assignment -name VERILOG_FILE debounce.v
@@ -662,15 +711,11 @@ set_global_assignment -name QIP_FILE mandelbrot/mandmem.qip
 set_global_assignment -name VERILOG_FILE mandelbrot/mandunit.v
 set_global_assignment -name VERILOG_FILE ssram_controller.v
 set_global_assignment -name VERILOG_FILE flash_controller.v
-set_global_assignment -name VERILOG_FILE adapt32to16.v
 set_global_assignment -name VERILOG_FILE vga_master.v
 set_global_assignment -name VERILOG_FILE arbiter.v
 set_global_assignment -name QIP_FILE vga_pallette.qip
-set_global_assignment -name VERILOG_FILE cputest.v
 set_global_assignment -name QIP_FILE io/ps2_kbd_fifo.qip
 set_global_assignment -name VERILOG_FILE io/segdigits.v
-set_global_assignment -name VERILOG_FILE cache.v
-set_global_assignment -name QIP_FILE cachemem.qip
 set_global_assignment -name QIP_FILE testrom.qip
 set_global_assignment -name QIP_FILE mandelbrot/mand_mult.qip
 set_global_assignment -name QIP_FILE mandelbrot/mand_sub.qip
@@ -682,48 +727,5 @@ set_global_assignment -name QIP_FILE mandelbrot/mand_comp.qip
 set_global_assignment -name QIP_FILE mandelbrot/shift.qip
 set_global_assignment -name QIP_FILE codec_pll.qip
 set_global_assignment -name QIP_FILE codec_buffer.qip
-set_global_assignment -name QIP_FILE cachefifo.qip
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[23] -to cpu|gnd -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[9] -to cpu|gnd -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[16] -to cpu|vcc -section_id cpu
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STORAGE_QUALIFIER_GAP_RECORD=1" -section_id cpu
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STORAGE_QUALIFIER_MODE=TRANSITIONAL" -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[0] -to cpu|vcc -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[7] -to cpu|vcc -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[8] -to cpu|vcc -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[10] -to cpu|gnd -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[0] -to "bexkat2:bexkat0|rst_i" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[0] -to "bexkat2:bexkat0|rst_i" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[0] -to "bexkat2:bexkat0|rst_i" -section_id cpu
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SEGMENT_SIZE=4096" -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[1] -to cpu|gnd -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[5] -to cpu|gnd -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[12] -to cpu|vcc -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[17] -to cpu|vcc -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[19] -to cpu|gnd -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[20] -to cpu|gnd -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[27] -to cpu|gnd -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[31] -to cpu|gnd -section_id cpu
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SAMPLE_DEPTH=4096" -section_id cpu
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_DATA_BITS=1" -section_id cpu
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_BITS=1" -section_id cpu
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STORAGE_QUALIFIER_BITS=1" -section_id cpu
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK=0000000000000000000000000000000" -section_id cpu
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK_LENGTH=31" -section_id cpu
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STORAGE_QUALIFIER_INVERSION_MASK_LENGTH=2" -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[2] -to cpu|vcc -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[3] -to cpu|vcc -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[4] -to cpu|vcc -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[6] -to cpu|vcc -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[11] -to cpu|vcc -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[13] -to cpu|vcc -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[14] -to cpu|vcc -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[15] -to cpu|vcc -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[18] -to cpu|vcc -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[21] -to cpu|vcc -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[25] -to cpu|gnd -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[26] -to cpu|gnd -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[28] -to cpu|vcc -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[30] -to cpu|vcc -section_id cpu
 set_global_assignment -name SLD_FILE db/stp1_auto_stripped.stp
