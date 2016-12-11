@@ -1,5 +1,5 @@
 CC = bexkat1-elf-gcc
-BOARD = de2
+BOARD = max10
 LDFLAGS = -specs=$(BOARD).specs
 LDLIBS = -lsupport -lm
 OBJCOPY = bexkat1-elf-objcopy

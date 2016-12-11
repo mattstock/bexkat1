@@ -1,5 +1,5 @@
 CC = bexkat1-elf-gcc
-CFLAGS = -Iinclude -specs=de2.specs
+CFLAGS = -Iinclude -specs=max10.specs
 AS = bexkat1-elf-as
 AR = bexkat1-elf-ar
 RANLIB = bexkat1-elf-ranlib

@@ -2,7 +2,9 @@
 	.set seg_base,     0x30000000
 	.set ssram_base,   0xc0000000
 	.set sdram_base,   0x00000000
-	.set sdram_test,   0x07ff0000
+#	.set sdram_test,   0x07ff0000
+#	.set sdram_test,   0x03ff0000
+	.set sdram_test,   0x00040000
 	.set sw_base,      0x30001000
 	.set sp_start,     0x08000000
 	.set lcd_base,     0x30006000
@@ -28,6 +30,7 @@ main:
 	ldd.l %0, sw_base
 	ldi %0, 0
 	std.l %0, matrix_base
+	std.l %0, sw_base
 	test_branch %0, 0, reg_tests
 	test_branch %0, 2, alu_tests
 	test_branch %0, 4, mem_tests
@@ -233,13 +236,13 @@ t8:	print_test 8,1
 	ld.l %0, (%1)
 	cmp %2, %0
 	bne fail
-	print_test 8,2
-	ldi %1, ssram_base+0x1000
-	ldi %2, 0xaabb33dd
-	st.l %2, (%1)
-	ld.l %0, (%1)
-	cmp %2, %0
-	bne fail
+#	print_test 8,2
+#	ldi %1, ssram_base+0x1000
+#	ldi %2, 0xaabb33dd
+#	st.l %2, (%1)
+#	ld.l %0, (%1)
+#	cmp %2, %0
+#	bne fail
 
 # relative r/w word with pos offset
 t9:	print_test 9,1
@@ -254,17 +257,17 @@ t9:	print_test 9,1
 	ld.l %0, (%1)
 	cmp %2, %0
 	bne fail
-	print_test 9,3
-	ldi %1, ssram_base+0x200
-	ldi %2, 0x5533ddf3
-	st.l %2, 8(%1)
-	ld.l %0, 8(%1)
-	cmp %2, %0
-	bne fail
-	print_test 9,4
-	addi %1, %1, 8
-	ld.l %0, (%1)
-	cmp %2, %0
+#	print_test 9,3
+#	ldi %1, ssram_base+0x200
+#	ldi %2, 0x5533ddf3
+#	st.l %2, 8(%1)
+#	ld.l %0, 8(%1)
+#	cmp %2, %0
+#	bne fail
+#	print_test 9,4
+#	addi %1, %1, 8
+#	ld.l %0, (%1)
+#	cmp %2, %0
 	bne fail
 	
 # relative r/w word with neg offset
@@ -280,17 +283,17 @@ ta:	print_test 10,1
 	ld.l %0, (%1)
 	cmp %2, %0
 	bne fail
-	print_test 10,3
-	ldi %1, ssram_base+0x300
-	ldi %2, 0x6627df87
-	st.l %2, -12(%1)
-	ld.l %0, -12(%1)
-	cmp %2, %0
-	bne fail
-	print_test 10,4
-	subi %1, %1, 12
-	ld.l %0, (%1)
-	cmp %2, %0
+#	print_test 10,3
+#	ldi %1, ssram_base+0x300
+#	ldi %2, 0x6627df87
+#	st.l %2, -12(%1)
+#	ld.l %0, -12(%1)
+#	cmp %2, %0
+#	bne fail
+#	print_test 10,4
+#	subi %1, %1, 12
+#	ld.l %0, (%1)
+#	cmp %2, %0
 	bne fail
 
 # relative r/w half word with offsets
@@ -707,13 +710,17 @@ jsrpos:	ldi %2, 0x07fffffc
 	rts
 	bra fail
 	
-fail:	ldi %0, 0xff0000
+fail:	ldi %0, 0x01
+	std.l %0, sw_base
+	ldi %0, 0xff0000
 	std.l %0, matrix_base
 	ldi %13, 0x00803010
 	jsrd print_matrix
 	bra fail
 
-pass:	ldi %0, 0xff00
+pass:	ldi %0, 0x02
+	std.l %0, sw_base
+	ldi %0, 0xff00
 	std.l %0, matrix_base
 	bra pass	
 

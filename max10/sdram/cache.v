@@ -17,8 +17,11 @@ module cache(
   input [31:0] m_dat_i,
   output [31:0] m_dat_o,
   output reg m_stb_o,
+  input m_stall_i,
   input m_ack_i);
   
+parameter width32 = 1'b1;
+
 logic [145:0] rowin, rowin_next;
 wire [145:0] rowout;
 
@@ -187,31 +190,31 @@ begin
     STATE_FILL: begin
       rowin_next[VALID] = 1'b1;
       rowin_next[DIRTY0] = 1'b0; // clean
-      m_adr_o = { tag_in, rowaddr, 2'h0 };
+      m_adr_o = (width32 ? { tag_cache, rowaddr, 2'h0 } : { tag_cache[11:0], rowaddr, 3'h0 });
       m_cyc_o = 1'b1;
       rowin_next[31:0] = m_dat_i;
-      if (m_ack_i)
+      if (m_ack_i && !m_stall_i)
         state_next = STATE_FILL2;
     end
     STATE_FILL2: begin
       m_cyc_o = 1'b1;
       rowin_next[DIRTY1] = 1'b0; // clean
       rowin_next[63:32] = m_dat_i;
-      if (m_ack_i)
+      if (m_ack_i && !m_stall_i)
         state_next = STATE_FILL3;
     end
     STATE_FILL3: begin
       m_cyc_o = 1'b1;
       rowin_next[DIRTY2] = 1'b0; // clean
       rowin_next[95:64] = m_dat_i;
-      if (m_ack_i)
+      if (m_ack_i && !m_stall_i)
         state_next = STATE_FILL4;
     end
     STATE_FILL4: begin
       m_cyc_o = 1'b1;
       rowin_next[DIRTY3] = 1'b0; // clean
       rowin_next[127:96] = m_dat_i;
-      if (m_ack_i)
+      if (m_ack_i && !m_stall_i)
         state_next = STATE_FILL5;
     end
     STATE_FILL5: begin
@@ -219,11 +222,11 @@ begin
       state_next = STATE_BUSY;
     end
     STATE_FLUSH: begin
-      m_adr_o = { tag_cache, rowaddr, 2'h0 };
+      m_adr_o = (width32 ? { tag_cache, rowaddr, 2'h0 } : { tag_cache[11:0], rowaddr, 3'h0 });
       m_dat_o = word0;
       m_cyc_o = 1'b1;
       m_we_o = 1'b1;
-      if (m_ack_i) begin
+      if (m_ack_i && !m_stall_i) begin
         rowin_next[DIRTY0] = 1'b0;
         state_next = STATE_FLUSH2;
       end
@@ -232,7 +235,7 @@ begin
       m_dat_o = word1;
       m_cyc_o = 1'b1;
       m_we_o = 1'b1;
-      if (m_ack_i) begin
+      if (m_ack_i && !m_stall_i) begin
         rowin_next[DIRTY1] = 1'b0;
         state_next = STATE_FLUSH3;
       end
@@ -241,7 +244,7 @@ begin
       m_dat_o = word2;
       m_cyc_o = 1'b1;
       m_we_o = 1'b1;
-      if (m_ack_i) begin
+      if (m_ack_i && !m_stall_i) begin
         rowin_next[DIRTY2] = 1'b0;
         state_next = STATE_FLUSH4;
       end
@@ -250,7 +253,7 @@ begin
       m_dat_o = word3;
       m_cyc_o = 1'b1;
       m_we_o = 1'b1;
-      if (m_ack_i) begin
+      if (m_ack_i && !m_stall_i) begin
         rowin_next[DIRTY3] = 1'b0;
         state_next = STATE_FLUSH5;
       end

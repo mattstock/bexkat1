@@ -21,31 +21,6 @@ void rts_set();
 unsigned char katherine[] = { 194, 132, 190, 148, 129, 141, 0 }; 
 unsigned char rebecca[] = { 148, 131, 172, 131, 196, 131, 0 };
 
-void flash_erase(void) {
-  unsigned short *fm, *fm2;
-
-  fm = (unsigned short *)0x08000aaa; // 555 * 2
-  fm2 = (unsigned short *)0x08000554; // 2aa * 2
-  *fm = (short)0x00aa;
-  *fm2 = (short)0x0055;
-  *fm = (short)0x0080;
-  *fm = (short)0x00aa;
-  *fm2 = (short)0x0055;
-  *fm = (short)0x0010;
-}
-
-void flash_write(unsigned int addr, unsigned short val) {
-  unsigned short *fm, *fm2;
-
-  fm = (unsigned short *)0x08000aaa; // 555 * 2
-  fm2 = (unsigned short *)0x08000554; // 2aa * 2
-  *fm = (short)0x00aa;
-  *fm2 = (short)0x0055;
-  *fm = (short)0x00a0;
-  fm = (unsigned short *)addr;
-  *fm = val;
-}
-
 void serial_dumpmem(unsigned port,
 		    unsigned addr, 
 		    unsigned short len) {
@@ -220,10 +195,6 @@ void main(void) {
       serial_print(0, "\nSDCard test...\n");
       sdcard_ls();
       break;
-    case 'e':
-      serial_print(0, "\nerasing flash...\n");
-      flash_erase();
-      break;
     case 'm':
       matrix_init();
       break;
@@ -241,13 +212,6 @@ void main(void) {
       while (*msg != '\0') {
 	val = (val << 4) + hextoi(*msg);
 	msg++;
-      }
-      if (addr >= 0xe0000000 && addr < 0xf0000000) {
-        serial_print(0, "\nflash write");
-        flash_write(addr, val);
-      } else {
-        ref = (int *)addr;
-        *ref = val;
       }
       serial_print(0, "\n");
       break;
