@@ -190,7 +190,7 @@ begin
     STATE_FILL: begin
       rowin_next[VALID] = 1'b1;
       rowin_next[DIRTY0] = 1'b0; // clean
-      m_adr_o = (width32 ? { tag_cache, rowaddr, 2'h0 } : { tag_cache[11:0], rowaddr, 3'h0 });
+      m_adr_o = (width32 ? { tag_in, rowaddr, 2'h0 } : { tag_in[11:0], rowaddr, 3'h0 });
       m_cyc_o = 1'b1;
       rowin_next[31:0] = m_dat_i;
       if (m_ack_i && !m_stall_i)

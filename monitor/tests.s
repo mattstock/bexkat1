@@ -3,8 +3,8 @@
 	.set ssram_base,   0xc0000000
 	.set sdram_base,   0x00000000
 #	.set sdram_test,   0x07ff0000
-#	.set sdram_test,   0x03ff0000
-	.set sdram_test,   0x00040000
+	.set sdram_test,   0x03ff0000
+#	.set sdram_test,   0x00040000
 	.set sw_base,      0x30001000
 	.set sp_start,     0x08000000
 	.set lcd_base,     0x30006000
@@ -587,6 +587,35 @@ t12:	print_test 18,1
 	print_test 18,26
 	bgtu fail
 	print_test 18,27
+
+# cache test
+t16:    print_test 22,1
+	ldi %0, 0x336699aa
+	ldi %1, sdram_base
+        st.l %0, (%1)
+	ldi %0, 0x44008811
+	ldi %1, sdram_base+0x3ff0
+        st.l %0, (%1)
+	ldi %0, 0xaaeeffcc
+	ldi %1, sdram_base+0x4000
+        st.l %0, (%1)
+	ldi %0, 0x336699aa
+	ldi %1, sdram_base
+	ld.l %2, (%1)
+	cmp %0, %2
+	bne fail
+	print_test 22,2
+	ldi %0, 0x44008811
+	ldi %1, sdram_base+0x3ff0
+	ld.l %2, (%1)
+	cmp %0, %2
+	bne fail
+	print_test 22,3
+	ldi %0, 0xaaeeffcc
+	ldi %1, sdram_base+0x4000
+	ld.l %2, (%1)
+	cmp %0, %2
+	bne fail
 
 # block memory test
 t13:	print_test 19,1
