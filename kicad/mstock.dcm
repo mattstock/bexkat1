@@ -29,6 +29,11 @@ $CMP DS3234
 D DS3234 Real Time Clock
 $ENDCMP
 #
+$CMP JACK_TRRS_4PINS
+D audio jack TRRS 4 pins
+K audio jack connector TRRS
+$ENDCMP
+#
 $CMP JACK_TRS_3PINS
 D audio jack TRS 3 pins
 K audio jack connector TRS
@@ -55,6 +60,11 @@ $CMP LM7812
 D Linear Regulator +12V
 K POWER REGUL
 F regulator\lm78xx.pdf
+$ENDCMP
+#
+$CMP MAX3232
+D RS232 Driver
+K RS232
 $ENDCMP
 #
 $CMP NPN_CBE
