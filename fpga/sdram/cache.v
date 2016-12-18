@@ -22,9 +22,12 @@ module cache(
 logic [145:0] rowin, rowin_next;
 wire [145:0] rowout;
 
-reg [31:0] s_dat_o_next;
-reg [4:0] state, state_next;
-reg [9:0] initaddr, initaddr_next;
+logic [31:0] s_dat_o_next;
+logic [4:0] state, state_next;
+logic [9:0] initaddr, initaddr_next;
+logic [31:0] hitreg, hitreg_next;
+logic [31:0] flushreg, flushreg_next;
+logic [31:0] fillreg, fillreg_next;
 
 wire [12:0] tag_in, tag_cache;
 wire [9:0] rowaddr;
@@ -74,12 +77,18 @@ begin
     rowin <= 146'h0;
     s_dat_o <= 32'h0;
     initaddr <= 10'h3ff;
+	 hitreg <= 32'h0;
+	 flushreg <= 32'h0;
+	 fillreg <= 32'h0;
   end else begin
     bus_state <= bus_state_next;
     state <= state_next;
     rowin <= rowin_next;
     s_dat_o <= s_dat_o_next;
     initaddr <= initaddr_next;
+	 hitreg <= hitreg_next;
+	 flushreg <= flushreg_next;
+	 fillreg <= fillreg_next;
   end
 end
 
@@ -115,6 +124,9 @@ begin
   rowin_next = rowin;
   initaddr_next = initaddr;
   s_dat_o_next = s_dat_o;
+  hitreg_next = hitreg;
+  flushreg_next = flushreg;
+  fillreg_next = fillreg;
   m_we_o = 1'h0;
   m_cyc_o = 1'h0;
   m_dat_o = 32'h0;
@@ -173,6 +185,7 @@ begin
           2'h3: s_dat_o_next = word3;
         endcase
       end
+		hitreg_next = hitreg + 1'h1;
       state_next = STATE_DONE;
     end
     STATE_DONE: begin
@@ -216,6 +229,7 @@ begin
     end
     STATE_FILL5: begin
       wren = 1'b1;
+		fillreg_next = fillreg + 1'h1;
       state_next = STATE_BUSY;
     end
     STATE_FLUSH: begin
@@ -257,6 +271,7 @@ begin
     end
     STATE_FLUSH5: begin
       wren = 1'b1; // to clear the dirty flags
+		flushreg_next = flushreg + 1'h1;
       state_next = STATE_FILL;
     end
     default: state_next = STATE_IDLE;
