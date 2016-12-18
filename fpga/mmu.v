@@ -5,14 +5,14 @@ module mmu(
   output fault,
   output [3:0] chipselect);
 
-reg [3:0] cs;
-reg c, f;
+logic [3:0] cs;
+logic c, f;
 
 assign cache_enable = (cyc_i ? c : 1'b1);
 assign fault = (cyc_i ? f : 1'b0);
 assign chipselect = (cyc_i ? cs : 4'h0);
 
-always @*
+always_comb
 begin
   f = 1'b0;
   c = 1'b1;
