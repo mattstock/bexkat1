@@ -213,6 +213,8 @@ void main(void) {
 	val = (val << 4) + hextoi(*msg);
 	msg++;
       }
+      ref = (int *)addr;
+      *ref = val;
       serial_print(0, "\n");
       break;
     default:
