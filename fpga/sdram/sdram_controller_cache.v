@@ -20,8 +20,7 @@ module sdram_controller_cache(input 		clk_i,
 					output databus_dir,
 			      input [31:0] 	databus_in,
 			      output [31:0] databus_out,
-            output [1:0] cache_status,
-				input cache_mode);
+            output [1:0] cache_status);
 
 wire [24:0] cache_adr_o;
 wire [31:0] sdram_dat_o, sdram_dat_i;

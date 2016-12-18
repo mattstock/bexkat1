@@ -24,6 +24,7 @@ module vga_master(
   output [7:0] b,
   output blank_n,
   output sync_n,
+  input [1:0] default_mode,
   input vga_clock);
 
 // Configuration registers
@@ -39,21 +40,24 @@ logic [2:0] sstate, sstate_next;
 logic [31:0] setupreg, setupreg_next, vgabase, vgabase_next;
 logic [31:0] slave_dat_o_next;
 
-wire [7:0] gd_r, gd_g, gd_b;
-wire gd_cyc_o;
-wire [31:0] gd_adr_o;
+wire [7:0] gd_r, gd_g, gd_b, td_r, td_g, td_b;
+wire gd_cyc_o, td_cyc_o;
+wire [31:0] gd_adr_o, td_adr_o;
 wire [15:0] x_raw, y_raw;
+wire graphicsdouble, textmode;
 
+assign graphicsdouble = (setupreg[1:0] == 2'b01);
+assign textmode = (setupreg[1:0] == 2'b10);
 assign master_dat_o = 32'h0;
 assign slave_ack_o = (sstate == SSTATE_DONE);
 assign master_we_o = 1'b0;
 assign master_sel_o = 4'hf;
-assign master_cyc_o = gd_cyc_o;
+assign master_cyc_o = (textmode ? td_cyc_o : gd_cyc_o);
 assign master_stb_o = master_cyc_o;
-assign master_adr_o = vgabase + gd_adr_o;
-assign r = gd_r;
-assign g = gd_g;
-assign b = gd_b;
+assign master_adr_o = vgabase + (textmode ? td_adr_o : gd_adr_o);
+assign r = (textmode ? td_r : gd_r);
+assign g = (textmode ? td_g : gd_g);
+assign b = (textmode ? td_b : gd_b);
 
 assign sync_n = 1'b0;
 
@@ -62,7 +66,7 @@ always @(posedge clk_i or posedge rst_i)
 begin
   if (rst_i) begin
     vgabase <= 32'hc0000000;
-    setupreg <= 32'h0;
+    setupreg <= { 30'h0, default_mode };
     slave_dat_o <= 32'h0;
     sstate <= SSTATE_IDLE;
   end else begin
@@ -131,13 +135,13 @@ begin
   endcase
 end
 
-graphicsdrv graphicsdriver0(.clk_i(clk_i), .rst_i(rst_i), .pixeldouble(setupreg[1:0] == 2'b01), .x(x_raw), .y(y_raw),
+graphicsdrv graphicsdriver0(.clk_i(clk_i), .rst_i(rst_i), .pixeldouble(graphicsdouble), .x(x_raw), .y(y_raw),
   .r(gd_r), .g(gd_g), .b(gd_b), .cyc_o(gd_cyc_o), .palette_write((sstate == SSTATE_PALETTE) & slave_we_i),
   .ack_i(master_ack_i), .palette_adr_i(slave_adr_i[7:0]), .palette_dat_i(slave_dat_i[23:0]),
   .adr_o(gd_adr_o), .dat_i(master_dat_i), .vga_clock(vga_clock));
-
-// Font memory
-//fontmem font0(.clock(clk_i), .address(), .q(font));
+textdrv textdriver0(.clk_i(clk_i), .rst_i(rst_i), .x(x_raw), .y(y_raw),
+  .r(td_r), .g(td_g), .b(td_b), .cyc_o(td_cyc_o),
+  .ack_i(master_ack_i), .adr_o(td_adr_o), .dat_i(master_dat_i), .vga_clock(vga_clock));
 
 vga_controller vga0(.active(blank_n), .vs(vs), .hs(hs), .clock(vga_clock), .reset_n(~rst_i), .x(x_raw), .y(y_raw));
 

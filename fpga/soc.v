@@ -273,7 +273,7 @@ sdram_controller_cache sdram0(.clk_i(sysclock), .mem_clk_o(sdram_clk), .rst_i(rs
   .dat_i(cpu_writedata), .dat_o(sdram_readdata), .stb_i(chipselect == 4'h7), .cyc_i(cpu_cyc),
   .ack_o(sdram_ack), .sel_i(cpu_be), .we_i(cpu_write), .cache_status(cache_hitmiss),
   .we_n(sdram_we_n), .cs_n(sdram_cs_n), .cke(sdram_cke), .cas_n(sdram_cas_n), .ras_n(sdram_ras_n), .dqm(sdram_dqm), .ba(sdram_ba),
-  .addrbus_out(sdram_addrbus), .databus_in(sdram_databus), .databus_out(sdram_dataout), .databus_dir(sdram_dir), .cache_mode(SW[17]));
+  .addrbus_out(sdram_addrbus), .databus_in(sdram_databus), .databus_out(sdram_dataout), .databus_dir(sdram_dir));
 led_matrix rgbmatrix0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cpu_writedata), .dat_o(matrix_readdata),
   .adr_i(cpu_address[11:2]), .sel_i(cpu_be), .we_i(cpu_write), .stb_i(chipselect == 4'h5), .cyc_i(cpu_cyc), .ack_o(matrix_ack),
   .demux({matrix_a, matrix_b, matrix_c}), .matrix0(matrix0), .matrix1(matrix1), .matrix_stb(matrix_stb), .matrix_clk(matrix_clk), .oe_n(matrix_oe_n));
@@ -311,7 +311,7 @@ arbiter arb0(.clk_i(sysclock), .rst_i(rst_i), .cpu_cyc_i(chipselect == 4'h6),
 vga_master vga0(.clk_i(sysclock), .rst_i(rst_i), .master_adr_o(vga_address), .master_cyc_o(vga_cyc), .master_dat_i(ssram_readdata),
   .master_we_o(vga_we), .master_dat_o(vga_writedata), .master_sel_o(vga_sel), .master_ack_i(vga_gnt & ssram_ack), .master_stb_o(vga_stb),
   .slave_adr_i(cpu_address[11:2]), .slave_dat_i(cpu_writedata), .slave_sel_i(cpu_be), .slave_cyc_i(cpu_cyc), .slave_we_i(cpu_write),
-  .slave_stb_i(chipselect == 4'ha), .slave_ack_o(vga_slave_ack), .slave_dat_o(vga_readdata),
+  .slave_stb_i(chipselect == 4'ha), .slave_ack_o(vga_slave_ack), .slave_dat_o(vga_readdata), .default_mode({SW[14],SW[13]}),
   .vs(vga_vs), .hs(vga_hs), .r(vga_r), .g(vga_g), .b(vga_b), .blank_n(vga_blank_n), .vga_clock(vga_clock), .sync_n(vga_sync_n));
 
 ssram_controller ssram0(.clk_i(sysclock), .rst_i(rst_i), 
