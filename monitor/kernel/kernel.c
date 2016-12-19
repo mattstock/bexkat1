@@ -3,9 +3,9 @@
 #include <string.h>
 #include <stdarg.h>
 #include <unistd.h>
-#include "itd.h"
-#include "matrix.h"
-#include "misc.h"
+#include <vga.h>
+#include <misc.h>
+#include <matrix.h>
 
 extern unsigned font88[];
 
@@ -13,57 +13,23 @@ extern unsigned font88[];
 void drawchar(int x, int y, char c) {
   // need 2 unsigned for the 8x8 char
   int a, b, v, w, on;
-  unsigned bitmap;
+  unsigned int bitmap;
 
   bitmap = font88[2*c];
   for (int b=0; b < 32; b++) {
       v = x+(b%8);
       w = y+(b/8);
       on = (bitmap & (1 << (31-b)) ? 0xff : 0x00);
-      matrix_put(v,w,on);
-      itd_rect(v,w,v+1,w+1,color565(on,0,0));
+      matrix_put(v,w, on);
+      vga_point(v,w, on);
   }
   bitmap = font88[2*c+1];
   for (int b=0; b < 32; b++) {
       v = x+(b%8);
       w = y+4+(b/8);
       on = (bitmap & (1 << (31-b)) ? 0xff : 0x00);
-      matrix_put(v,w,on);
-      itd_rect(v,w,v+1,w+1,color565(on,0,0));
-  }
-}
-
-void mandelbrot(float cx, float cy, float scale) {
-  float limit = 4.0f;
-  int x,y,lp;
-  float ax,ay;
-  float a1,b1,a2,b2;
-  float res,asq,bsq;
-
-  for (x=-120; x < 120; x++) {
-    ax = cx+x*scale;
-    for (y=-160; y < 160; y++) {
-      printf("(%d,%d): ", x+120, y+160);
-      ay = cy+y*scale;
-      a1 = ax;
-      b1 = ay;
-      lp = 0; 
-      do {
-        lp++;
-        asq = a1*a1;
-        bsq = b1*b1;
-        a2 = asq - bsq + ax;
-        b2 = 2.0f*a1*b1+ay;
-        a1 = a2;
-        b1 = b2;
-        res = a1*a1 + b1*b1;
-      } while ((lp <= 255) && (res <= limit));
-      printf("lp = %d, res = %f ab = (%f,%f)\n", lp, res, a1, b1);
-      if (lp > 255)
-        itd_rect(x+120,y+160,x+120,y+160,color565(0,0,0));
-      else
-        itd_rect(x+120,y+160,x+120,y+160,color565(0,0,lp));
-    }
+      matrix_put(v,w, on);
+      vga_point(v,w, on);
   }
 }
 
@@ -73,18 +39,9 @@ void main(void) {
   int x,y;
   unsigned int b;
 
-  x = 75497472;
-  y = -239075328;
-  printf("%d -> %d, %d -> %d\n", x, x>>16, y, y>>16);
-  b = x;
-  printf("%d -> %d\n", b, b>>16);
-  b = y;
-  printf("%d -> %d\n", b, b>>16);
-  x = 0;
-  y = 0;
-  itd_init();
-  itd_backlight(1);
-  mandelbrot(0.36f,0.1f,0.0001f);
+  vga_set_mode(0);
+  vga_palette(0, 255, 0x0000ff00);
+
   while (1) {
     read(0, buf, 1);
     printf("%c\n", buf[0]);

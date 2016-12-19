@@ -590,117 +590,14 @@ set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ENABLE_ADVANCED_T
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STORAGE_QUALIFIER_GAP_RECORD=1" -section_id cpu
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STORAGE_QUALIFIER_MODE=TRANSITIONAL" -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[10] -to cpu|gnd -section_id cpu
-set_global_assignment -name VERILOG_FILE vga/vgalinebuf.v
-set_global_assignment -name QIP_FILE vga/vgalinebuf.qip
-set_global_assignment -name VERILOG_FILE vga/vga_pallette.v
-set_global_assignment -name QIP_FILE vga/vga_pallette.qip
-set_global_assignment -name VERILOG_FILE vga/vga_master.v
-set_global_assignment -name VERILOG_FILE vga/vga_controller.v
-set_global_assignment -name VERILOG_FILE sdram/sdram_controller_cache.v
-set_global_assignment -name VERILOG_FILE sdram/sdram_controller.v
-set_global_assignment -name VERILOG_FILE sdram/cachemem.v
-set_global_assignment -name QIP_FILE sdram/cachemem.qip
-set_global_assignment -name VERILOG_FILE sdram/cachefifo.v
-set_global_assignment -name QIP_FILE sdram/cachefifo.qip
-set_global_assignment -name VERILOG_FILE sdram/cache.v
-set_global_assignment -name VERILOG_FILE io/matrixpll.v
-set_global_assignment -name QIP_FILE io/matrixpll.qip
-set_global_assignment -name VERILOG_FILE io/matrixmem.v
-set_global_assignment -name QIP_FILE io/matrixmem.qip
-set_global_assignment -name VERILOG_FILE io/led_matrix.v
-set_global_assignment -name VERILOG_FILE io/timescale.v
-set_global_assignment -name VERILOG_FILE io/i2c_master_top.v
-set_global_assignment -name VERILOG_FILE io/i2c_master_defines.v
-set_global_assignment -name VERILOG_FILE io/i2c_master_byte_ctrl.v
-set_global_assignment -name VERILOG_FILE io/i2c_master_bit_ctrl.v
-set_global_assignment -name VERILOG_FILE io/timerint.v
-set_global_assignment -name MIF_FILE ../monitor/bootstrap.mif
-set_global_assignment -name MIF_FILE ../monitor/tests.mif
-set_global_assignment -name VERILOG_INCLUDE_FILE cpu/bexkat2.vh
-set_global_assignment -name VERILOG_FILE cpu/fpu.v
-set_global_assignment -name VERILOG_FILE io/ps2_kbd.v
-set_global_assignment -name VERILOG_FILE cpu/registerfile2.v
-set_global_assignment -name VERILOG_FILE cpu/intcalc2.v
-set_global_assignment -name VERILOG_FILE cpu/alu2.v
-set_global_assignment -name VERILOG_FILE cpu/control2.v
-set_global_assignment -name VERILOG_FILE mmu.v
-set_global_assignment -name VERILOG_FILE io/spi_xcvr.v
-set_global_assignment -name VERILOG_FILE io/lcd_module.v
-set_global_assignment -name VERILOG_FILE io/baudgen.v
-set_global_assignment -name VERILOG_FILE io/uart_rx.v
-set_global_assignment -name VERILOG_FILE io/uart.v
-set_global_assignment -name VERILOG_FILE io/uart_tx.v
-set_global_assignment -name VERILOG_FILE cpu/intumult.v
-set_global_assignment -name QIP_FILE cpu/intumult.qip
-set_global_assignment -name VERILOG_FILE cpu/intudiv.v
-set_global_assignment -name QIP_FILE cpu/intudiv.qip
-set_global_assignment -name QIP_FILE cpu/intsmult.qip
-set_global_assignment -name VERILOG_FILE cpu/intsdiv.v
-set_global_assignment -name QIP_FILE cpu/intsdiv.qip
-set_global_assignment -name VERILOG_FILE cpu/alu.v
-set_global_assignment -name QIP_FILE monitor.qip
-set_global_assignment -name SDC_FILE soc.sdc
-set_global_assignment -name VERILOG_FILE soc.v
-set_global_assignment -name VERILOG_FILE debounce.v
-set_global_assignment -name VERILOG_FILE io/hexdisp.v
-set_global_assignment -name SIGNALTAP_FILE stp1.stp
-set_global_assignment -name CDF_FILE soc.cdf
-set_global_assignment -name QIP_FILE sysclock.qip
-set_global_assignment -name VERILOG_FILE cpu/bexkat2.v
-set_global_assignment -name HEX_FILE cpu/vectors.hex
-set_global_assignment -name VERILOG_FILE io/fan_ctrl.v
-set_global_assignment -name VERILOG_FILE io/spi_master.v
-set_global_assignment -name VERILOG_FILE io/iocontroller.v
-set_global_assignment -name QIP_FILE vectors.qip
-set_global_assignment -name QIP_FILE io/uart_fifo.qip
-set_global_assignment -name QIP_FILE cpu/fp_cvtis.qip
-set_global_assignment -name QIP_FILE cpu/fp_cvtsi.qip
-set_global_assignment -name QIP_FILE cpu/fp_cmp.qip
-set_global_assignment -name QIP_FILE cpu/fp_addsub.qip
-set_global_assignment -name QIP_FILE cpu/fp_mult.qip
-set_global_assignment -name QIP_FILE cpu/fp_div.qip
-set_global_assignment -name QIP_FILE cpu/fp_sqrt.qip
-set_global_assignment -name VERILOG_FILE mandelbrot/mandelbrot.v
-set_global_assignment -name QIP_FILE mandelbrot/mandmem.qip
-set_global_assignment -name VERILOG_FILE mandelbrot/mandunit.v
-set_global_assignment -name VERILOG_FILE ssram_controller.v
-set_global_assignment -name VERILOG_FILE flash_controller.v
-set_global_assignment -name VERILOG_FILE arbiter.v
-set_global_assignment -name QIP_FILE io/ps2_kbd_fifo.qip
-set_global_assignment -name VERILOG_FILE io/segdigits.v
-set_global_assignment -name QIP_FILE testrom.qip
-set_global_assignment -name QIP_FILE mandelbrot/mand_mult.qip
-set_global_assignment -name QIP_FILE mandelbrot/mand_sub.qip
-set_global_assignment -name QIP_FILE mandelbrot/mand_add.qip
-set_global_assignment -name QIP_FILE mandelbrot/mand_fifo.qip
-set_global_assignment -name QIP_FILE mandelbrot/mand_fifo_in.qip
-set_global_assignment -name QIP_FILE mandelbrot/mand_fifo_out.qip
-set_global_assignment -name QIP_FILE mandelbrot/mand_comp.qip
-set_global_assignment -name QIP_FILE mandelbrot/shift.qip
-set_global_assignment -name QIP_FILE codec_pll.qip
-set_global_assignment -name QIP_FILE codec_buffer.qip
-set_global_assignment -name MIF_FILE vga/font8x12.mif
-set_global_assignment -name QIP_FILE vga/fontmem.qip
-set_global_assignment -name VERILOG_FILE vga/graphicsdrv.v
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[1] -to cpu|vcc -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[5] -to cpu|vcc -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[6] -to cpu|gnd -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[24] -to cpu|gnd -section_id cpu
-set_global_assignment -name VERILOG_FILE vga/testdrv.v
-set_global_assignment -name QIP_FILE vga/testlinebuf.qip
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[2] -to cpu|vcc -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[4] -to cpu|gnd -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[14] -to cpu|vcc -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[20] -to cpu|vcc -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[25] -to cpu|gnd -section_id cpu
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SEGMENT_SIZE=4096" -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[26] -to cpu|vcc -section_id cpu
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SAMPLE_DEPTH=4096" -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[7] -to cpu|gnd -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[8] -to cpu|gnd -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[28] -to cpu|vcc -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[30] -to cpu|vcc -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[9] -to cpu|vcc -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[29] -to cpu|vcc -section_id cpu
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[0] -to "bexkat2:bexkat0|adr_o[0]" -section_id cpu
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[1] -to "bexkat2:bexkat0|adr_o[10]" -section_id cpu
@@ -1021,556 +918,707 @@ set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualif
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[104] -to "bexkat2:bexkat0|control2:con0|state.S_STORED2" -section_id cpu
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[105] -to "bexkat2:bexkat0|control2:con0|state.S_TERM" -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[16] -to cpu|vcc -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[106] -to "bexkat2:bexkat0|dat_i[0]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[107] -to "bexkat2:bexkat0|dat_i[10]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[108] -to "bexkat2:bexkat0|dat_i[11]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[109] -to "bexkat2:bexkat0|dat_i[12]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[110] -to "bexkat2:bexkat0|dat_i[13]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[111] -to "bexkat2:bexkat0|dat_i[14]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[112] -to "bexkat2:bexkat0|dat_i[15]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[113] -to "bexkat2:bexkat0|dat_i[16]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[114] -to "bexkat2:bexkat0|dat_i[17]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[115] -to "bexkat2:bexkat0|dat_i[18]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[116] -to "bexkat2:bexkat0|dat_i[19]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[117] -to "bexkat2:bexkat0|dat_i[1]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[118] -to "bexkat2:bexkat0|dat_i[20]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[119] -to "bexkat2:bexkat0|dat_i[21]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[120] -to "bexkat2:bexkat0|dat_i[22]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[121] -to "bexkat2:bexkat0|dat_i[23]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[122] -to "bexkat2:bexkat0|dat_i[24]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[123] -to "bexkat2:bexkat0|dat_i[25]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[124] -to "bexkat2:bexkat0|dat_i[26]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[125] -to "bexkat2:bexkat0|dat_i[27]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[126] -to "bexkat2:bexkat0|dat_i[28]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[127] -to "bexkat2:bexkat0|dat_i[29]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[128] -to "bexkat2:bexkat0|dat_i[2]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[129] -to "bexkat2:bexkat0|dat_i[30]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[130] -to "bexkat2:bexkat0|dat_i[31]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[131] -to "bexkat2:bexkat0|dat_i[3]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[132] -to "bexkat2:bexkat0|dat_i[4]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[133] -to "bexkat2:bexkat0|dat_i[5]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[134] -to "bexkat2:bexkat0|dat_i[6]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[135] -to "bexkat2:bexkat0|dat_i[7]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[136] -to "bexkat2:bexkat0|dat_i[8]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[137] -to "bexkat2:bexkat0|dat_i[9]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[138] -to "bexkat2:bexkat0|ir[0]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[139] -to "bexkat2:bexkat0|ir[10]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[140] -to "bexkat2:bexkat0|ir[11]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[141] -to "bexkat2:bexkat0|ir[12]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[142] -to "bexkat2:bexkat0|ir[13]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[143] -to "bexkat2:bexkat0|ir[14]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[144] -to "bexkat2:bexkat0|ir[15]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[145] -to "bexkat2:bexkat0|ir[16]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[146] -to "bexkat2:bexkat0|ir[17]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[147] -to "bexkat2:bexkat0|ir[18]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[148] -to "bexkat2:bexkat0|ir[19]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[149] -to "bexkat2:bexkat0|ir[1]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[150] -to "bexkat2:bexkat0|ir[20]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[151] -to "bexkat2:bexkat0|ir[21]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[152] -to "bexkat2:bexkat0|ir[22]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[153] -to "bexkat2:bexkat0|ir[23]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[154] -to "bexkat2:bexkat0|ir[24]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[155] -to "bexkat2:bexkat0|ir[25]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[156] -to "bexkat2:bexkat0|ir[26]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[157] -to "bexkat2:bexkat0|ir[27]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[158] -to "bexkat2:bexkat0|ir[28]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[159] -to "bexkat2:bexkat0|ir[29]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[160] -to "bexkat2:bexkat0|ir[2]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[161] -to "bexkat2:bexkat0|ir[30]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[162] -to "bexkat2:bexkat0|ir[31]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[163] -to "bexkat2:bexkat0|ir[3]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[164] -to "bexkat2:bexkat0|ir[4]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[165] -to "bexkat2:bexkat0|ir[5]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[166] -to "bexkat2:bexkat0|ir[6]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[167] -to "bexkat2:bexkat0|ir[7]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[168] -to "bexkat2:bexkat0|ir[8]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[169] -to "bexkat2:bexkat0|ir[9]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[170] -to "bexkat2:bexkat0|mar[0]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[171] -to "bexkat2:bexkat0|mar[10]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[172] -to "bexkat2:bexkat0|mar[11]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[173] -to "bexkat2:bexkat0|mar[12]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[174] -to "bexkat2:bexkat0|mar[13]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[175] -to "bexkat2:bexkat0|mar[14]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[176] -to "bexkat2:bexkat0|mar[15]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[177] -to "bexkat2:bexkat0|mar[16]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[178] -to "bexkat2:bexkat0|mar[17]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[179] -to "bexkat2:bexkat0|mar[18]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[180] -to "bexkat2:bexkat0|mar[19]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[181] -to "bexkat2:bexkat0|mar[1]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[182] -to "bexkat2:bexkat0|mar[20]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[183] -to "bexkat2:bexkat0|mar[21]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[184] -to "bexkat2:bexkat0|mar[22]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[185] -to "bexkat2:bexkat0|mar[23]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[186] -to "bexkat2:bexkat0|mar[24]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[187] -to "bexkat2:bexkat0|mar[25]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[188] -to "bexkat2:bexkat0|mar[26]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[189] -to "bexkat2:bexkat0|mar[27]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[190] -to "bexkat2:bexkat0|mar[28]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[191] -to "bexkat2:bexkat0|mar[29]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[192] -to "bexkat2:bexkat0|mar[2]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[193] -to "bexkat2:bexkat0|mar[30]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[194] -to "bexkat2:bexkat0|mar[31]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[195] -to "bexkat2:bexkat0|mar[3]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[196] -to "bexkat2:bexkat0|mar[4]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[197] -to "bexkat2:bexkat0|mar[5]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[198] -to "bexkat2:bexkat0|mar[6]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[199] -to "bexkat2:bexkat0|mar[7]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[200] -to "bexkat2:bexkat0|mar[8]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[201] -to "bexkat2:bexkat0|mar[9]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[202] -to "bexkat2:bexkat0|pc[0]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[203] -to "bexkat2:bexkat0|pc[10]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[204] -to "bexkat2:bexkat0|pc[11]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[205] -to "bexkat2:bexkat0|pc[12]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[206] -to "bexkat2:bexkat0|pc[13]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[207] -to "bexkat2:bexkat0|pc[14]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[208] -to "bexkat2:bexkat0|pc[15]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[209] -to "bexkat2:bexkat0|pc[16]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[210] -to "bexkat2:bexkat0|pc[17]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[211] -to "bexkat2:bexkat0|pc[18]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[212] -to "bexkat2:bexkat0|pc[19]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[213] -to "bexkat2:bexkat0|pc[1]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[214] -to "bexkat2:bexkat0|pc[20]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[215] -to "bexkat2:bexkat0|pc[21]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[216] -to "bexkat2:bexkat0|pc[22]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[217] -to "bexkat2:bexkat0|pc[23]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[218] -to "bexkat2:bexkat0|pc[24]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[219] -to "bexkat2:bexkat0|pc[25]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[220] -to "bexkat2:bexkat0|pc[26]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[221] -to "bexkat2:bexkat0|pc[27]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[222] -to "bexkat2:bexkat0|pc[28]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[223] -to "bexkat2:bexkat0|pc[29]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[224] -to "bexkat2:bexkat0|pc[2]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[225] -to "bexkat2:bexkat0|pc[30]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[226] -to "bexkat2:bexkat0|pc[31]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[227] -to "bexkat2:bexkat0|pc[3]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[228] -to "bexkat2:bexkat0|pc[4]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[229] -to "bexkat2:bexkat0|pc[5]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[230] -to "bexkat2:bexkat0|pc[6]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[231] -to "bexkat2:bexkat0|pc[7]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[232] -to "bexkat2:bexkat0|pc[8]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[233] -to "bexkat2:bexkat0|pc[9]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[234] -to "bexkat2:bexkat0|rst_i" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[235] -to "monitor:rom0|address[0]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[236] -to "monitor:rom0|address[10]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[237] -to "monitor:rom0|address[11]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[238] -to "monitor:rom0|address[12]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[239] -to "monitor:rom0|address[13]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[240] -to "monitor:rom0|address[14]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[241] -to "monitor:rom0|address[1]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[242] -to "monitor:rom0|address[2]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[243] -to "monitor:rom0|address[3]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[244] -to "monitor:rom0|address[4]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[245] -to "monitor:rom0|address[5]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[246] -to "monitor:rom0|address[6]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[247] -to "monitor:rom0|address[7]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[248] -to "monitor:rom0|address[8]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[249] -to "monitor:rom0|address[9]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[250] -to "monitor:rom0|q[0]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[251] -to "monitor:rom0|q[10]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[252] -to "monitor:rom0|q[11]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[253] -to "monitor:rom0|q[12]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[254] -to "monitor:rom0|q[13]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[255] -to "monitor:rom0|q[14]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[256] -to "monitor:rom0|q[15]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[257] -to "monitor:rom0|q[16]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[258] -to "monitor:rom0|q[17]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[259] -to "monitor:rom0|q[18]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[260] -to "monitor:rom0|q[19]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[261] -to "monitor:rom0|q[1]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[262] -to "monitor:rom0|q[20]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[263] -to "monitor:rom0|q[21]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[264] -to "monitor:rom0|q[22]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[265] -to "monitor:rom0|q[23]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[266] -to "monitor:rom0|q[24]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[267] -to "monitor:rom0|q[25]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[268] -to "monitor:rom0|q[26]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[269] -to "monitor:rom0|q[27]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[270] -to "monitor:rom0|q[28]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[271] -to "monitor:rom0|q[29]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[272] -to "monitor:rom0|q[2]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[273] -to "monitor:rom0|q[30]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[274] -to "monitor:rom0|q[31]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[275] -to "monitor:rom0|q[3]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[276] -to "monitor:rom0|q[4]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[277] -to "monitor:rom0|q[5]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[278] -to "monitor:rom0|q[6]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[279] -to "monitor:rom0|q[7]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[280] -to "monitor:rom0|q[8]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[281] -to "monitor:rom0|q[9]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[282] -to "monitor:rom0|rden" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[106] -to "bexkat2:bexkat0|dat_i[0]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[107] -to "bexkat2:bexkat0|dat_i[10]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[108] -to "bexkat2:bexkat0|dat_i[11]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[109] -to "bexkat2:bexkat0|dat_i[12]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[110] -to "bexkat2:bexkat0|dat_i[13]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[111] -to "bexkat2:bexkat0|dat_i[14]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[112] -to "bexkat2:bexkat0|dat_i[15]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[113] -to "bexkat2:bexkat0|dat_i[16]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[114] -to "bexkat2:bexkat0|dat_i[17]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[115] -to "bexkat2:bexkat0|dat_i[18]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[116] -to "bexkat2:bexkat0|dat_i[19]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[117] -to "bexkat2:bexkat0|dat_i[1]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[118] -to "bexkat2:bexkat0|dat_i[20]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[119] -to "bexkat2:bexkat0|dat_i[21]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[120] -to "bexkat2:bexkat0|dat_i[22]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[121] -to "bexkat2:bexkat0|dat_i[23]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[122] -to "bexkat2:bexkat0|dat_i[24]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[123] -to "bexkat2:bexkat0|dat_i[25]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[124] -to "bexkat2:bexkat0|dat_i[26]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[125] -to "bexkat2:bexkat0|dat_i[27]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[126] -to "bexkat2:bexkat0|dat_i[28]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[127] -to "bexkat2:bexkat0|dat_i[29]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[128] -to "bexkat2:bexkat0|dat_i[2]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[129] -to "bexkat2:bexkat0|dat_i[30]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[130] -to "bexkat2:bexkat0|dat_i[31]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[131] -to "bexkat2:bexkat0|dat_i[3]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[132] -to "bexkat2:bexkat0|dat_i[4]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[133] -to "bexkat2:bexkat0|dat_i[5]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[134] -to "bexkat2:bexkat0|dat_i[6]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[135] -to "bexkat2:bexkat0|dat_i[7]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[136] -to "bexkat2:bexkat0|dat_i[8]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[137] -to "bexkat2:bexkat0|dat_i[9]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[138] -to "bexkat2:bexkat0|ir[0]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[139] -to "bexkat2:bexkat0|ir[10]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[140] -to "bexkat2:bexkat0|ir[11]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[141] -to "bexkat2:bexkat0|ir[12]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[142] -to "bexkat2:bexkat0|ir[13]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[143] -to "bexkat2:bexkat0|ir[14]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[144] -to "bexkat2:bexkat0|ir[15]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[145] -to "bexkat2:bexkat0|ir[16]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[146] -to "bexkat2:bexkat0|ir[17]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[147] -to "bexkat2:bexkat0|ir[18]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[148] -to "bexkat2:bexkat0|ir[19]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[149] -to "bexkat2:bexkat0|ir[1]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[150] -to "bexkat2:bexkat0|ir[20]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[151] -to "bexkat2:bexkat0|ir[21]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[152] -to "bexkat2:bexkat0|ir[22]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[153] -to "bexkat2:bexkat0|ir[23]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[154] -to "bexkat2:bexkat0|ir[24]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[155] -to "bexkat2:bexkat0|ir[25]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[156] -to "bexkat2:bexkat0|ir[26]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[157] -to "bexkat2:bexkat0|ir[27]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[158] -to "bexkat2:bexkat0|ir[28]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[159] -to "bexkat2:bexkat0|ir[29]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[160] -to "bexkat2:bexkat0|ir[2]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[161] -to "bexkat2:bexkat0|ir[30]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[162] -to "bexkat2:bexkat0|ir[31]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[163] -to "bexkat2:bexkat0|ir[3]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[164] -to "bexkat2:bexkat0|ir[4]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[165] -to "bexkat2:bexkat0|ir[5]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[166] -to "bexkat2:bexkat0|ir[6]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[167] -to "bexkat2:bexkat0|ir[7]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[168] -to "bexkat2:bexkat0|ir[8]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[169] -to "bexkat2:bexkat0|ir[9]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[170] -to "bexkat2:bexkat0|mar[0]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[171] -to "bexkat2:bexkat0|mar[10]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[172] -to "bexkat2:bexkat0|mar[11]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[173] -to "bexkat2:bexkat0|mar[12]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[174] -to "bexkat2:bexkat0|mar[13]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[175] -to "bexkat2:bexkat0|mar[14]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[176] -to "bexkat2:bexkat0|mar[15]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[177] -to "bexkat2:bexkat0|mar[16]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[178] -to "bexkat2:bexkat0|mar[17]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[179] -to "bexkat2:bexkat0|mar[18]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[180] -to "bexkat2:bexkat0|mar[19]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[181] -to "bexkat2:bexkat0|mar[1]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[182] -to "bexkat2:bexkat0|mar[20]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[183] -to "bexkat2:bexkat0|mar[21]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[184] -to "bexkat2:bexkat0|mar[22]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[185] -to "bexkat2:bexkat0|mar[23]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[186] -to "bexkat2:bexkat0|mar[24]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[187] -to "bexkat2:bexkat0|mar[25]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[188] -to "bexkat2:bexkat0|mar[26]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[189] -to "bexkat2:bexkat0|mar[27]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[190] -to "bexkat2:bexkat0|mar[28]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[191] -to "bexkat2:bexkat0|mar[29]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[192] -to "bexkat2:bexkat0|mar[2]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[193] -to "bexkat2:bexkat0|mar[30]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[194] -to "bexkat2:bexkat0|mar[31]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[195] -to "bexkat2:bexkat0|mar[3]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[196] -to "bexkat2:bexkat0|mar[4]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[197] -to "bexkat2:bexkat0|mar[5]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[198] -to "bexkat2:bexkat0|mar[6]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[199] -to "bexkat2:bexkat0|mar[7]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[200] -to "bexkat2:bexkat0|mar[8]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[201] -to "bexkat2:bexkat0|mar[9]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[202] -to "bexkat2:bexkat0|pc[0]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[203] -to "bexkat2:bexkat0|pc[10]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[204] -to "bexkat2:bexkat0|pc[11]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[205] -to "bexkat2:bexkat0|pc[12]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[206] -to "bexkat2:bexkat0|pc[13]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[207] -to "bexkat2:bexkat0|pc[14]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[208] -to "bexkat2:bexkat0|pc[15]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[209] -to "bexkat2:bexkat0|pc[16]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[210] -to "bexkat2:bexkat0|pc[17]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[211] -to "bexkat2:bexkat0|pc[18]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[212] -to "bexkat2:bexkat0|pc[19]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[213] -to "bexkat2:bexkat0|pc[1]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[214] -to "bexkat2:bexkat0|pc[20]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[215] -to "bexkat2:bexkat0|pc[21]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[216] -to "bexkat2:bexkat0|pc[22]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[217] -to "bexkat2:bexkat0|pc[23]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[218] -to "bexkat2:bexkat0|pc[24]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[219] -to "bexkat2:bexkat0|pc[25]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[220] -to "bexkat2:bexkat0|pc[26]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[221] -to "bexkat2:bexkat0|pc[27]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[222] -to "bexkat2:bexkat0|pc[28]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[223] -to "bexkat2:bexkat0|pc[29]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[224] -to "bexkat2:bexkat0|pc[2]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[225] -to "bexkat2:bexkat0|pc[30]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[226] -to "bexkat2:bexkat0|pc[31]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[227] -to "bexkat2:bexkat0|pc[3]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[228] -to "bexkat2:bexkat0|pc[4]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[229] -to "bexkat2:bexkat0|pc[5]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[230] -to "bexkat2:bexkat0|pc[6]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[231] -to "bexkat2:bexkat0|pc[7]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[232] -to "bexkat2:bexkat0|pc[8]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[233] -to "bexkat2:bexkat0|pc[9]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[234] -to "bexkat2:bexkat0|rst_i" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[235] -to "monitor:rom0|address[0]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[236] -to "monitor:rom0|address[10]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[237] -to "monitor:rom0|address[11]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[238] -to "monitor:rom0|address[12]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[239] -to "monitor:rom0|address[13]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[240] -to "monitor:rom0|address[14]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[241] -to "monitor:rom0|address[1]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[242] -to "monitor:rom0|address[2]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[243] -to "monitor:rom0|address[3]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[244] -to "monitor:rom0|address[4]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[245] -to "monitor:rom0|address[5]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[246] -to "monitor:rom0|address[6]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[247] -to "monitor:rom0|address[7]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[248] -to "monitor:rom0|address[8]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[249] -to "monitor:rom0|address[9]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[250] -to "monitor:rom0|q[0]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[251] -to "monitor:rom0|q[10]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[252] -to "monitor:rom0|q[11]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[253] -to "monitor:rom0|q[12]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[254] -to "monitor:rom0|q[13]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[255] -to "monitor:rom0|q[14]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[256] -to "monitor:rom0|q[15]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[257] -to "monitor:rom0|q[16]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[258] -to "monitor:rom0|q[17]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[259] -to "monitor:rom0|q[18]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[260] -to "monitor:rom0|q[19]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[261] -to "monitor:rom0|q[1]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[262] -to "monitor:rom0|q[20]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[263] -to "monitor:rom0|q[21]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[264] -to "monitor:rom0|q[22]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[265] -to "monitor:rom0|q[23]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[266] -to "monitor:rom0|q[24]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[267] -to "monitor:rom0|q[25]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[268] -to "monitor:rom0|q[26]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[269] -to "monitor:rom0|q[27]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[270] -to "monitor:rom0|q[28]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[271] -to "monitor:rom0|q[29]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[272] -to "monitor:rom0|q[2]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[273] -to "monitor:rom0|q[30]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[274] -to "monitor:rom0|q[31]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[275] -to "monitor:rom0|q[3]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[276] -to "monitor:rom0|q[4]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[277] -to "monitor:rom0|q[5]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[278] -to "monitor:rom0|q[6]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[279] -to "monitor:rom0|q[7]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[280] -to "monitor:rom0|q[8]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[281] -to "monitor:rom0|q[9]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[282] -to "monitor:rom0|rden" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[106] -to "bexkat2:bexkat0|dat_i[0]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[107] -to "bexkat2:bexkat0|dat_i[10]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[108] -to "bexkat2:bexkat0|dat_i[11]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[109] -to "bexkat2:bexkat0|dat_i[12]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[110] -to "bexkat2:bexkat0|dat_i[13]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[111] -to "bexkat2:bexkat0|dat_i[14]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[112] -to "bexkat2:bexkat0|dat_i[15]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[113] -to "bexkat2:bexkat0|dat_i[16]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[114] -to "bexkat2:bexkat0|dat_i[17]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[115] -to "bexkat2:bexkat0|dat_i[18]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[116] -to "bexkat2:bexkat0|dat_i[19]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[117] -to "bexkat2:bexkat0|dat_i[1]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[118] -to "bexkat2:bexkat0|dat_i[20]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[119] -to "bexkat2:bexkat0|dat_i[21]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[120] -to "bexkat2:bexkat0|dat_i[22]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[121] -to "bexkat2:bexkat0|dat_i[23]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[122] -to "bexkat2:bexkat0|dat_i[24]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[123] -to "bexkat2:bexkat0|dat_i[25]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[124] -to "bexkat2:bexkat0|dat_i[26]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[125] -to "bexkat2:bexkat0|dat_i[27]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[126] -to "bexkat2:bexkat0|dat_i[28]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[127] -to "bexkat2:bexkat0|dat_i[29]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[128] -to "bexkat2:bexkat0|dat_i[2]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[129] -to "bexkat2:bexkat0|dat_i[30]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[130] -to "bexkat2:bexkat0|dat_i[31]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[131] -to "bexkat2:bexkat0|dat_i[3]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[132] -to "bexkat2:bexkat0|dat_i[4]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[133] -to "bexkat2:bexkat0|dat_i[5]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[134] -to "bexkat2:bexkat0|dat_i[6]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[135] -to "bexkat2:bexkat0|dat_i[7]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[136] -to "bexkat2:bexkat0|dat_i[8]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[137] -to "bexkat2:bexkat0|dat_i[9]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[138] -to "bexkat2:bexkat0|ir[0]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[139] -to "bexkat2:bexkat0|ir[10]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[140] -to "bexkat2:bexkat0|ir[11]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[141] -to "bexkat2:bexkat0|ir[12]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[142] -to "bexkat2:bexkat0|ir[13]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[143] -to "bexkat2:bexkat0|ir[14]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[144] -to "bexkat2:bexkat0|ir[15]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[145] -to "bexkat2:bexkat0|ir[16]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[146] -to "bexkat2:bexkat0|ir[17]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[147] -to "bexkat2:bexkat0|ir[18]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[148] -to "bexkat2:bexkat0|ir[19]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[149] -to "bexkat2:bexkat0|ir[1]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[150] -to "bexkat2:bexkat0|ir[20]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[151] -to "bexkat2:bexkat0|ir[21]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[152] -to "bexkat2:bexkat0|ir[22]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[153] -to "bexkat2:bexkat0|ir[23]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[154] -to "bexkat2:bexkat0|ir[24]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[155] -to "bexkat2:bexkat0|ir[25]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[156] -to "bexkat2:bexkat0|ir[26]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[157] -to "bexkat2:bexkat0|ir[27]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[158] -to "bexkat2:bexkat0|ir[28]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[159] -to "bexkat2:bexkat0|ir[29]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[160] -to "bexkat2:bexkat0|ir[2]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[161] -to "bexkat2:bexkat0|ir[30]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[162] -to "bexkat2:bexkat0|ir[31]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[163] -to "bexkat2:bexkat0|ir[3]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[164] -to "bexkat2:bexkat0|ir[4]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[165] -to "bexkat2:bexkat0|ir[5]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[166] -to "bexkat2:bexkat0|ir[6]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[167] -to "bexkat2:bexkat0|ir[7]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[168] -to "bexkat2:bexkat0|ir[8]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[169] -to "bexkat2:bexkat0|ir[9]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[170] -to "bexkat2:bexkat0|mar[0]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[171] -to "bexkat2:bexkat0|mar[10]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[172] -to "bexkat2:bexkat0|mar[11]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[173] -to "bexkat2:bexkat0|mar[12]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[174] -to "bexkat2:bexkat0|mar[13]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[175] -to "bexkat2:bexkat0|mar[14]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[176] -to "bexkat2:bexkat0|mar[15]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[177] -to "bexkat2:bexkat0|mar[16]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[178] -to "bexkat2:bexkat0|mar[17]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[179] -to "bexkat2:bexkat0|mar[18]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[180] -to "bexkat2:bexkat0|mar[19]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[181] -to "bexkat2:bexkat0|mar[1]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[182] -to "bexkat2:bexkat0|mar[20]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[183] -to "bexkat2:bexkat0|mar[21]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[184] -to "bexkat2:bexkat0|mar[22]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[185] -to "bexkat2:bexkat0|mar[23]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[186] -to "bexkat2:bexkat0|mar[24]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[187] -to "bexkat2:bexkat0|mar[25]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[188] -to "bexkat2:bexkat0|mar[26]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[189] -to "bexkat2:bexkat0|mar[27]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[190] -to "bexkat2:bexkat0|mar[28]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[191] -to "bexkat2:bexkat0|mar[29]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[192] -to "bexkat2:bexkat0|mar[2]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[193] -to "bexkat2:bexkat0|mar[30]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[194] -to "bexkat2:bexkat0|mar[31]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[195] -to "bexkat2:bexkat0|mar[3]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[196] -to "bexkat2:bexkat0|mar[4]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[197] -to "bexkat2:bexkat0|mar[5]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[198] -to "bexkat2:bexkat0|mar[6]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[199] -to "bexkat2:bexkat0|mar[7]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[200] -to "bexkat2:bexkat0|mar[8]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[201] -to "bexkat2:bexkat0|mar[9]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[202] -to "bexkat2:bexkat0|pc[0]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[203] -to "bexkat2:bexkat0|pc[10]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[204] -to "bexkat2:bexkat0|pc[11]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[205] -to "bexkat2:bexkat0|pc[12]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[206] -to "bexkat2:bexkat0|pc[13]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[207] -to "bexkat2:bexkat0|pc[14]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[208] -to "bexkat2:bexkat0|pc[15]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[209] -to "bexkat2:bexkat0|pc[16]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[210] -to "bexkat2:bexkat0|pc[17]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[211] -to "bexkat2:bexkat0|pc[18]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[212] -to "bexkat2:bexkat0|pc[19]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[213] -to "bexkat2:bexkat0|pc[1]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[214] -to "bexkat2:bexkat0|pc[20]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[215] -to "bexkat2:bexkat0|pc[21]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[216] -to "bexkat2:bexkat0|pc[22]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[217] -to "bexkat2:bexkat0|pc[23]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[218] -to "bexkat2:bexkat0|pc[24]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[219] -to "bexkat2:bexkat0|pc[25]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[220] -to "bexkat2:bexkat0|pc[26]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[221] -to "bexkat2:bexkat0|pc[27]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[222] -to "bexkat2:bexkat0|pc[28]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[223] -to "bexkat2:bexkat0|pc[29]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[224] -to "bexkat2:bexkat0|pc[2]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[225] -to "bexkat2:bexkat0|pc[30]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[226] -to "bexkat2:bexkat0|pc[31]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[227] -to "bexkat2:bexkat0|pc[3]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[228] -to "bexkat2:bexkat0|pc[4]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[229] -to "bexkat2:bexkat0|pc[5]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[230] -to "bexkat2:bexkat0|pc[6]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[231] -to "bexkat2:bexkat0|pc[7]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[232] -to "bexkat2:bexkat0|pc[8]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[233] -to "bexkat2:bexkat0|pc[9]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[234] -to "bexkat2:bexkat0|rst_i" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[235] -to "monitor:rom0|address[0]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[236] -to "monitor:rom0|address[10]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[237] -to "monitor:rom0|address[11]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[238] -to "monitor:rom0|address[12]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[239] -to "monitor:rom0|address[13]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[240] -to "monitor:rom0|address[14]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[241] -to "monitor:rom0|address[1]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[242] -to "monitor:rom0|address[2]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[243] -to "monitor:rom0|address[3]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[244] -to "monitor:rom0|address[4]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[245] -to "monitor:rom0|address[5]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[246] -to "monitor:rom0|address[6]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[247] -to "monitor:rom0|address[7]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[248] -to "monitor:rom0|address[8]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[249] -to "monitor:rom0|address[9]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[250] -to "monitor:rom0|q[0]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[251] -to "monitor:rom0|q[10]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[252] -to "monitor:rom0|q[11]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[253] -to "monitor:rom0|q[12]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[254] -to "monitor:rom0|q[13]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[255] -to "monitor:rom0|q[14]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[256] -to "monitor:rom0|q[15]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[257] -to "monitor:rom0|q[16]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[258] -to "monitor:rom0|q[17]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[259] -to "monitor:rom0|q[18]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[260] -to "monitor:rom0|q[19]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[261] -to "monitor:rom0|q[1]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[262] -to "monitor:rom0|q[20]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[263] -to "monitor:rom0|q[21]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[264] -to "monitor:rom0|q[22]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[265] -to "monitor:rom0|q[23]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[266] -to "monitor:rom0|q[24]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[267] -to "monitor:rom0|q[25]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[268] -to "monitor:rom0|q[26]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[269] -to "monitor:rom0|q[27]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[270] -to "monitor:rom0|q[28]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[271] -to "monitor:rom0|q[29]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[272] -to "monitor:rom0|q[2]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[273] -to "monitor:rom0|q[30]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[274] -to "monitor:rom0|q[31]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[275] -to "monitor:rom0|q[3]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[276] -to "monitor:rom0|q[4]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[277] -to "monitor:rom0|q[5]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[278] -to "monitor:rom0|q[6]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[279] -to "monitor:rom0|q[7]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[280] -to "monitor:rom0|q[8]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[281] -to "monitor:rom0|q[9]" -section_id cpu
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[282] -to "monitor:rom0|rden" -section_id cpu
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_DATA_BITS=283" -section_id cpu
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_BITS=283" -section_id cpu
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STORAGE_QUALIFIER_BITS=283" -section_id cpu
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK=0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" -section_id cpu
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK_LENGTH=1159" -section_id cpu
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STORAGE_QUALIFIER_INVERSION_MASK_LENGTH=284" -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[0] -to cpu|vcc -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[3] -to cpu|gnd -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[11] -to cpu|vcc -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[12] -to cpu|gnd -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[13] -to cpu|gnd -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[15] -to cpu|vcc -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[17] -to cpu|gnd -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[18] -to cpu|vcc -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[19] -to cpu|vcc -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[21] -to cpu|gnd -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[22] -to cpu|gnd -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[23] -to cpu|vcc -section_id cpu
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[27] -to cpu|gnd -section_id cpu
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[31] -to cpu|vcc -section_id cpu
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SEGMENT_SIZE=8192" -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[3] -to cpu|vcc -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[8] -to cpu|vcc -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[11] -to cpu|gnd -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[19] -to cpu|gnd -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[21] -to cpu|vcc -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[26] -to cpu|gnd -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[28] -to cpu|gnd -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[31] -to cpu|gnd -section_id cpu
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SAMPLE_DEPTH=8192" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[106] -to "bexkat2:bexkat0|ir[0]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[107] -to "bexkat2:bexkat0|ir[10]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[108] -to "bexkat2:bexkat0|ir[11]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[109] -to "bexkat2:bexkat0|ir[12]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[110] -to "bexkat2:bexkat0|ir[13]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[111] -to "bexkat2:bexkat0|ir[14]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[112] -to "bexkat2:bexkat0|ir[15]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[113] -to "bexkat2:bexkat0|ir[16]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[114] -to "bexkat2:bexkat0|ir[17]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[115] -to "bexkat2:bexkat0|ir[18]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[116] -to "bexkat2:bexkat0|ir[19]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[117] -to "bexkat2:bexkat0|ir[1]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[118] -to "bexkat2:bexkat0|ir[20]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[119] -to "bexkat2:bexkat0|ir[21]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[120] -to "bexkat2:bexkat0|ir[22]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[121] -to "bexkat2:bexkat0|ir[23]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[122] -to "bexkat2:bexkat0|ir[24]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[123] -to "bexkat2:bexkat0|ir[25]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[124] -to "bexkat2:bexkat0|ir[26]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[125] -to "bexkat2:bexkat0|ir[27]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[126] -to "bexkat2:bexkat0|ir[28]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[127] -to "bexkat2:bexkat0|ir[29]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[128] -to "bexkat2:bexkat0|ir[2]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[129] -to "bexkat2:bexkat0|ir[30]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[130] -to "bexkat2:bexkat0|ir[31]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[131] -to "bexkat2:bexkat0|ir[3]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[132] -to "bexkat2:bexkat0|ir[4]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[133] -to "bexkat2:bexkat0|ir[5]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[134] -to "bexkat2:bexkat0|ir[6]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[135] -to "bexkat2:bexkat0|ir[7]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[136] -to "bexkat2:bexkat0|ir[8]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[137] -to "bexkat2:bexkat0|ir[9]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[138] -to "bexkat2:bexkat0|mdr[0]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[139] -to "bexkat2:bexkat0|mdr[10]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[140] -to "bexkat2:bexkat0|mdr[11]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[141] -to "bexkat2:bexkat0|mdr[12]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[142] -to "bexkat2:bexkat0|mdr[13]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[143] -to "bexkat2:bexkat0|mdr[14]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[144] -to "bexkat2:bexkat0|mdr[15]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[145] -to "bexkat2:bexkat0|mdr[16]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[146] -to "bexkat2:bexkat0|mdr[17]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[147] -to "bexkat2:bexkat0|mdr[18]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[148] -to "bexkat2:bexkat0|mdr[19]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[149] -to "bexkat2:bexkat0|mdr[1]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[150] -to "bexkat2:bexkat0|mdr[20]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[151] -to "bexkat2:bexkat0|mdr[21]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[152] -to "bexkat2:bexkat0|mdr[22]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[153] -to "bexkat2:bexkat0|mdr[23]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[154] -to "bexkat2:bexkat0|mdr[24]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[155] -to "bexkat2:bexkat0|mdr[25]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[156] -to "bexkat2:bexkat0|mdr[26]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[157] -to "bexkat2:bexkat0|mdr[27]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[158] -to "bexkat2:bexkat0|mdr[28]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[159] -to "bexkat2:bexkat0|mdr[29]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[160] -to "bexkat2:bexkat0|mdr[2]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[161] -to "bexkat2:bexkat0|mdr[30]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[162] -to "bexkat2:bexkat0|mdr[31]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[163] -to "bexkat2:bexkat0|mdr[3]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[164] -to "bexkat2:bexkat0|mdr[4]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[165] -to "bexkat2:bexkat0|mdr[5]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[166] -to "bexkat2:bexkat0|mdr[6]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[167] -to "bexkat2:bexkat0|mdr[7]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[168] -to "bexkat2:bexkat0|mdr[8]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[169] -to "bexkat2:bexkat0|mdr[9]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[170] -to "bexkat2:bexkat0|pc[0]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[171] -to "bexkat2:bexkat0|pc[10]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[172] -to "bexkat2:bexkat0|pc[11]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[173] -to "bexkat2:bexkat0|pc[12]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[174] -to "bexkat2:bexkat0|pc[13]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[175] -to "bexkat2:bexkat0|pc[14]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[176] -to "bexkat2:bexkat0|pc[15]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[177] -to "bexkat2:bexkat0|pc[16]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[178] -to "bexkat2:bexkat0|pc[17]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[179] -to "bexkat2:bexkat0|pc[18]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[180] -to "bexkat2:bexkat0|pc[19]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[181] -to "bexkat2:bexkat0|pc[1]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[182] -to "bexkat2:bexkat0|pc[20]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[183] -to "bexkat2:bexkat0|pc[21]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[184] -to "bexkat2:bexkat0|pc[22]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[185] -to "bexkat2:bexkat0|pc[23]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[186] -to "bexkat2:bexkat0|pc[24]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[187] -to "bexkat2:bexkat0|pc[25]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[188] -to "bexkat2:bexkat0|pc[26]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[189] -to "bexkat2:bexkat0|pc[27]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[190] -to "bexkat2:bexkat0|pc[28]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[191] -to "bexkat2:bexkat0|pc[29]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[192] -to "bexkat2:bexkat0|pc[2]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[193] -to "bexkat2:bexkat0|pc[30]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[194] -to "bexkat2:bexkat0|pc[31]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[195] -to "bexkat2:bexkat0|pc[3]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[196] -to "bexkat2:bexkat0|pc[4]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[197] -to "bexkat2:bexkat0|pc[5]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[198] -to "bexkat2:bexkat0|pc[6]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[199] -to "bexkat2:bexkat0|pc[7]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[200] -to "bexkat2:bexkat0|pc[8]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[201] -to "bexkat2:bexkat0|pc[9]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[202] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][0]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[203] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][10]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[204] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][11]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[205] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][12]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[206] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][13]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[207] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][14]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[208] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][15]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[209] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][16]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[210] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][17]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[211] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][18]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[212] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][19]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[213] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][1]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[214] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][20]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[215] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][21]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[216] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][22]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[217] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][23]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[218] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][24]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[219] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][25]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[220] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][26]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[221] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][27]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[222] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][28]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[223] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][29]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[224] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][2]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[225] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][30]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[226] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][31]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[227] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][3]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[228] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][4]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[229] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][5]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[230] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][6]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[231] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][7]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[232] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][8]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[233] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][9]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[234] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][0]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[235] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][10]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[236] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][11]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[237] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][12]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[238] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][13]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[239] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][14]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[240] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][15]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[241] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][16]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[242] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][17]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[243] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][18]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[244] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][19]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[245] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][1]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[246] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][20]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[247] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][21]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[248] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][22]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[249] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][23]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[250] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][24]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[251] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][25]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[252] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][26]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[253] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][27]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[254] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][28]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[255] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][29]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[256] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][2]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[257] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][30]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[258] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][31]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[259] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][3]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[260] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][4]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[261] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][5]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[262] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][6]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[263] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][7]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[264] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][8]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[265] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][9]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[266] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][0]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[267] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][10]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[268] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][11]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[269] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][12]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[270] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][13]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[271] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][14]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[272] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][15]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[273] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][16]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[274] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][17]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[275] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][18]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[276] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][19]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[277] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][1]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[278] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][20]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[279] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][21]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[280] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][22]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[281] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][23]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[282] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][24]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[283] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][25]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[284] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][26]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[285] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][27]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[286] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][28]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[287] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][29]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[288] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][2]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[289] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][30]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[290] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][31]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[291] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][3]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[292] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][4]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[293] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][5]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[294] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][6]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[295] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][7]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[296] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][8]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[297] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][9]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[298] -to "bexkat2:bexkat0|rst_i" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[106] -to "bexkat2:bexkat0|ir[0]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[107] -to "bexkat2:bexkat0|ir[10]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[108] -to "bexkat2:bexkat0|ir[11]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[109] -to "bexkat2:bexkat0|ir[12]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[110] -to "bexkat2:bexkat0|ir[13]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[111] -to "bexkat2:bexkat0|ir[14]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[112] -to "bexkat2:bexkat0|ir[15]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[113] -to "bexkat2:bexkat0|ir[16]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[114] -to "bexkat2:bexkat0|ir[17]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[115] -to "bexkat2:bexkat0|ir[18]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[116] -to "bexkat2:bexkat0|ir[19]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[117] -to "bexkat2:bexkat0|ir[1]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[118] -to "bexkat2:bexkat0|ir[20]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[119] -to "bexkat2:bexkat0|ir[21]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[120] -to "bexkat2:bexkat0|ir[22]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[121] -to "bexkat2:bexkat0|ir[23]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[122] -to "bexkat2:bexkat0|ir[24]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[123] -to "bexkat2:bexkat0|ir[25]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[124] -to "bexkat2:bexkat0|ir[26]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[125] -to "bexkat2:bexkat0|ir[27]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[126] -to "bexkat2:bexkat0|ir[28]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[127] -to "bexkat2:bexkat0|ir[29]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[128] -to "bexkat2:bexkat0|ir[2]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[129] -to "bexkat2:bexkat0|ir[30]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[130] -to "bexkat2:bexkat0|ir[31]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[131] -to "bexkat2:bexkat0|ir[3]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[132] -to "bexkat2:bexkat0|ir[4]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[133] -to "bexkat2:bexkat0|ir[5]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[134] -to "bexkat2:bexkat0|ir[6]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[135] -to "bexkat2:bexkat0|ir[7]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[136] -to "bexkat2:bexkat0|ir[8]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[137] -to "bexkat2:bexkat0|ir[9]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[138] -to "bexkat2:bexkat0|mdr[0]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[139] -to "bexkat2:bexkat0|mdr[10]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[140] -to "bexkat2:bexkat0|mdr[11]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[141] -to "bexkat2:bexkat0|mdr[12]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[142] -to "bexkat2:bexkat0|mdr[13]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[143] -to "bexkat2:bexkat0|mdr[14]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[144] -to "bexkat2:bexkat0|mdr[15]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[145] -to "bexkat2:bexkat0|mdr[16]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[146] -to "bexkat2:bexkat0|mdr[17]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[147] -to "bexkat2:bexkat0|mdr[18]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[148] -to "bexkat2:bexkat0|mdr[19]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[149] -to "bexkat2:bexkat0|mdr[1]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[150] -to "bexkat2:bexkat0|mdr[20]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[151] -to "bexkat2:bexkat0|mdr[21]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[152] -to "bexkat2:bexkat0|mdr[22]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[153] -to "bexkat2:bexkat0|mdr[23]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[154] -to "bexkat2:bexkat0|mdr[24]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[155] -to "bexkat2:bexkat0|mdr[25]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[156] -to "bexkat2:bexkat0|mdr[26]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[157] -to "bexkat2:bexkat0|mdr[27]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[158] -to "bexkat2:bexkat0|mdr[28]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[159] -to "bexkat2:bexkat0|mdr[29]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[160] -to "bexkat2:bexkat0|mdr[2]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[161] -to "bexkat2:bexkat0|mdr[30]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[162] -to "bexkat2:bexkat0|mdr[31]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[163] -to "bexkat2:bexkat0|mdr[3]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[164] -to "bexkat2:bexkat0|mdr[4]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[165] -to "bexkat2:bexkat0|mdr[5]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[166] -to "bexkat2:bexkat0|mdr[6]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[167] -to "bexkat2:bexkat0|mdr[7]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[168] -to "bexkat2:bexkat0|mdr[8]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[169] -to "bexkat2:bexkat0|mdr[9]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[170] -to "bexkat2:bexkat0|pc[0]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[171] -to "bexkat2:bexkat0|pc[10]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[172] -to "bexkat2:bexkat0|pc[11]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[173] -to "bexkat2:bexkat0|pc[12]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[174] -to "bexkat2:bexkat0|pc[13]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[175] -to "bexkat2:bexkat0|pc[14]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[176] -to "bexkat2:bexkat0|pc[15]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[177] -to "bexkat2:bexkat0|pc[16]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[178] -to "bexkat2:bexkat0|pc[17]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[179] -to "bexkat2:bexkat0|pc[18]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[180] -to "bexkat2:bexkat0|pc[19]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[181] -to "bexkat2:bexkat0|pc[1]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[182] -to "bexkat2:bexkat0|pc[20]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[183] -to "bexkat2:bexkat0|pc[21]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[184] -to "bexkat2:bexkat0|pc[22]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[185] -to "bexkat2:bexkat0|pc[23]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[186] -to "bexkat2:bexkat0|pc[24]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[187] -to "bexkat2:bexkat0|pc[25]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[188] -to "bexkat2:bexkat0|pc[26]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[189] -to "bexkat2:bexkat0|pc[27]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[190] -to "bexkat2:bexkat0|pc[28]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[191] -to "bexkat2:bexkat0|pc[29]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[192] -to "bexkat2:bexkat0|pc[2]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[193] -to "bexkat2:bexkat0|pc[30]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[194] -to "bexkat2:bexkat0|pc[31]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[195] -to "bexkat2:bexkat0|pc[3]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[196] -to "bexkat2:bexkat0|pc[4]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[197] -to "bexkat2:bexkat0|pc[5]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[198] -to "bexkat2:bexkat0|pc[6]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[199] -to "bexkat2:bexkat0|pc[7]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[200] -to "bexkat2:bexkat0|pc[8]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[201] -to "bexkat2:bexkat0|pc[9]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[202] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][0]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[203] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][10]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[204] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][11]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[205] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][12]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[206] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][13]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[207] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][14]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[208] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][15]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[209] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][16]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[210] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][17]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[211] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][18]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[212] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][19]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[213] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][1]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[214] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][20]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[215] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][21]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[216] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][22]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[217] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][23]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[218] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][24]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[219] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][25]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[220] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][26]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[221] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][27]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[222] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][28]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[223] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][29]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[224] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][2]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[225] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][30]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[226] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][31]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[227] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][3]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[228] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][4]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[229] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][5]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[230] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][6]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[231] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][7]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[232] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][8]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[233] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][9]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[234] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][0]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[235] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][10]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[236] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][11]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[237] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][12]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[238] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][13]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[239] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][14]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[240] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][15]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[241] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][16]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[242] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][17]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[243] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][18]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[244] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][19]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[245] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][1]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[246] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][20]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[247] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][21]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[248] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][22]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[249] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][23]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[250] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][24]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[251] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][25]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[252] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][26]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[253] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][27]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[254] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][28]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[255] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][29]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[256] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][2]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[257] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][30]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[258] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][31]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[259] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][3]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[260] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][4]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[261] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][5]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[262] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][6]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[263] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][7]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[264] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][8]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[265] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][9]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[266] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][0]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[267] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][10]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[268] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][11]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[269] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][12]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[270] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][13]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[271] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][14]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[272] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][15]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[273] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][16]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[274] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][17]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[275] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][18]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[276] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][19]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[277] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][1]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[278] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][20]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[279] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][21]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[280] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][22]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[281] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][23]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[282] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][24]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[283] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][25]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[284] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][26]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[285] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][27]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[286] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][28]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[287] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][29]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[288] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][2]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[289] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][30]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[290] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][31]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[291] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][3]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[292] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][4]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[293] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][5]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[294] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][6]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[295] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][7]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[296] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][8]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[297] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][9]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[298] -to "bexkat2:bexkat0|rst_i" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[106] -to "bexkat2:bexkat0|ir[0]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[107] -to "bexkat2:bexkat0|ir[10]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[108] -to "bexkat2:bexkat0|ir[11]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[109] -to "bexkat2:bexkat0|ir[12]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[110] -to "bexkat2:bexkat0|ir[13]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[111] -to "bexkat2:bexkat0|ir[14]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[112] -to "bexkat2:bexkat0|ir[15]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[113] -to "bexkat2:bexkat0|ir[16]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[114] -to "bexkat2:bexkat0|ir[17]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[115] -to "bexkat2:bexkat0|ir[18]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[116] -to "bexkat2:bexkat0|ir[19]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[117] -to "bexkat2:bexkat0|ir[1]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[118] -to "bexkat2:bexkat0|ir[20]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[119] -to "bexkat2:bexkat0|ir[21]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[120] -to "bexkat2:bexkat0|ir[22]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[121] -to "bexkat2:bexkat0|ir[23]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[122] -to "bexkat2:bexkat0|ir[24]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[123] -to "bexkat2:bexkat0|ir[25]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[124] -to "bexkat2:bexkat0|ir[26]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[125] -to "bexkat2:bexkat0|ir[27]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[126] -to "bexkat2:bexkat0|ir[28]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[127] -to "bexkat2:bexkat0|ir[29]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[128] -to "bexkat2:bexkat0|ir[2]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[129] -to "bexkat2:bexkat0|ir[30]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[130] -to "bexkat2:bexkat0|ir[31]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[131] -to "bexkat2:bexkat0|ir[3]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[132] -to "bexkat2:bexkat0|ir[4]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[133] -to "bexkat2:bexkat0|ir[5]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[134] -to "bexkat2:bexkat0|ir[6]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[135] -to "bexkat2:bexkat0|ir[7]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[136] -to "bexkat2:bexkat0|ir[8]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[137] -to "bexkat2:bexkat0|ir[9]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[138] -to "bexkat2:bexkat0|mdr[0]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[139] -to "bexkat2:bexkat0|mdr[10]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[140] -to "bexkat2:bexkat0|mdr[11]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[141] -to "bexkat2:bexkat0|mdr[12]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[142] -to "bexkat2:bexkat0|mdr[13]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[143] -to "bexkat2:bexkat0|mdr[14]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[144] -to "bexkat2:bexkat0|mdr[15]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[145] -to "bexkat2:bexkat0|mdr[16]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[146] -to "bexkat2:bexkat0|mdr[17]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[147] -to "bexkat2:bexkat0|mdr[18]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[148] -to "bexkat2:bexkat0|mdr[19]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[149] -to "bexkat2:bexkat0|mdr[1]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[150] -to "bexkat2:bexkat0|mdr[20]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[151] -to "bexkat2:bexkat0|mdr[21]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[152] -to "bexkat2:bexkat0|mdr[22]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[153] -to "bexkat2:bexkat0|mdr[23]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[154] -to "bexkat2:bexkat0|mdr[24]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[155] -to "bexkat2:bexkat0|mdr[25]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[156] -to "bexkat2:bexkat0|mdr[26]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[157] -to "bexkat2:bexkat0|mdr[27]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[158] -to "bexkat2:bexkat0|mdr[28]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[159] -to "bexkat2:bexkat0|mdr[29]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[160] -to "bexkat2:bexkat0|mdr[2]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[161] -to "bexkat2:bexkat0|mdr[30]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[162] -to "bexkat2:bexkat0|mdr[31]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[163] -to "bexkat2:bexkat0|mdr[3]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[164] -to "bexkat2:bexkat0|mdr[4]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[165] -to "bexkat2:bexkat0|mdr[5]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[166] -to "bexkat2:bexkat0|mdr[6]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[167] -to "bexkat2:bexkat0|mdr[7]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[168] -to "bexkat2:bexkat0|mdr[8]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[169] -to "bexkat2:bexkat0|mdr[9]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[170] -to "bexkat2:bexkat0|pc[0]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[171] -to "bexkat2:bexkat0|pc[10]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[172] -to "bexkat2:bexkat0|pc[11]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[173] -to "bexkat2:bexkat0|pc[12]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[174] -to "bexkat2:bexkat0|pc[13]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[175] -to "bexkat2:bexkat0|pc[14]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[176] -to "bexkat2:bexkat0|pc[15]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[177] -to "bexkat2:bexkat0|pc[16]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[178] -to "bexkat2:bexkat0|pc[17]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[179] -to "bexkat2:bexkat0|pc[18]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[180] -to "bexkat2:bexkat0|pc[19]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[181] -to "bexkat2:bexkat0|pc[1]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[182] -to "bexkat2:bexkat0|pc[20]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[183] -to "bexkat2:bexkat0|pc[21]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[184] -to "bexkat2:bexkat0|pc[22]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[185] -to "bexkat2:bexkat0|pc[23]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[186] -to "bexkat2:bexkat0|pc[24]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[187] -to "bexkat2:bexkat0|pc[25]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[188] -to "bexkat2:bexkat0|pc[26]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[189] -to "bexkat2:bexkat0|pc[27]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[190] -to "bexkat2:bexkat0|pc[28]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[191] -to "bexkat2:bexkat0|pc[29]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[192] -to "bexkat2:bexkat0|pc[2]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[193] -to "bexkat2:bexkat0|pc[30]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[194] -to "bexkat2:bexkat0|pc[31]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[195] -to "bexkat2:bexkat0|pc[3]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[196] -to "bexkat2:bexkat0|pc[4]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[197] -to "bexkat2:bexkat0|pc[5]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[198] -to "bexkat2:bexkat0|pc[6]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[199] -to "bexkat2:bexkat0|pc[7]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[200] -to "bexkat2:bexkat0|pc[8]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[201] -to "bexkat2:bexkat0|pc[9]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[202] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][0]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[203] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][10]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[204] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][11]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[205] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][12]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[206] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][13]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[207] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][14]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[208] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][15]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[209] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][16]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[210] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][17]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[211] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][18]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[212] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][19]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[213] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][1]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[214] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][20]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[215] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][21]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[216] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][22]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[217] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][23]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[218] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][24]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[219] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][25]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[220] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][26]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[221] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][27]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[222] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][28]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[223] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][29]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[224] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][2]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[225] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][30]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[226] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][31]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[227] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][3]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[228] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][4]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[229] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][5]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[230] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][6]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[231] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][7]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[232] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][8]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[233] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[0][9]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[234] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][0]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[235] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][10]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[236] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][11]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[237] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][12]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[238] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][13]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[239] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][14]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[240] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][15]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[241] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][16]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[242] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][17]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[243] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][18]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[244] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][19]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[245] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][1]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[246] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][20]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[247] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][21]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[248] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][22]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[249] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][23]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[250] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][24]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[251] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][25]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[252] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][26]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[253] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][27]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[254] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][28]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[255] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][29]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[256] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][2]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[257] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][30]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[258] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][31]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[259] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][3]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[260] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][4]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[261] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][5]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[262] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][6]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[263] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][7]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[264] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][8]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[265] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[1][9]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[266] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][0]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[267] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][10]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[268] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][11]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[269] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][12]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[270] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][13]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[271] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][14]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[272] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][15]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[273] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][16]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[274] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][17]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[275] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][18]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[276] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][19]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[277] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][1]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[278] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][20]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[279] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][21]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[280] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][22]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[281] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][23]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[282] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][24]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[283] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][25]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[284] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][26]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[285] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][27]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[286] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][28]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[287] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][29]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[288] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][2]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[289] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][30]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[290] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][31]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[291] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][3]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[292] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][4]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[293] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][5]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[294] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][6]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[295] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][7]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[296] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][8]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[297] -to "bexkat2:bexkat0|registerfile2:intreg|regfile[2][9]" -section_id cpu
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_storage_qualifier_in[298] -to "bexkat2:bexkat0|rst_i" -section_id cpu
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_DATA_BITS=299" -section_id cpu
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_BITS=299" -section_id cpu
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STORAGE_QUALIFIER_BITS=299" -section_id cpu
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK=000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" -section_id cpu
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK_LENGTH=1224" -section_id cpu
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STORAGE_QUALIFIER_INVERSION_MASK_LENGTH=300" -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[0] -to cpu|gnd -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[1] -to cpu|gnd -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[5] -to cpu|gnd -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[6] -to cpu|vcc -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[9] -to cpu|gnd -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[13] -to cpu|vcc -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[15] -to cpu|gnd -section_id cpu
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[22] -to cpu|vcc -section_id cpu
+set_global_assignment -name VERILOG_FILE vga/vgalinebuf.v
+set_global_assignment -name QIP_FILE vga/vgalinebuf.qip
+set_global_assignment -name VERILOG_FILE vga/vga_pallette.v
+set_global_assignment -name QIP_FILE vga/vga_pallette.qip
+set_global_assignment -name VERILOG_FILE vga/vga_master.v
+set_global_assignment -name VERILOG_FILE vga/vga_controller.v
+set_global_assignment -name VERILOG_FILE sdram/sdram_controller_cache.v
+set_global_assignment -name VERILOG_FILE sdram/sdram_controller.v
+set_global_assignment -name VERILOG_FILE sdram/cachemem.v
+set_global_assignment -name QIP_FILE sdram/cachemem.qip
+set_global_assignment -name VERILOG_FILE sdram/cachefifo.v
+set_global_assignment -name QIP_FILE sdram/cachefifo.qip
+set_global_assignment -name VERILOG_FILE sdram/cache.v
+set_global_assignment -name VERILOG_FILE io/matrixpll.v
+set_global_assignment -name QIP_FILE io/matrixpll.qip
+set_global_assignment -name VERILOG_FILE io/matrixmem.v
+set_global_assignment -name QIP_FILE io/matrixmem.qip
+set_global_assignment -name VERILOG_FILE io/led_matrix.v
+set_global_assignment -name VERILOG_FILE io/timescale.v
+set_global_assignment -name VERILOG_FILE io/i2c_master_top.v
+set_global_assignment -name VERILOG_FILE io/i2c_master_defines.v
+set_global_assignment -name VERILOG_FILE io/i2c_master_byte_ctrl.v
+set_global_assignment -name VERILOG_FILE io/i2c_master_bit_ctrl.v
+set_global_assignment -name VERILOG_FILE io/timerint.v
+set_global_assignment -name MIF_FILE ../monitor/bootstrap.mif
+set_global_assignment -name MIF_FILE ../monitor/tests.mif
+set_global_assignment -name VERILOG_INCLUDE_FILE cpu/bexkat2.vh
+set_global_assignment -name VERILOG_FILE cpu/fpu.v
+set_global_assignment -name VERILOG_FILE io/ps2_kbd.v
+set_global_assignment -name VERILOG_FILE cpu/registerfile2.v
+set_global_assignment -name VERILOG_FILE cpu/intcalc2.v
+set_global_assignment -name VERILOG_FILE cpu/alu2.v
+set_global_assignment -name VERILOG_FILE cpu/control2.v
+set_global_assignment -name VERILOG_FILE mmu.v
+set_global_assignment -name VERILOG_FILE io/spi_xcvr.v
+set_global_assignment -name VERILOG_FILE io/lcd_module.v
+set_global_assignment -name VERILOG_FILE io/baudgen.v
+set_global_assignment -name VERILOG_FILE io/uart_rx.v
+set_global_assignment -name VERILOG_FILE io/uart.v
+set_global_assignment -name VERILOG_FILE io/uart_tx.v
+set_global_assignment -name VERILOG_FILE cpu/intumult.v
+set_global_assignment -name QIP_FILE cpu/intumult.qip
+set_global_assignment -name VERILOG_FILE cpu/intudiv.v
+set_global_assignment -name QIP_FILE cpu/intudiv.qip
+set_global_assignment -name QIP_FILE cpu/intsmult.qip
+set_global_assignment -name VERILOG_FILE cpu/intsdiv.v
+set_global_assignment -name QIP_FILE cpu/intsdiv.qip
+set_global_assignment -name VERILOG_FILE cpu/alu.v
+set_global_assignment -name QIP_FILE monitor.qip
+set_global_assignment -name SDC_FILE soc.sdc
+set_global_assignment -name VERILOG_FILE soc.v
+set_global_assignment -name VERILOG_FILE debounce.v
+set_global_assignment -name VERILOG_FILE io/hexdisp.v
+set_global_assignment -name SIGNALTAP_FILE stp1.stp
+set_global_assignment -name CDF_FILE soc.cdf
+set_global_assignment -name QIP_FILE sysclock.qip
+set_global_assignment -name VERILOG_FILE cpu/bexkat2.v
+set_global_assignment -name HEX_FILE cpu/vectors.hex
+set_global_assignment -name VERILOG_FILE io/fan_ctrl.v
+set_global_assignment -name VERILOG_FILE io/spi_master.v
+set_global_assignment -name VERILOG_FILE io/iocontroller.v
+set_global_assignment -name QIP_FILE vectors.qip
+set_global_assignment -name QIP_FILE io/uart_fifo.qip
+set_global_assignment -name QIP_FILE cpu/fp_cvtis.qip
+set_global_assignment -name QIP_FILE cpu/fp_cvtsi.qip
+set_global_assignment -name QIP_FILE cpu/fp_cmp.qip
+set_global_assignment -name QIP_FILE cpu/fp_addsub.qip
+set_global_assignment -name QIP_FILE cpu/fp_mult.qip
+set_global_assignment -name QIP_FILE cpu/fp_div.qip
+set_global_assignment -name QIP_FILE cpu/fp_sqrt.qip
+set_global_assignment -name VERILOG_FILE mandelbrot/mandelbrot.v
+set_global_assignment -name QIP_FILE mandelbrot/mandmem.qip
+set_global_assignment -name VERILOG_FILE mandelbrot/mandunit.v
+set_global_assignment -name VERILOG_FILE ssram_controller.v
+set_global_assignment -name VERILOG_FILE flash_controller.v
+set_global_assignment -name VERILOG_FILE arbiter.v
+set_global_assignment -name QIP_FILE io/ps2_kbd_fifo.qip
+set_global_assignment -name VERILOG_FILE io/segdigits.v
+set_global_assignment -name QIP_FILE testrom.qip
+set_global_assignment -name QIP_FILE mandelbrot/mand_mult.qip
+set_global_assignment -name QIP_FILE mandelbrot/mand_sub.qip
+set_global_assignment -name QIP_FILE mandelbrot/mand_add.qip
+set_global_assignment -name QIP_FILE mandelbrot/mand_fifo.qip
+set_global_assignment -name QIP_FILE mandelbrot/mand_fifo_in.qip
+set_global_assignment -name QIP_FILE mandelbrot/mand_fifo_out.qip
+set_global_assignment -name QIP_FILE mandelbrot/mand_comp.qip
+set_global_assignment -name QIP_FILE mandelbrot/shift.qip
+set_global_assignment -name QIP_FILE codec_pll.qip
+set_global_assignment -name QIP_FILE codec_buffer.qip
+set_global_assignment -name MIF_FILE vga/font8x12.mif
+set_global_assignment -name QIP_FILE vga/fontmem.qip
+set_global_assignment -name VERILOG_FILE vga/graphicsdrv.v
+set_global_assignment -name VERILOG_FILE vga/testdrv.v
+set_global_assignment -name QIP_FILE vga/testlinebuf.qip
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 set_global_assignment -name SLD_FILE db/stp1_auto_stripped.stp

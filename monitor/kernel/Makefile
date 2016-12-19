@@ -1,6 +1,7 @@
 CC = bexkat1-elf-gcc
 CFLAGS = -O2 -I../include
-LIBS = -L../lib -lsupport
+LDLIBS = -lsupport -lm
+LDFLAGS = -specs=de2.specs
 OBJDUMP = bexkat1-elf-objdump
 AS = bexkat1-elf-as
 LD = bexkat1-elf-ld
@@ -18,4 +19,7 @@ clean:
 	$(CC) $(CFLAGS) -c -o $@ $^
 
 kernel: kernel.o font.o
-	$(CC) -specs=de2.specs -o $@ $^ $(LIBS)
+
+
+install: kernel
+	cp kernel /media/mstock/A5BC-530B/

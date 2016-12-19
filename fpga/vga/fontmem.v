@@ -84,7 +84,7 @@ module fontmem (
 		altsyncram_component.address_aclr_a = "NONE",
 		altsyncram_component.clock_enable_input_a = "BYPASS",
 		altsyncram_component.clock_enable_output_a = "BYPASS",
-		altsyncram_component.init_file = "font8x12.mif",
+		altsyncram_component.init_file = "./vga/font8x12.mif",
 		altsyncram_component.intended_device_family = "Cyclone IV GX",
 		altsyncram_component.lpm_hint = "ENABLE_RUNTIME_MOD=YES,INSTANCE_NAME=FONT",
 		altsyncram_component.lpm_type = "altsyncram",
@@ -119,7 +119,7 @@ endmodule
 // Retrieval info: PRIVATE: JTAG_ENABLED NUMERIC "1"
 // Retrieval info: PRIVATE: JTAG_ID STRING "FONT"
 // Retrieval info: PRIVATE: MAXIMUM_DEPTH NUMERIC "0"
-// Retrieval info: PRIVATE: MIFfilename STRING "font8x12.mif"
+// Retrieval info: PRIVATE: MIFfilename STRING "./vga/font8x12.mif"
 // Retrieval info: PRIVATE: NUMWORDS_A NUMERIC "128"
 // Retrieval info: PRIVATE: RAM_BLOCK_TYPE NUMERIC "0"
 // Retrieval info: PRIVATE: RegAddr NUMERIC "1"
@@ -134,7 +134,7 @@ endmodule
 // Retrieval info: CONSTANT: ADDRESS_ACLR_A STRING "NONE"
 // Retrieval info: CONSTANT: CLOCK_ENABLE_INPUT_A STRING "BYPASS"
 // Retrieval info: CONSTANT: CLOCK_ENABLE_OUTPUT_A STRING "BYPASS"
-// Retrieval info: CONSTANT: INIT_FILE STRING "font8x12.mif"
+// Retrieval info: CONSTANT: INIT_FILE STRING "./vga/font8x12.mif"
 // Retrieval info: CONSTANT: INTENDED_DEVICE_FAMILY STRING "Cyclone IV GX"
 // Retrieval info: CONSTANT: LPM_HINT STRING "ENABLE_RUNTIME_MOD=YES,INSTANCE_NAME=FONT"
 // Retrieval info: CONSTANT: LPM_TYPE STRING "altsyncram"

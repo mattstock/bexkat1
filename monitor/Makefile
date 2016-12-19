@@ -15,10 +15,11 @@ APPS = pretty fmand bootstrap memtests rtc fileio tests ps2 fib audiogen clock f
 
 .PHONY: all clean gcctests kernel install
 
-all: boot-$(BOARD).o bootstrap.mif bootstrap.bin tests.mif $(APPS)
+all: boot-$(BOARD).o bootstrap.mif bootstrap.bin tests.mif $(APPS) kernel
 
 install: $(APPS)
 	cp $(APPS) /media/mstock/A5BC-530B/
+	cd kernel; make install
 
 clean:
 	cd gcctests; make clean
@@ -28,7 +29,7 @@ clean:
 gcctests:
 	cd gcctests; make
 
-kernel:
+kernel: 
 	cd kernel; make
 
 %.o: %.c
