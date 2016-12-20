@@ -145,10 +145,12 @@ int main(int argc, char **argv) {
 
   bmp = (unsigned char *)malloc(sizeof(font88));
   
+  fp = fopen("foo.mif","w");
   printf("size = %u\n", size);
   for (int i=0; i < size; i += 2) {
     int row = i/(2*rowsize);
     int col = (i/2)%rowsize;
+    fprintf(fp, "%02x : %08x%08x00000000;\n", i/2, font88[i], font88[i+1]);
     for (int y=0; y < sizeof(unsigned int); y++) {
       int pos = (row*height+(3-y))*rowsize + col;
       bmp[pos] = (font88[i] >> 8*y) & 0xff; 
@@ -160,6 +162,7 @@ int main(int argc, char **argv) {
       printf("%d[%d]: %08x -> bmp[%08x]: %02x\n", i+1, 3-y, font88[i+1], pos, bmp[pos]);
     }
   }
+  fclose(fp);
   
   // Now write out the bitstream in 8bpp
   fp2 = fopen("comp.bmp","w");
