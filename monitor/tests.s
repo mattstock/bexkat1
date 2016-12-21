@@ -1,9 +1,10 @@
 	.set matrix_base,  0x20000000
 	.set seg_base,     0x30000000
 	.set ssram_base,   0xc0000000
+	.set ssram_test,   0xc0200000
 	.set sdram_base,   0x00000000
-#	.set sdram_test,   0x07ff0000
-	.set sdram_test,   0x03ff0000
+	.set sdram_test,   0x07ff0000
+#	.set sdram_test,   0x03ff0000
 #	.set sdram_test,   0x00040000
 	.set sw_base,      0x30001000
 	.set sp_start,     0x08000000
@@ -236,13 +237,13 @@ t8:	print_test 8,1
 	ld.l %0, (%1)
 	cmp %2, %0
 	bne fail
-#	print_test 8,2
-#	ldi %1, ssram_base+0x1000
-#	ldi %2, 0xaabb33dd
-#	st.l %2, (%1)
-#	ld.l %0, (%1)
-#	cmp %2, %0
-#	bne fail
+	print_test 8,2
+	ldi %1, ssram_base+0x1000
+	ldi %2, 0xaabb33dd
+	st.l %2, (%1)
+	ld.l %0, (%1)
+	cmp %2, %0
+	bne fail
 
 # relative r/w word with pos offset
 t9:	print_test 9,1
@@ -257,17 +258,17 @@ t9:	print_test 9,1
 	ld.l %0, (%1)
 	cmp %2, %0
 	bne fail
-#	print_test 9,3
-#	ldi %1, ssram_base+0x200
-#	ldi %2, 0x5533ddf3
-#	st.l %2, 8(%1)
-#	ld.l %0, 8(%1)
-#	cmp %2, %0
-#	bne fail
-#	print_test 9,4
-#	addi %1, %1, 8
-#	ld.l %0, (%1)
-#	cmp %2, %0
+	print_test 9,3
+	ldi %1, ssram_base+0x200
+	ldi %2, 0x5533ddf3
+	st.l %2, 8(%1)
+	ld.l %0, 8(%1)
+	cmp %2, %0
+	bne fail
+	print_test 9,4
+	addi %1, %1, 8
+	ld.l %0, (%1)
+	cmp %2, %0
 	bne fail
 	
 # relative r/w word with neg offset
@@ -283,17 +284,17 @@ ta:	print_test 10,1
 	ld.l %0, (%1)
 	cmp %2, %0
 	bne fail
-#	print_test 10,3
-#	ldi %1, ssram_base+0x300
-#	ldi %2, 0x6627df87
-#	st.l %2, -12(%1)
-#	ld.l %0, -12(%1)
-#	cmp %2, %0
-#	bne fail
-#	print_test 10,4
-#	subi %1, %1, 12
-#	ld.l %0, (%1)
-#	cmp %2, %0
+	print_test 10,3
+	ldi %1, ssram_base+0x300
+	ldi %2, 0x6627df87
+	st.l %2, -12(%1)
+	ld.l %0, -12(%1)
+	cmp %2, %0
+	bne fail
+	print_test 10,4
+	subi %1, %1, 12
+	ld.l %0, (%1)
+	cmp %2, %0
 	bne fail
 
 # relative r/w half word with offsets
@@ -636,6 +637,24 @@ loop2:	ld.l %3, (%1)
 	addi %0, %0, 3
 	cmp %1, %2
 	bne loop2
+	print_test 19,2
+	ldi %0, 0x22334447
+	ldi %1, ssram_base
+	ldi %2, ssram_test
+t13l3:	st.l %0, (%1)
+	addi %1, %1, 4
+	addi %0, %0, 3
+	cmp %1, %2
+	bne t13l3
+	ldi %0, 0x22334447
+	ldi %1, ssram_base
+t13l4:	ld.l %3, (%1)
+	cmp %0, %3
+	bne fail
+	addi %1, %1, 4
+	addi %0, %0, 3
+	cmp %1, %2
+	bne t13l4
 
 # individual memory test
 t14:	print_test 20,1

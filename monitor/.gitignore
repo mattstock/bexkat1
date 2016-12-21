@@ -19,3 +19,4 @@ codec_w
 clock
 vga
 rtc
+kernel/kernel

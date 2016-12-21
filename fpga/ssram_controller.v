@@ -8,7 +8,7 @@ module ssram_controller(
   input [31:0] dat_i,
   output [31:0] dat_o,
   input [3:0] sel_i,
-  input [21:0] adr_i,
+  input [22:0] adr_i,
   input [31:0] databus_in,
   output [31:0] databus_out,
   output [26:0] address_out,
@@ -38,9 +38,9 @@ assign gw_n = 1'b1;
 assign adv_n = 1'b1;
 assign adsc_n = 1'b1;
 assign adsp_n = ~(state == STATE_ADDRLATCH);
-assign ce0_n = ~(select && ~adr_i[21]);
-assign ce1_n = ~(select && adr_i[21]);
-assign address_out = { 6'h00, adr_i[20:0] };
+assign ce0_n = ~(select && ~adr_i[22]);
+assign ce1_n = ~(select && adr_i[22]);
+assign address_out = { 5'h00, adr_i[21:0] };
 assign we_n = ~buswrite;
 assign be_out = (buswrite ? ~sel_i : 4'hf);
 assign oe_n = we_i;

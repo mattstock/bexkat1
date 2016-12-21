@@ -24,7 +24,6 @@ module vga_master(
   output [7:0] b,
   output blank_n,
   output sync_n,
-  input [1:0] default_mode,
   input vga_clock);
 
 // Configuration registers
@@ -66,7 +65,7 @@ always @(posedge clk_i or posedge rst_i)
 begin
   if (rst_i) begin
     vgabase <= 32'hc0000000;
-    setupreg <= { 30'h0, default_mode };
+    setupreg <= 32'h02;
     slave_dat_o <= 32'h0;
     sstate <= SSTATE_IDLE;
   end else begin

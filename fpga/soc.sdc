@@ -14,8 +14,8 @@ create_generated_clock -name rtc_sclk_pin -source [get_registers {iocontroller:i
 create_generated_clock -name ssram_clk_pin -source pll0|altpll_component|auto_generated|pll1|clk[0] -add [get_ports ssram_clk]
 create_generated_clock -name sdram_clk_pin -source pll0|altpll_component|auto_generated|pll1|clk[0] -invert -add [get_ports sdram_clk]
 
-
-# 0 - 50MHz
+# 0 - 100MHz
+# 1 - 25MHz
 
 set_clock_groups -asynchronous -group { \
   pll0|altpll_component|auto_generated|pll1|clk[0]} -group { altera_reserved_tck }
@@ -27,7 +27,7 @@ set_output_delay -clock altera_reserved_tck 20 [ get_ports altera_reserved_tdo ]
   
 # all async user input and really slow stuff
 set_false_path -from [get_ports {KEY*}] -to *
-set_false_path -from [get_ports {SW* irda_rxd}] -to *
+set_false_path -from [get_ports {SW* irda_rxd ps2kbd*}] -to *
 set_false_path -from * -to [get_ports {LED*}]
 set_false_path -from * -to [get_ports {HEX*}]
 set_false_path -from [get_ports {serial*}] -to *
