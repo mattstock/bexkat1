@@ -1,7 +1,7 @@
 	.set matrix_base,  0x20000000
 	.set seg_base,     0x30000000
 	.set ssram_base,   0xc0000000
-	.set ssram_test,   0xc0200000
+	.set ssram_test,   0xc0400000
 	.set sdram_base,   0x00000000
 	.set sdram_test,   0x07ff0000
 #	.set sdram_test,   0x03ff0000

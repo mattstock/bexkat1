@@ -94,8 +94,8 @@ set_output_delay -clock pll0|altpll_component|auto_generated|pll1|clk[0] -min 0n
 set_input_delay -clock sd_sclk_pin -min 0ns [get_ports sd_wp_n]
 set_input_delay -clock sd_sclk_pin -max 0ns [get_ports sd_wp_n]
 
-set_input_delay -clock ssram_clk_pin -max 1.4ns [get_ports {fs_databus*}]
-set_input_delay -clock ssram_clk_pin -min -0.4ns [get_ports {fs_databus*}]
+set_input_delay -clock ssram_clk_pin -max 3.2ns [get_ports {fs_databus*}]
+set_input_delay -clock ssram_clk_pin -min 0ns [get_ports {fs_databus*}]
 set_output_delay -clock ssram_clk_pin -max 1.4ns [get_ports {fs_databus*}]
 set_output_delay -clock ssram_clk_pin -min -0.4ns [get_ports {fs_databus*}]
 set_output_delay -clock ssram_clk_pin -max 1.4ns [get_ports {fs_addrbus*}]
