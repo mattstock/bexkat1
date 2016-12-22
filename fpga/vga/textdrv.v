@@ -2,6 +2,8 @@ module textdrv(
   input clk_i,
   input rst_i,
   input vga_clock,
+  input [31:0] cursorpos,
+  input [3:0] cursormode,
   input [15:0] x,
   input [15:0] y,
   output [7:0] r,
@@ -17,6 +19,8 @@ wire [31:0] char;
 wire [95:0] font0_out, font1_out, font2_out, font3_out;
 wire [31:0] buf_out;
 wire [15:0] scanaddr;
+wire [15:0] textrow, textcol;
+wire oncursor;
 
 logic [1:0] state, state_next;
 logic [9:0] idx, idx_next;
@@ -24,11 +28,15 @@ logic [31:0] rowval, rowval_next;
 logic [15:0] x_sync [2:0];
 logic [15:0] y_sync [2:0];
 logic [31:0] font_idx, font_idx_next;
+logic [25:0] blink;
 
 localparam [1:0] STATE_IDLE = 2'h0, STATE_BUS = 2'h1, STATE_FONT = 2'h2, STATE_STORE = 2'h3;
 
 assign cyc_o = (state == STATE_BUS);
 assign scanaddr = x+1'b1;
+assign textrow = { 3'h0, y[15:3] };
+assign textcol = { 3'h0, x[15:3] };
+assign oncursor = ({textrow,textcol} == cursorpos) && ((blink[25] & cursormode[3:0] == 4'h1) || (cursormode[3:0] == 4'h2));
 
 // break out the rows of the font elements
 always_comb
@@ -50,7 +58,7 @@ begin
   endcase
 end  
 
-assign {r,g,b} = (buf_out[5'd31-x[4:0]] ? 24'hffffff : 24'h000000);
+assign {r,g,b} = (buf_out[5'd31-x[4:0]] || oncursor ? 24'hffffff : 24'h000000);
 
 always @(posedge clk_i) begin
   x_sync[2] <= x_sync[1];
@@ -69,11 +77,13 @@ begin
     idx <= 10'h0;
     rowval <= 32'h0;
 	 font_idx <= 32'h0;
+	 blink <= 25'h0;
   end else begin
     idx <= idx_next;
     state <= state_next;
     rowval <= rowval_next;
 	 font_idx <= font_idx_next;
+	 blink <= blink + 1'h1;
   end
 end
 
@@ -116,13 +126,12 @@ begin
 end
 
 // Font memory x4 so we can decode a word at a time.
-// Maybe I should build a single write, 4 read version of my own?
 fontmem font0(.clock(clk_i), .address(font_idx[30:24]), .q(font0_out));
 fontmem font1(.clock(clk_i), .address(font_idx[22:16]), .q(font1_out));
 fontmem font2(.clock(clk_i), .address(font_idx[14:8]), .q(font2_out));
 fontmem font3(.clock(clk_i), .address(font_idx[6:0]), .q(font3_out));
 
-testlinebuf linebuf0(.wrclock(clk_i), .wraddress(idx[7:2]), .wren(state == STATE_STORE), .data(char),
+textlinebuf linebuf0(.wrclock(clk_i), .wraddress(idx[7:2]), .wren(state == STATE_STORE), .data(char),
   .rdclock(vga_clock), .rdaddress(scanaddr[11:5]), .q(buf_out));
 
 endmodule

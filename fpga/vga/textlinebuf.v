@@ -4,7 +4,7 @@
 // MODULE: altsyncram 
 
 // ============================================================
-// File Name: testlinebuf.v
+// File Name: textlinebuf.v
 // Megafunction Name(s):
 // 			altsyncram
 //
@@ -37,7 +37,7 @@
 // synopsys translate_off
 `timescale 1 ps / 1 ps
 // synopsys translate_on
-module testlinebuf (
+module textlinebuf (
 	data,
 	rdaddress,
 	rdclock,
@@ -207,10 +207,10 @@ endmodule
 // Retrieval info: CONNECT: @data_a 0 0 32 0 data 0 0 32 0
 // Retrieval info: CONNECT: @wren_a 0 0 0 0 wren 0 0 0 0
 // Retrieval info: CONNECT: q 0 0 32 0 @q_b 0 0 32 0
-// Retrieval info: GEN_FILE: TYPE_NORMAL testlinebuf.v TRUE
-// Retrieval info: GEN_FILE: TYPE_NORMAL testlinebuf.inc FALSE
-// Retrieval info: GEN_FILE: TYPE_NORMAL testlinebuf.cmp FALSE
-// Retrieval info: GEN_FILE: TYPE_NORMAL testlinebuf.bsf FALSE
-// Retrieval info: GEN_FILE: TYPE_NORMAL testlinebuf_inst.v FALSE
-// Retrieval info: GEN_FILE: TYPE_NORMAL testlinebuf_bb.v FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL textlinebuf.v TRUE
+// Retrieval info: GEN_FILE: TYPE_NORMAL textlinebuf.inc FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL textlinebuf.cmp FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL textlinebuf.bsf FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL textlinebuf_inst.v FALSE
+// Retrieval info: GEN_FILE: TYPE_NORMAL textlinebuf_bb.v FALSE
 // Retrieval info: LIB_FILE: altera_mf

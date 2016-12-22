@@ -36,7 +36,7 @@ module vga_master(
 localparam [2:0] SSTATE_IDLE = 3'h0, SSTATE_PALETTE = 3'h1, SSTATE_PALETTE2 = 3'h2, SSTATE_FONT = 3'h3, SSTATE_DONE = 3'h4;
 
 logic [2:0] sstate, sstate_next;
-logic [31:0] setupreg, setupreg_next, vgabase, vgabase_next;
+logic [31:0] setupreg, setupreg_next, vgabase, vgabase_next, cursorpos, cursorpos_next;
 logic [31:0] slave_dat_o_next;
 
 wire [7:0] gd_r, gd_g, gd_b, td_r, td_g, td_b;
@@ -67,11 +67,13 @@ begin
     vgabase <= 32'hc0000000;
     setupreg <= 32'h02;
     slave_dat_o <= 32'h0;
+	 cursorpos <= 32'h0;
     sstate <= SSTATE_IDLE;
   end else begin
     vgabase <= vgabase_next;
     setupreg <= setupreg_next;
     slave_dat_o <= slave_dat_o_next;
+	 cursorpos <= cursorpos_next;
     sstate <= sstate_next;
   end
 end
@@ -81,6 +83,7 @@ begin
   sstate_next = sstate;
   setupreg_next = setupreg;
   vgabase_next = vgabase;
+  cursorpos_next = cursorpos;
   slave_dat_o_next = slave_dat_o;
   
   case (sstate)
@@ -92,7 +95,7 @@ begin
           2'h2: sstate_next = SSTATE_FONT;
           2'h3: begin
             case (slave_adr_i[7:0])
-              8'h0: begin
+              8'h0: begin // c00 - vga base
                 if (slave_we_i) begin
                   if (slave_sel_i[3])
                     vgabase_next[31:24] = slave_dat_i[31:24];
@@ -105,7 +108,7 @@ begin
                 end else
                   slave_dat_o_next = vgabase;
               end
-              8'h1: begin
+              8'h1: begin // c01 - graphics mode / cursor mode
                 if (slave_we_i) begin
                   if (slave_sel_i[3])
                     setupreg_next[31:24] = slave_dat_i[31:24];
@@ -118,6 +121,18 @@ begin
                 end else
                   slave_dat_o_next = setupreg;
               end
+				  8'h2: begin // c02 - cursor position
+				    if (slave_we_i) begin
+                    cursorpos_next[31:24] = slave_dat_i[31:24];
+                  if (slave_sel_i[2])
+                    cursorpos_next[23:16] = slave_dat_i[23:16];
+                  if (slave_sel_i[1])
+                    cursorpos_next[15:8] = slave_dat_i[15:8];
+                  if (slave_sel_i[0])
+                    cursorpos_next[7:0] = slave_dat_i[7:0];
+                end else
+                  slave_dat_o_next = cursorpos;
+				  end
               default: begin
                 if (~slave_we_i)
                   slave_dat_o_next = 32'h0;
@@ -139,7 +154,7 @@ graphicsdrv graphicsdriver0(.clk_i(clk_i), .rst_i(rst_i), .pixeldouble(graphicsd
   .ack_i(master_ack_i), .palette_adr_i(slave_adr_i[7:0]), .palette_dat_i(slave_dat_i[23:0]),
   .adr_o(gd_adr_o), .dat_i(master_dat_i), .vga_clock(vga_clock));
 textdrv textdriver0(.clk_i(clk_i), .rst_i(rst_i), .x(x_raw), .y(y_raw),
-  .r(td_r), .g(td_g), .b(td_b), .cyc_o(td_cyc_o),
+  .r(td_r), .g(td_g), .b(td_b), .cyc_o(td_cyc_o), .cursorpos(cursorpos), .cursormode(setupreg[7:4]),
   .ack_i(master_ack_i), .adr_o(td_adr_o), .dat_i(master_dat_i), .vga_clock(vga_clock));
 
 vga_controller vga0(.active(blank_n), .vs(vs), .hs(hs), .clock(vga_clock), .reset_n(~rst_i), .x(x_raw), .y(y_raw));
