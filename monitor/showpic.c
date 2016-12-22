@@ -159,7 +159,7 @@ void main(void) {
     bmpcore.colors = read_uint32(fh);
     iprintf("colors = %u\n", bmpcore.colors);
 
-    vga_set_mode(0);
+    vga_set_mode(VGA_MODE_NORMAL);
 
     // load the full image into a buffer initially to build the histogram
     // and colormap.

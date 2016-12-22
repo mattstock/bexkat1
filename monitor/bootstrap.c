@@ -161,7 +161,7 @@ void main(void) {
   lcd_init();
   lcd_print("Bexkat 1000");
   lcd_pos(0,1);
-  lcd_print("v2.5");
+  lcd_print("v2.6");
   serial_print(1, rebecca);
   if ((sysio[0] & 0x1) == 0x1) {
     sdcard_exec("/kernel");
