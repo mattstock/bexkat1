@@ -1,7 +1,7 @@
 (export (version D)
   (design
     (source /home/mstock/projects/soc/kicad/soc.sch)
-    (date "Sun 18 Dec 2016 08:39:41 PM EST")
+    (date "Tue 20 Dec 2016 10:24:03 PM EST")
     (tool "Eeschema (2016-12-02 revision 54c5f6b)-master")
     (sheet (number 1) (name /) (tstamps /)
       (title_block
@@ -35,7 +35,7 @@
       (tstamp 5696EEAB))
     (comp (ref J1)
       (value "Line Out")
-      (footprint mstock-pretty:SJI-3513N)
+      (footprint mstock-pretty:SJ-352X-SMT)
       (libsource (lib mstock) (part JACK_TRS_3PINS))
       (sheetpath (names /) (tstamps /))
       (tstamp 5696F8D4))
@@ -53,7 +53,7 @@
       (tstamp 5699741B))
     (comp (ref J4)
       (value "Line In")
-      (footprint mstock-pretty:SJI-3513N)
+      (footprint mstock-pretty:SJ-352X-SMT)
       (libsource (lib mstock) (part JACK_TRS_3PINS))
       (sheetpath (names /) (tstamps /))
       (tstamp 56B54BC1))
