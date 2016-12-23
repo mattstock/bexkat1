@@ -184,23 +184,21 @@ assign LEDG = { ~irda_rxd, 6'h0, cache_hitmiss };
 // Internal bus wiring
 wire [3:0] chipselect;
 wire [26:0] ssram_addrout;
-wire [31:0] cpu_address, vga_address, ssram_readdata, ssram_dataout, vga_readdata;
+wire [31:0] cpu_address, vga_readdata, ssram_dataout;
 wire [31:0] cpu_readdata, cpu_writedata, mon_readdata, mandelbrot_readdata, matrix_readdata, rom_readdata;
-wire [31:0] vect_readdata, io_readdata, sdram_readdata, sdram_dataout, vga_writedata, rom2_readdata;
-wire [3:0] cpu_be, vga_sel, exception;
+wire [31:0] vect_readdata, io_readdata, sdram_readdata, sdram_dataout, rom2_readdata;
+wire [3:0] cpu_be, exception;
 wire [5:0] io_interrupts;
 wire [2:0] cpu_interrupt;
 wire [7:0] lcd_dataout;
 wire cpu_write, cpu_cyc, cpu_ack, cpu_halt;
-wire vga_we, vga_cyc, vga_stb;
-wire arb_cyc, cpu_gnt, vga_gnt;
 wire mandelbrot_ack, io_ack;
 wire rom_read, vect_read;
-wire sdram_ack, vga_slave_ack;
+wire sdram_ack;
 wire [3:0] sdram_den_n;
 wire matrix_read, matrix_write, matrix_ack;
-wire ssram_ack;
-wire int_en, cache_enable, mmu_fault;
+wire vga_ack;
+wire int_en, mmu_fault;
 wire [1:0] cache_hitmiss;
 wire i2c_tx, i2c_clock;
 wire td_tx, td_clock;
@@ -248,17 +246,15 @@ assign cpu_readdata = (chipselect == 4'h1 ? vect_readdata : 32'h0) |
                       (chipselect == 4'h3 ? mandelbrot_readdata : 32'h0) |
                       (chipselect == 4'h4 ? io_readdata : 32'h0) |
                       (chipselect == 4'h5 ? matrix_readdata : 32'h0) |
-                      (chipselect == 4'h6 ? ssram_readdata : 32'h0) |
-                      (chipselect == 4'h7 ? sdram_readdata : 32'h0) |
-                      (chipselect == 4'ha ? vga_readdata : 32'h0);
+                      (chipselect == 4'h6 ? vga_readdata : 32'h0) |
+                      (chipselect == 4'h7 ? sdram_readdata : 32'h0);
 assign cpu_ack = (chipselect == 4'h1 ? vect_ack[1] : 1'h0) |
                  (chipselect == 4'h2 ? rom_ack[1] : 1'h0) |
                  (chipselect == 4'h3 ? mandelbrot_ack : 1'h0) |
                  (chipselect == 4'h4 ? io_ack : 1'h0) |
                  (chipselect == 4'h5 ? matrix_ack : 1'h0) |
-                 (chipselect == 4'h6 ? ssram_ack & cpu_gnt : 1'h0) |
-                 (chipselect == 4'h7 ? sdram_ack : 1'h0) |
-                 (chipselect == 4'ha ? vga_slave_ack : 1'h0);
+                 (chipselect == 4'h6 ? vga_ack : 1'h0) |
+                 (chipselect == 4'h7 ? sdram_ack : 1'h0);
 
 assign rom_read = (chipselect == 4'h2 && cpu_cyc && ~cpu_write);
 assign vect_read = (chipselect == 4'h1 && cpu_cyc && ~cpu_write);
@@ -267,7 +263,7 @@ bexkat2 bexkat0(.clk_i(sysclock), .rst_i(rst_i), .adr_o(cpu_address), .cyc_o(cpu
   .we_o(cpu_write), .dat_o(cpu_writedata), .sel_o(cpu_be), .ack_i(cpu_ack), .halt(cpu_halt),
   .interrupt(cpu_interrupt), .exception(exception), .int_en(int_en));
 
-mmu mmu0(.adr_i(cpu_address), .cyc_i(cpu_cyc), .chipselect(chipselect), .fault(mmu_fault), .cache_enable(cache_enable));
+mmu mmu0(.adr_i(cpu_address), .cyc_i(cpu_cyc), .chipselect(chipselect), .fault(mmu_fault));
 
 sdram_controller_cache sdram0(.clk_i(sysclock), .mem_clk_o(sdram_clk), .rst_i(rst_i), .adr_i(cpu_address[26:2]),
   .dat_i(cpu_writedata), .dat_o(sdram_readdata), .stb_i(chipselect == 4'h7), .cyc_i(cpu_cyc),
@@ -298,32 +294,9 @@ testrom rom1(.clock(sysclock), .q(rom2_readdata), .rden(rom_read), .address(cpu_
 
 vectors vecram0(.clock(sysclock), .q(vect_readdata), .rden(vect_read), .address(cpu_address[6:2]));
 
-wire [31:0] fs_adr;
-wire [3:0] fs_sel;
-wire fs_we;
-wire ssram_stb, ssram_stall;
-
-// hack out the vga controller & arbitration for testing
-//assign arb_cyc = cpu_cyc && (chipselect == 4'h6);
-//assign cpu_gnt = 1'h1;
-
-assign fs_adr = (cpu_gnt ? cpu_address : vga_address);
-assign fs_sel = (cpu_gnt ? cpu_be : vga_sel);
-assign fs_we = (cpu_gnt ? cpu_write : vga_we);
-assign ssram_stb = cpu_gnt | vga_gnt;
-arbiter arb0(.clk_i(sysclock), .rst_i(rst_i), .cpu_cyc_i(chipselect == 4'h6), 
-  .vga_cyc_i(vga_cyc & ~SW[15]), .cyc_o(arb_cyc), .cpu_gnt(cpu_gnt), .vga_gnt(vga_gnt), .ack_i(ssram_ack));
-
-vga_master vga0(.clk_i(sysclock), .rst_i(rst_i), .master_adr_o(vga_address), .master_cyc_o(vga_cyc), .master_dat_i(ssram_readdata),
- .master_we_o(vga_we), .master_dat_o(vga_writedata), .master_sel_o(vga_sel), .master_ack_i(vga_gnt & ssram_ack), .master_stb_o(vga_stb),
-  .slave_adr_i(cpu_address[11:2]), .slave_dat_i(cpu_writedata), .slave_sel_i(cpu_be), .slave_cyc_i(cpu_cyc), .slave_we_i(cpu_write),
-  .slave_stb_i(chipselect == 4'ha), .slave_ack_o(vga_slave_ack), .slave_dat_o(vga_readdata),
-  .vs(vga_vs), .hs(vga_hs), .r(vga_r), .g(vga_g), .b(vga_b), .blank_n(vga_blank_n), .vga_clock(vga_clock), .sync_n(vga_sync_n));
-
-ssram_controller ssram0(.clk_i(sysclock), .rst_i(rst_i), 
-  .stb_i(ssram_stb), .cyc_i(arb_cyc), .we_i(fs_we),
-  .ack_o(ssram_ack), .dat_i(cpu_writedata), .dat_o(ssram_readdata),
-  .sel_i(fs_sel), .adr_i(fs_adr[21:0]),
+vga_module video0(.clk_i(sysclock), .rst_i(rst_i), .cyc_i(cpu_cyc), .ack_o(vga_ack), .we_i(cpu_write), .sel_i(cpu_be),
+  .adr_i(cpu_address), .dat_i(cpu_writedata), .dat_o(vga_readdata), .stb_i(chipselect == 4'h6), 
+  .vs(vga_vs), .hs(vga_hs), .r(vga_r), .g(vga_g), .b(vga_b), .blank_n(vga_blank_n), .vga_clock(vga_clock), .sync_n(vga_sync_n),
   .databus_in(fs_databus), .databus_out(ssram_dataout),
   .address_out(ssram_addrout), .bus_clock(ssram_clk), .gw_n(ssram_gw_n), .adv_n(ssram_adv_n), .adsp_n(ssram_adsp_n),
   .adsc_n(ssram_adsc_n), .be_out(ssram_be), .oe_n(ssram_oe_n), .we_n(ssram_we_n), .ce0_n(ssram0_ce_n), .ce1_n(ssram1_ce_n));
