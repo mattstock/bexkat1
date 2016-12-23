@@ -121,7 +121,7 @@ begin
           rowval_next = 32'h0;
 		  else
 		    if (y_sync[1][2:0] == 16'h7)
-            rowval_next = rowval + 10'd80;
+            rowval_next = rowval + 10'd160;
         state_next = STATE_IDLE;
       end
     end

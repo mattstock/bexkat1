@@ -178,7 +178,7 @@ assign fs_addrbus = ssram_addrout;
 assign fs_databus = (~ssram_we_n ? ssram_dataout : 32'hzzzzzzzz);
 
 // System Blinknlights
-assign LEDR = { SW[17], SW[16], io_interrupts, miso, mosi, sclk, i2c_clock, i2c_tx, td_sdat, ~sd_ss, cpu_halt, mmu_fault, cpu_cyc };
+assign LEDR = { SW[17], 1'h0, io_interrupts, miso, mosi, sclk, i2c_clock, i2c_tx, td_sdat, ~sd_ss, cpu_halt, mmu_fault, cpu_cyc };
 assign LEDG = { ~irda_rxd, 6'h0, cache_hitmiss };
 
 // Internal bus wiring
@@ -242,7 +242,7 @@ begin
 end
 
 assign cpu_readdata = (chipselect == 4'h1 ? vect_readdata : 32'h0) |
-                      (chipselect == 4'h2 ? (SW[16] ? rom2_readdata : rom_readdata) : 32'h0) |
+                      (chipselect == 4'h2 ? (SW[17] ? rom2_readdata : rom_readdata) : 32'h0) |
                       (chipselect == 4'h3 ? mandelbrot_readdata : 32'h0) |
                       (chipselect == 4'h4 ? io_readdata : 32'h0) |
                       (chipselect == 4'h5 ? matrix_readdata : 32'h0) |

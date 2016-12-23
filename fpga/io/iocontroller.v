@@ -230,11 +230,11 @@ i2c_master_top i2c0(.wb_clk_i(clk_i), .arst_i(1'b1), .wb_rst_i(rst_i), .wb_we_i(
 		.wb_stb_i(stb_i2c[0]), .wb_cyc_i(cyc_o), .wb_dat_i(dat_i[7:0]), .wb_ack_o(i2c_ack[0]),
 		.wb_adr_i(adr_i[4:2]), .wb_dat_o(i2c_out[0]), .sda_padoen_o(i2c_dataout[0]), .sda_pad_i(i2c_datain[0]), .scl_padoen_o(i2c_scl[0]), .scl_pad_i(i2c_clkin[0]));
 
-i2c_master_top i2c1(.wb_clk_i(clk_i), .arst_i(1'b1), .wb_rst_i(rst_i), .wb_we_i(we_i),
+i2c_master_top td_i2c1(.wb_clk_i(clk_i), .arst_i(1'b1), .wb_rst_i(rst_i), .wb_we_i(we_i),
 		.wb_stb_i(stb_i2c[1]), .wb_cyc_i(cyc_o), .wb_dat_i(dat_i[7:0]), .wb_ack_o(i2c_ack[1]),
 		.wb_adr_i(adr_i[4:2]), .wb_dat_o(i2c_out[1]), .sda_padoen_o(i2c_dataout[1]), .sda_pad_i(i2c_datain[1]), .scl_padoen_o(i2c_scl[1]), .scl_pad_i(i2c_clkin[1]));
 
-i2c_master_top i2c2(.wb_clk_i(clk_i), .arst_i(1'b1), .wb_rst_i(rst_i), .wb_we_i(we_i),
+i2c_master_top accel_i2c2(.wb_clk_i(clk_i), .arst_i(1'b1), .wb_rst_i(rst_i), .wb_we_i(we_i),
 		.wb_stb_i(stb_i2c[2]), .wb_cyc_i(cyc_o), .wb_dat_i(dat_i[7:0]), .wb_ack_o(i2c_ack[2]),
 		.wb_adr_i(adr_i[4:2]), .wb_dat_o(i2c_out[2]), .sda_padoen_o(i2c_dataout[2]), .sda_pad_i(i2c_datain[2]), .scl_padoen_o(i2c_scl[2]), .scl_pad_i(i2c_clkin[2]));
 		
