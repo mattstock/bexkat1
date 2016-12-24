@@ -55,8 +55,8 @@ wire [ROWSIZE-1:0] rowout [1:0];
 wire [INDEXSIZE-1:0] rowaddr;
 wire [1:0] wordsel;
 wire [ROWWIDTH-1:0] dirty [1:0];
-wire valid [1:0], wren [1:0], hit [1:0], lru [1:0];
-wire anyhit;
+wire [1:0] valid, wren, hit, lru;
+wire anyhit, hitset, lruset;
 wire [WORDSIZE-1:0] word0 [1:0], word1 [1:0], word2 [1:0], word3 [1:0];
 wire fifo_empty, fifo_full, fifo_write;
 wire [WORDSIZE-1:0] fifo_dat_i;
@@ -64,12 +64,22 @@ wire [BUSWIDTH-1:0] fifo_adr_i;
 wire [3:0] fifo_sel_i;
 wire fifo_we_i;
 wire mem_stb;
+wire fifo_read = (state == STATE_IDLE & ~fifo_empty);
+wire [61:0] fifo_out;
 
 assign fifo_write = (bus_state == BUS_STATE_IDLE) & ~fifo_full & s_cyc_i & s_stb_i & ~stats_stb_i;
-assign cache_status = { state == STATE_HIT, state == STATE_MISS };
+assign cache_status = hit;
 assign tag_in = fifo_adr_i[24:12];
 assign rowaddr = fifo_adr_i[11:2];
 assign wordsel = fifo_adr_i[1:0];
+assign { fifo_we_i, fifo_adr_i, fifo_dat_i, fifo_sel_i } = fifo_out;
+assign lruset = lru[1];
+assign anyhit = |hit;
+// only valid if there's an actual hit
+assign hitset = hit[1];
+assign m_stb_o = m_cyc_o;
+assign m_sel_o = 4'hf;
+assign s_ack_o = (bus_state == BUS_STATE_DONE);
 
 always_comb
 begin
@@ -86,10 +96,6 @@ begin
     hit[i] = (tag_cache[i] == tag_in) & valid[i];
   end
 end
-
-assign m_stb_o = m_cyc_o;
-assign m_sel_o = 4'hf;
-assign s_ack_o = (bus_state == BUS_STATE_DONE);
 
 always @(posedge clk_i or posedge rst_i)
 begin
@@ -133,12 +139,6 @@ begin
   endcase
 end
  
-wire fifo_read = (state == STATE_IDLE & ~fifo_empty);
-wire [61:0] fifo_out;
-assign { fifo_we_i, fifo_adr_i, fifo_dat_i, fifo_sel_i } = fifo_out;
-wire lruset, hitset;
-assign lruset = 1'b0;
-assign hitset = 1'b0;
 
 always_comb
 begin
@@ -180,10 +180,15 @@ begin
 	     if (~fifo_empty) state_next = STATE_BUSY;
 	 end
     STATE_BUSY: state_next = STATE_BUSY2;
-	 STATE_BUSY2: state_next = (hit ? STATE_HIT : STATE_MISS);
+	 STATE_BUSY2: begin
+		for (int i=0; i < 2; i = i + 1)
+        rowin_next[i] = rowout[i];
+	   state_next = (anyhit ? STATE_HIT : STATE_MISS);
+    end
     STATE_HIT: begin
+		rowin_next[hitset][LRU] = 1'b0;
+		rowin_next[~hitset][LRU] = 1'b1;
       if (fifo_we_i) begin
-        rowin_next = rowout;
         case (wordsel)
           2'h0: begin
             rowin_next[hitset][DIRTY0] = 1'b1;
@@ -226,10 +231,9 @@ begin
       state_next = STATE_DONE;
     end
     STATE_DONE: begin
-      if (fifo_we_i & ~stats_stb_i) begin
-        wren[0] = hit[0];
-		  wren[1] = hit[1];
-		end
+      if (~stats_stb_i)
+		  for (int i=0; i < 2; i = i + 1)
+          wren[i] = 1'h1;
       state_next = STATE_IDLE;
     end
     STATE_MISS: begin
@@ -237,6 +241,8 @@ begin
       state_next = (valid[lruset] & |dirty[lruset]  ? STATE_FLUSH : STATE_FILL);
     end
     STATE_FILL: begin
+	   rowin_next[lruset][LRU] = 1'b0;
+	   rowin_next[~lruset][LRU] = 1'b1;
       rowin_next[lruset][VALID] = 1'b1;
       rowin_next[lruset][DIRTY0] = 1'b0; // clean
       m_adr_o = { tag_in, rowaddr, 2'h0 };
@@ -267,7 +273,8 @@ begin
         state_next = STATE_FILL5;
     end
     STATE_FILL5: begin
-      wren[lruset] = 1'b1;
+	   for (int i=0; i < 2; i = i + 1)
+        wren[i] = 1'b1;
 		fillreg_next = fillreg + 1'h1;
       state_next = STATE_BUSY;
     end
@@ -309,7 +316,7 @@ begin
       end
     end
     STATE_FLUSH5: begin
-      wren[lruset] = 1'b1; // to clear the dirty flags
+      wren[lruset] = 1'b1; // to set the new tag
 		flushreg_next = flushreg + 1'h1;
       state_next = STATE_FILL;
     end
