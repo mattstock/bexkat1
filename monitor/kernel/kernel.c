@@ -29,7 +29,7 @@ short vga_getline(unsigned int color, char *str, unsigned short *len) {
       return -1;
     }
     if ((c == 0x7f || c == 0x08) && i > 0) {
-      vga_putchar(c233,c);
+      vga_putchar(vga_color233(VGA_TEXT_WHITE),c);
       i--;
     }
   }
@@ -39,8 +39,8 @@ short vga_getline(unsigned int color, char *str, unsigned short *len) {
 
 void main(void) {
   int i;
-  unsigned short size = 11;
-  unsigned char buf[11];
+  unsigned short size = 40;
+  unsigned char buf[40];
 
   vga_text_clear();
   vga_set_mode(VGA_MODE_BLINK);
@@ -49,7 +49,7 @@ void main(void) {
     vga_print(VGA_TEXT_WHITE, "> ");
     i = vga_getline(VGA_TEXT_RED1|VGA_TEXT_GREEN4, buf, &size);
     vga_print(VGA_TEXT_RED2, "\ngot: ");
-    vga_print(VGA_TEXT_RED2, buf);
+    vga_print(VGA_TEXT_GREEN6, buf);
     vga_print(VGA_TEXT_WHITE, "\n");
   }
 

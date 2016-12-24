@@ -59,6 +59,7 @@ void vga_putchar(unsigned short color233, unsigned char c) {
     case 0x08:
     case 0x7f:
       vga_set_cursor(x-1,y);
+      vga_fb[base-2] = color233;
       vga_fb[base-1] = ' ';
       break;
     default:
