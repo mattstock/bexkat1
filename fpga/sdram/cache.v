@@ -8,6 +8,7 @@ module cache(
   input [31:0] s_dat_i,
   output reg [31:0] s_dat_o,
   output [1:0] cache_status,
+  input stats_stb_i,
   input s_stb_i,
   output s_ack_o,
   output reg m_cyc_o,
@@ -28,23 +29,31 @@ logic [9:0] initaddr, initaddr_next;
 logic [31:0] hitreg, hitreg_next;
 logic [31:0] flushreg, flushreg_next;
 logic [31:0] fillreg, fillreg_next;
+logic [1:0] bus_state, bus_state_next;
 
 wire [12:0] tag_in, tag_cache;
 wire [9:0] rowaddr;
 wire [1:0] wordsel;
 wire [3:0] dirty;
-wire valid, wren;
+wire valid, wren, hit;
 wire [31:0] word0, word1, word2, word3;
-wire fifo_empty, fifo_full;
+wire fifo_empty, fifo_full, fifo_write;
 wire [31:0] fifo_dat_i;
 wire [24:0] fifo_adr_i;
 wire [3:0] fifo_sel_i;
 wire fifo_we_i;
+wire mem_stb;
 
 localparam VALID = 'd145, 
   DIRTY0 = 'd141, DIRTY1 = 'd142,
   DIRTY2 = 'd143, DIRTY3 = 'd144;
+localparam [1:0] BUS_STATE_IDLE = 'h0, BUS_STATE_DONE = 'h1, BUS_STATE_READ_WAIT = 'h2, BUS_STATE_READ = 'h3;
+localparam [4:0] STATE_IDLE = 5'h0, STATE_BUSY = 5'h1, STATE_HIT = 5'h2, STATE_MISS = 5'h3,
+  STATE_FILL = 5'h4, STATE_FILL2 = 5'h5, STATE_FILL3 = 5'h6, STATE_FILL4 = 5'h7, STATE_FILL5 = 5'h8,
+  STATE_FLUSH = 5'h9, STATE_FLUSH2 = 5'ha, STATE_FLUSH3 = 5'hb, STATE_FLUSH4 = 5'hc, STATE_FLUSH5 = 5'hd,
+  STATE_DONE = 5'he, STATE_INIT = 5'hf, STATE_BUSY2 = 5'h10;
 
+assign fifo_write = (bus_state == BUS_STATE_IDLE) & ~fifo_full & s_cyc_i & s_stb_i & ~stats_stb_i;
 assign cache_status = { state == STATE_HIT, state == STATE_MISS };
 assign tag_in = fifo_adr_i[24:12];
 assign rowaddr = fifo_adr_i[11:2];
@@ -57,17 +66,11 @@ assign word3 = rowout[127:96];
 assign word2 = rowout[95:64];
 assign word1 = rowout[63:32];
 assign word0 = rowout[31:0];
-
-wire hit = (tag_cache == tag_in) & valid;
+assign hit = (tag_cache == tag_in) & valid;
 
 assign m_stb_o = m_cyc_o;
 assign m_sel_o = 4'hf;
 assign s_ack_o = (bus_state == BUS_STATE_DONE);
-
-localparam [4:0] STATE_IDLE = 5'h0, STATE_BUSY = 5'h1, STATE_HIT = 5'h2, STATE_MISS = 5'h3,
-  STATE_FILL = 5'h4, STATE_FILL2 = 5'h5, STATE_FILL3 = 5'h6, STATE_FILL4 = 5'h7, STATE_FILL5 = 5'h8,
-  STATE_FLUSH = 5'h9, STATE_FLUSH2 = 5'ha, STATE_FLUSH3 = 5'hb, STATE_FLUSH4 = 5'hc, STATE_FLUSH5 = 5'hd,
-  STATE_DONE = 5'he, STATE_INIT = 5'hf, STATE_BUSY2 = 5'h10;
 
 always @(posedge clk_i or posedge rst_i)
 begin
@@ -92,19 +95,14 @@ begin
   end
 end
 
-localparam [1:0] BUS_STATE_IDLE = 'h0, BUS_STATE_DONE = 'h1, BUS_STATE_READ_WAIT = 'h2;
-logic [1:0] bus_state, bus_state_next;
-
-wire fifo_write = (bus_state == BUS_STATE_IDLE) & ~fifo_full & s_cyc_i & s_stb_i;
-
 always_comb
 begin
   bus_state_next = bus_state;
   case (bus_state)
     BUS_STATE_IDLE: begin
       if (s_cyc_i & s_stb_i)
-		  if (~fifo_full)
-		    bus_state_next = (s_we_i ? BUS_STATE_DONE : BUS_STATE_READ_WAIT);
+		  if (~fifo_full | stats_stb_i)
+		      bus_state_next = (s_we_i ? BUS_STATE_DONE : BUS_STATE_READ_WAIT);
     end
 	 BUS_STATE_READ_WAIT: begin // reads need to block until all transactions are complete
 	   if (fifo_empty & state == STATE_DONE)
@@ -141,7 +139,18 @@ begin
       if (initaddr == 10'h00)
         state_next = STATE_IDLE;
     end
-	 STATE_IDLE: if (~fifo_empty) state_next = STATE_BUSY;
+	 STATE_IDLE: begin
+	   if (s_cyc_i & s_stb_i & stats_stb_i) begin
+        case (s_adr_i[3:0])
+		    'h0: s_dat_o_next = hitreg;
+		    'h1: s_dat_o_next = flushreg;
+		    'h2: s_dat_o_next = fillreg;
+		    default: s_dat_o_next = 32'h0;
+		  endcase
+		  state_next = STATE_DONE;
+	   end else  
+	     if (~fifo_empty) state_next = STATE_BUSY;
+	 end
     STATE_BUSY: state_next = STATE_BUSY2;
 	 STATE_BUSY2: state_next = (hit ? STATE_HIT : STATE_MISS);
     STATE_HIT: begin

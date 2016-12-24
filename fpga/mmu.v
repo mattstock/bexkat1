@@ -24,6 +24,7 @@ begin
       cs = 4'h4; // IO
       c = 1'b0;
     end
+	 4'h4: cs = 4'h7; // cache controller
     4'h7: cs = 4'h2; // monitor
     4'h8: cs = 4'h6; // VGA controller / 4MB (1M x 32) SSRAM
     4'hc: cs = 4'h6; // VGA controller / 4MB (1M x 32) SSRAM

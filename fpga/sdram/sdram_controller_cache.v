@@ -20,6 +20,7 @@ module sdram_controller_cache(input 		clk_i,
 					output databus_dir,
 			      input [31:0] 	databus_in,
 			      output [31:0] databus_out,
+					input stats_stb_i,
             output [1:0] cache_status);
 
 wire [24:0] cache_adr_o;
@@ -33,7 +34,7 @@ cache cache0(.clk_i(clk_i), .rst_i(rst_i), .s_adr_i(adr_i), .s_dat_i(dat_i),
 	     .s_ack_o(ack_o), .s_sel_i(sel_i), .s_we_i(we_i),
 	     .m_adr_o(cache_adr_o), .m_dat_o(sdram_dat_i),
 	     .m_dat_i(sdram_dat_o), .m_stb_o(cache_stb_o),
-	     .m_cyc_o(cache_cyc_o), .m_ack_i(sdram_ack_o),
+	     .m_cyc_o(cache_cyc_o), .m_ack_i(sdram_ack_o), .stats_stb_i(stats_stb_i),
 	     .m_sel_o(cache_sel_o), .m_we_o(cache_we_o), .cache_status(cache_status));
 
 sdram_controller sdram0(.clk_i(clk_i), .mem_clk_o(mem_clk_o), .rst_i(rst_i),
