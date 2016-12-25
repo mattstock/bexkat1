@@ -48,6 +48,8 @@ logic [31:0] flushreg, flushreg_next;
 logic [31:0] fillreg, fillreg_next;
 logic [1:0] bus_state, bus_state_next;
 logic [ROWSIZE-1:0] rowin [1:0], rowin_next [1:0];
+logic lruset, lruset_next;
+logic hitset, hitset_next;
 
 wire [TAGSIZE-1:0] tag_in;
 wire [TAGSIZE-1:0] tag_cache [1:0];
@@ -56,7 +58,7 @@ wire [INDEXSIZE-1:0] rowaddr;
 wire [1:0] wordsel;
 wire [ROWWIDTH-1:0] dirty [1:0];
 wire [1:0] valid, wren, hit, lru;
-wire anyhit, hitset, lruset;
+wire anyhit;
 wire [WORDSIZE-1:0] word0 [1:0], word1 [1:0], word2 [1:0], word3 [1:0];
 wire fifo_empty, fifo_full, fifo_write;
 wire [WORDSIZE-1:0] fifo_dat_i;
@@ -73,13 +75,10 @@ assign tag_in = fifo_adr_i[24:12];
 assign rowaddr = fifo_adr_i[11:2];
 assign wordsel = fifo_adr_i[1:0];
 assign { fifo_we_i, fifo_adr_i, fifo_dat_i, fifo_sel_i } = fifo_out;
-assign lruset = lru[1];
-assign anyhit = |hit;
-// only valid if there's an actual hit
-assign hitset = hit[1];
 assign m_stb_o = m_cyc_o;
 assign m_sel_o = 4'hf;
 assign s_ack_o = (bus_state == BUS_STATE_DONE);
+assign anyhit = |hit;
 
 always_comb
 begin
@@ -109,6 +108,8 @@ begin
 	 hitreg <= 32'h0;
 	 flushreg <= 32'h0;
 	 fillreg <= 32'h0;
+	 hitset <= 1'h0;
+	 lruset <= 1'h0;
   end else begin
     bus_state <= bus_state_next;
     state <= state_next;
@@ -119,6 +120,8 @@ begin
 	 hitreg <= hitreg_next;
 	 flushreg <= flushreg_next;
 	 fillreg <= fillreg_next;
+	 hitset <= hitset_next;
+	 lruset <= lruset_next;
   end
 end
 
@@ -152,6 +155,8 @@ begin
   hitreg_next = hitreg;
   flushreg_next = flushreg;
   fillreg_next = fillreg;
+  lruset_next = lruset;
+  hitset_next = hitset;
   m_we_o = 1'h0;
   m_cyc_o = 1'h0;
   m_dat_o = 32'h0;
@@ -183,11 +188,18 @@ begin
 	 STATE_BUSY2: begin
 		for (int i=0; i < 2; i = i + 1)
         rowin_next[i] = rowout[i];
+		hitset_next = hit[1];
+		lruset_next = lru[1];
 	   state_next = (anyhit ? STATE_HIT : STATE_MISS);
     end
     STATE_HIT: begin
-		rowin_next[hitset][LRU] = 1'b0;
-		rowin_next[~hitset][LRU] = 1'b1;
+	   if (hitset) begin
+		  rowin_next[1][LRU] = 1'b0;
+		  rowin_next[0][LRU] = 1'b1;
+		end else begin
+		  rowin_next[0][LRU] = 1'b0;
+		  rowin_next[1][LRU] = 1'b1;
+		end
       if (fifo_we_i) begin
         case (wordsel)
           2'h0: begin
@@ -241,8 +253,13 @@ begin
       state_next = (valid[lruset] & |dirty[lruset]  ? STATE_FLUSH : STATE_FILL);
     end
     STATE_FILL: begin
-	   rowin_next[lruset][LRU] = 1'b0;
-	   rowin_next[~lruset][LRU] = 1'b1;
+	   if (lruset) begin
+		  rowin_next[1][LRU] = 1'b0;
+		  rowin_next[0][LRU] = 1'b1;
+		end else begin
+		  rowin_next[0][LRU] = 1'b0;
+		  rowin_next[1][LRU] = 1'b1;
+		end
       rowin_next[lruset][VALID] = 1'b1;
       rowin_next[lruset][DIRTY0] = 1'b0; // clean
       m_adr_o = { tag_in, rowaddr, 2'h0 };
@@ -283,40 +300,27 @@ begin
       m_dat_o = word0[lruset];
       m_cyc_o = 1'b1;
       m_we_o = 1'b1;
-      if (m_ack_i) begin
-        rowin_next[lruset][DIRTY0] = 1'b0;
-        state_next = STATE_FLUSH2;
-      end
+      if (m_ack_i) state_next = STATE_FLUSH2;
     end
     STATE_FLUSH2: begin
       m_dat_o = word1[lruset];
       m_cyc_o = 1'b1;
       m_we_o = 1'b1;
-      if (m_ack_i) begin
-        rowin_next[lruset][DIRTY1] = 1'b0;
-        state_next = STATE_FLUSH3;
-      end
+      if (m_ack_i) state_next = STATE_FLUSH3;
     end
     STATE_FLUSH3: begin
       m_dat_o = word2[lruset];
       m_cyc_o = 1'b1;
       m_we_o = 1'b1;
-      if (m_ack_i) begin
-        rowin_next[lruset][DIRTY2] = 1'b0;
-        state_next = STATE_FLUSH4;
-      end
+      if (m_ack_i) state_next = STATE_FLUSH4;
     end
     STATE_FLUSH4: begin
       m_dat_o = word3[lruset];
       m_cyc_o = 1'b1;
       m_we_o = 1'b1;
-      if (m_ack_i) begin
-        rowin_next[lruset][DIRTY3] = 1'b0;
-        state_next = STATE_FLUSH5;
-      end
+      if (m_ack_i) state_next = STATE_FLUSH5;
     end
     STATE_FLUSH5: begin
-      wren[lruset] = 1'b1; // to set the new tag
 		flushreg_next = flushreg + 1'h1;
       state_next = STATE_FILL;
     end
