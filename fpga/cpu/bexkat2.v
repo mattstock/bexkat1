@@ -101,9 +101,9 @@ begin
   endcase
   case (statussel)
     STATUS_STATUS: status_next = status;
-	 STATUS_SUPER: status_next = { 1'b1, status[2:0] };
-	 STATUS_MDR: status_next = mdr[3:0];
-	 STATUS_POP: status_next = mdr[11:8];
+    STATUS_SUPER: status_next = { 1'b1, status[2:0] };
+    STATUS_MDR: status_next = mdr[3:0];
+    STATUS_POP: status_next = mdr[11:8];
   endcase
   case (sel_o)
     4'b1111: begin
@@ -149,6 +149,7 @@ begin
     MDR_FPU: mdr_next = fpu_out;
     MDR_ALU: mdr_next = alu_out;
     MDR_CCR: mdr_next = { 20'h0, status, 5'h0, ccr};
+    MDR_STATUS: mdr_next = { 28'h0, status };
     default: mdr_next = mdr;
   endcase
   case (regsel)
@@ -193,7 +194,7 @@ alu2 alu0(.clk_i(clk_i), .rst_i(rst_i), .in1(a), .in2(alu_in2),
   .v_out(alu_overflow), .z_out(alu_zero));
 intcalc2 int0(.clock(clk_i), .func(int_func), .in1(a), .in2(int_in2),
   .out(int_out));
-registerfile2 intreg(.clk_i(clk_i), .rst_i(rst_i), .supervisor(supervisor),
+registerfile2 intreg(.clk_i(clk_i), .rst_i(rst_i), .supervisor(super_mode),
   .read1(reg_read_addr1), .read2(reg_read_addr2), .write_addr(reg_write_addr),
   .write_data(reg_data_in), .write_en(reg_write),
   .data1(reg_data_out1), .data2(reg_data_out2));

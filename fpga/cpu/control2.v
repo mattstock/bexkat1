@@ -453,14 +453,29 @@ begin
       ccrsel = CCR_FPU;
       state_next = S_FETCH;
     end
-    S_MOV: begin // mov, mov.l, mov.b
-      reg_read_addr2 = ir_rb;
-      b_write = 1'b1; // B <= rB
-      state_next = S_MOV2;
+    S_MOV: begin // mov, mov.l, mov.b, movsr
+      if (ir_op == 4'h0) // movsr
+        if (supervisor) begin
+          mdrsel = MDR_STATUS;
+          state_next = S_MOV2;
+       end else begin
+          exception_next = EXC_ILLOP;
+          state_next = S_EXC;
+        end
+      else begin
+        reg_read_addr2 = ir_rb;
+        b_write = 1'b1; // B <= rB
+        state_next = S_MOV2;
+      end
     end
     S_MOV2: begin
-      regsel = REG_B;
-      reg_write = ir_op[1:0];
+      if (ir_op == 4'h0) begin
+        regsel = REG_MDR;
+        reg_write = 2'b11;
+      end else begin
+        regsel = REG_B;
+        reg_write = ir_op[1:0];
+      end
       state_next = S_FETCH;
     end
     S_INTU: begin
@@ -525,7 +540,7 @@ begin
       reg_read_addr2 = ir_rc;
       b_write = 1'b1; // B <= rC
       delay_next = 8'hc;
-      state_next = (ip_op[3] ? S_INT3 : S_INT2);
+      state_next = (ir_op[3] ? S_INT3 : S_INT2);
     end
     S_INT2: begin
       int_func = { 1'b0, ir_op[2:0] };

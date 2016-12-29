@@ -27,6 +27,8 @@
 
 .globl main
 main:
+	ldiu %0, 0
+	movsr %0
 	ldi %sp, sp_start	# reset to known stack
 	ldd.l %0, sw_base
 	ldi %0, 0
@@ -595,10 +597,19 @@ t16:    print_test 22,1
 	ldi %1, sdram_base
         st.l %0, (%1)
 	ldi %0, 0x44008811
-	ldi %1, sdram_base+0x3ff0
+	ldi %1, sdram_base+0x8000
         st.l %0, (%1)
 	ldi %0, 0xaaeeffcc
-	ldi %1, sdram_base+0x4000
+	ldi %1, sdram_base+0x10000
+        st.l %0, (%1)
+	ldi %0, 0xdeadbeef
+	ldi %1, sdram_base+0x18000
+        st.l %0, (%1)
+	ldi %0, 0x01234567
+	ldi %1, sdram_base+0x0020
+        st.l %0, (%1)
+	ldi %0, 0x94837264
+	ldi %1, sdram_base+0x10020
         st.l %0, (%1)
 	ldi %0, 0x336699aa
 	ldi %1, sdram_base
@@ -607,13 +618,31 @@ t16:    print_test 22,1
 	bne fail
 	print_test 22,2
 	ldi %0, 0x44008811
-	ldi %1, sdram_base+0x3ff0
+	ldi %1, sdram_base+0x8000
 	ld.l %2, (%1)
 	cmp %0, %2
 	bne fail
 	print_test 22,3
 	ldi %0, 0xaaeeffcc
-	ldi %1, sdram_base+0x4000
+	ldi %1, sdram_base+0x10000
+	ld.l %2, (%1)
+	cmp %0, %2
+	bne fail
+	print_test 22,4
+	ldi %0, 0xdeadbeef
+	ldi %1, sdram_base+0x18000
+	ld.l %2, (%1)
+	cmp %0, %2
+	bne fail
+	print_test 22,5
+	ldi %0, 0x01234567
+	ldi %1, sdram_base+0x0020
+	ld.l %2, (%1)
+	cmp %0, %2
+	bne fail
+	print_test 22,6
+	ldi %0, 0x94837264
+	ldi %1, sdram_base+0x10020
 	ld.l %2, (%1)
 	cmp %0, %2
 	bne fail

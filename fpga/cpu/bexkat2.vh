@@ -13,7 +13,7 @@ localparam T_INH = 4'h0, T_PUSH = 4'h1, T_POP = 4'h2, T_CMP = 4'h3,
 
 // MDR input select
 localparam MDR_MDR = 4'h0, MDR_BUS = 4'h1, MDR_B = 4'h2, MDR_A = 4'h3,
-  MDR_PC = 4'h4, MDR_INT = 4'h5, MDR_FPU = 4'h6, MDR_ALU = 4'h7, MDR_CCR = 4'h8;
+  MDR_PC = 4'h4, MDR_INT = 4'h5, MDR_FPU = 4'h6, MDR_ALU = 4'h7, MDR_CCR = 4'h8, MDR_STATUS = 4'h9;
 
 // register input select
 localparam REG_ALU = 2'h0, REG_MDR = 2'h1, REG_UVAL = 2'h2, REG_B = 2'h3;
