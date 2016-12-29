@@ -20,7 +20,7 @@ wire [1:0] reg_write;
 wire [2:0] alu_func, fpu_func;
 wire 	   addrsel, ir_write, vectoff_write, a_write, b_write;
 wire [3:0] reg_read_addr1, reg_read_addr2, reg_write_addr;
-wire [1:0] marsel, ccrsel, fpccrsel, spsel, sspsel, alu2sel;
+wire [1:0] marsel, ccrsel, fpccrsel, spsel, sspsel, alu2sel, statussel;
 wire [2:0] pcsel, regsel;
 wire [3:0] mdrsel, int_func;
 wire 	   fp_aeb, fp_alb, int2sel, fpccr_write;
@@ -82,8 +82,8 @@ end
 wire [31:0] exceptionval = vectoff + { exception, 2'b00 };
 
 // All of the datapath options
-always @* begin
-  status_next = status;
+always_comb
+begin
   case (pcsel)
     PC_PC:   pc_next = pc;
     PC_NEXT: pc_next = pc + 'h4;
@@ -98,6 +98,12 @@ always @* begin
     MAR_BUS: mar_next = dat_i;
     MAR_ALU: mar_next = alu_out;
     MAR_A:   mar_next = a;
+  endcase
+  case (statussel)
+    STATUS_STATUS: status_next = status;
+	 STATUS_SUPER: status_next = { 1'b1, status[2:0] };
+	 STATUS_MDR: status_next = mdr[3:0];
+	 STATUS_POP: status_next = mdr[11:8];
   endcase
   case (sel_o)
     4'b1111: begin
@@ -142,7 +148,7 @@ always @* begin
     MDR_INT: mdr_next = int_out;
     MDR_FPU: mdr_next = fpu_out;
     MDR_ALU: mdr_next = alu_out;
-    MDR_CCR: mdr_next = { 29'h0, ccr};
+    MDR_CCR: mdr_next = { 20'h0, status, 5'h0, ccr};
     default: mdr_next = mdr;
   endcase
   case (regsel)
@@ -176,7 +182,7 @@ control2 con0(.clk_i(clk_i), .rst_i(rst_i), .ir(ir), .ir_write(ir_write),
   .reg_read_addr1(reg_read_addr1), .reg_read_addr2(reg_read_addr2),
   .reg_write_addr(reg_write_addr), .reg_write(reg_write), .mdrsel(mdrsel),
   .marsel(marsel), .pcsel(pcsel), .int2sel(int2sel), .int_func(int_func),
-  .supervisor(super_mode), .addrsel(addrsel), .byteenable(sel_o),
+  .supervisor(super_mode), .addrsel(addrsel), .byteenable(sel_o), .statussel(statussel),
   .bus_cyc(cyc_o), .bus_write(we_o), .bus_ack(ack_i), .bus_align(adr_o[1:0]),
   .vectoff_write(vectoff_write), .halt(halt), .exception(exception),
   .interrupt(interrupt), .int_en(int_en), .fpu_func(fpu_func), 
@@ -187,7 +193,7 @@ alu2 alu0(.clk_i(clk_i), .rst_i(rst_i), .in1(a), .in2(alu_in2),
   .v_out(alu_overflow), .z_out(alu_zero));
 intcalc2 int0(.clock(clk_i), .func(int_func), .in1(a), .in2(int_in2),
   .out(int_out));
-registerfile2 intreg(.clk(clk_i), .rst_n(~rst_i),
+registerfile2 intreg(.clk_i(clk_i), .rst_i(rst_i), .supervisor(supervisor),
   .read1(reg_read_addr1), .read2(reg_read_addr2), .write_addr(reg_write_addr),
   .write_data(reg_data_in), .write_en(reg_write),
   .data1(reg_data_out1), .data2(reg_data_out2));

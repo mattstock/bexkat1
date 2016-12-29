@@ -16,14 +16,14 @@ typedef enum {
   intr_timer3,
   intr_rx_uart0,
   intr_tx_uart0,
+  intr_illop,
+  intr_cpu1,
+  intr_cpu2,
+  intr_cpu3,
   intr_trap0,
   intr_trap1,
   intr_trap2,
   intr_trap3,
-  intr_trap4,
-  intr_trap5,
-  intr_trap6,
-  intr_trap7
 } interrupt_slot;
 
 extern void set_interrupt_handler(interrupt_slot s, isr f);

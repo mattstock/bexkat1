@@ -27,6 +27,9 @@ localparam CCR_CCR = 2'h0, CCR_ALU = 2'h1, CCR_FPU = 2'h2, CCR_MDR = 2'h3;
 // MAR select
 localparam MAR_MAR = 2'h0, MAR_BUS = 2'h1, MAR_ALU = 2'h2, MAR_A = 2'h3;
 
+// STATUS select
+localparam STATUS_STATUS = 2'h0, STATUS_MDR = 2'h1, STATUS_POP = 2'h2, STATUS_SUPER = 2'h3;
+
 // ADDR select
 localparam ADDR_PC = 1'h0, ADDR_MAR = 1'h1;
 
@@ -135,6 +138,7 @@ localparam
   S_RTI = 7'h46,
   S_RTI2 = 7'h47,
   S_RTI3 = 7'h48,
-  S_RTI4 = 7'h49;
+  S_RTI4 = 7'h49,
+  S_EXC12 = 7'h50;
 
 `endif

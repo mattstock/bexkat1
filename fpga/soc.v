@@ -1,3 +1,5 @@
+`include "cpu/exceptions.vh"
+
 module soc(
   input raw_clock_50,
   input [17:0] SW,
@@ -189,7 +191,7 @@ wire [31:0] cpu_readdata, cpu_writedata, mon_readdata, mandelbrot_readdata, matr
 wire [31:0] vect_readdata, io_readdata, sdram_readdata, sdram_dataout, rom2_readdata;
 wire [3:0] cpu_be, exception;
 wire [5:0] io_interrupts;
-wire [2:0] cpu_interrupt;
+wire [3:0] cpu_interrupt;
 wire [7:0] lcd_dataout;
 wire cpu_write, cpu_cyc, cpu_ack, cpu_halt;
 wire mandelbrot_ack, io_ack;
@@ -227,17 +229,17 @@ end
 // interrupt priority encoder
 always_comb
 begin
-  cpu_interrupt = 3'h0;
+  cpu_interrupt = 4'h0;
   if (int_en)
     casex ({ mmu_fault, io_interrupts })
-      7'b1xxxxxx: cpu_interrupt = 3'h1; // MMU error
-      7'b01xxxxx: cpu_interrupt = 3'h5; // timer3
-      7'b001xxxx: cpu_interrupt = 3'h4; // timer2
-      7'b0001xxx: cpu_interrupt = 3'h3; // timer1
-      7'b00001xx: cpu_interrupt = 3'h2; // timer0
-      7'b000001x: cpu_interrupt = 3'h6; // uart0 rx
-      7'b0000001: cpu_interrupt = 3'h7; // uart0 tx
-      7'b0000000: cpu_interrupt = 3'h0;
+      7'b1xxxxxx: cpu_interrupt = EXC_MMU;
+      7'b01xxxxx: cpu_interrupt = EXC_TIMER3;
+      7'b001xxxx: cpu_interrupt = EXC_TIMER2;
+      7'b0001xxx: cpu_interrupt = EXC_TIMER1;
+      7'b00001xx: cpu_interrupt = EXC_TIMER0;
+      7'b000001x: cpu_interrupt = EXC_UART0_RX;
+      7'b0000001: cpu_interrupt = EXC_UART0_TX;
+      7'b0000000: cpu_interrupt = EXC_RESET;
     endcase
 end
 
@@ -261,7 +263,7 @@ assign vect_read = (chipselect == 4'h1 && cpu_cyc && ~cpu_write);
 
 bexkat2 bexkat0(.clk_i(sysclock), .rst_i(rst_i), .adr_o(cpu_address), .cyc_o(cpu_cyc), .dat_i(cpu_readdata),
   .we_o(cpu_write), .dat_o(cpu_writedata), .sel_o(cpu_be), .ack_i(cpu_ack), .halt(cpu_halt),
-  .interrupt(cpu_interrupt), .exception(exception), .int_en(int_en));
+  .interrupt(cpu_interrupt[2:0]), .exception(exception), .int_en(int_en));
 
 mmu mmu0(.adr_i(cpu_address), .cyc_i(cpu_cyc), .chipselect(chipselect), .fault(mmu_fault));
 
