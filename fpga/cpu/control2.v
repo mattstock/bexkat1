@@ -3,40 +3,40 @@
 `include "exceptions.vh"
   
 module control2(input clk_i,
-		input rst_i,
-		input [31:0] ir,
-		output ir_write,
-		input [2:0] ccr,
-		output [1:0] ccrsel,
-		output [2:0] alu_func,
-		output [1:0] alu2sel,
-		output [2:0] regsel,
-		output [3:0] reg_read_addr1,
-		output [3:0] reg_read_addr2,
-		output [3:0] reg_write_addr,
-		output [1:0] reg_write,
-		output a_write,
-		output b_write,
-		output [3:0] mdrsel,
-		output [1:0] marsel,
-		output [1:0] statussel,
-		output int2sel,
-		output [3:0] int_func,
-		output [2:0] fpu_func,
-		output fpccr_write,
-		output [2:0] pcsel,
-		output addrsel,
-		output [3:0] byteenable,
-		output bus_cyc,
-		output bus_write,
-		output halt,
-		output int_en,
-		output vectoff_write,
-		input supervisor,
-		input bus_ack,
-		output reg [3:0] exception,
-		input [2:0] interrupt,
-		input [1:0] bus_align);
+  input rst_i,
+  input [31:0] ir,
+	output ir_write,
+	input [2:0] ccr,
+	output [1:0] ccrsel,
+	output [2:0] alu_func,
+	output [1:0] alu2sel,
+	output [2:0] regsel,
+	output [3:0] reg_read_addr1,
+	output [3:0] reg_read_addr2,
+	output [3:0] reg_write_addr,
+	output [1:0] reg_write,
+	output a_write,
+	output b_write,
+	output [3:0] mdrsel,
+	output [1:0] marsel,
+	output [1:0] statussel,
+	output int2sel,
+	output [3:0] int_func,
+	output [2:0] fpu_func,
+	output fpccr_write,
+	output [2:0] pcsel,
+	output addrsel,
+	output [3:0] byteenable,
+	output bus_cyc,
+	output bus_write,
+	output halt,
+	output int_en,
+	output vectoff_write,
+	input supervisor,
+	input bus_ack,
+	output reg [3:0] exception,
+	input [2:0] interrupt,
+	input [1:0] bus_align);
 
 assign halt = (state == S_HALT);
 assign int_en = interrupts_enabled;
@@ -107,28 +107,28 @@ begin
   case (state)
     S_RESET: begin
       exception_next = 4'h0;
-		interrupts_enabled_next = 1'b0;
+      interrupts_enabled_next = 1'b0;
       state_next = S_EXC;
     end
     S_EXC: begin
-		statussel = STATUS_SUPER;
-	   state_next = S_EXC2;
-	 end
-	 S_EXC2: begin
+      statussel = STATUS_SUPER;
+      state_next = S_EXC2;
+    end
+    S_EXC2: begin
       // for everyone except reset, we need to push the PC and CCR/status onto the stack
       if (exception == 4'h0)
         state_next = S_EXC10;
       else begin
-	     a_write = 1'b1; // A <= SP
+        a_write = 1'b1; // A <= SP
         reg_read_addr1 = REG_SP;
         mdrsel = MDR_PC;
-	     state_next = S_EXC3;
+        state_next = S_EXC3;
       end
     end // case: S_EXC
     S_EXC3: begin
-        alu2sel = ALU_4;
-        alu_func = ALU_SUB;
-        state_next = S_EXC4;
+      alu2sel = ALU_4;
+      alu_func = ALU_SUB;
+      state_next = S_EXC4;
     end
     S_EXC4: begin
       marsel = MAR_ALU;
@@ -150,9 +150,9 @@ begin
 	    state_next = S_EXC7;
     end
     S_EXC7: begin
-        alu2sel = ALU_4;
-        alu_func = ALU_SUB;
-        state_next = S_EXC8;
+      alu2sel = ALU_4;
+      alu_func = ALU_SUB;
+      state_next = S_EXC8;
     end
     S_EXC8: begin
       marsel = MAR_ALU;
@@ -190,7 +190,7 @@ begin
     S_FETCH2: begin
       if (|interrupt && interrupts_enabled) begin
         state_next = S_EXC;
-		  statussel = STATUS_SUPER; // set supervisor bit so we get the SSP 
+        statussel = STATUS_SUPER; // set supervisor bit so we get the SSP 
         interrupts_enabled_next = 1'b0;
         exception_next = { 1'b0, interrupt};
       end else begin
@@ -200,15 +200,15 @@ begin
     end
     S_EVAL: begin
       if (ir_size)
-	state_next = S_ARG;
+        state_next = S_ARG;
       else
-	case (ir_type)
+        case (ir_type)
           T_INH: state_next = S_INH;
           T_PUSH: state_next = (ir_op == 4'h1 ? S_RELADDR : S_PUSH);
           T_POP: state_next = S_POP;
           T_CMP: state_next = S_CMP;
           T_MOV: state_next = S_MOV;
-	  T_INTU: state_next = S_INTU;
+          T_INTU: state_next = S_INTU;
           T_INT: state_next = S_INT;
           T_FPU: state_next = S_FPU;
           T_FP: state_next = S_FP;
@@ -219,10 +219,10 @@ begin
           T_BRANCH: state_next = S_BRANCH;
           T_JUMP: state_next = S_JUMP;
           default: begin
-			   exception_next = EXC_ILLOP;
-			   state_next = S_EXC;
-			 end
-	endcase
+            exception_next = EXC_ILLOP;
+            state_next = S_EXC;
+          end
+        endcase
     end // case: S_EVAL
     S_TERM: state_next = S_FETCH;
     S_ARG: begin
@@ -235,73 +235,73 @@ begin
     S_ARG2: begin
       pcsel = PC_NEXT;
       case (ir_type)
-	T_INH: state_next = S_INH;
-	T_PUSH: state_next = S_PUSH2;
-	T_STORE: state_next = S_STORED;
-	T_LOAD: state_next = S_LOADD;
-	T_JUMP: state_next = S_EXC12;
-	T_LDI: state_next = S_MDR2RA;
-	default: begin
-	  exception_next = EXC_ILLOP;
-	  state_next = S_EXC;
-	end
+        T_INH: state_next = S_INH;
+        T_PUSH: state_next = S_PUSH2;
+        T_STORE: state_next = S_STORED;
+        T_LOAD: state_next = S_LOADD;
+        T_JUMP: state_next = S_EXC12;
+        T_LDI: state_next = S_MDR2RA;
+        default: begin
+          exception_next = EXC_ILLOP;
+          state_next = S_EXC;
+        end
       endcase
     end
     S_INH: begin
       case (ir_op)
-	4'h0: state_next = S_FETCH; // nop
-	4'h1: begin
-	  if (ir_size) begin // setint
-	    if (supervisor) begin
-	      vectoff_write = 1'b1;
-	      state_next = S_FETCH;
-		 end else begin
-	      exception_next = EXC_ILLOP;
-	      state_next = S_EXC;
-		 end
-	  end else begin // trap
-	    exception_next = { 2'b11, ir_uval[1:0] }; // upper 4 are swi
+        4'h0: state_next = S_FETCH; // nop
+        4'h1: begin
+          if (ir_size) begin // setint
+            if (supervisor) begin
+              vectoff_write = 1'b1;
+              state_next = S_FETCH;
+            end else begin
+              exception_next = EXC_ILLOP;
+              state_next = S_EXC;
+            end
+          end else begin // trap
+            exception_next = { 2'b11, ir_uval[1:0] }; // upper 4 are swi
             state_next = S_EXC;
           end
-	end
-	4'h2: begin // cli
-	  if (supervisor) begin
-       interrupts_enabled_next = 1'b0;
-	    state_next = S_FETCH;
-	  end else begin
-	    exception_next = EXC_ILLOP;
-	    state_next = S_EXC;
-	  end
-	end
-	4'h3: begin // sti
-	  if (supervisor) begin
-       interrupts_enabled_next = 1'b1;
-	    state_next = S_FETCH;
-	  end else begin
-	    exception_next = EXC_ILLOP;
-		 state_next = S_EXC;
-	  end
-	end
-	4'h4: begin
-	  if (supervisor)
-	    state_next = S_HALT; // halt
-	  else begin
-	    exception_next = EXC_ILLOP;
-		 state_next = S_EXC;
-	  end
-	end
-	4'h5: begin
-	  if (supervisor)
-	    state_next = S_RESET; // reset
-	  else begin
-	    exception_next = EXC_ILLOP;
-		 state_next = S_EXC;
-	   end
-	end
-   default: begin
-      exception_next = EXC_ILLOP;
-      state_next = S_EXC;
-	 end
+        end
+        4'h2: begin // cli
+          if (supervisor) begin
+            interrupts_enabled_next = 1'b0;
+            state_next = S_FETCH;
+          end else begin
+            exception_next = EXC_ILLOP;
+            state_next = S_EXC;
+          end
+        end
+        4'h3: begin // sti
+          if (supervisor) begin
+            interrupts_enabled_next = 1'b1;
+            state_next = S_FETCH;
+          end else begin
+            exception_next = EXC_ILLOP;
+            state_next = S_EXC;
+          end
+        end
+        4'h4: begin
+          if (supervisor)
+            state_next = S_HALT; // halt
+          else begin
+            exception_next = EXC_ILLOP;
+            state_next = S_EXC;
+          end
+        end
+        4'h5: begin
+          if (supervisor)
+            state_next = S_RESET; // reset
+          else begin
+            exception_next = EXC_ILLOP;
+            state_next = S_EXC;
+          end
+        end
+        default: begin
+          exception_next = EXC_ILLOP;
+          state_next = S_EXC;
+        end
       endcase // case (ip_op)
     end // case: S_INH
     S_RELADDR: begin
@@ -321,21 +321,19 @@ begin
     end
     S_PUSH2: begin
       casex ({ir_size,ir_op})
-	5'h11: begin // jsrd
-	  mdrsel = MDR_PC;
-	  pcsel = PC_MAR;
-	end
-	5'h01: begin // jsr
-	  mdrsel = MDR_PC;
-	  pcsel = PC_ALU;
-	end
-  5'h02: begin // bsr
-    mdrsel = MDR_PC;
-    pcsel = PC_REL;
-  end
-	default: begin
-	  mdrsel = MDR_B;
-	end
+        5'h11: begin // jsrd
+          mdrsel = MDR_PC;
+          pcsel = PC_MAR;
+        end
+        5'h01: begin // jsr
+          mdrsel = MDR_PC;
+          pcsel = PC_ALU;
+        end
+        5'h02: begin // bsr
+          mdrsel = MDR_PC;
+          pcsel = PC_REL;
+        end
+        default: mdrsel = MDR_B;
       endcase // casex ({ir_size,ir_op})
       a_write = 1'b1; // A <= SP
       reg_read_addr1 = REG_SP; // SP
@@ -347,17 +345,17 @@ begin
       state_next = S_PUSH4;
     end
     S_PUSH4: begin
-       marsel = MAR_ALU; // MAR <= aluout
-       reg_write_addr = REG_SP; // SP <= aluout
-       reg_write = REG_WRITE_DW;
-       state_next = S_PUSH5;
+      marsel = MAR_ALU; // MAR <= aluout
+      reg_write_addr = REG_SP; // SP <= aluout
+      reg_write = REG_WRITE_DW;
+      state_next = S_PUSH5;
     end
     S_PUSH5: begin
-       addrsel = ADDR_MAR;
-       bus_cyc = 1'b1;
-       bus_write = 1'b1;            
-       if (bus_ack)
-         state_next = S_TERM;
+      addrsel = ADDR_MAR;
+      bus_cyc = 1'b1;
+      bus_write = 1'b1;            
+      if (bus_ack)
+        state_next = S_TERM;
     end
     S_POP: begin // pop
       reg_read_addr1 = REG_SP;
@@ -376,13 +374,13 @@ begin
         4'h0: state_next = S_POP4;
         4'h1: state_next = S_RTS;
         4'h2: begin
-		    if (supervisor)
-			   state_next = S_RTI;
-			 else begin
-			   exception_next = EXC_ILLOP;
-				state_next = S_EXC;
-			 end
-		  end
+          if (supervisor)
+            state_next = S_RTI;
+          else begin
+            exception_next = EXC_ILLOP;
+            state_next = S_EXC;
+          end
+        end
         default: state_next = S_RTS;
       endcase
     end
@@ -402,7 +400,7 @@ begin
     end
     S_RTI2: begin
       ccrsel = CCR_MDR;
-		statussel = STATUS_POP; // shift some bits
+      statussel = STATUS_POP; // shift some bits
       reg_read_addr1 = REG_SP;
       a_write = 1'b1;
       state_next = S_RTI3;
@@ -425,7 +423,7 @@ begin
       marsel = MAR_BUS;
       bus_cyc = 1'b1;
       if (bus_ack)
-	state_next = S_RTS3;
+        state_next = S_RTS3;
     end
     S_RTS3: begin
       pcsel = PC_MAR;
@@ -438,10 +436,7 @@ begin
     S_CMP: begin // cmp
       a_write = 1'b1; // A <= rA
       b_write = 1'b1; // B <= rB
-      if (ir_op == 4'h0)
-	state_next = S_CMP2;
-      else
-	state_next = S_CMPS;
+      state_next = (ir_op == 4'h0 ? S_CMP2 : S_CMPS);
     end
     S_CMP2: begin
       alu_func = ALU_SUB;
@@ -509,10 +504,7 @@ begin
       a_write = 1'b1; // A <= rB
       reg_read_addr2 = ir_rc;
       b_write = 1'b1; // B <= rC
-      if (ir_op[3])
-	state_next = S_ALU3;
-      else
-	state_next = S_ALU2;
+      state_next = (ir_op[3] ? S_ALU3 : S_ALU2);
     end
     S_ALU2: begin
       alu_func = ir_op[2:0];
@@ -533,10 +525,7 @@ begin
       reg_read_addr2 = ir_rc;
       b_write = 1'b1; // B <= rC
       delay_next = 8'hc;
-      if (ir_op[3])
-	state_next = S_INT3;
-      else
-	state_next = S_INT2;
+      state_next = (ip_op[3] ? S_INT3 : S_INT2);
     end
     S_INT2: begin
       int_func = { 1'b0, ir_op[2:0] };
@@ -553,18 +542,18 @@ begin
     end
     S_BRANCH: begin
       case (ir_op)
-	4'h0: pcsel = PC_REL; // bra
-	4'h1: if (ccr_eq) pcsel = PC_REL; // beq
-	4'h2: if (~ccr_eq) pcsel = PC_REL; // bne
-	4'h3: if (~(ccr_ltu | ccr_eq)) pcsel = PC_REL; // bgtu
-	4'h4: if (~(ccr_lt | ccr_eq)) pcsel = PC_REL; // bgt
-	4'h5: if (~ccr_lt) pcsel = PC_REL; // bge
-	4'h6: if (ccr_lt | ccr_eq) pcsel = PC_REL; // ble
-	4'h7: if (ccr_lt) pcsel = PC_REL; // blt
-	4'h8: if (~ccr_ltu) pcsel = PC_REL; // bgeu
-	4'h9: if (ccr_ltu) pcsel = PC_REL; // bltu
-	4'ha: if (ccr_ltu | ccr_eq) pcsel = PC_REL; // bleu
-	default: pcsel = PC_PC; // brn
+        4'h0: pcsel = PC_REL; // bra
+        4'h1: if (ccr_eq) pcsel = PC_REL; // beq
+        4'h2: if (~ccr_eq) pcsel = PC_REL; // bne
+        4'h3: if (~(ccr_ltu | ccr_eq)) pcsel = PC_REL; // bgtu
+        4'h4: if (~(ccr_lt | ccr_eq)) pcsel = PC_REL; // bgt
+        4'h5: if (~ccr_lt) pcsel = PC_REL; // bge
+        4'h6: if (ccr_lt | ccr_eq) pcsel = PC_REL; // ble
+        4'h7: if (ccr_lt) pcsel = PC_REL; // blt
+        4'h8: if (~ccr_ltu) pcsel = PC_REL; // bgeu
+        4'h9: if (ccr_ltu) pcsel = PC_REL; // bltu
+        4'ha: if (ccr_ltu | ccr_eq) pcsel = PC_REL; // bleu
+        default: pcsel = PC_PC; // brn
       endcase // case (ir_op)
       state_next = S_FETCH;
     end
@@ -604,16 +593,16 @@ begin
       bus_cyc = 1'b1;
       mdrsel = MDR_BUS;
       if (ir_op[1:0] == 2'h1)
-	byteenable = (bus_align[1] ? 4'b0011 : 4'b1100);
+        byteenable = (bus_align[1] ? 4'b0011 : 4'b1100);
       else if (ir_op[1:0] == 2'h2)
-	case (bus_align[1:0])
+        case (bus_align[1:0])
           2'b00: byteenable = 4'b1000;
           2'b01: byteenable = 4'b0100;
           2'b10: byteenable = 4'b0010;
           2'b11: byteenable = 4'b0001;
         endcase
       if (bus_ack)
-	state_next = S_MDR2RA;
+        state_next = S_MDR2RA;
     end
     S_STORE: begin
       reg_read_addr1 = ir_rb;
@@ -643,16 +632,16 @@ begin
       bus_cyc = 1'b1;
       bus_write = 1'b1;
       if (ir_op[1:0] == 2'h1)
-	byteenable = (bus_align[1] ? 4'b0011 : 4'b1100);
+        byteenable = (bus_align[1] ? 4'b0011 : 4'b1100);
       else if (ir_op[1:0] == 2'h2)
-	case (bus_align[1:0])
+        case (bus_align[1:0])
           2'b00: byteenable = 4'b1000;
           2'b01: byteenable = 4'b0100;
           2'b10: byteenable = 4'b0010;
           2'b11: byteenable = 4'b0001;
         endcase
       if (bus_ack)
-	state_next = S_TERM;
+        state_next = S_TERM;
     end
     S_HALT: state_next = S_HALT;
   endcase // case (state)
