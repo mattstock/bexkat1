@@ -1,7 +1,7 @@
 #include "vectors.h"
 
 static void dummy(void) {
-  while (1);
+  asm("halt");
 }
 
 isr _vectors_start[16] = {

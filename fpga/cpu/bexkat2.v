@@ -102,7 +102,7 @@ begin
   case (statussel)
     STATUS_STATUS: status_next = status;
     STATUS_SUPER: status_next = { 1'b1, status[2:0] };
-    STATUS_MDR: status_next = mdr[3:0];
+    STATUS_B: status_next = b[3:0];
     STATUS_POP: status_next = mdr[11:8];
   endcase
   case (sel_o)

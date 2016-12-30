@@ -454,29 +454,24 @@ begin
       state_next = S_FETCH;
     end
     S_MOV: begin // mov, mov.l, mov.b, movsr
-      if (ir_op == 4'h0) // movsr
-        if (supervisor) begin
-          mdrsel = MDR_STATUS;
-          state_next = S_MOV2;
-       end else begin
-          exception_next = EXC_ILLOP;
-          state_next = S_EXC;
-        end
-      else begin
-        reg_read_addr2 = ir_rb;
-        b_write = 1'b1; // B <= rB
-        state_next = S_MOV2;
-      end
+      reg_read_addr2 = ir_rb;
+      b_write = 1'b1; // B <= rB
+      state_next = S_MOV2;
     end
     S_MOV2: begin
       if (ir_op == 4'h0) begin
-        regsel = REG_MDR;
-        reg_write = 2'b11;
+        if (supervisor) begin
+          statussel = STATUS_B;
+          state_next = S_FETCH;
+        end else begin
+          exception_next = EXC_ILLOP;
+          state_next = S_EXC;
+        end
       end else begin
         regsel = REG_B;
         reg_write = ir_op[1:0];
+        state_next = S_FETCH;
       end
-      state_next = S_FETCH;
     end
     S_INTU: begin
       reg_read_addr2 = ir_rb;
