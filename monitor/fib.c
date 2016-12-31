@@ -1,7 +1,6 @@
 #include <stdio.h>
 #include "misc.h"
 #include "matrix.h"
-#include "vectors.h"
 
 unsigned fib(unsigned short x);
 

@@ -2,11 +2,11 @@
 #include "matrix.h"
 #include "serial.h"
 #include "spi.h"
-#include "ff.h"
 #include "lcd.h"
+#include "kernel/include/vectors.h"
+#include "kernel/include/ff.h"
 #include "rtc.h"
 #include "timers.h"
-#include "vectors.h"
 #include "elf32.h"
 #include <string.h>
 #include <sys/types.h>
@@ -39,7 +39,7 @@ void serial_dumpmem(unsigned port,
   }
 }
 
-void sdcard_exec(char *name) {
+void sdcard_exec(int super, char *name) {
   FATFS f;
   FRESULT foo;
   FIL fp;
@@ -111,6 +111,11 @@ void sdcard_exec(char *name) {
   // Shut off interrupts
   asm("cli");
   execptr = (void *)header.e_entry;
+  if (!super) {
+    asm("ldiu %1, 0\n");
+    asm("movsr %1\n");
+    asm("ldi %sp, 0x08000000\n");
+  }
   (*execptr)();
 }
 
@@ -161,10 +166,10 @@ void main(void) {
   lcd_init();
   lcd_print("Bexkat 1000");
   lcd_pos(0,1);
-  lcd_print("v2.6");
+  lcd_print("v2.7");
   serial_print(1, rebecca);
   if ((sysio[0] & 0x1) == 0x1) {
-    sdcard_exec("/kernel");
+    sdcard_exec(1, "/kernel");
     serial_print(0, "\nautoboot failed\n");
   }
 
@@ -189,7 +194,7 @@ void main(void) {
     case 'b':
       serial_print(0, "\n attempt to exec file....\n");
       msg += 2;
-      sdcard_exec(msg);
+      sdcard_exec(0, msg);
       break;
     case 'c':
       serial_print(0, "\nSDCard test...\n");

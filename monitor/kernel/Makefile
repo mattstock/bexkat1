@@ -1,5 +1,5 @@
 CC = bexkat1-elf-gcc
-CFLAGS = -O2 -I../include
+CFLAGS = -O2 -Iinclude
 LDLIBS = -lsupport -lm
 LDFLAGS = -specs=de2.specs
 OBJDUMP = bexkat1-elf-objdump
@@ -18,7 +18,7 @@ clean:
 %.o: %.c
 	$(CC) $(CFLAGS) -c -o $@ $^
 
-kernel: kernel.o font.o
+kernel: kernel.o font.o mmc.o ff.o vectors.o gettime.o setint.o
 
 
 install: kernel

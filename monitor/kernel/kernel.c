@@ -9,6 +9,8 @@
 #include <matrix.h>
 #include <timers.h>
 
+extern void init_vectors();
+
 short vga_getline(unsigned int color, char *str, unsigned short *len) {
   unsigned short i=0;
   unsigned char c;
@@ -56,6 +58,7 @@ void main(void) {
   unsigned short size = 40;
   unsigned char buf[40];
 
+  init_vectors();
   cli();
   timers[1] = 0x00; // clear any outstanding timer interrupt
   timers[0] = 0x00; // disable timers and interrupt

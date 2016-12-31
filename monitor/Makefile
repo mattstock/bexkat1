@@ -7,11 +7,12 @@ OBJCOPY = bexkat1-elf-objcopy
 OBJDUMP = bexkat1-elf-objdump
 AS = bexkat1-elf-as
 LD = bexkat1-elf-ld
+RANLIB = bexkat1-elf-ranlib
 
 TEMP := $(shell mktemp)
 
-OBJECTS = boot-$(BOARD).o bootstrap.o pretty.o fmand.o memtests.o rtc.o fileio.o tests.o ps2.o fib.o audiogen.o clock.o fly.o showpic.o setjmp.o hwmand.o
-APPS = pretty fmand bootstrap memtests rtc fileio tests ps2 fib audiogen clock fly showpic setjmp hwmand codec codec_w vga
+OBJECTS = boot-$(BOARD).o bootstrap.o pretty.o fmand.o memtests.o rtc.o tests.o ps2.o fib.o clock.o fly.o setjmp.o hwmand.o
+APPS = pretty fmand bootstrap memtests rtc tests ps2 fib clock fly setjmp hwmand codec codec_w vga
 
 .PHONY: all clean gcctests kernel install
 
@@ -41,11 +42,28 @@ kernel:
 %.bin: %
 	$(OBJCOPY) -O binary $< $@
 
-tests: tests.o
+ff.o: kernel/ff.c
+	$(CC) $(CFLAGS) -Ikernel/include -c -o $@ $^
+
+mmc.o: kernel/mmc.c
+	$(CC) $(CFLAGS) -Ikernel/include -c -o $@ $^
+
+vectors.o: kernel/vectors.c
+	$(CC) $(CFLAGS) -Ikernel/include -c -o $@ $^
+
+gettime.o: kernel/gettime.c
+	$(CC) $(CFLAGS) -Ikernel/include -c -o $@ $^
+
+librawsd.a: ff.o mmc.o gettime.o
+	$(AR) rcs -o $@ $^
+	$(RANLIB) $@
+
+
+tests: tests.o vectors.o
 	$(CC) -T profile-$(BOARD).ld -nostartfiles -o $@ $^ $(LDLIBS)
 
 fileio: fileio.o
 	$(CC) $(LDFLAGS) -o $@ $^
 
-bootstrap: bootstrap.o
-	$(CC) -T profile-$(BOARD).ld -nostartfiles -o $@ $^ $(LDLIBS)
+bootstrap: librawsd.a bootstrap.o vectors.o
+	$(CC) -T profile-$(BOARD).ld -nostartfiles -o $@ $^ -L. $(LDLIBS) -lrawsd

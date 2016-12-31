@@ -1,6 +1,7 @@
 *.hex
 *.bin
 *.mif
+*.a
 audiogen
 bootstrap
 tests

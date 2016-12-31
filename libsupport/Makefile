@@ -1,5 +1,5 @@
 CC = bexkat1-elf-gcc
-CFLAGS = -Iinclude -specs=max10.specs
+CFLAGS = -Iinclude -specs=de2.specs
 AS = bexkat1-elf-as
 AR = bexkat1-elf-ar
 RANLIB = bexkat1-elf-ranlib
@@ -23,6 +23,6 @@ clean:
 %.o: %.s
 	$(AS) -EB -o $@ $^
 
-libsupport.a: serial.o misc.o matrix.o lcd.o mmc.o ff.o gettime.o vectors.o spi.o rtc.o debug.o vga.o timers.o keyboard.o codec.o mandelbrot.o i2c.o
+libsupport.a: serial.o misc.o matrix.o lcd.o spi.o rtc.o debug.o vga.o timers.o keyboard.o codec.o mandelbrot.o i2c.o
 	$(AR) rcs -o $@ $^
 	$(RANLIB) $@

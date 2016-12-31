@@ -5,7 +5,6 @@
 #include "serial.h"
 #include <stdio.h>
 #include <stdlib.h>
-#include "vectors.h"
 
 void matrix_fade(void) {
   unsigned short i;
