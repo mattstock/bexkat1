@@ -1,6 +1,8 @@
 module mmu(
   input [31:0] adr_i,
   input cyc_i,
+  input we_i,
+  input supervisor,
   output cache_enable,
   output fault,
   output [3:0] chipselect);
@@ -24,12 +26,24 @@ begin
       cs = 4'h4; // IO
       c = 1'b0;
     end
-	 4'h4: cs = 4'h7; // cache controller
-    4'h7: cs = 4'h2; // monitor
+	  4'h4: cs = 4'h7; // cache controller
+    4'h7: begin // monitor
+      if (we_i) begin
+        cs = 4'h0;
+        f = 1'h1;
+      end else
+        cs = 4'h2;
+    end
     4'h8: cs = 4'h6; // VGA controller / 4MB (1M x 32) SSRAM
     4'hc: cs = 4'h6; // VGA controller / 4MB (1M x 32) SSRAM
     4'hd: cs = 4'h3; // mandelbrot
-    4'hf: cs = 4'h1; // vectors
+    4'hf: begin // vectors
+      if (we_i) begin
+        cs = 4'h0;
+        f = 1'h1;
+      end else
+        cs = 4'h1;
+    end
     default: begin
       cs = 4'h0;
       f = 1'h1;
