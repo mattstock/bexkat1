@@ -15,5 +15,8 @@ extern short serial_getline(unsigned port,
 extern void serial_printhex(unsigned port, unsigned val);
 extern char serial_getchar(unsigned port);
 extern void serial_print(unsigned port, const char *);
+extern void serial_dumpmem(unsigned port,
+			   unsigned addr,
+			   unsigned short len);
 
 #endif

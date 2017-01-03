@@ -2,8 +2,10 @@
 #define VECTORS_H
 
 typedef void (*isr)(void);
+typedef int (*esr)(void);
 
 #define INTERRUPT_HANDLER(x) static void x() __attribute__ ((interrupt_handler));
+#define EXCEPTION_HANDLER(x) static int x() __attribute__ ((exception_handler));
 #define sti() asm("sti")
 #define cli() asm("cli")
 
@@ -27,6 +29,7 @@ typedef enum {
 } interrupt_slot;
 
 extern void set_interrupt_handler(interrupt_slot s, isr f);
+extern void set_exception_handler(interrupt_slot s, esr f);
 
 #endif
 

@@ -35,12 +35,14 @@ module control2(input clk_i,
 	input supervisor,
 	input bus_ack,
 	output reg [3:0] exception,
+  output superintr,
 	input [2:0] interrupt,
 	input [1:0] bus_align);
 
 assign halt = (state == S_HALT);
 assign int_en = interrupts_enabled;
-
+assign superintr = (state == S_EXC5 || state == S_EXC7);
+  
 // IR helpers
 wire [3:0]  ir_type  = ir[31:28];
 wire [3:0]  ir_op    = ir[27:24];
@@ -111,73 +113,70 @@ begin
       state_next = S_EXC;
     end
     S_EXC: begin
-      statussel = STATUS_SUPER;
-      state_next = S_EXC2;
-    end
-    S_EXC2: begin
-      // for everyone except reset, we need to push the PC and CCR/status onto the stack
+      // for everyone except reset, we need to push the PC and SP, and CCR/status onto the stack
       if (exception == 4'h0)
-        state_next = S_EXC10;
+        state_next = S_EXC9;
       else begin
         a_write = 1'b1; // A <= SP
         reg_read_addr1 = REG_SP;
         mdrsel = MDR_PC;
-        state_next = S_EXC3;
+        state_next = S_EXC2;
       end
     end // case: S_EXC
-    S_EXC3: begin
+    S_EXC2: begin
       alu2sel = ALU_4;
       alu_func = ALU_SUB;
+      state_next = S_EXC3;
+    end
+    S_EXC3: begin
+      marsel = MAR_ALU;
+      reg_write_addr = REG_SP;
+      reg_write = REG_WRITE_DW;
       state_next = S_EXC4;
     end
     S_EXC4: begin
-      marsel = MAR_ALU;
-      reg_write_addr = REG_SP;
-      reg_write = REG_WRITE_DW;
-      state_next = S_EXC5;
-    end
-    S_EXC5: begin
       addrsel = ADDR_MAR;
       bus_cyc = 1'b1;
       bus_write = 1'b1;       
       if (bus_ack)
-        state_next = S_EXC6;
+        state_next = S_EXC5;
     end
-    S_EXC6: begin
+    S_EXC5: begin // forced to use SSP
       a_write = 1'b1; // A <= SP
       reg_read_addr1 = REG_SP;
       mdrsel = MDR_CCR;
-	    state_next = S_EXC7;
+	    state_next = S_EXC6;
     end
-    S_EXC7: begin
+    S_EXC6: begin
       alu2sel = ALU_4;
       alu_func = ALU_SUB;
-      state_next = S_EXC8;
+      state_next = S_EXC7;
     end
-    S_EXC8: begin
+    S_EXC7: begin // forced to use SSP
       marsel = MAR_ALU;
       reg_write_addr = REG_SP;
       reg_write = REG_WRITE_DW;
-      state_next = S_EXC9;
+      state_next = S_EXC8;
     end
-    S_EXC9: begin
+    S_EXC8: begin
       addrsel = ADDR_MAR;
       bus_cyc = 1'b1;
       bus_write = 1'b1;       
       if (bus_ack)
-        state_next = S_EXC10;
+        state_next = S_EXC9;
+    end
+    S_EXC9: begin
+      pcsel = PC_EXC; // load exception_next handler address into PC
+      statussel = STATUS_SUPER; // change the register since we just saved it
+      state_next = S_EXC10;
     end
     S_EXC10: begin
-      pcsel = PC_EXC; // load exception_next handler address into PC
-      state_next = S_EXC11;
-    end
-    S_EXC11: begin
       bus_cyc = 1'b1;
       marsel = MAR_BUS;
       if (bus_ack)
-        state_next = S_EXC12;
+        state_next = S_EXC11;
     end
-    S_EXC12: begin
+    S_EXC11: begin
       pcsel = PC_MAR;
       state_next = S_FETCH;
     end
@@ -190,7 +189,6 @@ begin
     S_FETCH2: begin
       if (|interrupt && interrupts_enabled) begin
         state_next = S_EXC;
-        statussel = STATUS_SUPER; // set supervisor bit so we get the SSP 
         interrupts_enabled_next = 1'b0;
         exception_next = { 1'b0, interrupt};
       end else begin
@@ -239,7 +237,7 @@ begin
         T_PUSH: state_next = S_PUSH2;
         T_STORE: state_next = S_STORED;
         T_LOAD: state_next = S_LOADD;
-        T_JUMP: state_next = S_EXC12;
+        T_JUMP: state_next = S_EXC11;
         T_LDI: state_next = S_MDR2RA;
         default: begin
           exception_next = EXC_ILLOP;
@@ -401,16 +399,19 @@ begin
     S_RTI2: begin
       ccrsel = CCR_MDR;
       statussel = STATUS_POP; // shift some bits
-      reg_read_addr1 = REG_SP;
-      a_write = 1'b1;
       state_next = S_RTI3;
     end
-    S_RTI3: begin
-      alu2sel = ALU_4;
-      marsel = MAR_A;
+    S_RTI3: begin // to reuse the rts logic for rti we need the PC pushed/popped from original stack
+      reg_read_addr1 = REG_SP;
+      a_write = 1'b1;
       state_next = S_RTI4;
     end
     S_RTI4: begin
+      alu2sel = ALU_4;
+      marsel = MAR_A;
+      state_next = S_RTI5;
+    end
+    S_RTI5: begin
       reg_write = REG_WRITE_DW; // SP <= aluout
       reg_write_addr = REG_SP;
       state_next = S_RTS;

@@ -181,12 +181,12 @@ assign fs_databus = (~ssram_we_n ? ssram_dataout : 32'hzzzzzzzz);
 
 // System Blinknlights
 assign LEDR = { SW[17], 1'h0, io_interrupts, miso, mosi, sclk, i2c_clock, i2c_tx, td_sdat, ~sd_ss, cpu_halt, mmu_fault, cpu_cyc };
-assign LEDG = { ~irda_rxd, 6'h0, cache_hitmiss };
+assign LEDG = { ~irda_rxd, 5'h0, supervisor, cache_hitmiss };
 
 // Internal bus wiring
 wire [3:0] chipselect;
 wire [26:0] ssram_addrout;
-wire [31:0] cpu_address, vga_readdata, ssram_dataout;
+wire [31:0] cpu_address, mmu_address, vga_readdata, ssram_dataout;
 wire [31:0] cpu_readdata, cpu_writedata, mon_readdata, mandelbrot_readdata, matrix_readdata, rom_readdata;
 wire [31:0] vect_readdata, io_readdata, sdram_readdata, sdram_dataout, rom2_readdata;
 wire [3:0] cpu_be, exception;
@@ -195,7 +195,7 @@ wire [3:0] cpu_interrupt;
 wire [7:0] lcd_dataout;
 wire cpu_write, cpu_cyc, cpu_ack, cpu_halt;
 wire mandelbrot_ack, io_ack;
-wire rom_read, vect_read;
+wire rom_read, vect_read, supervisor;
 wire sdram_ack;
 wire [3:0] sdram_den_n;
 wire matrix_read, matrix_write, matrix_ack;
@@ -262,10 +262,10 @@ assign rom_read = (chipselect == 4'h2 && cpu_cyc && ~cpu_write);
 assign vect_read = (chipselect == 4'h1 && cpu_cyc && ~cpu_write);
 
 bexkat2 bexkat0(.clk_i(sysclock), .rst_i(rst_i), .adr_o(cpu_address), .cyc_o(cpu_cyc), .dat_i(cpu_readdata),
-  .we_o(cpu_write), .dat_o(cpu_writedata), .sel_o(cpu_be), .ack_i(cpu_ack), .halt(cpu_halt),
+  .we_o(cpu_write), .dat_o(cpu_writedata), .sel_o(cpu_be), .ack_i(cpu_ack), .halt(cpu_halt), .supervisor(supervisor),
   .interrupt(cpu_interrupt[2:0]), .exception(exception), .int_en(int_en));
 
-mmu mmu0(.adr_i(cpu_address), .cyc_i(cpu_cyc), .chipselect(chipselect), .fault(mmu_fault));
+mmu mmu0(.adr_i(cpu_address), .cyc_i(cpu_cyc), .chipselect(chipselect), .supervisor(supervisor), .we_i(cpu_write), .fault(mmu_fault));
 
 sdram_controller_cache sdram0(.clk_i(sysclock), .mem_clk_o(sdram_clk), .rst_i(rst_i), .adr_i(cpu_address[26:2]), .stats_stb_i(cpu_address[31:28] == 4'h4),
   .dat_i(cpu_writedata), .dat_o(sdram_readdata), .stb_i(chipselect == 4'h7), .cyc_i(cpu_cyc),
@@ -289,8 +289,10 @@ iocontroller #(.clkfreq(clkfreq)) io0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cp
   .i2c_dataout({accel_tx, td_tx, i2c_tx}), .i2c_datain({accel_sdat, td_sdat, codec_sdin}),
   .i2c_scl({accel_clock, td_clock, i2c_clock}), .i2c_clkin({accel_sclk, td_sclk, codec_sclk}),
   .irda(irda_rxd));
-mandunit mand0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cpu_writedata), .dat_o(mandelbrot_readdata), .cyc_i(cpu_cyc),
-  .adr_i(cpu_address[4:2]), .we_i(cpu_write), .stb_i(chipselect == 4'h3), .sel_i(cpu_be), .ack_o(mandelbrot_ack));
+assign mandelbrot_ack = 1'b1;
+assign mandelbrot_readdata = 32'h0;
+//mandunit mand0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cpu_writedata), .dat_o(mandelbrot_readdata), .cyc_i(cpu_cyc),
+//  .adr_i(cpu_address[4:2]), .we_i(cpu_write), .stb_i(chipselect == 4'h3), .sel_i(cpu_be), .ack_o(mandelbrot_ack));
 monitor rom0(.clock(sysclock), .q(rom_readdata), .rden(rom_read), .address(cpu_address[16:2]));
 testrom rom1(.clock(sysclock), .q(rom2_readdata), .rden(rom_read), .address(cpu_address[16:2]));
 

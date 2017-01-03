@@ -1,14 +1,28 @@
+#include <stdarg.h>
+#include <stdio.h>
 #include "serial.h"
 #include "misc.h"
 
 volatile unsigned int * const serial0 = (unsigned int *)0x30002000;
 volatile unsigned int * const serial1 = (unsigned int *)0x30003000;
 
-void serial_printf(unsigned port, const char *format, ...) {
-  serial_print(port, format);
+void serial_dumpmem(unsigned port,
+		    unsigned addr, 
+		    unsigned short len) {
+  unsigned int i,j;
+  unsigned *pos = (unsigned *)addr;
+  
   serial_print(port, "\n");
+  for (i=0; i < len; i += 8) {
+    serial_printhex(port, addr+4*i);
+    serial_print(port, ": ");
+    for (j=0; j < 8; j++) {
+      serial_printhex(port, pos[i+j]);
+      serial_print(port, " ");
+    }
+    serial_print(port, "\n");
+  }
 }
-
 
 char serial_getchar(unsigned port) {
   unsigned result;

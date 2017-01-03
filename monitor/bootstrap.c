@@ -21,23 +21,7 @@ void rts_set();
 unsigned char katherine[] = { 194, 132, 190, 148, 129, 141, 0 }; 
 unsigned char rebecca[] = { 148, 131, 172, 131, 196, 131, 0 };
 
-void serial_dumpmem(unsigned port,
-		    unsigned addr, 
-		    unsigned short len) {
-  unsigned int i,j;
-  unsigned *pos = (unsigned *)addr;
-  
-  serial_print(port, "\n");
-  for (i=0; i < len; i += 8) {
-    serial_printhex(port, addr+4*i);
-    serial_print(port, ": ");
-    for (j=0; j < 8; j++) {
-      serial_printhex(port, pos[i+j]);
-      serial_print(port, " ");
-    }
-    serial_print(port, "\n");
-  }
-}
+extern void disk_timerproc (void);
 
 void sdcard_exec(int super, char *name) {
   FATFS f;
@@ -109,7 +93,7 @@ void sdcard_exec(int super, char *name) {
   f_close(&fp);
   f_mount((void *)0, "", 0);
   // Shut off interrupts
-  asm("cli");
+  cli();
   execptr = (void *)header.e_entry;
   if (!super) {
     asm("ldiu %1, 0\n");
@@ -150,6 +134,13 @@ void sdcard_ls() {
   f_mount((void *)0, "", 0);
 }
 
+INTERRUPT_HANDLER(timer3)
+static void timer3(void) {
+  disk_timerproc();
+  timers[1] = 0x8; // clear the interrupt
+  timers[7] += 1000000; // reset timer3 interval
+}
+
 void main(void) {
   unsigned int foo;
   unsigned short size=20;
@@ -168,6 +159,13 @@ void main(void) {
   lcd_pos(0,1);
   lcd_print("v2.7");
   serial_print(1, rebecca);
+
+  // for filesystem code
+  timers[7] = timers[12] + 1000000; // 100Hz
+  set_interrupt_handler(intr_timer3, timer3);
+  timers[0] |= 0x88; // enable timer and interrupt
+  sti();
+
   if ((sysio[0] & 0x1) == 0x1) {
     sdcard_exec(1, "/kernel");
     serial_print(0, "\nautoboot failed\n");

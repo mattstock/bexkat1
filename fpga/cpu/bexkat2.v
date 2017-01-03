@@ -11,6 +11,7 @@ module bexkat2(input 	     clk_i,
 	       input [2:0]   interrupt,
 	       output 	     int_en,
 	       output [3:0]  exception,
+         output supervisor,
 	       input [31:0]  dat_i,
 	       output [31:0] dat_o,
 	       output [3:0]  sel_o);
@@ -18,19 +19,19 @@ module bexkat2(input 	     clk_i,
 // Control signals
 wire [1:0] reg_write;
 wire [2:0] alu_func, fpu_func;
-wire 	   addrsel, ir_write, vectoff_write, a_write, b_write;
+wire addrsel, ir_write, vectoff_write, a_write, b_write;
 wire [3:0] reg_read_addr1, reg_read_addr2, reg_write_addr;
 wire [1:0] marsel, ccrsel, fpccrsel, spsel, sspsel, alu2sel, statussel;
 wire [2:0] pcsel, regsel;
 wire [3:0] mdrsel, int_func;
-wire 	   fp_aeb, fp_alb, int2sel, fpccr_write;
+wire fp_aeb, fp_alb, int2sel, fpccr_write, superintr;
   
 // Data paths
 wire [31:0] alu_out, reg_data_out1, reg_data_out2;
 wire [31:0] ir_next, vectoff_next, fpu_out, dataout, a_next, b_next, int_out;
 wire [2:0]  ccr_next;
-wire 	    alu_carry, alu_negative, alu_overflow, alu_zero; 
-wire        fp_nan, fp_overflow, fp_underflow, fp_divzero;
+wire alu_carry, alu_negative, alu_overflow, alu_zero; 
+wire fp_nan, fp_overflow, fp_underflow, fp_divzero;
  
 // Special registers
 reg [31:0] mdr, mdr_next, mar, a, b, pc, ir, busin_be, vectoff;
@@ -43,15 +44,13 @@ reg [3:0]  fpccr, fpccr_next;
 // opcode format
 wire [31:0] ir_sval = { {17{ir[15]}}, ir[15:1] };
 wire [31:0] ir_uval = { 17'h0000, ir[15:1] };
-  
-// Convenience mappings
-wire super_mode = status[3];
 
 // Data switching logic
 assign dat_o = (we_o ? dataout : 32'h0);
 assign adr_o = (addrsel == ADDR_MAR ? mar : pc);
 assign ir_next = (ir_write ? dat_i : ir);
 assign vectoff_next = (vectoff_write ? mdr : vectoff);
+assign supervisor = (superintr ? 1'b1 : status[3]); // allows us to force supervisor mode w/o changing the bit
 
 always @(posedge clk_i or posedge rst_i) begin
   if (rst_i) begin
@@ -183,9 +182,9 @@ control2 con0(.clk_i(clk_i), .rst_i(rst_i), .ir(ir), .ir_write(ir_write),
   .reg_read_addr1(reg_read_addr1), .reg_read_addr2(reg_read_addr2),
   .reg_write_addr(reg_write_addr), .reg_write(reg_write), .mdrsel(mdrsel),
   .marsel(marsel), .pcsel(pcsel), .int2sel(int2sel), .int_func(int_func),
-  .supervisor(super_mode), .addrsel(addrsel), .byteenable(sel_o), .statussel(statussel),
+  .supervisor(supervisor), .addrsel(addrsel), .byteenable(sel_o), .statussel(statussel),
   .bus_cyc(cyc_o), .bus_write(we_o), .bus_ack(ack_i), .bus_align(adr_o[1:0]),
-  .vectoff_write(vectoff_write), .halt(halt), .exception(exception),
+  .vectoff_write(vectoff_write), .halt(halt), .exception(exception), .superintr(superintr),
   .interrupt(interrupt), .int_en(int_en), .fpu_func(fpu_func), 
   .fpccr_write(fpccr_write));
 
@@ -194,7 +193,7 @@ alu2 alu0(.clk_i(clk_i), .rst_i(rst_i), .in1(a), .in2(alu_in2),
   .v_out(alu_overflow), .z_out(alu_zero));
 intcalc2 int0(.clock(clk_i), .func(int_func), .in1(a), .in2(int_in2),
   .out(int_out));
-registerfile2 intreg(.clk_i(clk_i), .rst_i(rst_i), .supervisor(super_mode),
+registerfile2 intreg(.clk_i(clk_i), .rst_i(rst_i), .supervisor(supervisor),
   .read1(reg_read_addr1), .read2(reg_read_addr2), .write_addr(reg_write_addr),
   .write_data(reg_data_in), .write_en(reg_write),
   .data1(reg_data_out1), .data2(reg_data_out2));

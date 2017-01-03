@@ -139,6 +139,6 @@ localparam
   S_RTI2 = 7'h47,
   S_RTI3 = 7'h48,
   S_RTI4 = 7'h49,
-  S_EXC12 = 7'h50;
+  S_RTI5 = 7'h4a;
 
 `endif

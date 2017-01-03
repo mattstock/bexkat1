@@ -287,13 +287,6 @@ BYTE send_cmd (		/* Returns R1 resp (bit7==1:Send failed) */
 	return res;			/* Return with the response value */
 }
 
-INTERRUPT_HANDLER(timer3)
-static void timer3(void) {
-  disk_timerproc();
-  timers[1] = 0x8; // clear the interrupt
-  timers[7] += 500000; // reset timer3 interval
-}
-
 /*--------------------------------------------------------------------------
 
    Public Functions
@@ -310,11 +303,6 @@ DSTATUS disk_initialize (
 )
 {
 	BYTE n, cmd, ty, ocr[4];
-
-	timers[7] = timers[12] + 500000; // 100Hz
-	set_interrupt_handler(intr_timer3, timer3);
-	timers[0] |= 0x88; // enable timer and interrupt
-	sti();
 
 	if (pdrv) return STA_NOINIT;		/* Supports only single drive */
 	power_off();						/* Turn off the socket power to reset the card */

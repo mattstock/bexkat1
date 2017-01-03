@@ -1,6 +1,14 @@
 #ifndef VGA_H
 #define VGA_H
 
+#define VGA_TEXT_FONT_X 8
+#define VGA_TEXT_FONT_Y 8
+#define VGA_MAX_X 640
+#define VGA_MAX_Y 480
+
+#define VGA_TEXT_MAX_Y VGA_MAX_Y/VGA_TEXT_FONT_Y
+#define VGA_TEXT_MAX_X VGA_MAX_X/VGA_TEXT_FONT_X
+
 #define VGA_MODE_NORMAL 0x00
 #define VGA_MODE_DOUBLE 0x01
 #define VGA_MODE_TEXT 0x02
@@ -37,5 +45,8 @@ extern void vga_text_clear();
 extern void vga_putchar(unsigned short color233, unsigned char c);
 extern void vga_print(unsigned int color, unsigned char *s);
 extern void vga_set_cursor(unsigned short x, unsigned short y);
+extern short vga_getline(unsigned int color, char *str, unsigned short *len);
+extern void vga_printf(unsigned int color, const char *fmt, ...);
+extern void vga_scroll(int offset);
 
 #endif
