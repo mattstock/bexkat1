@@ -1,6 +1,13 @@
 #ifndef VGA_H
 #define VGA_H
 
+#include <machine.h>
+
+#define VGA_P0_BASE  (VGA_CF_BASE)
+#define VGA_P1_BASE  (VGA_CF_BASE+0x400)
+#define VGA_F0_BASE  (VGA_CF_BASE+0x800)
+#define VGA_CTL_BASE (VGA_CF_BASE+0xc00)
+
 #define VGA_TEXT_FONT_X 8
 #define VGA_TEXT_FONT_Y 8
 #define VGA_MAX_X 640

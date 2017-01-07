@@ -3,11 +3,11 @@
 #include <stdarg.h>
 #include "vga.h"
 
-volatile unsigned char * const vga_fb = (unsigned char *)0xc0000000;
-volatile unsigned int * const vga_palette0 = (unsigned int *)0x80000000;
-volatile unsigned int * const vga_palette1 = (unsigned int *)0x80000400;
-volatile unsigned int * const vga_font0    = (unsigned int *)0x80000800;
-volatile unsigned int * const vga_control  = (unsigned int *)0x80000c00;
+volatile unsigned char * const vga_fb = (unsigned char *)VGA_FB_BASE;
+volatile unsigned int * const vga_palette0 = (unsigned int *)VGA_P0_BASE;
+volatile unsigned int * const vga_palette1 = (unsigned int *)VGA_P1_BASE;
+volatile unsigned int * const vga_font0    = (unsigned int *)VGA_F0_BASE;
+volatile unsigned int * const vga_control  = (unsigned int *)VGA_CTL_BASE;
 
 void vga_palette(int pnum, unsigned char idx, unsigned int color) {
   if (pnum == 0)

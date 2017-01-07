@@ -1,6 +1,8 @@
 #ifndef MANDELBROT_H
 #define MANDELBROT_H
 
+#include <machine.h>
+
 extern volatile float * const mand_x0;
 extern volatile float * const mand_y0;
 extern volatile unsigned int * const mand_x0i;

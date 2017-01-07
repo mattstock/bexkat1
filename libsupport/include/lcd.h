@@ -1,7 +1,9 @@
 #ifndef _LCD_H
 #define _LCD_H
 
-extern unsigned int *lcd;
+#include <machine.h>
+
+extern volatile unsigned int * const lcd;
 
 extern void lcd_init(void);
 extern void lcd_clear(void);

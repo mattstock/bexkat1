@@ -1,6 +1,8 @@
 #ifndef _MISC_H
 #define _MISC_H
 
+#include <machine.h>
+
 extern volatile unsigned int * const sysctrl;
 extern volatile unsigned int * const sysio;
 

@@ -1,7 +1,7 @@
-#include "matrix.h"
+#include <matrix.h>
 #include <stdlib.h>
 
-unsigned *matrix = (unsigned *)0x20000000;
+volatile unsigned int * const matrix = (unsigned int *)MATRIX_BASE;
 
 void matrix_put(unsigned x, unsigned y, unsigned val) {
   if (y > 15 || x > 31)

@@ -1,6 +1,8 @@
 #ifndef _SERIAL_H
 #define _SERIAL_H
 
+#include <machine.h>
+
 extern volatile unsigned int * const serial0;
 extern volatile unsigned int * const serial1;
 

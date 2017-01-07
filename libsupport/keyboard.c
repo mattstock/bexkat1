@@ -1,6 +1,6 @@
 #include "keyboard.h"
 
-unsigned int *keyboard = (unsigned int *)0x30004000;
+volatile unsigned int * const keyboard = (unsigned int *)PS2_BASE;
 
 unsigned int keyboard_count(void) {
   return keyboard[KEYBOARD_SIZE];

@@ -1,7 +1,7 @@
 #include "lcd.h"
 #include "misc.h"
 
-unsigned int *lcd = (unsigned int *)0x30006000;
+volatile unsigned int * const lcd = (unsigned int *)LCD_BASE;
 
 void lcd_init(void) {
   lcd[0] = 0x1;

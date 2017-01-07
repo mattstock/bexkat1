@@ -3,8 +3,8 @@
 #include "serial.h"
 #include "misc.h"
 
-volatile unsigned int * const serial0 = (unsigned int *)0x30002000;
-volatile unsigned int * const serial1 = (unsigned int *)0x30003000;
+volatile unsigned int * const serial0 = (unsigned int *)UART0_BASE;
+volatile unsigned int * const serial1 = (unsigned int *)UART1_BASE;
 
 void serial_dumpmem(unsigned port,
 		    unsigned addr, 

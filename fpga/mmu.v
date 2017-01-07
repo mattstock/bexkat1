@@ -1,5 +1,6 @@
 module mmu(
   input [31:0] adr_i,
+  output [31:0] adr_o,
   input cyc_i,
   input we_i,
   input supervisor,
@@ -13,6 +14,7 @@ logic c, f;
 assign cache_enable = (cyc_i ? c : 1'b1);
 assign fault = (cyc_i ? f : 1'b0);
 assign chipselect = (cyc_i ? cs : 4'h0);
+assign adr_o = adr_i;
 
 always_comb
 begin
@@ -21,7 +23,6 @@ begin
   
   case (adr_i[31:28])
     4'h0: cs = 4'h7; // 128MB (32M x 32) SDRAM
-    4'h2: cs = 4'h5; // LED matrix
     4'h3: begin
       cs = 4'h4; // IO
       c = 1'b0;

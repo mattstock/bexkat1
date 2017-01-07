@@ -1,7 +1,9 @@
 #ifndef _MATRIX_H
 #define _MATRIX_H
 
-extern unsigned *matrix;
+#include <machine.h>
+
+extern volatile unsigned * const matrix;
 
 extern void matrix_init(void);
 extern void matrix_line(unsigned x0, unsigned y0, unsigned x1, unsigned y1, unsigned val);
