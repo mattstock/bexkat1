@@ -188,7 +188,7 @@ wire [3:0] chipselect;
 wire [26:0] ssram_addrout;
 wire [31:0] cpu_address, mmu_address, vga_readdata, ssram_dataout;
 wire [31:0] cpu_readdata, cpu_writedata, mon_readdata, mandelbrot_readdata, rom_readdata;
-wire [31:0] vect_readdata, io_readdata, sdram_readdata, sdram_dataout, rom2_readdata;
+wire [31:0] vect_readdata, io_readdata, sdram_readdata, sdram_dataout;
 wire [3:0] cpu_be, exception;
 wire [5:0] io_interrupts;
 wire [3:0] cpu_interrupt;
@@ -198,7 +198,7 @@ wire mandelbrot_ack, io_ack;
 wire rom_read, vect_read, supervisor;
 wire sdram_ack;
 wire [3:0] sdram_den_n;
-wire vga_ack;
+wire vga_ack, rom_ack;
 wire int_en, mmu_fault;
 wire [1:0] cache_hitmiss;
 wire i2c_tx, i2c_clock;
@@ -207,21 +207,17 @@ wire accel_tx, accel_clock;
 wire sdram_dir;
 
 // only need one cycle for reading onboard memory
-reg [1:0] rom_ack, vect_ack;
+reg [1:0] vect_ack;
 
 always @(posedge sysclock or posedge rst_i)
 begin
-  if (rst_i) begin
-    rom_ack <= 2'b0;
+  if (rst_i)
     vect_ack <= 2'b0;
-  end else begin
-    if (chipselect == 4'h0) begin
-      rom_ack <= 2'b0;
+  else begin
+    if (chipselect == 4'h0)
       vect_ack <= 2'b0;
-    end else begin
-      rom_ack <= { rom_ack[0], rom_read };
+    else
       vect_ack <= { vect_ack[0], vect_read };
-    end
   end
 end
 
@@ -243,19 +239,18 @@ begin
 end
 
 assign cpu_readdata = (chipselect == 4'h1 ? vect_readdata : 32'h0) |
-                      (chipselect == 4'h2 ? (SW[17] ? rom2_readdata : rom_readdata) : 32'h0) |
+                      (chipselect == 4'h2 ? rom_readdata : 32'h0) |
                       (chipselect == 4'h3 ? mandelbrot_readdata : 32'h0) |
                       (chipselect == 4'h4 ? io_readdata : 32'h0) |
                       (chipselect == 4'h6 ? vga_readdata : 32'h0) |
                       (chipselect == 4'h7 ? sdram_readdata : 32'h0);
 assign cpu_ack = (chipselect == 4'h1 ? vect_ack[1] : 1'h0) |
-                 (chipselect == 4'h2 ? rom_ack[1] : 1'h0) |
+                 (chipselect == 4'h2 ? rom_ack : 1'h0) |
                  (chipselect == 4'h3 ? mandelbrot_ack : 1'h0) |
                  (chipselect == 4'h4 ? io_ack : 1'h0) |
                  (chipselect == 4'h6 ? vga_ack : 1'h0) |
                  (chipselect == 4'h7 ? sdram_ack : 1'h0);
 
-assign rom_read = (chipselect == 4'h2 && cpu_cyc && ~cpu_write);
 assign vect_read = (chipselect == 4'h1 && cpu_cyc && ~cpu_write);
 
 bexkat2 bexkat0(.clk_i(sysclock), .rst_i(rst_i), .adr_o(cpu_address), .cyc_o(cpu_cyc), .dat_i(cpu_readdata),
@@ -285,9 +280,8 @@ assign mandelbrot_ack = 1'b1;
 assign mandelbrot_readdata = 32'h0;
 //mandunit mand0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cpu_writedata), .dat_o(mandelbrot_readdata), .cyc_i(cpu_cyc),
 //  .adr_i(cpu_address[4:2]), .we_i(cpu_write), .stb_i(chipselect == 4'h3), .sel_i(cpu_be), .ack_o(mandelbrot_ack));
-monitor rom0(.clock(sysclock), .q(rom_readdata), .rden(rom_read), .address(cpu_address[16:2]));
-testrom rom1(.clock(sysclock), .q(rom2_readdata), .rden(rom_read), .address(cpu_address[16:2]));
 
+bios bios0(.clk_i(sysclock), .rst_i(rst_i), .cyc_i(cpu_cyc), .dat_o(rom_readdata), .stb_i(chipselect == 4'h2), .select(SW[17]), .ack_o(rom_ack), .adr_i(cpu_address[16:2]));
 vectors vecram0(.clock(sysclock), .q(vect_readdata), .rden(vect_read), .address(cpu_address[6:2]));
 
 vga_module video0(.clk_i(sysclock), .rst_i(rst_i), .cyc_i(cpu_cyc), .ack_o(vga_ack), .we_i(cpu_write), .sel_i(cpu_be),

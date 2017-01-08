@@ -1,4 +1,4 @@
-	.set matrix_base,  0x20000000
+	.set matrix_base,  0x3000c000
 	.set seg_base,     0x30000000
 	.set ssram_base,   0xc0000000
 	.set ssram_test,   0xc0400000
