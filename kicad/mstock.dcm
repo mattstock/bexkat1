@@ -67,6 +67,11 @@ D RS232 Driver
 K RS232
 $ENDCMP
 #
+$CMP MBT3904DW1
+D Dual Transistor NPN (general)
+K dual npn transistor
+$ENDCMP
+#
 $CMP NPN_CBE
 D Transistor NPN (general)
 K npn transistor
