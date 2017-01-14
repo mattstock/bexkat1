@@ -4,7 +4,7 @@ module iocontroller(
 	input we_i,
   input cyc_i,
 	input stb_i,
-	input [16:0] adr_i,
+	input [14:0] adr_i,
 	output [31:0] dat_o,
 	input [31:0] dat_i,
 	input [3:0] sel_i,
@@ -84,7 +84,7 @@ always @(posedge clk_i or posedge rst_i)
 begin
   if (rst_i) begin
     segreg <= 32'h0;
-    fanspeed <= 32'h00008000;
+    fanspeed <= 32'h00004000;
     led <= 9'h0;
     result <= 32'h0;
     state <= S_IDLE;
@@ -107,7 +107,7 @@ begin
   case (state)
     S_IDLE: begin
       if (cyc_i && stb_i)
-        state_next = { 1'b0, adr_i[15:12]}; // the state numbers are driven by the address map
+        state_next = { 1'b0, adr_i[13:10]}; // the state numbers are driven by the address map
     end
     S_SEGFAN: begin // LED and fan in place
       if (we_i) begin
@@ -203,46 +203,46 @@ end
 
 uart #(.baud(115200), .clkfreq(clkfreq)) uart0(.clk_i(clk_i), .rst_i(rst_i), .we_i(we_i),
   .sel_i(sel_i), .stb_i(state == S_UART0), .dat_i(dat_i), .dat_o(uart0_out), .cyc_i(state == S_UART0),
-	.adr_i(adr_i[2]), .ack_o(uart0_ack), .rx(rx0), .tx(tx0), .rts(rts0), .cts(cts0),
+	.adr_i(adr_i[0]), .ack_o(uart0_ack), .rx(rx0), .tx(tx0), .rts(rts0), .cts(cts0),
 	.interrupt(uart0_interrupts));
 
 uart #(.clkfreq(clkfreq)) uart1(.clk_i(clk_i), .rst_i(rst_i), .we_i(we_i),
 	.sel_i(sel_i), .stb_i(state == S_UART1), .dat_i(dat_i), .dat_o(uart1_out), .cyc_i(state == S_UART1),
-	.adr_i(adr_i[2]), .ack_o(uart1_ack), .rx(rx1), .tx(tx1));
+	.adr_i(adr_i[0]), .ack_o(uart1_ack), .rx(rx1), .tx(tx1));
 
 led_matrix rgbmatrix0(.clk_i(clk_i), .rst_i(rst_i), .dat_i(dat_i), .dat_o(matrix_out),
-  .adr_i(adr_i[11:2]), .sel_i(sel_i), .we_i(we_i), .stb_i(state == S_MATRIX), .cyc_i(state == S_MATRIX), .ack_o(matrix_ack),
+  .adr_i(adr_i[9:0]), .sel_i(sel_i), .we_i(we_i), .stb_i(state == S_MATRIX), .cyc_i(state == S_MATRIX), .ack_o(matrix_ack),
   .demux({matrix_a, matrix_b, matrix_c}), .matrix0(matrix0), .matrix1(matrix1), .matrix_stb(matrix_stb), .matrix_clk(matrix_clk), .oe_n(matrix_oe_n));
 
 lcd_module lcd0(.clk_i(clk_i), .rst_i(rst_i), .we_i(we_i), .sel_i(sel_i),
 		.stb_i(state == S_LCD), .cyc_i(state == S_LCD), .dat_i(dat_i), .ack_o(lcd_ack),
-		.adr_i(adr_i[8:2]), .dat_o(lcd_out), .e(lcd_e),
+		.adr_i(adr_i[6:0]), .dat_o(lcd_out), .e(lcd_e),
 		.data_out(lcd_data), .rs(lcd_rs), .on(lcd_on), .rw(lcd_rw));
 
 i2c_master_top i2c0(.wb_clk_i(clk_i), .arst_i(1'b1), .wb_rst_i(rst_i), .wb_we_i(we_i),
 		.wb_stb_i(state == S_I2C0), .wb_cyc_i(state == S_I2C0), .wb_dat_i(dat_i[7:0]), .wb_ack_o(i2c_ack[0]),
-		.wb_adr_i(adr_i[4:2]), .wb_dat_o(i2c_out[0]), .sda_padoen_o(i2c_dataout[0]), .sda_pad_i(i2c_datain[0]), .scl_padoen_o(i2c_scl[0]), .scl_pad_i(i2c_clkin[0]));
+		.wb_adr_i(adr_i[2:0]), .wb_dat_o(i2c_out[0]), .sda_padoen_o(i2c_dataout[0]), .sda_pad_i(i2c_datain[0]), .scl_padoen_o(i2c_scl[0]), .scl_pad_i(i2c_clkin[0]));
 
 i2c_master_top td_i2c1(.wb_clk_i(clk_i), .arst_i(1'b1), .wb_rst_i(rst_i), .wb_we_i(we_i),
 		.wb_stb_i(state == S_I2C1), .wb_cyc_i(state == S_I2C1), .wb_dat_i(dat_i[7:0]), .wb_ack_o(i2c_ack[1]),
-		.wb_adr_i(adr_i[4:2]), .wb_dat_o(i2c_out[1]), .sda_padoen_o(i2c_dataout[1]), .sda_pad_i(i2c_datain[1]), .scl_padoen_o(i2c_scl[1]), .scl_pad_i(i2c_clkin[1]));
+		.wb_adr_i(adr_i[2:0]), .wb_dat_o(i2c_out[1]), .sda_padoen_o(i2c_dataout[1]), .sda_pad_i(i2c_datain[1]), .scl_padoen_o(i2c_scl[1]), .scl_pad_i(i2c_clkin[1]));
 
 i2c_master_top accel_i2c2(.wb_clk_i(clk_i), .arst_i(1'b1), .wb_rst_i(rst_i), .wb_we_i(we_i),
 		.wb_stb_i(state == S_I2C2), .wb_cyc_i(state == S_I2C2), .wb_dat_i(dat_i[7:0]), .wb_ack_o(i2c_ack[2]),
-		.wb_adr_i(adr_i[4:2]), .wb_dat_o(i2c_out[2]), .sda_padoen_o(i2c_dataout[2]), .sda_pad_i(i2c_datain[2]), .scl_padoen_o(i2c_scl[2]), .scl_pad_i(i2c_clkin[2]));
+		.wb_adr_i(adr_i[2:0]), .wb_dat_o(i2c_out[2]), .sda_padoen_o(i2c_dataout[2]), .sda_pad_i(i2c_datain[2]), .scl_padoen_o(i2c_scl[2]), .scl_pad_i(i2c_clkin[2]));
 		
 spi_master #(.clkfreq(clkfreq)) spi0(.clk_i(clk_i), .cyc_i(state == S_SPI), .rst_i(rst_i), .sel_i(sel_i), .we_i(we_i),
 		.stb_i(state == S_SPI), .dat_i(dat_i), .dat_o(spi_out), .ack_o(spi_ack),
-		.adr_i(adr_i[2]), .miso(miso), .mosi(mosi),
+		.adr_i(adr_i[0]), .miso(miso), .mosi(mosi),
 		.sclk(sclk), .selects(spi_selects), .wp(sd_wp));
 
 ps2_kbd ps2kbd0(.clk_i(clk_i), .rst_i(rst_i), .cyc_i(state == S_PS2), .sel_i(sel_i), .we_i(we_i), .stb_i(state == S_PS2),
-  .dat_i(dat_i), .dat_o(ps2kbd_out), .ack_o(ps2kbd_ack), .adr_i(adr_i[2]), .ps2_clock(ps2kbd[1]), .ps2_data(ps2kbd[0]));
+  .dat_i(dat_i), .dat_o(ps2kbd_out), .ack_o(ps2kbd_ack), .adr_i(adr_i[0]), .ps2_clock(ps2kbd[1]), .ps2_data(ps2kbd[0]));
 
 timerint timerint0(.clk_i(clk_i), .rst_i(rst_i), .cyc_i(state == S_TIMER),
 		   .sel_i(sel_i), .we_i(we_i), .stb_i(state == S_TIMER),
 		   .dat_i(dat_i), .dat_o(timer_out), .ack_o(timer_ack),
-		   .adr_i(adr_i[5:2]), .interrupt(timer_interrupts));
+		   .adr_i(adr_i[3:0]), .interrupt(timer_interrupts));
 
 fan_ctrl fan0(.clk_i(clk_i), .rst_i(rst_i), .speed(fanspeed), .fan_pwm(fan));
 
