@@ -18,4 +18,6 @@
 
 extern volatile unsigned int * const timers;
 
+extern unsigned int timers_ticks();
+
 #endif

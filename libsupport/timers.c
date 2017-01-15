@@ -2,6 +2,8 @@
 
 volatile unsigned int * const timers = (unsigned int *)TIMER_BASE;
 
-unsigned int ticks() {
-  return timers[TIMER_FREE];
+// return timer ticks scaled to roughly ms
+// assumes a 100MHz clock.
+unsigned int timers_ticks() {
+  return timers[TIMER_FREE]/100000;
 }
