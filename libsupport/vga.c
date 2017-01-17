@@ -1,7 +1,8 @@
 #include <unistd.h>
 #include <stdio.h>
 #include <stdarg.h>
-#include "vga.h"
+#include <vga.h>
+#include <misc.h>
 
 volatile unsigned char * const vga_fb = (unsigned char *)VGA_FB_BASE;
 volatile unsigned int * const vga_palette0 = (unsigned int *)VGA_P0_BASE;
@@ -146,4 +147,9 @@ void vga_print(unsigned int color, unsigned char *s) {
 
 void vga_set_cursor(unsigned short x, unsigned short y) {
   vga_control[2] = (y << 16) | x;
+}
+
+void vga_printhex(unsigned int color, unsigned int val) {
+  char *x = int2hex(val);
+  vga_print(color, x);
 }

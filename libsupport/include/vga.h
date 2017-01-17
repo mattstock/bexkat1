@@ -55,5 +55,6 @@ extern void vga_set_cursor(unsigned short x, unsigned short y);
 extern short vga_getline(unsigned int color, char *str, unsigned short *len);
 extern void vga_printf(unsigned int color, const char *fmt, ...);
 extern void vga_scroll(int offset);
+extern void vga_printhex(unsigned int color, unsigned int val);
 
 #endif
