@@ -59,11 +59,11 @@ librawsd.a: ff.o mmc.o gettime.o
 	$(RANLIB) $@
 
 
-tests: tests.o vectors.o
+tests: boot-de2.o tests.o vectors.o
 	$(CC) -T profile-$(BOARD).ld -nostartfiles -o $@ $^ $(LDLIBS)
 
 fileio: fileio.o
 	$(CC) $(LDFLAGS) -o $@ $^
 
 bootstrap: librawsd.a bootstrap.o vectors.o
-	$(CC) -T profile-$(BOARD).ld -nostartfiles -o $@ $^ -L. $(LDLIBS) -lrawsd
+	$(CC) -T profile-de2.ld -o $@ $^ $(LDFLAGS) -L. $(LDLIBS) -lrawsd
