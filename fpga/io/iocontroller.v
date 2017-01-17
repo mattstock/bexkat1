@@ -84,7 +84,7 @@ always @(posedge clk_i or posedge rst_i)
 begin
   if (rst_i) begin
     segreg <= 32'h0;
-    fanspeed <= 32'h00004000;
+    fanspeed <= 32'h00000400;
     led <= 9'h0;
     result <= 32'h0;
     state <= S_IDLE;
