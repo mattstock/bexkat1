@@ -801,6 +801,10 @@ pass:	ldi %0, 0x02
 	std.l %0, matrix_base
 	bra pass	
 
+	.globl _exit
+_exit:
+	bra _exit
+	
 # print %1 in binary on the second line of matrix
 # use the contents of %13 as the color
 print_matrix:

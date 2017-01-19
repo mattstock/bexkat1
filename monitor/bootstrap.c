@@ -12,6 +12,7 @@
 #include <sys/types.h>
 #include <sys/time.h>
 #include <time.h>
+#include <vga.h>
 
 unsigned int addr;
 unsigned short data;
@@ -155,6 +156,8 @@ void main(void) {
   spi_fast();
   addr = 0xc0000000;
   lcd_init();
+  vga_text_clear();
+  vga_set_mode(VGA_MODE_BLINK);
   lcd_print("Bexkat 1000");
   lcd_pos(0,1);
   lcd_print("v2.7");
