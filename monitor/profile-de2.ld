@@ -50,14 +50,9 @@ SECTIONS
     } > rom
   . = ALIGN(0x4);
 
-  /* Exception handling  */
-  _data_start = .; PROVIDE(_data_start = .);
-  .eh_frame       : ONLY_IF_RW
-  {
-    KEEP (*(.eh_frame)) *(.eh_frame.*)
-  } > ram AT > rom
   .ctors          :
   {
+    _data_start = .;
     /* gcc uses crtbegin.o to find the start of
        the constructors, so we make sure it is
        first.  Because this is a wildcard, it
@@ -85,14 +80,16 @@ SECTIONS
     KEEP (*(SORT(.dtors.*)))
     KEEP (*(.dtors))
   } > ram AT > rom
+  /* Exception handling  */
+  .eh_frame : ONLY_IF_RW { KEEP (*(.eh_frame)) *(.eh_frame.*) } > ram AT > rom
+  .eh_frame : ONLY_IF_RO { KEEP (*(.eh_frame)) *(.eh_frame.*) } > rom
   .data :
     { 
       _data = . ;
       *(.data)
       . = ALIGN(0x4);
       _edata = . ;
-    } > ram AT>rom
-  .eh_frame : { KEEP (*(.eh_frame)) } > ram AT>rom
+    } > ram AT > rom
   .bss :
     {
       __bss_start = .;
