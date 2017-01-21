@@ -26,12 +26,15 @@ const unsigned int console_colormap[16] =
 // I/O helpers to allow for toggle of serial or vga console
 void console_printf(console_color_t color, char *fmt, ...) {
   va_list argp;
-
+  unsigned sgr;
+  
   va_start(argp, fmt);
   if ((sysio[0] & 0x2) == 0x2)
     vga_vprintf(vga_console_color(color), fmt, argp);
-  else
+  else {
+    serial_ansi_sgr(0, color);
     serial_vprintf(0, fmt, argp);
+  }
   va_end(argp);
 }
 

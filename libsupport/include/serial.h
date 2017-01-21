@@ -3,6 +3,7 @@
 
 #include <stdarg.h>
 #include <machine.h>
+#include "console.h"
 
 extern volatile unsigned int * const serial0;
 extern volatile unsigned int * const serial1;
@@ -15,6 +16,7 @@ extern void serial_putchar(unsigned port, char);
 extern short serial_getline(unsigned port,
 		     char *str, 
 		     unsigned short *len);
+extern void serial_ansi_sgr(unsigned port, console_color_t color);
 extern void serial_printhex(unsigned port, unsigned val);
 extern char serial_getchar(unsigned port);
 extern void serial_print(unsigned port, const char *);

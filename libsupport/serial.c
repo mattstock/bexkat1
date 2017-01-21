@@ -1,6 +1,7 @@
 #include <stdarg.h>
 #include <stdio.h>
 #include "serial.h"
+#include "console.h"
 #include "misc.h"
 
 volatile unsigned int * const serial0 = (unsigned int *)UART0_BASE;
@@ -27,6 +28,11 @@ char serial_getchar(unsigned port) {
   return (char)(result & 0xff); 
 }
 
+void serial_ansi_sgr(unsigned port, console_color_t color) {
+  serial_putchar(port, 0x1b); // esc
+  serial_printf(port, "[%u;%um", 30+(color > 7 ? color-8 : color), (color > 7));
+}
+		     
 void serial_putchar(unsigned port, char c) {
   volatile unsigned *p;
 
