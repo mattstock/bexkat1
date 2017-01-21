@@ -158,6 +158,7 @@ void main(void) {
   lcd_init();
   vga_text_clear();
   vga_set_mode(VGA_MODE_BLINK);
+  vga_print(VGA_TEXT_RED2, "BexOS v0.2\nCopyright 2016 Matt Stock\n");
   lcd_print("Bexkat 1000");
   lcd_pos(0,1);
   lcd_print("v2.7");
@@ -177,6 +178,9 @@ void main(void) {
   rts_set();
 
   while (1) {
+    vga_print(VGA_TEXT_WHITE, "\nBexkat1 [");
+    vga_printhex(VGA_TEXT_WHITE, addr);
+    vga_print(VGA_TEXT_WHITE, "] > ");
     serial_print(0, "\nBexkat1 [");
     serial_printhex(0, addr);
     serial_print(0, "] > ");
@@ -227,6 +231,9 @@ void main(void) {
       serial_print(0, "\nunknown commmand: ");
       serial_print(0, msg);
       serial_print(0, "\n");
+      vga_print(VGA_TEXT_WHITE, "\nunknown commmand: ");
+      vga_print(VGA_TEXT_WHITE, msg);
+      vga_print(VGA_TEXT_WHITE, "\n");
     }
   }
 }

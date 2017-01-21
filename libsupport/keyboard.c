@@ -9,3 +9,11 @@ unsigned int keyboard_count(void) {
 unsigned int keyboard_getevent(void) {
   return keyboard[KEYBOARD_VALUE];
 }
+
+// blocks waiting for a single character
+unsigned char keyboard_getchar(void) {
+  unsigned char result = 0;
+
+  return result;
+  
+}

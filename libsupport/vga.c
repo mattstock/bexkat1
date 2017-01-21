@@ -3,6 +3,7 @@
 #include <stdarg.h>
 #include <vga.h>
 #include <misc.h>
+#include <keyboard.h>
 
 volatile unsigned char * const vga_fb = (unsigned char *)VGA_FB_BASE;
 volatile unsigned int * const vga_palette0 = (unsigned int *)VGA_P0_BASE;
@@ -152,4 +153,13 @@ void vga_set_cursor(unsigned short x, unsigned short y) {
 void vga_printhex(unsigned int color, unsigned int val) {
   char *x = int2hex(val);
   vga_print(color, x);
+}
+
+void vga_printf(unsigned int color, const char *fmt, ...) {
+  va_list argp;
+  char buf[200];
+  
+  va_start(argp, fmt);
+  vsnprintf(buf, 200, fmt, argp);
+  vga_print(color, buf);
 }
