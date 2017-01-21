@@ -18,36 +18,6 @@ void vga_palette(int pnum, unsigned char idx, unsigned int color) {
     vga_palette1[idx] = color;    
 }
 
-short vga_getline(unsigned int color, char *str, unsigned short *len) {
-  unsigned short i=0;
-  unsigned char c;
-  unsigned char buf[1];
-  unsigned char c233 = vga_color233(color);
-
-  while (i < *len-1) {
-    read(0, buf, 1);
-    c = buf[0];
-    if (c >= ' ' && c <= '~') {
-      vga_putchar(c233,c);
-      str[i++] = c;
-    }
-    if (c == '\r' || c == '\n') {
-      str[i] = '\0';
-      return i;
-    }
-    if (c == 0x03) {
-      str[0] = '\0';
-      return -1;
-    }
-    if ((c == 0x7f || c == 0x08) && i > 0) {
-      vga_putchar(vga_color233(VGA_TEXT_WHITE),c);
-      i--;
-    }
-  }
-  str[i+1] = '\0';
-  return i;
-}
-
 void vga_point(int x, int y, unsigned char val) {
   if (x < 0 || y < 0 || x >= VGA_MAX_X || y >= VGA_MAX_Y)
     return;

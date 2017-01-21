@@ -34,7 +34,7 @@ void dumpmem(unsigned int addr, unsigned short len) {
   for (i=0; i < len; i += 4) {
     console_printf(CONSOLE_BLUE, "%08x: ", addr+4*i);
     for (j=0; j < 4; j++)
-      console_printf(CONSOLE_WHITE, "%04x ", pos[i+j]);
+      console_printf(CONSOLE_WHITE, "%08x ", pos[i+j]);
     console_printf(CONSOLE_WHITE, "\n");
   }
 }

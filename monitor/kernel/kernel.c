@@ -4,6 +4,7 @@
 #include <stdarg.h>
 #include <unistd.h>
 #include <vga.h>
+#include <console.h>
 #include <vectors.h>
 #include <misc.h>
 #include <matrix.h>
@@ -226,27 +227,7 @@ void main(void) {
   sti();
   vga_text_clear();
   vga_set_mode(VGA_MODE_BLINK);
-  vga_print(VGA_TEXT_RED2, "BexOS v0.2\nCopyright 2016 Matt Stock\n");
-  while (1) {
-    vga_print(VGA_TEXT_WHITE, "> ");
-    i = vga_getline(VGA_TEXT_RED1|VGA_TEXT_GREEN4, buf, &size);
-    vga_print(VGA_TEXT_WHITE, "\n");
-    if (buf[0] == 'i') {
-      asm("reset");
-    }
-    if (buf[0] == 'f') {
-      //      ret = syscall(1, ""); // we'll call this fork()
-      //      if (ret == 0) { // child
-      //	serial_printf(0, "child here, going to try exec()\n");
-      syscall(2, "/pretty");
-      //  } else { // parent
-      //	vga_printf(VGA_TEXT_GREEN, "fork() returned %d\n", ret);
-      // }
-    }
-    if (buf[0] == 'l') {
-      sdcard_ls();
-    }
-  }
+  console_printf(CONSOLE_RED, "BexOS v0.2\nCopyright 2017 Matt Stock\n");
 
   while (1);
 }

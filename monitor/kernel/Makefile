@@ -1,6 +1,6 @@
 CC = bexkat1-elf-gcc
 CFLAGS = -Iinclude
-LDLIBS = -lsupport -lm -lextras
+LDLIBS = -lsupport -lm
 LDFLAGS = -specs=de2.specs
 OBJDUMP = bexkat1-elf-objdump
 AS = bexkat1-elf-as

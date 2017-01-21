@@ -54,7 +54,6 @@ extern void vga_text_clear();
 extern void vga_putchar(unsigned short color233, unsigned char c);
 extern void vga_print(unsigned int color, unsigned char *s);
 extern void vga_set_cursor(unsigned short x, unsigned short y);
-extern short vga_getline(unsigned int color, char *str, unsigned short *len);
 extern void vga_printf(unsigned int color, const char *fmt, ...);
 extern void vga_vprintf(unsigned int color, const char *fmt, va_list argp);
 extern void vga_scroll(int offset);
