@@ -12,7 +12,9 @@
 #include <sys/types.h>
 #include <sys/time.h>
 #include <time.h>
+#include <stdarg.h>
 #include <vga.h>
+#include <console.h>
 
 unsigned int addr;
 unsigned short data;
@@ -23,6 +25,19 @@ unsigned char katherine[] = { 194, 132, 190, 148, 129, 141, 0 };
 unsigned char rebecca[] = { 148, 131, 172, 131, 196, 131, 0 };
 
 extern void disk_timerproc (void);
+
+void dumpmem(unsigned int addr, unsigned short len) {
+  unsigned int i,j;
+  unsigned *pos = (unsigned *)addr;
+  
+  console_printf(CONSOLE_RED, "\nAddress :  3 2 1 0  7 6 5 4  b a 9 8  f e d c\n");
+  for (i=0; i < len; i += 4) {
+    console_printf(CONSOLE_BLUE, "%08x: ", addr+4*i);
+    for (j=0; j < 4; j++)
+      console_printf(CONSOLE_WHITE, "%04x ", pos[i+j]);
+    console_printf(CONSOLE_WHITE, "\n");
+  }
+}
 
 void sdcard_exec(int super, char *name) {
   FATFS f;
@@ -38,33 +53,33 @@ void sdcard_exec(int super, char *name) {
   if (f_mount(&f, "", 1) != FR_OK) return;
   foo = f_open(&fp, name, FA_READ);
   if (foo != FR_OK) {
-    serial_print(0, "file error\n");
+    console_printf(CONSOLE_RED, "file error\n");
     return;
   }
 
   foo = f_read(&fp, &header, sizeof(elf32_hdr), &count);
   if (foo != FR_OK) {
-    serial_print(0, "read error\n");
+    console_printf(CONSOLE_RED, "read error\n");
   }
   if (count != sizeof(elf32_hdr)) {
-    serial_print(0, "partial read of header!\n");
+    console_printf(CONSOLE_RED, "partial read of header!\n");
   }
   // iterate over program headers and do copies
   for (hidx=0; hidx < header.e_phnum; hidx++) {
     foo = f_lseek(&fp, header.e_phoff+hidx*header.e_phentsize);
     if (foo != FR_OK) {
-      serial_print(0, "seek error\n");
+      console_printf(CONSOLE_RED, "seek error\n");
     }
     foo = f_read(&fp, &prog_header, sizeof(elf32_phdr), &count);
     if (foo != FR_OK) {
-      serial_print(0, "read error\n");
+      console_printf(CONSOLE_RED, "read error\n");
     }
     if (count != sizeof(elf32_phdr)) {
-      serial_print(0, "partial read of program header!\n");
+      console_printf(CONSOLE_RED, "partial read of program header!\n");
     }
     foo = f_lseek(&fp, prog_header.p_offset);
     if (foo != FR_OK) {
-      serial_print(0, "seek error\n");
+      console_printf(CONSOLE_RED, "seek error\n");
     }
 
     segidx = prog_header.p_filesz;
@@ -72,10 +87,10 @@ void sdcard_exec(int super, char *name) {
     while (segidx > 1024) {
       foo = f_read(&fp, &buffer, 1024, &count);
       if (foo != FR_OK) {
-	serial_print(0, "read error\n");
+	console_printf(CONSOLE_RED, "read error\n");
       }
       if (count != 1024) {
-      serial_print(0, "partial read of 1k block?!\n");
+	console_printf(CONSOLE_RED, "partial read of 1k block?!\n");
       }
       memcpy((unsigned int *)memidx, &buffer , 1024);
       segidx -= 1024;
@@ -83,10 +98,10 @@ void sdcard_exec(int super, char *name) {
     }
     foo = f_read(&fp, &buffer, segidx, &count);
     if (foo != FR_OK) {
-      serial_print(0, "read error\n");
+      console_printf(CONSOLE_RED, "read error\n");
     }
     if (count != segidx) {
-      serial_print(0, "partial read of segidx block?!\n");
+      console_printf(CONSOLE_RED, "partial read of segidx block?!\n");
     }
     memcpy((unsigned int *)memidx, &buffer , segidx);
   }
@@ -110,9 +125,11 @@ void sdcard_ls() {
   FILINFO fno;
   DIR dp;
   char *fn;
+
+  console_printf(CONSOLE_WHITE, "\n");
   if (f_mount(&f, "", 1) != FR_OK) return;
   if (f_opendir(&dp, "/") != FR_OK) {
-    serial_print(0, "opendir failed\n");
+    console_printf(CONSOLE_RED, "opendir failed\n");
     return;
   }
   for (;;) {
@@ -121,14 +138,9 @@ void sdcard_ls() {
     if (fno.fname[0] == '.') continue;
     fn = fno.fname;
     if (fno.fattrib & AM_DIR) {
-      serial_print(0, "directory found: ");
-      serial_print(0, fn);
-      serial_print(0, "\n");
+      console_printf(CONSOLE_BLUE, "%s\n", fn);
     } else {
-      serial_print(0, "file found: ");
-      serial_print(0, "/");
-      serial_print(0, fn);
-      serial_print(0, "\n");
+      console_printf(CONSOLE_WHITE, "%s\n", fn);
     }
   }
   f_closedir(&dp);
@@ -158,7 +170,6 @@ void main(void) {
   lcd_init();
   vga_text_clear();
   vga_set_mode(VGA_MODE_BLINK);
-  vga_print(VGA_TEXT_RED2, "BexOS v0.2\nCopyright 2016 Matt Stock\n");
   lcd_print("Bexkat 1000");
   lcd_pos(0,1);
   lcd_print("v2.7");
@@ -172,21 +183,18 @@ void main(void) {
 
   if ((sysio[0] & 0x1) == 0x1) {
     sdcard_exec(1, "/kernel");
-    serial_print(0, "\nautoboot failed\n");
+    console_printf(CONSOLE_RED, "\nautoboot failed\n");
   }
 
+  console_printf(CONSOLE_WHITE, "\n");
+  console_printf(CONSOLE_WHITE, "BexOS v0.4\nCopyright 2017 Matt Stock\n");
   rts_set();
 
   while (1) {
-    vga_print(VGA_TEXT_WHITE, "\nBexkat1 [");
-    vga_printhex(VGA_TEXT_WHITE, addr);
-    vga_print(VGA_TEXT_WHITE, "] > ");
-    serial_print(0, "\nBexkat1 [");
-    serial_printhex(0, addr);
-    serial_print(0, "] > ");
+    console_printf(CONSOLE_WHITE, "\nBexkat1 [%08x] > ", addr);
     sysctrl[0] = addr;
     msg = buf;
-    serial_getline(0, msg, &size);
+    console_getline(CONSOLE_WHITE, msg, &size);
     
     switch (msg[0]) {
     case 'a':
@@ -197,19 +205,18 @@ void main(void) {
       }
       break;
     case 'b':
-      serial_print(0, "\n attempt to exec file....\n");
+      console_printf(CONSOLE_WHITE, "\n attempt to exec file....\n");
       msg += 2;
       sdcard_exec(0, msg);
       break;
     case 'c':
-      serial_print(0, "\nSDCard test...\n");
       sdcard_ls();
       break;
     case 'm':
       matrix_init();
       break;
     case 'r':
-      serial_dumpmem(0, addr, 128);
+      dumpmem(addr, 128);
       break;
     case '.':
       addr += 4;
@@ -225,15 +232,10 @@ void main(void) {
       }
       ref = (int *)addr;
       *ref = val;
-      serial_print(0, "\n");
+      console_printf(CONSOLE_WHITE, "\n");
       break;
     default:
-      serial_print(0, "\nunknown commmand: ");
-      serial_print(0, msg);
-      serial_print(0, "\n");
-      vga_print(VGA_TEXT_WHITE, "\nunknown commmand: ");
-      vga_print(VGA_TEXT_WHITE, msg);
-      vga_print(VGA_TEXT_WHITE, "\n");
+      console_printf(CONSOLE_WHITE, "\nunknown commmand: %s\n", msg);
     }
   }
 }
@@ -282,7 +284,7 @@ void rts_set() {
   char *msg;
 
   unsigned int year, month, day;
-  unsigned int hour, min, sec, dow;
+  unsigned int hour, min, sec;
 
   // date
   result = rtc_cmd(0x06, 0xff);
@@ -291,22 +293,10 @@ void rts_set() {
   month = 10*(result >> 4) + (result & 0xf);
   result = rtc_cmd(0x04, 0xff) & 0x3f;
   day = 10*(result >> 4) + (result & 0xf);
-  serial_print(0, "\nDate [");
-  msg = itos(year, buf);
-  *msg = '\0';
-  serial_print(0, buf);
-  serial_print(0, "-");
-  msg = itos(month, buf);
-  *msg = '\0';
-  serial_print(0, buf);
-  serial_print(0, "-");
-  msg = itos(day, buf);
-  *msg = '\0';
-  serial_print(0, buf);
-  serial_print(0, "]: ");
+  console_printf(CONSOLE_WHITE, "\nDate [%04u-%02u-%02u]: ", year, month, day);
 
   msg = buf;
-  if (serial_getline(0, msg, &size) > 0) { 
+  if (console_getline(CONSOLE_WHITE, msg, &size) > 0) { 
     year = atoi(msg);
     while (*msg != '-' && *msg != '\0') msg++;
     msg++;
@@ -331,22 +321,10 @@ void rts_set() {
   min = 10*(result >> 4) + (result & 0xf);
   result = rtc_cmd(0x00, 0xff);
   sec = 10*(result >> 4) + (result & 0xf);
-  serial_print(0, "\nTime [");
-  msg = itos(hour, buf);
-  *msg = '\0';
-  serial_print(0, buf);
-  serial_print(0, ":");
-  msg = itos(min, buf);
-  *msg = '\0';
-  serial_print(0, buf);
-  serial_print(0, ":");
-  msg = itos(sec, buf);
-  *msg = '\0';
-  serial_print(0, buf);
-  serial_print(0, "]: ");
+  console_printf(CONSOLE_WHITE, "\nTime [%02u:%02u:%02u]: ", hour, min, sec);
 
   msg = buf;
-  if (serial_getline(0, msg, &size) > 0) { 
+  if (console_getline(CONSOLE_WHITE, msg, &size) > 0) { 
     hour = atoi(msg);
     while (*msg != ':' && *msg != '\0') msg++;
     msg++;
