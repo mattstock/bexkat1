@@ -96,7 +96,7 @@ void vga_putchar(unsigned short color233, unsigned char c) {
       break;
     case 0x08:
     case 0x7f:
-      x++;
+      x--;
       vga_set_cursor(x,y);
       vga_fb[base-2] = color233;
       vga_fb[base-1] = ' ';
@@ -155,11 +155,17 @@ void vga_printhex(unsigned int color, unsigned int val) {
   vga_print(color, x);
 }
 
+char _bexkat_sprintfbuf[200];
+
 void vga_printf(unsigned int color, const char *fmt, ...) {
   va_list argp;
-  char buf[200];
   
   va_start(argp, fmt);
-  vsnprintf(buf, 200, fmt, argp);
-  vga_print(color, buf);
+  vsnprintf(_bexkat_sprintfbuf, 200, fmt, argp);
+  vga_print(color, _bexkat_sprintfbuf);
+}
+
+void vga_vprintf(unsigned int color, const char *fmt, va_list argp) {
+  vsnprintf(_bexkat_sprintfbuf, 200, fmt, argp);
+  vga_print(color, _bexkat_sprintfbuf);
 }

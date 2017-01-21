@@ -6,24 +6,6 @@
 volatile unsigned int * const serial0 = (unsigned int *)UART0_BASE;
 volatile unsigned int * const serial1 = (unsigned int *)UART1_BASE;
 
-void serial_dumpmem(unsigned port,
-		    unsigned addr, 
-		    unsigned short len) {
-  unsigned int i,j;
-  unsigned *pos = (unsigned *)addr;
-  
-  serial_print(port, "\n");
-  for (i=0; i < len; i += 8) {
-    serial_printhex(port, addr+4*i);
-    serial_print(port, ": ");
-    for (j=0; j < 8; j++) {
-      serial_printhex(port, pos[i+j]);
-      serial_print(port, " ");
-    }
-    serial_print(port, "\n");
-  }
-}
-
 char serial_getchar(unsigned port) {
   unsigned result;
   volatile unsigned *p;
@@ -83,7 +65,7 @@ short serial_getline(unsigned port,
   unsigned short i=0;
   char c;
 
-  while (1) {
+  while (i < *len-1) {
     c = serial_getchar(port);
     if (c >= ' ' && c <= '~') {
       serial_putchar(port, c);
@@ -102,5 +84,24 @@ short serial_getline(unsigned port,
       i--;
     }
   }
-  return 0;
+  str[i+1] = '\0';
+  return i;
 }	
+
+// Defined in vga.c bus shared so we don't waste dead space
+// or need to do dynamic allocation.  If I ever do multi-threading,
+// I am seriously whacked.
+extern char _bexkat_sprintfbuf[];
+
+void serial_printf(unsigned port, const char *fmt, ...) {
+  va_list argp;
+  
+  va_start(argp, fmt);
+  vsnprintf(_bexkat_sprintfbuf, 200, fmt, argp);
+  serial_print(port, _bexkat_sprintfbuf);
+}
+
+void serial_vprintf(unsigned port, const char *fmt, va_list argp) {
+  vsnprintf(_bexkat_sprintfbuf, 200, fmt, argp);
+  serial_print(port, _bexkat_sprintfbuf);
+}

@@ -1,6 +1,7 @@
 #ifndef _SERIAL_H
 #define _SERIAL_H
 
+#include <stdarg.h>
 #include <machine.h>
 
 extern volatile unsigned int * const serial0;
@@ -17,8 +18,7 @@ extern short serial_getline(unsigned port,
 extern void serial_printhex(unsigned port, unsigned val);
 extern char serial_getchar(unsigned port);
 extern void serial_print(unsigned port, const char *);
-extern void serial_dumpmem(unsigned port,
-			   unsigned addr,
-			   unsigned short len);
+extern void serial_printf(unsigned port, const char *fmt, ...);
+extern void serial_vprintf(unsigned port, const char *fmt, va_list argp);
 
 #endif

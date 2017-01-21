@@ -1,7 +1,9 @@
 #ifndef VGA_H
 #define VGA_H
 
+#include <stdarg.h>
 #include <machine.h>
+#include <console.h>
 
 #define VGA_P0_BASE  (VGA_CF_BASE)
 #define VGA_P1_BASE  (VGA_CF_BASE+0x400)
@@ -54,6 +56,7 @@ extern void vga_print(unsigned int color, unsigned char *s);
 extern void vga_set_cursor(unsigned short x, unsigned short y);
 extern short vga_getline(unsigned int color, char *str, unsigned short *len);
 extern void vga_printf(unsigned int color, const char *fmt, ...);
+extern void vga_vprintf(unsigned int color, const char *fmt, va_list argp);
 extern void vga_scroll(int offset);
 extern void vga_printhex(unsigned int color, unsigned int val);
 
