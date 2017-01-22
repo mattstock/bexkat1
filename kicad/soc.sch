@@ -37,7 +37,7 @@ encoding utf-8
 Sheet 1 1
 Title "Bexkat 1000 I/O Board"
 Date "2016-11-19"
-Rev "v2.2"
+Rev "v2.5"
 Comp "Bexkat Systems LLC"
 Comment1 ""
 Comment2 ""
