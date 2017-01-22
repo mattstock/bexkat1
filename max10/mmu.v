@@ -26,7 +26,6 @@ begin
     end
     4'h7: cs = 4'h2; // monitor
     4'h8: cs = 4'ha; // VGA controller
-    4'hd: cs = 4'h3; // mandelbrot
     4'hf: cs = 4'h1; // vectors
     default: begin
       cs = 4'h0;
