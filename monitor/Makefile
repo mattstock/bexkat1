@@ -66,4 +66,4 @@ fileio: fileio.o
 	$(CC) $(LDFLAGS) -o $@ $^
 
 bootstrap: librawsd.a bootstrap.o vectors.o
-	$(CC) -T profile-de2.ld -nostartfiles -o $@ $^ $(LDFLAGS) -L. $(LDLIBS) -lrawsd
+	$(CC) -T profile-$(BOARD).ld -nostartfiles -o $@ $^ $(LDFLAGS) -L. $(LDLIBS) -lrawsd
