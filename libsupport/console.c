@@ -1,5 +1,6 @@
 #include <stdarg.h>
 #include "console.h"
+#include "keyboard.h"
 #include "serial.h"
 #include "vga.h"
 #include "misc.h"
@@ -44,7 +45,10 @@ short console_getline(console_color_t color, char *str, unsigned short *len) {
   unsigned char c233 = vga_color233(vga_console_color(color));
 
   while (i < *len-1) {
-    c = serial_getchar(0);
+    if ((sysio[0] & 0x2) == 0x2)
+      c = keyboard_getchar();
+    else
+      c = serial_getchar(0);
     if (c >= ' ' && c <= '~') {
       if ((sysio[0] & 0x2) == 0x2)
 	vga_putchar(c233,c);

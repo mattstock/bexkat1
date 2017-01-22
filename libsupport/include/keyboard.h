@@ -10,5 +10,6 @@ extern volatile unsigned int * const keyboard;
 
 extern unsigned int keyboard_count(void);
 extern unsigned int keyboard_getevent(void);
+extern unsigned char keyboard_getchar(void);
 
 #endif
