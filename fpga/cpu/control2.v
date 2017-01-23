@@ -183,20 +183,19 @@ begin
     S_FETCH: begin
       bus_cyc = 1'b1;
       ir_write = 1'b1; // latch bus into ir
-      if (bus_ack)
-        state_next = S_FETCH2;
-    end // case: S_FETCH
-    S_FETCH2: begin
-      if (|interrupt && interrupts_enabled) begin
+      if (bus_ack) begin
+        pcsel = PC_NEXT;
+        state_next = S_EVAL;
+      end else if (|interrupt && interrupts_enabled) begin
         state_next = S_EXC;
         interrupts_enabled_next = 1'b0;
         exception_next = { 1'b0, interrupt};
-      end else begin
-        pcsel = PC_NEXT;
-        state_next = S_EVAL;
       end
     end
     S_EVAL: begin
+      // preload the registers for the ops that will need it
+      a_write = 1'b1; // A <= rA
+      b_write = 1'b1; // B <= rB
       if (ir_size)
         state_next = S_ARG;
       else
@@ -204,7 +203,7 @@ begin
           T_INH: state_next = S_INH;
           T_PUSH: state_next = (ir_op == 4'h1 ? S_RELADDR : S_PUSH);
           T_POP: state_next = S_POP;
-          T_CMP: state_next = S_CMP;
+          T_CMP: state_next = (ir_op == 4'h0 ? S_CMP : S_CMPS);
           T_MOV: state_next = S_MOV;
           T_INTU: state_next = S_INTU;
           T_INT: state_next = S_INT;
@@ -227,23 +226,21 @@ begin
       bus_cyc = 1'b1;
       marsel = MAR_BUS;
       mdrsel = MDR_BUS;
-      if (bus_ack)
-        state_next = S_ARG2;
-    end
-    S_ARG2: begin
-      pcsel = PC_NEXT;
-      case (ir_type)
-        T_INH: state_next = S_INH;
-        T_PUSH: state_next = S_PUSH2;
-        T_STORE: state_next = S_STORED;
-        T_LOAD: state_next = S_LOADD;
-        T_JUMP: state_next = S_EXC11;
-        T_LDI: state_next = S_MDR2RA;
-        default: begin
-          exception_next = EXC_ILLOP;
-          state_next = S_EXC;
-        end
-      endcase
+      if (bus_ack) begin
+        pcsel = PC_NEXT;
+        case (ir_type)
+          T_INH: state_next = S_INH;
+          T_PUSH: state_next = S_PUSH2;
+          T_STORE: state_next = S_STORED;
+          T_LOAD: state_next = S_LOADD;
+          T_JUMP: state_next = S_EXC11;
+          T_LDI: state_next = S_MDR2RA;
+          default: begin
+            exception_next = EXC_ILLOP;
+            state_next = S_EXC;
+          end
+        endcase
+      end
     end
     S_INH: begin
       case (ir_op)
@@ -303,16 +300,10 @@ begin
       endcase // case (ip_op)
     end // case: S_INH
     S_RELADDR: begin
-      // jsr only
-      reg_read_addr1 = ir_rb;
-      a_write = 1'b1; // A <= rB
-      state_next = S_RELADDR2;
-    end
-    S_RELADDR2: begin
       alu2sel = ALU_SVAL;
       state_next = S_PUSH2;
     end
-    S_PUSH: begin // push, jsrd, jsr
+    S_PUSH: begin // push, bsr, jsr
       b_write = 1'b1; // B <= rA
       reg_read_addr2 = ir_ra;
       state_next = S_PUSH2;
@@ -434,32 +425,22 @@ begin
       end
       state_next = S_FETCH;
     end
-    S_CMP: begin // cmp
-      a_write = 1'b1; // A <= rA
-      b_write = 1'b1; // B <= rB
-      state_next = (ir_op == 4'h0 ? S_CMP2 : S_CMPS);
+    S_CMP: begin
+      alu_func = ALU_SUB;
+      state_next = S_CMP2;
     end
     S_CMP2: begin
-      alu_func = ALU_SUB;
-      state_next = S_CMP3;
-    end
-    S_CMP3: begin
       alu_func = ALU_SUB; // hold so we select the correct CCR value TODO fix
       ccrsel = CCR_ALU;
       state_next = S_FETCH;
     end
-    S_CMPS: state_next = S_CMPS2; // cmp.s
+    S_CMPS: state_next = S_CMPS2; // cmp.s, may be able to drop a clock cycle
     S_CMPS2: state_next = S_CMPS3;
     S_CMPS3: begin
       ccrsel = CCR_FPU;
       state_next = S_FETCH;
     end
-    S_MOV: begin // mov, mov.l, mov.b, movsr
-      reg_read_addr2 = ir_rb;
-      b_write = 1'b1; // B <= rB
-      state_next = S_MOV2;
-    end
-    S_MOV2: begin
+    S_MOV: begin
       if (ir_op == 4'h0) begin
         if (supervisor) begin
           statussel = STATUS_B;
@@ -475,19 +456,12 @@ begin
       end
     end
     S_INTU: begin
-      reg_read_addr2 = ir_rb;
-      b_write = 1'b1; // B <= rB
-      state_next = S_INTU2;
-    end
-    S_INTU2: begin
       int2sel = INT2_B;
       int_func = ir_op;
       mdrsel = MDR_INT;
       state_next = S_MDR2RA;
     end
     S_FPU: begin
-      reg_read_addr2 = ir_rb;
-      b_write = 1'b1; // B <= rB
       delay_next = 8'h11;
       state_next = S_FP2;
     end
@@ -597,9 +571,10 @@ begin
     end
     S_LOAD3: begin
       marsel = MAR_ALU;
-      state_next = S_LOADD;
+      state_next = S_LOADD2;
     end
-    S_LOADD: begin
+    S_LOADD: state_next = S_LOADD2; // add a delay to terminate the ARG bus cycle
+    S_LOADD2: begin
       addrsel = ADDR_MAR;
       bus_cyc = 1'b1;
       mdrsel = MDR_BUS;
