@@ -1,6 +1,7 @@
 #include "spi.h"
+#include "machine.h"
 
-volatile unsigned int * const spi = (unsigned int *)0x30007000;
+volatile unsigned int * const spi = (unsigned int *)SPI_BASE;
 
 void spi_fast() {
   spi_speed(SPI_SPEED3);

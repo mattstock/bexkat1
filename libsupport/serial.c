@@ -6,6 +6,7 @@
 
 volatile unsigned int * const serial0 = (unsigned int *)UART0_BASE;
 volatile unsigned int * const serial1 = (unsigned int *)UART1_BASE;
+volatile unsigned int * const serial2 = (unsigned int *)UART2_BASE;
 
 char serial_getchar(unsigned port) {
   unsigned result;
@@ -17,6 +18,9 @@ char serial_getchar(unsigned port) {
     break;
   case 1:
     p = serial1;
+    break;
+  case 2:
+    p = serial2;
     break;
   default:
     p = serial0;
@@ -42,6 +46,9 @@ void serial_putchar(unsigned port, char c) {
     break;
   case 1:
     p = serial1;
+    break;
+  case 2:
+    p = serial2;
     break;
   default:
     p = serial0;

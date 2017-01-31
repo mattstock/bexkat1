@@ -6,6 +6,7 @@
 #define RTC_SEL 28
 #define CODEC_COMMAND_SEL 27
 #define CODEC_DATA_SEL 26
+#define LED_SEL 25
 #define SD_SEL 24
 #define SPI_SPEED 0xc0000
 #define SPI_MODE  0x30000

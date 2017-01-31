@@ -1,4 +1,4 @@
-update=Mon 09 Jan 2017 01:07:48 PM EST
+update=Sat 28 Jan 2017 01:35:22 PM EST
 version=1
 last_client=kicad
 [pcbnew]
@@ -59,3 +59,13 @@ LibName27=atmel
 LibName28=contrib
 LibName29=valves
 LibName30=/home/mstock/projects/soc/kicad/mstock
+[schematic_editor]
+version=1
+PageLayoutDescrFile=
+PlotDirectoryName=
+SubpartIdSeparator=0
+SubpartFirstId=65
+NetFmtName=
+SpiceAjustPassiveValues=0
+LabSize=60
+ERC_TestSimilarLabels=1

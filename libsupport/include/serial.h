@@ -7,6 +7,7 @@
 
 extern volatile unsigned int * const serial0;
 extern volatile unsigned int * const serial1;
+extern volatile unsigned int * const serial2;
 
 extern void serial_printf(unsigned port, const char *format, ...);
 extern void serial_putbin(unsigned port,

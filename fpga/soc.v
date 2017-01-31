@@ -67,7 +67,11 @@ module soc(
   output sd_mosi,
   output sd_ss,
   output sd_sclk,
+  input ext_miso,
+  output ext_mosi,
+  output ext_sclk,
   output rtc_ss,
+  output led_ss,
   output codec_pbdat,
   input codec_reclrc,
   input codec_pblrc,
@@ -76,9 +80,6 @@ module soc(
   inout codec_sclk,
   input codec_bclk,
   output codec_mclk,
-  input rtc_miso,
-  output rtc_mosi,
-  output rtc_sclk,
   input sd_wp_n,
   output fan_ctrl, 
   output [2:0] matrix0,
@@ -91,6 +92,10 @@ module soc(
   output matrix_stb,
   output serial1_tx,
   input serial1_rx,
+  output serial2_tx,
+  input serial2_rx,
+  input serial2_cts,
+  output serial2_rts,
   input serial0_rx,
   input serial0_cts,
   output serial0_tx,
@@ -111,6 +116,7 @@ module soc(
   input td_vs,
   input td_clk27,
   output td_reset_n,
+  output reset_n,
   inout td_sclk,
   inout td_sdat,
   input accel_int1,
@@ -118,8 +124,9 @@ module soc(
   inout accel_sdat);
 
 // System clock
-wire sysclock, locked, rst_i;
+wire sysclock, rst_i, locked;
 
+assign reset_n = KEY[1];
 assign rst_i = ~locked;
 
 parameter clkfreq = 100000000;
@@ -132,17 +139,18 @@ wire [7:0] spi_selects;
 wire miso, mosi, sclk;
 
 assign rtc_ss = spi_selects[4];
+assign led_ss = spi_selects[1];
 assign sd_ss = spi_selects[0];
 assign sd_mosi = mosi;
-assign rtc_mosi = mosi;
+assign ext_mosi = mosi;
 assign miso = (~spi_selects[0] ? sd_miso : 1'b0) |
-              (~spi_selects[1] ? rtc_miso : 1'b0) |
-              (~spi_selects[2] ? rtc_miso : 1'b0) |
-              (~spi_selects[3] ? rtc_miso : 1'b0) |
-              (~spi_selects[4] ? rtc_miso : 1'b0) |
-              (~spi_selects[5] ? rtc_miso : 1'b0);
+              (~spi_selects[1] ? ext_miso : 1'b0) |
+              (~spi_selects[2] ? ext_miso : 1'b0) |
+              (~spi_selects[3] ? ext_miso : 1'b0) |
+              (~spi_selects[4] ? ext_miso : 1'b0) |
+              (~spi_selects[5] ? ext_miso : 1'b0);
 assign sd_sclk = sclk;
-assign rtc_sclk = sclk;
+assign ext_sclk = sclk;
 
 // codec/external I2C
 assign codec_sdin = (~i2c_tx ? 1'b0 : 1'bz);
@@ -268,7 +276,8 @@ iocontroller #(.clkfreq(clkfreq)) io0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cp
   .stb_i(chipselect == 4'h4), .cyc_i(cpu_cyc), .ack_o(io_ack), .sel_i(cpu_be),
   .miso(miso), .mosi(mosi), .sclk(sclk), .spi_selects(spi_selects), .sd_wp(sd_wp_n), .fan(fan_ctrl),
   .lcd_e(lcd_e), .lcd_data(lcd_dataout), .lcd_rs(lcd_rs), .lcd_on(lcd_on), .lcd_rw(lcd_rw), .interrupts(io_interrupts),
-  .rx0(serial0_rx), .tx0(serial0_tx), .rts0(serial0_rts), .cts0(serial0_cts), .tx1(serial1_tx), .rx1(serial1_rx), .sw(SW[15:0]),
+  .rx0(serial0_rx), .tx0(serial0_tx), .rts0(serial0_rts), .cts0(serial0_cts), .tx1(serial1_tx), .rx1(serial1_rx),
+  .tx2(serial2_tx), .rx2(serial2_rx), .rts2(serial2_rts), .cts2(serial2_cts), .sw(SW[15:0]),
   .ps2kbd({ps2kbd_clk, ps2kbd_data}), .hex7(HEX7), .hex6(HEX6), .hex5(HEX5), .hex4(HEX4), .hex3(HEX3), .hex2(HEX2), .hex1(HEX1), .hex0(HEX0),
   .codec_pbdat(codec_pbdat), .codec_recdat(codec_recdat),
   .codec_reclrc(codec_reclrc), .codec_pblrc(codec_pblrc),

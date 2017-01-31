@@ -2,6 +2,9 @@
 *.bin
 *.mif
 *.a
+7seg
+serial
+whet
 audiogen
 bootstrap
 tests

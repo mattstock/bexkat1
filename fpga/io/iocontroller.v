@@ -20,6 +20,10 @@ module iocontroller(
 	output rts0,
 	output tx1,
 	input rx1,
+	output tx2,
+	input rx2,
+	input cts2,
+	output rts2,  
 	input miso,
 	output mosi,
   output sclk,
@@ -60,16 +64,16 @@ module iocontroller(
 parameter clkfreq = 100000000;
 
 localparam [4:0] S_IDLE = 'h10, S_DONE = 'h11, S_SEGFAN = 'h0, S_SWLED = 'h1, S_UART0 = 'h2, S_UART1 = 'h3, S_PS2 = 'h4,
-  S_CODEC = 'h5, S_LCD = 'h6, S_SPI = 'h7, S_TIMER = 'h8, S_I2C0 = 'h9, S_I2C1 = 'ha, S_I2C2 = 'hb, S_MATRIX = 'hc, S_IRDA = 'hd;
+  S_CODEC = 'h5, S_LCD = 'h6, S_SPI = 'h7, S_TIMER = 'h8, S_I2C0 = 'h9, S_I2C1 = 'ha, S_I2C2 = 'hb, S_MATRIX = 'hc, S_IRDA = 'hd, S_UART2 = 'he;
 
 // various programmable registers
 logic [31:0] segreg, fanspeed, segreg_next, fanspeed_next, result, result_next;
 logic [4:0] state, state_next;
 logic [8:0] led_next;
 
-wire [31:0] lcd_out, uart1_out, uart0_out, spi_out, ps2kbd_out, timer_out, matrix_out;
+wire [31:0] lcd_out, uart2_out, uart1_out, uart0_out, spi_out, ps2kbd_out, timer_out, matrix_out;
 wire [7:0] i2c_out[2:0];
-wire lcd_ack, uart0_ack, uart1_ack, spi_ack, ps2kbd_ack, timer_ack, i2c_ack[2:0];
+wire lcd_ack, uart0_ack, uart1_ack, uart2_ack, spi_ack, ps2kbd_ack, timer_ack, i2c_ack[2:0];
 wire matrix_ack;
 wire [3:0] timer_interrupts;
 wire [1:0] uart0_interrupts;
@@ -136,6 +140,12 @@ begin
       if (~we_i)
         result_next = uart1_out;
       if (uart1_ack)
+        state_next = S_DONE;
+    end
+    S_UART2: begin // UART2
+      if (~we_i)
+        result_next = uart2_out;
+      if (uart2_ack)
         state_next = S_DONE;
     end
     S_PS2: begin // ps2 kbd
@@ -209,6 +219,10 @@ uart #(.baud(115200), .clkfreq(clkfreq)) uart0(.clk_i(clk_i), .rst_i(rst_i), .we
 uart #(.clkfreq(clkfreq)) uart1(.clk_i(clk_i), .rst_i(rst_i), .we_i(we_i),
 	.sel_i(sel_i), .stb_i(state == S_UART1), .dat_i(dat_i), .dat_o(uart1_out), .cyc_i(state == S_UART1),
 	.adr_i(adr_i[0]), .ack_o(uart1_ack), .rx(rx1), .tx(tx1));
+
+uart #(.baud(115200), .clkfreq(clkfreq)) uart2(.clk_i(clk_i), .rst_i(rst_i), .we_i(we_i),
+  .sel_i(sel_i), .stb_i(state == S_UART2), .dat_i(dat_i), .dat_o(uart2_out), .cyc_i(state == S_UART2),
+	.adr_i(adr_i[0]), .ack_o(uart2_ack), .rx(rx2), .tx(tx2), .rts(rts2), .cts(cts2));
 
 led_matrix rgbmatrix0(.clk_i(clk_i), .rst_i(rst_i), .dat_i(dat_i), .dat_o(matrix_out),
   .adr_i(adr_i[9:0]), .sel_i(sel_i), .we_i(we_i), .stb_i(state == S_MATRIX), .cyc_i(state == S_MATRIX), .ack_o(matrix_ack),

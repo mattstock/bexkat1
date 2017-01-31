@@ -21,6 +21,7 @@
 #define I2C2_BASE   (IO_BASE+0xb000)
 #define MATRIX_BASE (IO_BASE+0xc000)
 #define IRDA_BASE   (IO_BASE+0xd000)
+#define UART2_BASE  (IO_BASE+0xe000)
 #define CACHE_BASE  (0x40000000)
 #define ROM_BASE    (0x70000000)
 #define VGA_CF_BASE (0x80000000)

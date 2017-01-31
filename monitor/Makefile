@@ -11,8 +11,8 @@ RANLIB = bexkat1-elf-ranlib
 
 TEMP := $(shell mktemp)
 
-OBJECTS = boot-$(BOARD).o bootstrap.o pretty.o fmand.o memtests.o rtc.o tests.o ps2.o fib.o clock.o fly.o setjmp.o hwmand.o
-APPS = pretty fmand bootstrap memtests rtc tests ps2 fib clock fly setjmp hwmand codec codec_w vga
+OBJECTS = boot-$(BOARD).o bootstrap.o pretty.o fmand.o memtests.o rtc.o tests.o ps2.o fib.o clock.o fly.o setjmp.o hwmand.o 7seg.o serial.o
+APPS = pretty fmand bootstrap memtests rtc tests ps2 fib clock fly setjmp hwmand codec codec_w vga 7seg serial
 
 .PHONY: all clean gcctests kernel install
 
