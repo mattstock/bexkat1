@@ -52,6 +52,7 @@ module max10(
   output serial0_rts,
   output vga_hs,
   output vga_vs,
+  output reset_n,
   input ard_reset_n,
   output [3:0] vga_r,
   output [3:0] vga_g,
@@ -65,6 +66,7 @@ wire vga_clock;
 
 assign codec_mclk = 1'b0;
 
+assign reset_n = 1'h1;
 assign rst_i = ~locked;
 
 parameter clkfreq = 100000000;
@@ -164,15 +166,13 @@ end
 assign cpu_readdata = (chipselect == 4'h1 ? vect_readdata : 32'h0) |
                       (chipselect == 4'h2 ? (sw[9] ? rom2_readdata : rom_readdata) : 32'h0) |
                       (chipselect == 4'h4 ? io_readdata : 32'h0) |
-                      (chipselect == 4'h5 ? matrix_readdata : 32'h0) |
                       (chipselect == 4'h7 ? sdram_readdata : 32'h0) |
-                      (chipselect == 4'ha ? vga_readdata : 32'h0);
-assign cpu_ack = (chipselect == 4'h1 ? vect_ack[1] : 1'h0) |
-                 (chipselect == 4'h2 ? rom_ack[1] : 1'h0) |
-                 (chipselect == 4'h4 ? io_ack : 1'h0) |
-                 (chipselect == 4'h5 ? matrix_ack : 1'h0) |
-                 (chipselect == 4'h7 ? cpu_gnt & sdram_ack : 1'h0) |
-                 (chipselect == 4'ha ? vga_ack : 1'h0);
+                      (chipselect == 4'h6 ? vga_readdata : 32'h0);
+assign cpu_ack =  (chipselect == 4'h1 ? vect_ack[1] : 1'h0) |
+                  (chipselect == 4'h2 ? rom_ack[1] : 1'h0) |
+                  (chipselect == 4'h4 ? io_ack : 1'h0) |
+                  (chipselect == 4'h7 ? cpu_gnt & sdram_ack : 1'h0) |
+                  (chipselect == 4'h6 ? vga_ack : 1'h0);
 
 assign rom_read = (chipselect == 4'h2 && cpu_cyc && ~cpu_write);
 assign vect_read = (chipselect == 4'h1 && cpu_cyc && ~cpu_write);
@@ -210,7 +210,7 @@ arbiter arb0(.clk_i(sysclock), .rst_i(rst_i), .cpu_cyc_i(cpu_cyc & (chipselect =
 vga_master vga0(.clk_i(sysclock), .rst_i(rst_i), .master_adr_o(vga_address), .master_cyc_o(vga_cyc), .master_dat_i(sdram_readdata),
   .master_we_o(vga_we), .master_sel_o(vga_sel), .master_ack_i(vga_gnt & sdram_ack),
   .slave_adr_i(cpu_address[11:2]), .slave_dat_i(cpu_writedata), .slave_sel_i(cpu_be), .slave_cyc_i(cpu_cyc), .slave_we_i(cpu_write),
-  .slave_stb_i(chipselect == 'ha), .slave_ack_o(vga_ack), .slave_dat_o(vga_readdata),
+  .slave_stb_i(chipselect == 'h6), .slave_ack_o(vga_ack), .slave_dat_o(vga_readdata),
   .vs(vga_vs), .hs(vga_hs), .r(r), .g(g), .b(b), .blank_n(blank_n), .vga_clock(vga_clock), .sync_n(sync_n));
   
 sdram_controller_cache #(.width32(1'b0)) sdram0(.clk_i(sysclock), .mem_clk_o(sdram_clk), .rst_i(rst_i), .adr_i(fs_adr[26:2]),
@@ -218,10 +218,8 @@ sdram_controller_cache #(.width32(1'b0)) sdram0(.clk_i(sysclock), .mem_clk_o(sdr
   .ack_o(sdram_ack), .sel_i(fs_sel), .we_i(fs_we), .cache_status(cache_hitmiss),
   .we_n(sdram_we_n), .cs_n(sdram_cs_n), .cke(sdram_cke), .cas_n(sdram_cas_n), .ras_n(sdram_ras_n), .dqm(sdram_dqm), .ba(sdram_ba),
   .addrbus_out(sdram_addrbus), .databus_in(sdram_databus), .databus_out(sdram_dataout), .databus_dir(sdram_dir));
-led_matrix rgbmatrix0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cpu_writedata), .dat_o(matrix_readdata),
-  .adr_i(cpu_address[11:2]), .sel_i(cpu_be), .we_i(cpu_write), .stb_i(chipselect == 4'h5), .cyc_i(cpu_cyc), .ack_o(matrix_ack),
-  .demux({matrix_a, matrix_b, matrix_c}), .matrix0(matrix0), .matrix1(matrix1), .matrix_stb(matrix_stb), .matrix_clk(matrix_clk), .oe_n(matrix_oe_n));
-iocontroller #(.clkfreq(clkfreq)) io0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cpu_writedata), .dat_o(io_readdata), .we_i(cpu_write), .adr_i(cpu_address[16:0]),
+
+iocontroller #(.clkfreq(clkfreq)) io0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cpu_writedata), .dat_o(io_readdata), .we_i(cpu_write), .adr_i(cpu_address[16:2]),
   .stb_i(chipselect == 4'h4), .cyc_i(cpu_cyc), .ack_o(io_ack), .sel_i(cpu_be),
   .miso(miso), .mosi(mosi), .sclk(sclk), .spi_selects(spi_selects), .interrupts(io_interrupts),
   .rx0(serial0_rx), .tx0(serial0_tx), .rts0(serial0_rts), .cts0(serial0_cts), .tx1(serial1_tx), .rx1(serial1_rx), .sw(sw[7:0]),
@@ -229,10 +227,12 @@ iocontroller #(.clkfreq(clkfreq)) io0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cp
   .hex5(hex5[6:0]), .hex4(hex4[6:0]), .hex3(hex3[6:0]), .hex2(hex2[6:0]), .hex1(hex1[6:0]), .hex0(hex0[6:0]),
   .codec_pbdat(codec_pbdat), .codec_recdat(codec_recdat),
   .codec_reclrc(codec_reclrc), .codec_pblrc(codec_pblrc), .led(sysleds),
+  .matrix_stb(matrix_stb), .matrix_a(matrix_a), .matrix_b(matrix_b), .matrix_c(matrix_c),
+  .matrix0(matrix0), .matrix1(matrix1), .matrix_clk(matrix_clk), .matrix_oe_n(matrix_oe_n),
   .i2c_dataout({accel_tx, td_tx, i2c_tx}), .i2c_datain({accel_sdat, td_sdat, codec_sdin}),
   .i2c_scl({accel_clock, td_clock, i2c_clock}), .i2c_clkin({accel_sclk, td_sclk, codec_sclk}));
 
-monitor rom0(.clock(sysclock), .q(rom_readdata), .rden(rom_read), .address(cpu_address[15:2]));
+monitor rom0(.clock(sysclock), .q(rom_readdata), .rden(rom_read), .address(cpu_address[16:2]));
 //testrom rom1(.clock(sysclock), .q(rom2_readdata), .rden(rom_read), .address(cpu_address[12:2]));
 vectors vecram0(.clock(sysclock), .q(vect_readdata), .rden(vect_read), .address(cpu_address[6:2]));
 
