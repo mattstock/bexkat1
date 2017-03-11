@@ -532,8 +532,8 @@ set_location_assignment PIN_D18 -to ps2kbd_data
 
 
 
-set_global_assignment -name EDA_SIMULATION_TOOL "<None>"
-set_global_assignment -name EDA_OUTPUT_DATA_FORMAT NONE -section_id eda_simulation
+set_global_assignment -name EDA_SIMULATION_TOOL "ModelSim-Altera (Verilog)"
+set_global_assignment -name EDA_OUTPUT_DATA_FORMAT "VERILOG HDL" -section_id eda_simulation
 set_global_assignment -name EDA_TIME_SCALE "1 ps" -section_id eda_simulation
 set_location_assignment PIN_C25 -to codec_bclk
 set_location_assignment PIN_F23 -to codec_pbdat
@@ -660,35 +660,20 @@ set_global_assignment -name VERILOG_FILE vga/graphicsdrv.v
 set_global_assignment -name VERILOG_FILE util/debug_matrix.v
 set_global_assignment -name VERILOG_FILE vga/vga_module.v
 set_global_assignment -name VERILOG_INCLUDE_FILE cpu/exceptions.vh
+set_global_assignment -name VERILOG_FILE bios.v
+set_location_assignment PIN_AG28 -to serial2_cts
+set_location_assignment PIN_AG26 -to serial2_rts
+set_location_assignment PIN_A27 -to serial2_rx
+set_location_assignment PIN_B30 -to serial2_tx
+set_location_assignment PIN_A26 -to led_ss
+set_location_assignment PIN_F22 -to ext_miso
+set_location_assignment PIN_G24 -to ext_mosi
+set_location_assignment PIN_G20 -to ext_sclk
+set_location_assignment PIN_A19 -to reset_n
 set_global_assignment -name SLD_NODE_CREATOR_ID 110 -section_id cpu_20priv
 set_global_assignment -name SLD_NODE_ENTITY_NAME sld_signaltap -section_id cpu_20priv
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_clk -to "bexkat2:bexkat0|clk_i" -section_id cpu_20priv
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[0] -to "bexkat2:bexkat0|ack_i" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[0] -to "bexkat2:bexkat0|ack_i" -section_id cpu_20priv
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_RAM_BLOCK_TYPE=AUTO" -section_id cpu_20priv
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_NODE_INFO=805334531" -section_id cpu_20priv
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_POWER_UP_TRIGGER=0" -section_id cpu_20priv
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STORAGE_QUALIFIER_INVERSION_MASK_LENGTH=0" -section_id cpu_20priv
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SEGMENT_SIZE=4096" -section_id cpu_20priv
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ATTRIBUTE_MEM_MODE=OFF" -section_id cpu_20priv
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STATE_FLOW_USE_GENERATED=0" -section_id cpu_20priv
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STATE_BITS=11" -section_id cpu_20priv
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_BUFFER_FULL_STOP=1" -section_id cpu_20priv
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_CURRENT_RESOURCE_WIDTH=1" -section_id cpu_20priv
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INCREMENTAL_ROUTING=1" -section_id cpu_20priv
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[23] -to cpu_20priv|vcc -section_id cpu_20priv
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_LEVEL=1" -section_id cpu_20priv
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SAMPLE_DEPTH=4096" -section_id cpu_20priv
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_IN_ENABLED=0" -section_id cpu_20priv
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_PIPELINE=0" -section_id cpu_20priv
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_RAM_PIPELINE=0" -section_id cpu_20priv
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_COUNTER_PIPELINE=0" -section_id cpu_20priv
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ADVANCED_TRIGGER_ENTITY=basic,1," -section_id cpu_20priv
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_LEVEL_PIPELINE=1" -section_id cpu_20priv
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ENABLE_ADVANCED_TRIGGER=0" -section_id cpu_20priv
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[14] -to cpu_20priv|vcc -section_id cpu_20priv
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[16] -to cpu_20priv|gnd -section_id cpu_20priv
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[28] -to cpu_20priv|gnd -section_id cpu_20priv
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[1] -to "bexkat2:bexkat0|ccr[0]" -section_id cpu_20priv
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[2] -to "bexkat2:bexkat0|ccr[1]" -section_id cpu_20priv
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[3] -to "bexkat2:bexkat0|ccr[2]" -section_id cpu_20priv
@@ -697,187 +682,9 @@ set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[5] 
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[6] -to "bexkat2:bexkat0|control2:con0|state.S_ALU3" -section_id cpu_20priv
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[7] -to "bexkat2:bexkat0|control2:con0|state.S_ALU4" -section_id cpu_20priv
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[8] -to "bexkat2:bexkat0|control2:con0|state.S_ARG" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[1] -to "bexkat2:bexkat0|ccr[0]" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[2] -to "bexkat2:bexkat0|ccr[1]" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[3] -to "bexkat2:bexkat0|ccr[2]" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[4] -to "bexkat2:bexkat0|control2:con0|state.S_ALU" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[5] -to "bexkat2:bexkat0|control2:con0|state.S_ALU2" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[6] -to "bexkat2:bexkat0|control2:con0|state.S_ALU3" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[7] -to "bexkat2:bexkat0|control2:con0|state.S_ALU4" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[8] -to "bexkat2:bexkat0|control2:con0|state.S_ARG" -section_id cpu_20priv
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[3] -to cpu_20priv|gnd -section_id cpu_20priv
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[15] -to cpu_20priv|vcc -section_id cpu_20priv
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[17] -to cpu_20priv|gnd -section_id cpu_20priv
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[20] -to cpu_20priv|gnd -section_id cpu_20priv
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[21] -to cpu_20priv|vcc -section_id cpu_20priv
-set_global_assignment -name VERILOG_FILE bios.v
-set_global_assignment -name SLD_NODE_CREATOR_ID 110 -section_id rom
-set_global_assignment -name SLD_NODE_ENTITY_NAME sld_signaltap -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_clk -to "bios:bios0|clk_i" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[0] -to "bios:bios0|ack_o" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[1] -to "bios:bios0|adr_i[0]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[2] -to "bios:bios0|adr_i[10]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[3] -to "bios:bios0|adr_i[11]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[4] -to "bios:bios0|adr_i[12]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[5] -to "bios:bios0|adr_i[13]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[6] -to "bios:bios0|adr_i[1]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[7] -to "bios:bios0|adr_i[2]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[8] -to "bios:bios0|adr_i[3]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[9] -to "bios:bios0|adr_i[4]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[10] -to "bios:bios0|adr_i[5]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[11] -to "bios:bios0|adr_i[6]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[12] -to "bios:bios0|adr_i[7]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[13] -to "bios:bios0|adr_i[8]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[14] -to "bios:bios0|adr_i[9]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[15] -to "bios:bios0|cyc_i" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[16] -to "bios:bios0|dat_o[0]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[17] -to "bios:bios0|dat_o[10]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[18] -to "bios:bios0|dat_o[11]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[19] -to "bios:bios0|dat_o[12]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[20] -to "bios:bios0|dat_o[13]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[21] -to "bios:bios0|dat_o[14]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[22] -to "bios:bios0|dat_o[15]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[23] -to "bios:bios0|dat_o[16]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[24] -to "bios:bios0|dat_o[17]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[25] -to "bios:bios0|dat_o[18]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[26] -to "bios:bios0|dat_o[19]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[27] -to "bios:bios0|dat_o[1]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[28] -to "bios:bios0|dat_o[20]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[29] -to "bios:bios0|dat_o[21]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[30] -to "bios:bios0|dat_o[22]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[31] -to "bios:bios0|dat_o[23]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[32] -to "bios:bios0|dat_o[24]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[33] -to "bios:bios0|dat_o[25]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[34] -to "bios:bios0|dat_o[26]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[35] -to "bios:bios0|dat_o[27]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[36] -to "bios:bios0|dat_o[28]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[37] -to "bios:bios0|dat_o[29]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[38] -to "bios:bios0|dat_o[2]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[39] -to "bios:bios0|dat_o[30]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[40] -to "bios:bios0|dat_o[31]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[41] -to "bios:bios0|dat_o[3]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[42] -to "bios:bios0|dat_o[4]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[43] -to "bios:bios0|dat_o[5]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[44] -to "bios:bios0|dat_o[6]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[45] -to "bios:bios0|dat_o[7]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[46] -to "bios:bios0|dat_o[8]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[47] -to "bios:bios0|dat_o[9]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[48] -to "bios:bios0|rom_ack[0]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[49] -to "bios:bios0|rom_ack[1]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[50] -to "bios:bios0|rst_i" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[51] -to "bios:bios0|select" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[0] -to "bios:bios0|ack_o" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[1] -to "bios:bios0|adr_i[0]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[2] -to "bios:bios0|adr_i[10]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[3] -to "bios:bios0|adr_i[11]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[4] -to "bios:bios0|adr_i[12]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[5] -to "bios:bios0|adr_i[13]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[6] -to "bios:bios0|adr_i[1]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[7] -to "bios:bios0|adr_i[2]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[8] -to "bios:bios0|adr_i[3]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[9] -to "bios:bios0|adr_i[4]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[10] -to "bios:bios0|adr_i[5]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[11] -to "bios:bios0|adr_i[6]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[12] -to "bios:bios0|adr_i[7]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[13] -to "bios:bios0|adr_i[8]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[14] -to "bios:bios0|adr_i[9]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[15] -to "bios:bios0|cyc_i" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[16] -to "bios:bios0|dat_o[0]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[17] -to "bios:bios0|dat_o[10]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[18] -to "bios:bios0|dat_o[11]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[19] -to "bios:bios0|dat_o[12]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[20] -to "bios:bios0|dat_o[13]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[21] -to "bios:bios0|dat_o[14]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[22] -to "bios:bios0|dat_o[15]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[23] -to "bios:bios0|dat_o[16]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[24] -to "bios:bios0|dat_o[17]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[25] -to "bios:bios0|dat_o[18]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[26] -to "bios:bios0|dat_o[19]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[27] -to "bios:bios0|dat_o[1]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[28] -to "bios:bios0|dat_o[20]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[29] -to "bios:bios0|dat_o[21]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[30] -to "bios:bios0|dat_o[22]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[31] -to "bios:bios0|dat_o[23]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[32] -to "bios:bios0|dat_o[24]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[33] -to "bios:bios0|dat_o[25]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[34] -to "bios:bios0|dat_o[26]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[35] -to "bios:bios0|dat_o[27]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[36] -to "bios:bios0|dat_o[28]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[37] -to "bios:bios0|dat_o[29]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[38] -to "bios:bios0|dat_o[2]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[39] -to "bios:bios0|dat_o[30]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[40] -to "bios:bios0|dat_o[31]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[41] -to "bios:bios0|dat_o[3]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[42] -to "bios:bios0|dat_o[4]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[43] -to "bios:bios0|dat_o[5]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[44] -to "bios:bios0|dat_o[6]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[45] -to "bios:bios0|dat_o[7]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[46] -to "bios:bios0|dat_o[8]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[47] -to "bios:bios0|dat_o[9]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[48] -to "bios:bios0|rom_ack[0]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[49] -to "bios:bios0|rom_ack[1]" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[50] -to "bios:bios0|rst_i" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[51] -to "bios:bios0|select" -section_id rom
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_RAM_BLOCK_TYPE=AUTO" -section_id rom
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_NODE_INFO=805334532" -section_id rom
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_POWER_UP_TRIGGER=0" -section_id rom
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STORAGE_QUALIFIER_INVERSION_MASK_LENGTH=0" -section_id rom
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SEGMENT_SIZE=256" -section_id rom
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ATTRIBUTE_MEM_MODE=OFF" -section_id rom
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STATE_FLOW_USE_GENERATED=0" -section_id rom
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STATE_BITS=11" -section_id rom
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_BUFFER_FULL_STOP=1" -section_id rom
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_CURRENT_RESOURCE_WIDTH=1" -section_id rom
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INCREMENTAL_ROUTING=1" -section_id rom
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[0] -to rom|vcc -section_id rom
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[3] -to rom|gnd -section_id rom
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[4] -to rom|gnd -section_id rom
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[10] -to rom|vcc -section_id rom
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[11] -to rom|vcc -section_id rom
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[12] -to rom|vcc -section_id rom
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[14] -to rom|vcc -section_id rom
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[15] -to rom|vcc -section_id rom
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[17] -to rom|vcc -section_id rom
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[18] -to rom|gnd -section_id rom
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[19] -to rom|gnd -section_id rom
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[21] -to rom|vcc -section_id rom
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[23] -to rom|gnd -section_id rom
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[25] -to rom|vcc -section_id rom
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[26] -to rom|vcc -section_id rom
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[27] -to rom|vcc -section_id rom
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[29] -to rom|gnd -section_id rom
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[31] -to rom|gnd -section_id rom
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_LEVEL=1" -section_id rom
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SAMPLE_DEPTH=256" -section_id rom
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_IN_ENABLED=0" -section_id rom
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_PIPELINE=0" -section_id rom
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_RAM_PIPELINE=0" -section_id rom
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_COUNTER_PIPELINE=0" -section_id rom
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ADVANCED_TRIGGER_ENTITY=basic,1," -section_id rom
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_LEVEL_PIPELINE=1" -section_id rom
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ENABLE_ADVANCED_TRIGGER=0" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[52] -to "bios:bios0|stb_i" -section_id rom
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[52] -to "bios:bios0|stb_i" -section_id rom
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_DATA_BITS=53" -section_id rom
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_BITS=53" -section_id rom
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STORAGE_QUALIFIER_BITS=53" -section_id rom
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK=0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" -section_id rom
-set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK_LENGTH=181" -section_id rom
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[1] -to rom|gnd -section_id rom
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[2] -to rom|vcc -section_id rom
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[5] -to rom|vcc -section_id rom
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[6] -to rom|vcc -section_id rom
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[7] -to rom|vcc -section_id rom
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[8] -to rom|gnd -section_id rom
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[9] -to rom|vcc -section_id rom
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[13] -to rom|gnd -section_id rom
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[16] -to rom|vcc -section_id rom
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[20] -to rom|vcc -section_id rom
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[22] -to rom|vcc -section_id rom
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[24] -to rom|gnd -section_id rom
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[28] -to rom|gnd -section_id rom
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[30] -to rom|vcc -section_id rom
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[9] -to "bexkat2:bexkat0|control2:con0|state.S_BRANCH" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[10] -to "bexkat2:bexkat0|control2:con0|state.S_CMP" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[11] -to "bexkat2:bexkat0|control2:con0|state.S_CMP2" -section_id cpu_20priv
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[12] -to "bexkat2:bexkat0|control2:con0|state.S_CMPS" -section_id cpu_20priv
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[13] -to "bexkat2:bexkat0|control2:con0|state.S_CMPS2" -section_id cpu_20priv
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[14] -to "bexkat2:bexkat0|control2:con0|state.S_CMPS3" -section_id cpu_20priv
@@ -911,43 +718,6 @@ set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[41]
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[42] -to "bexkat2:bexkat0|control2:con0|state.S_LOAD2" -section_id cpu_20priv
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[43] -to "bexkat2:bexkat0|control2:con0|state.S_LOAD3" -section_id cpu_20priv
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[44] -to "bexkat2:bexkat0|control2:con0|state.S_LOADD" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[9] -to "bexkat2:bexkat0|control2:con0|state.S_BRANCH" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[12] -to "bexkat2:bexkat0|control2:con0|state.S_CMPS" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[13] -to "bexkat2:bexkat0|control2:con0|state.S_CMPS2" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[14] -to "bexkat2:bexkat0|control2:con0|state.S_CMPS3" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[15] -to "bexkat2:bexkat0|control2:con0|state.S_EVAL" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[16] -to "bexkat2:bexkat0|control2:con0|state.S_EXC" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[17] -to "bexkat2:bexkat0|control2:con0|state.S_EXC10" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[18] -to "bexkat2:bexkat0|control2:con0|state.S_EXC11" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[19] -to "bexkat2:bexkat0|control2:con0|state.S_EXC2" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[20] -to "bexkat2:bexkat0|control2:con0|state.S_EXC3" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[21] -to "bexkat2:bexkat0|control2:con0|state.S_EXC4" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[22] -to "bexkat2:bexkat0|control2:con0|state.S_EXC5" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[23] -to "bexkat2:bexkat0|control2:con0|state.S_EXC6" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[24] -to "bexkat2:bexkat0|control2:con0|state.S_EXC7" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[25] -to "bexkat2:bexkat0|control2:con0|state.S_EXC8" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[26] -to "bexkat2:bexkat0|control2:con0|state.S_EXC9" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[27] -to "bexkat2:bexkat0|control2:con0|state.S_FETCH" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[28] -to "bexkat2:bexkat0|control2:con0|state.S_FP" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[29] -to "bexkat2:bexkat0|control2:con0|state.S_FP2" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[30] -to "bexkat2:bexkat0|control2:con0|state.S_FPU" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[31] -to "bexkat2:bexkat0|control2:con0|state.S_HALT" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[32] -to "bexkat2:bexkat0|control2:con0|state.S_INH" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[33] -to "bexkat2:bexkat0|control2:con0|state.S_INT" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[34] -to "bexkat2:bexkat0|control2:con0|state.S_INT2" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[35] -to "bexkat2:bexkat0|control2:con0|state.S_INT3" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[36] -to "bexkat2:bexkat0|control2:con0|state.S_INTU" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[37] -to "bexkat2:bexkat0|control2:con0|state.S_JUMP" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[38] -to "bexkat2:bexkat0|control2:con0|state.S_JUMP2" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[39] -to "bexkat2:bexkat0|control2:con0|state.S_JUMP3" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[40] -to "bexkat2:bexkat0|control2:con0|state.S_LDIU" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[41] -to "bexkat2:bexkat0|control2:con0|state.S_LOAD" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[42] -to "bexkat2:bexkat0|control2:con0|state.S_LOAD2" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[43] -to "bexkat2:bexkat0|control2:con0|state.S_LOAD3" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[44] -to "bexkat2:bexkat0|control2:con0|state.S_LOADD" -section_id cpu_20priv
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[5] -to cpu_20priv|gnd -section_id cpu_20priv
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[19] -to cpu_20priv|gnd -section_id cpu_20priv
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[27] -to cpu_20priv|gnd -section_id cpu_20priv
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[45] -to "bexkat2:bexkat0|control2:con0|state.S_LOADD2" -section_id cpu_20priv
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[46] -to "bexkat2:bexkat0|control2:con0|state.S_MDR2RA" -section_id cpu_20priv
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[47] -to "bexkat2:bexkat0|control2:con0|state.S_MOV" -section_id cpu_20priv
@@ -1442,6 +1212,73 @@ set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[535
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[536] -to "bexkat2:bexkat0|vectoff[8]" -section_id cpu_20priv
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[537] -to "bexkat2:bexkat0|vectoff[9]" -section_id cpu_20priv
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[538] -to "bexkat2:bexkat0|we_o" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[539] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|state.STATE_IDLE" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[540] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|state.STATE_LEAD" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[541] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|state.STATE_START" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[542] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|state.STATE_TRAIL" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[543] -to "iocontroller:io0|spi_selects[0]" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[544] -to "iocontroller:io0|spi_selects[1]" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[545] -to "iocontroller:io0|spi_selects[2]" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[546] -to "iocontroller:io0|spi_selects[3]" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[547] -to "iocontroller:io0|spi_selects[4]" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[548] -to "iocontroller:io0|spi_selects[5]" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[549] -to "iocontroller:io0|spi_selects[6]" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[550] -to "iocontroller:io0|spi_selects[7]" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[551] -to "iocontroller:io0|state[0]" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[552] -to "iocontroller:io0|state[1]" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[553] -to "iocontroller:io0|state[2]" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[554] -to "iocontroller:io0|state[3]" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[555] -to "iocontroller:io0|state[4]" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[556] -to "mmu:mmu0|chipselect[0]" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[557] -to "mmu:mmu0|chipselect[1]" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[558] -to "mmu:mmu0|chipselect[2]" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[559] -to "mmu:mmu0|chipselect[3]" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[560] -to "mmu:mmu0|fault" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[0] -to "bexkat2:bexkat0|ack_i" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[1] -to "bexkat2:bexkat0|ccr[0]" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[2] -to "bexkat2:bexkat0|ccr[1]" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[3] -to "bexkat2:bexkat0|ccr[2]" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[4] -to "bexkat2:bexkat0|control2:con0|state.S_ALU" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[5] -to "bexkat2:bexkat0|control2:con0|state.S_ALU2" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[6] -to "bexkat2:bexkat0|control2:con0|state.S_ALU3" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[7] -to "bexkat2:bexkat0|control2:con0|state.S_ALU4" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[8] -to "bexkat2:bexkat0|control2:con0|state.S_ARG" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[9] -to "bexkat2:bexkat0|control2:con0|state.S_BRANCH" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[10] -to "bexkat2:bexkat0|control2:con0|state.S_CMP" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[11] -to "bexkat2:bexkat0|control2:con0|state.S_CMP2" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[12] -to "bexkat2:bexkat0|control2:con0|state.S_CMPS" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[13] -to "bexkat2:bexkat0|control2:con0|state.S_CMPS2" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[14] -to "bexkat2:bexkat0|control2:con0|state.S_CMPS3" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[15] -to "bexkat2:bexkat0|control2:con0|state.S_EVAL" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[16] -to "bexkat2:bexkat0|control2:con0|state.S_EXC" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[17] -to "bexkat2:bexkat0|control2:con0|state.S_EXC10" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[18] -to "bexkat2:bexkat0|control2:con0|state.S_EXC11" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[19] -to "bexkat2:bexkat0|control2:con0|state.S_EXC2" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[20] -to "bexkat2:bexkat0|control2:con0|state.S_EXC3" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[21] -to "bexkat2:bexkat0|control2:con0|state.S_EXC4" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[22] -to "bexkat2:bexkat0|control2:con0|state.S_EXC5" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[23] -to "bexkat2:bexkat0|control2:con0|state.S_EXC6" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[24] -to "bexkat2:bexkat0|control2:con0|state.S_EXC7" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[25] -to "bexkat2:bexkat0|control2:con0|state.S_EXC8" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[26] -to "bexkat2:bexkat0|control2:con0|state.S_EXC9" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[27] -to "bexkat2:bexkat0|control2:con0|state.S_FETCH" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[28] -to "bexkat2:bexkat0|control2:con0|state.S_FP" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[29] -to "bexkat2:bexkat0|control2:con0|state.S_FP2" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[30] -to "bexkat2:bexkat0|control2:con0|state.S_FPU" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[31] -to "bexkat2:bexkat0|control2:con0|state.S_HALT" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[32] -to "bexkat2:bexkat0|control2:con0|state.S_INH" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[33] -to "bexkat2:bexkat0|control2:con0|state.S_INT" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[34] -to "bexkat2:bexkat0|control2:con0|state.S_INT2" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[35] -to "bexkat2:bexkat0|control2:con0|state.S_INT3" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[36] -to "bexkat2:bexkat0|control2:con0|state.S_INTU" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[37] -to "bexkat2:bexkat0|control2:con0|state.S_JUMP" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[38] -to "bexkat2:bexkat0|control2:con0|state.S_JUMP2" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[39] -to "bexkat2:bexkat0|control2:con0|state.S_JUMP3" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[40] -to "bexkat2:bexkat0|control2:con0|state.S_LDIU" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[41] -to "bexkat2:bexkat0|control2:con0|state.S_LOAD" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[42] -to "bexkat2:bexkat0|control2:con0|state.S_LOAD2" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[43] -to "bexkat2:bexkat0|control2:con0|state.S_LOAD3" -section_id cpu_20priv
+set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[44] -to "bexkat2:bexkat0|control2:con0|state.S_LOADD" -section_id cpu_20priv
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[45] -to "bexkat2:bexkat0|control2:con0|state.S_LOADD2" -section_id cpu_20priv
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[46] -to "bexkat2:bexkat0|control2:con0|state.S_MDR2RA" -section_id cpu_20priv
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[47] -to "bexkat2:bexkat0|control2:con0|state.S_MOV" -section_id cpu_20priv
@@ -1936,36 +1773,6 @@ set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[535] -
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[536] -to "bexkat2:bexkat0|vectoff[8]" -section_id cpu_20priv
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[537] -to "bexkat2:bexkat0|vectoff[9]" -section_id cpu_20priv
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[538] -to "bexkat2:bexkat0|we_o" -section_id cpu_20priv
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[1] -to cpu_20priv|gnd -section_id cpu_20priv
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[4] -to cpu_20priv|vcc -section_id cpu_20priv
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[11] -to cpu_20priv|gnd -section_id cpu_20priv
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[12] -to cpu_20priv|gnd -section_id cpu_20priv
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[25] -to cpu_20priv|gnd -section_id cpu_20priv
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[31] -to cpu_20priv|vcc -section_id cpu_20priv
-set_location_assignment PIN_AG28 -to serial2_cts
-set_location_assignment PIN_AG26 -to serial2_rts
-set_location_assignment PIN_A27 -to serial2_rx
-set_location_assignment PIN_B30 -to serial2_tx
-set_location_assignment PIN_A26 -to led_ss
-set_location_assignment PIN_F22 -to ext_miso
-set_location_assignment PIN_G24 -to ext_mosi
-set_location_assignment PIN_G20 -to ext_sclk
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[10] -to "bexkat2:bexkat0|control2:con0|state.S_CMP" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[11] -to "bexkat2:bexkat0|control2:con0|state.S_CMP2" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[539] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|state.STATE_IDLE" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[540] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|state.STATE_LEAD" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[541] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|state.STATE_START" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[542] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|state.STATE_TRAIL" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[543] -to "iocontroller:io0|spi_selects[0]" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[544] -to "iocontroller:io0|spi_selects[1]" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[545] -to "iocontroller:io0|spi_selects[2]" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[546] -to "iocontroller:io0|spi_selects[3]" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[547] -to "iocontroller:io0|spi_selects[4]" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[548] -to "iocontroller:io0|spi_selects[5]" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[549] -to "iocontroller:io0|spi_selects[6]" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[550] -to "iocontroller:io0|spi_selects[7]" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[10] -to "bexkat2:bexkat0|control2:con0|state.S_CMP" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[11] -to "bexkat2:bexkat0|control2:con0|state.S_CMP2" -section_id cpu_20priv
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[539] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|state.STATE_IDLE" -section_id cpu_20priv
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[540] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|state.STATE_LEAD" -section_id cpu_20priv
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[541] -to "iocontroller:io0|spi_master:spi0|spi_xcvr:xcvr0|state.STATE_START" -section_id cpu_20priv
@@ -1978,20 +1785,6 @@ set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[547] -
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[548] -to "iocontroller:io0|spi_selects[5]" -section_id cpu_20priv
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[549] -to "iocontroller:io0|spi_selects[6]" -section_id cpu_20priv
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[550] -to "iocontroller:io0|spi_selects[7]" -section_id cpu_20priv
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[0] -to cpu_20priv|gnd -section_id cpu_20priv
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[7] -to cpu_20priv|vcc -section_id cpu_20priv
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[10] -to cpu_20priv|vcc -section_id cpu_20priv
-set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[29] -to cpu_20priv|gnd -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[551] -to "iocontroller:io0|state[0]" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[552] -to "iocontroller:io0|state[1]" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[553] -to "iocontroller:io0|state[2]" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[554] -to "iocontroller:io0|state[3]" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[555] -to "iocontroller:io0|state[4]" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[556] -to "mmu:mmu0|chipselect[0]" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[557] -to "mmu:mmu0|chipselect[1]" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[558] -to "mmu:mmu0|chipselect[2]" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[559] -to "mmu:mmu0|chipselect[3]" -section_id cpu_20priv
-set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_trigger_in[560] -to "mmu:mmu0|fault" -section_id cpu_20priv
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[551] -to "iocontroller:io0|state[0]" -section_id cpu_20priv
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[552] -to "iocontroller:io0|state[1]" -section_id cpu_20priv
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[553] -to "iocontroller:io0|state[2]" -section_id cpu_20priv
@@ -2002,21 +1795,63 @@ set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[557] -
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[558] -to "mmu:mmu0|chipselect[2]" -section_id cpu_20priv
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[559] -to "mmu:mmu0|chipselect[3]" -section_id cpu_20priv
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_data_in[560] -to "mmu:mmu0|fault" -section_id cpu_20priv
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_RAM_BLOCK_TYPE=AUTO" -section_id cpu_20priv
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_DATA_BITS=561" -section_id cpu_20priv
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_BITS=561" -section_id cpu_20priv
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STORAGE_QUALIFIER_BITS=561" -section_id cpu_20priv
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_NODE_INFO=805334531" -section_id cpu_20priv
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_POWER_UP_TRIGGER=0" -section_id cpu_20priv
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK=00000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" -section_id cpu_20priv
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK_LENGTH=1709" -section_id cpu_20priv
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STORAGE_QUALIFIER_INVERSION_MASK_LENGTH=0" -section_id cpu_20priv
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SEGMENT_SIZE=4096" -section_id cpu_20priv
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ATTRIBUTE_MEM_MODE=OFF" -section_id cpu_20priv
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STATE_FLOW_USE_GENERATED=0" -section_id cpu_20priv
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STATE_BITS=11" -section_id cpu_20priv
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_BUFFER_FULL_STOP=1" -section_id cpu_20priv
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_CURRENT_RESOURCE_WIDTH=1" -section_id cpu_20priv
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INCREMENTAL_ROUTING=1" -section_id cpu_20priv
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[0] -to cpu_20priv|gnd -section_id cpu_20priv
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[1] -to cpu_20priv|gnd -section_id cpu_20priv
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[2] -to cpu_20priv|vcc -section_id cpu_20priv
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[3] -to cpu_20priv|gnd -section_id cpu_20priv
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[4] -to cpu_20priv|vcc -section_id cpu_20priv
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[5] -to cpu_20priv|gnd -section_id cpu_20priv
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[6] -to cpu_20priv|gnd -section_id cpu_20priv
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[7] -to cpu_20priv|vcc -section_id cpu_20priv
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[8] -to cpu_20priv|vcc -section_id cpu_20priv
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[9] -to cpu_20priv|gnd -section_id cpu_20priv
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[10] -to cpu_20priv|vcc -section_id cpu_20priv
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[11] -to cpu_20priv|gnd -section_id cpu_20priv
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[12] -to cpu_20priv|gnd -section_id cpu_20priv
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[13] -to cpu_20priv|vcc -section_id cpu_20priv
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[14] -to cpu_20priv|vcc -section_id cpu_20priv
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[15] -to cpu_20priv|vcc -section_id cpu_20priv
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[16] -to cpu_20priv|gnd -section_id cpu_20priv
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[17] -to cpu_20priv|gnd -section_id cpu_20priv
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[18] -to cpu_20priv|vcc -section_id cpu_20priv
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[19] -to cpu_20priv|gnd -section_id cpu_20priv
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[20] -to cpu_20priv|gnd -section_id cpu_20priv
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[21] -to cpu_20priv|vcc -section_id cpu_20priv
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[22] -to cpu_20priv|vcc -section_id cpu_20priv
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[23] -to cpu_20priv|vcc -section_id cpu_20priv
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[24] -to cpu_20priv|gnd -section_id cpu_20priv
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[25] -to cpu_20priv|gnd -section_id cpu_20priv
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[26] -to cpu_20priv|gnd -section_id cpu_20priv
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[27] -to cpu_20priv|gnd -section_id cpu_20priv
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[28] -to cpu_20priv|gnd -section_id cpu_20priv
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[29] -to cpu_20priv|gnd -section_id cpu_20priv
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[30] -to cpu_20priv|gnd -section_id cpu_20priv
-set_location_assignment PIN_A19 -to reset_n
+set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[31] -to cpu_20priv|vcc -section_id cpu_20priv
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_LEVEL=1" -section_id cpu_20priv
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SAMPLE_DEPTH=4096" -section_id cpu_20priv
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_IN_ENABLED=0" -section_id cpu_20priv
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_PIPELINE=0" -section_id cpu_20priv
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_RAM_PIPELINE=0" -section_id cpu_20priv
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_COUNTER_PIPELINE=0" -section_id cpu_20priv
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ADVANCED_TRIGGER_ENTITY=basic,1," -section_id cpu_20priv
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_LEVEL_PIPELINE=1" -section_id cpu_20priv
+set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ENABLE_ADVANCED_TRIGGER=0" -section_id cpu_20priv
+set_global_assignment -name VERILOG_FILE cpu/businterface.v
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 set_global_assignment -name SLD_FILE db/stp1_auto_stripped.stp

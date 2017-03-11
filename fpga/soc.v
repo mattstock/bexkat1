@@ -131,7 +131,7 @@ assign rst_i = ~locked;
 
 parameter clkfreq = 100000000;
 
-sysclock pll0(.inclk0(raw_clock_50), .c0(sysclock), .areset(~KEY[0]), .c1(vga_clock), .locked(locked));
+sysclock pll0(.inclk0(raw_clock_50), .c0(sysclock), .areset(~KEY[0]), .c1(vga_clock), .c2(enet_gtx_clk), .locked(locked));
 codec_pll pll1(.inclk0(raw_clock_50), .areset(~KEY[0]), .c0(codec_mclk));
 
 // SPI wiring
@@ -160,6 +160,11 @@ assign codec_sclk = (~i2c_clock ? 1'b0 : 1'bz);
 assign accel_sdat = (~accel_tx ? 1'b0 : 1'bz);
 assign accel_sclk = (~accel_clock ? 1'b0 : 1'bz);
 
+// eth I2C
+assign enet_mdio = (~enet_i2c_tx ? 1'b0 : 1'bz);
+assign enet_mdc = (~enet_i2c_clock ? 1'b0 : 1'bz);
+assign enet_rst_n = ~rst_i;
+
 // TD Decoder
 assign td_sdat = (~td_tx ? 1'b0 : 1'bz);
 assign td_sclk = (~td_clock ? 1'b0 : 1'bz);
@@ -167,12 +172,8 @@ assign td_reset_n = ~rst_i;
 
 // ethernet stubs TODO
 assign enet_tx_data = 4'hz;
-assign enet_gtx_clk = 1'bz;
 assign enet_tx_en = 1'b0;
 assign enet_tx_er = 1'b0;
-assign enet_mdc = 1'bz;
-assign enet_mdio = 1'bz;
-assign enet_rst_n = ~rst_i;
 
 // LCD wiring
 assign lcd_data = (lcd_rw ? 8'hzz : lcd_dataout);
@@ -188,8 +189,8 @@ assign fs_addrbus = ssram_addrout;
 assign fs_databus = (~ssram_we_n ? ssram_dataout : 32'hzzzzzzzz);
 
 // System Blinknlights
-assign LEDR = { SW[17], 1'h0, io_interrupts, miso, mosi, sclk, i2c_clock, i2c_tx, td_sdat, ~sd_ss, cpu_halt, mmu_fault, cpu_cyc };
-assign LEDG = { ~irda_rxd, 5'h0, supervisor, cache_hitmiss };
+assign LEDR = { SW[17], enet_rx_crs, io_interrupts, miso, mosi, sclk, i2c_clock, i2c_tx, td_sdat, ~sd_ss, cpu_halt, mmu_fault, cpu_cyc };
+assign LEDG = { ~irda_rxd, enet_rx_dv, enet_rx_data, supervisor, cache_hitmiss };
 
 // Internal bus wiring
 wire [3:0] chipselect;
@@ -210,6 +211,7 @@ wire vga_ack, rom_ack;
 wire int_en, mmu_fault;
 wire [1:0] cache_hitmiss;
 wire i2c_tx, i2c_clock;
+wire enet_i2c_tx, enet_i2c_clock;
 wire td_tx, td_clock;
 wire accel_tx, accel_clock;
 wire sdram_dir;
@@ -263,7 +265,7 @@ assign vect_read = (chipselect == 4'h1 && cpu_cyc && ~cpu_write);
 
 bexkat2 bexkat0(.clk_i(sysclock), .rst_i(rst_i), .adr_o(cpu_address), .cyc_o(cpu_cyc), .dat_i(cpu_readdata),
   .we_o(cpu_write), .dat_o(cpu_writedata), .sel_o(cpu_be), .ack_i(cpu_ack), .halt(cpu_halt), .supervisor(supervisor),
-  .interrupt(cpu_interrupt[2:0]), .exception(exception), .int_en(int_en));
+  .inter(cpu_interrupt[2:0]), .exception(exception), .int_en(int_en));
 
 mmu mmu0(.adr_i(cpu_address), .adr_o(mmu_address), .cyc_i(cpu_cyc), .chipselect(chipselect), .supervisor(supervisor), .we_i(cpu_write), .fault(mmu_fault));
 
@@ -281,8 +283,8 @@ iocontroller #(.clkfreq(clkfreq)) io0(.clk_i(sysclock), .rst_i(rst_i), .dat_i(cp
   .ps2kbd({ps2kbd_clk, ps2kbd_data}), .hex7(HEX7), .hex6(HEX6), .hex5(HEX5), .hex4(HEX4), .hex3(HEX3), .hex2(HEX2), .hex1(HEX1), .hex0(HEX0),
   .codec_pbdat(codec_pbdat), .codec_recdat(codec_recdat),
   .codec_reclrc(codec_reclrc), .codec_pblrc(codec_pblrc),
-  .i2c_dataout({accel_tx, td_tx, i2c_tx}), .i2c_datain({accel_sdat, td_sdat, codec_sdin}),
-  .i2c_scl({accel_clock, td_clock, i2c_clock}), .i2c_clkin({accel_sclk, td_sclk, codec_sclk}),
+  .i2c_dataout({accel_tx, td_tx, i2c_tx, enet_i2c_tx}), .i2c_datain({accel_sdat, td_sdat, codec_sdin, enet_mdio}),
+  .i2c_scl({accel_clock, td_clock, i2c_clock, enet_i2c_clock}), .i2c_clkin({accel_sclk, td_sclk, codec_sclk, enet_mdc}),
   .irda(irda_rxd), .matrix_a(matrix_a), .matrix_b(matrix_b), .matrix_c(matrix_c), .matrix_stb(matrix_stb),
   .matrix_oe_n(matrix_oe_n), .matrix_clk(matrix_clk), .matrix0(matrix0), .matrix1(matrix1));
 assign mandelbrot_ack = 1'b1;

@@ -65,7 +65,7 @@ begin
       c_out = ~in1[WIDTH-1] & in2[WIDTH-1] | in2[WIDTH-1] & out[WIDTH-1] | out[WIDTH-1] & ~in1[WIDTH-1];
     end  
     ALU_LSHIFT: begin
-      {c_out, out_next} = in1 << in2;
+      {c_out, out_next} = {1'b0, in1} << in2;
       v_out = n_out ^ c_out;
     end
     ALU_RSHIFTA: begin

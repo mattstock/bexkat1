@@ -36,7 +36,7 @@ module control2(input clk_i,
 	input bus_ack,
 	output reg [3:0] exception,
   output superintr,
-	input [2:0] interrupt,
+	input [2:0] inter,
 	input [1:0] bus_align);
 
 assign halt = (state == S_HALT);
@@ -55,7 +55,7 @@ wire ir_size         = ir[0];
 wire ccr_ltu, ccr_lt, ccr_eq;
 assign { ccr_ltu, ccr_lt, ccr_eq } = ccr;
 
-reg [7:0] state, state_next;
+reg [6:0] state, state_next;
 reg interrupts_enabled, interrupts_enabled_next;
 reg [3:0] exception_next;
 reg [7:0] delay, delay_next;
@@ -186,10 +186,10 @@ begin
       if (bus_ack) begin
         pcsel = PC_NEXT;
         state_next = S_EVAL;
-      end else if (|interrupt && interrupts_enabled) begin
+      end else if (|inter && interrupts_enabled) begin
         state_next = S_EXC;
         interrupts_enabled_next = 1'b0;
-        exception_next = { 1'b0, interrupt};
+        exception_next = { 1'b0, inter};
       end
     end
     S_EVAL: begin
@@ -309,7 +309,7 @@ begin
       state_next = S_PUSH2;
     end
     S_PUSH2: begin
-      casex ({ir_size,ir_op})
+      case ({ir_size,ir_op})
         5'h11: begin // jsrd
           mdrsel = MDR_PC;
           pcsel = PC_MAR;
@@ -323,7 +323,7 @@ begin
           pcsel = PC_REL;
         end
         default: mdrsel = MDR_B;
-      endcase // casex ({ir_size,ir_op})
+      endcase // case ({ir_size,ir_op})
       a_write = 1'b1; // A <= SP
       reg_read_addr1 = REG_SP; // SP
       state_next = S_PUSH3;
@@ -630,6 +630,7 @@ begin
         state_next = S_TERM;
     end
     S_HALT: state_next = S_HALT;
+    default: state_next = S_HALT;
   endcase // case (state)
 end
   

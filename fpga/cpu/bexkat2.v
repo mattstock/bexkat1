@@ -8,7 +8,7 @@ module bexkat2(input 	     clk_i,
 	       output reg    cyc_o,
 	       output reg    we_o,
 	       output 	     halt,
-	       input [2:0]   interrupt,
+	       input [2:0]   inter,
 	       output 	     int_en,
 	       output [3:0]  exception,
          output supervisor,
@@ -46,7 +46,6 @@ wire [31:0] ir_sval = { {17{ir[15]}}, ir[15:1] };
 wire [31:0] ir_uval = { 17'h0000, ir[15:1] };
 
 // Data switching logic
-assign dat_o = (we_o ? dataout : 32'h0);
 assign adr_o = (addrsel == ADDR_MAR ? mar : pc);
 assign ir_next = (ir_write ? dat_i : ir);
 assign vectoff_next = (vectoff_write ? mdr : vectoff);
@@ -104,40 +103,6 @@ begin
     STATUS_B: status_next = b[3:0];
     STATUS_POP: status_next = mdr[11:8];
   endcase
-  case (sel_o)
-    4'b1111: begin
-      dataout = mdr;
-      busin_be = dat_i;
-    end
-    4'b0011: begin
-      dataout = mdr;
-      busin_be = { 16'h0000, dat_i[15:0] };
-    end 
-    4'b1100: begin
-      dataout = { mdr[15:0], 16'h0000 };
-      busin_be = { 16'h0000, dat_i[31:16] };
-    end
-    4'b0001: begin
-      dataout = mdr;
-      busin_be = { 24'h000000, dat_i[7:0] };
-    end
-    4'b0010: begin
-      dataout = { 16'h0000, mdr[7:0], 8'h00 };
-      busin_be = { 24'h000000, dat_i[15:8] };
-    end
-    4'b0100: begin
-      dataout = { 8'h00, mdr[7:0], 16'h0000 };
-      busin_be = { 24'h000000, dat_i[23:16] };
-    end
-    4'b1000: begin
-      dataout = { mdr[7:0], 24'h000000 };
-      busin_be = { 24'h000000, dat_i[31:24] };
-    end
-    default: begin // really these are invalid
-      dataout = mdr;
-      busin_be = dat_i;
-    end
-  endcase
   case (mdrsel)
     MDR_MDR: mdr_next = mdr;
     MDR_BUS: mdr_next = busin_be; // byte aligned
@@ -176,6 +141,8 @@ begin
   fpccr_next =  (fpccr_write ? { fp_nan, fp_overflow, fp_underflow, fp_divzero } : fpccr);
 end
 
+businterface bus0(.sel(sel_o), .dat_i(dat_i), .dat_o(dat_o), .cpu_o(mdr), .cpu_i(busin_be));
+
 control2 con0(.clk_i(clk_i), .rst_i(rst_i), .ir(ir), .ir_write(ir_write),
   .ccr(ccr), .ccrsel(ccrsel), .alu_func(alu_func), .a_write(a_write),
   .b_write(b_write), .alu2sel(alu2sel), .regsel(regsel),
@@ -185,7 +152,7 @@ control2 con0(.clk_i(clk_i), .rst_i(rst_i), .ir(ir), .ir_write(ir_write),
   .supervisor(supervisor), .addrsel(addrsel), .byteenable(sel_o), .statussel(statussel),
   .bus_cyc(cyc_o), .bus_write(we_o), .bus_ack(ack_i), .bus_align(adr_o[1:0]),
   .vectoff_write(vectoff_write), .halt(halt), .exception(exception), .superintr(superintr),
-  .interrupt(interrupt), .int_en(int_en), .fpu_func(fpu_func), 
+  .inter(inter), .int_en(int_en), .fpu_func(fpu_func), 
   .fpccr_write(fpccr_write));
 
 alu2 alu0(.clk_i(clk_i), .rst_i(rst_i), .in1(a), .in2(alu_in2),
@@ -198,7 +165,7 @@ registerfile2 intreg(.clk_i(clk_i), .rst_i(rst_i), .supervisor(supervisor),
   .write_data(reg_data_in), .write_en(reg_write),
   .data1(reg_data_out1), .data2(reg_data_out2));
 
-fpu fpu0(.clk_i(clk_i), .func(fpu_func), .in1(a), .in2(b), .out(fpu_out),
+fpu fpu0(.clk_i(clk_i), .rst_i(rst_i), .func(fpu_func), .in1(a), .in2(b), .out(fpu_out),
 	 .overflow(fp_overflow), .nan(fp_nan), .underflow(fp_underflow),
 	 .divzero(fp_divzero));
 fp_cmp fp_cmp0(.clock(clk_i), .dataa(a), .datab(b), .aeb(fp_aeb), .alb(fp_alb));

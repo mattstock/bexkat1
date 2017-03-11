@@ -38,10 +38,10 @@ module iocontroller(
   input codec_pblrc,
   input codec_recdat,
   input codec_bclk,
-  output [2:0] i2c_dataout,
-	output [2:0] i2c_scl,
-	input [2:0] i2c_datain,
-	input [2:0] i2c_clkin,
+  output [I2C_SIZE-1:0] i2c_dataout,
+	output [I2C_SIZE-1:0] i2c_scl,
+	input [I2C_SIZE-1:0] i2c_datain,
+	input [I2C_SIZE-1:0] i2c_clkin,
 	output [6:0] hex0,
 	output [6:0] hex1,
 	output [6:0] hex2,
@@ -62,9 +62,10 @@ module iocontroller(
   input irda);
 
 parameter clkfreq = 100000000;
+parameter I2C_SIZE = 4;
 
 localparam [4:0] S_IDLE = 'h10, S_DONE = 'h11, S_SEGFAN = 'h0, S_SWLED = 'h1, S_UART0 = 'h2, S_UART1 = 'h3, S_PS2 = 'h4,
-  S_CODEC = 'h5, S_LCD = 'h6, S_SPI = 'h7, S_TIMER = 'h8, S_I2C0 = 'h9, S_I2C1 = 'ha, S_I2C2 = 'hb, S_MATRIX = 'hc, S_IRDA = 'hd, S_UART2 = 'he;
+  S_CODEC = 'h5, S_LCD = 'h6, S_SPI = 'h7, S_TIMER = 'h8, S_I2C0 = 'h9, S_I2C1 = 'ha, S_I2C2 = 'hb, S_MATRIX = 'hc, S_IRDA = 'hd, S_UART2 = 'he, S_I2C3 = 'hf;
 
 // various programmable registers
 logic [31:0] segreg, fanspeed, segreg_next, fanspeed_next, result, result_next;
@@ -72,8 +73,8 @@ logic [4:0] state, state_next;
 logic [8:0] led_next;
 
 wire [31:0] lcd_out, uart2_out, uart1_out, uart0_out, spi_out, ps2kbd_out, timer_out, matrix_out;
-wire [7:0] i2c_out[2:0];
-wire lcd_ack, uart0_ack, uart1_ack, uart2_ack, spi_ack, ps2kbd_ack, timer_ack, i2c_ack[2:0];
+wire [7:0] i2c_out[I2C_SIZE-1:0];
+wire lcd_ack, uart0_ack, uart1_ack, uart2_ack, spi_ack, ps2kbd_ack, timer_ack, i2c_ack[I2C_SIZE-1:0];
 wire matrix_ack;
 wire [3:0] timer_interrupts;
 wire [1:0] uart0_interrupts;
@@ -195,6 +196,12 @@ begin
       if (i2c_ack[2])
         state_next = S_DONE;
     end
+    S_I2C3: begin // ethernet i2c
+      if (~we_i)
+        result_next = {24'h0, i2c_out[2]};
+      if (i2c_ack[2])
+        state_next = S_DONE;
+    end
     S_MATRIX: begin // matrix
       if (~we_i)
         result_next = matrix_out;
@@ -244,7 +251,11 @@ i2c_master_top td_i2c1(.wb_clk_i(clk_i), .arst_i(1'b1), .wb_rst_i(rst_i), .wb_we
 i2c_master_top accel_i2c2(.wb_clk_i(clk_i), .arst_i(1'b1), .wb_rst_i(rst_i), .wb_we_i(we_i),
 		.wb_stb_i(state == S_I2C2), .wb_cyc_i(state == S_I2C2), .wb_dat_i(dat_i[7:0]), .wb_ack_o(i2c_ack[2]),
 		.wb_adr_i(adr_i[2:0]), .wb_dat_o(i2c_out[2]), .sda_padoen_o(i2c_dataout[2]), .sda_pad_i(i2c_datain[2]), .scl_padoen_o(i2c_scl[2]), .scl_pad_i(i2c_clkin[2]));
-		
+	
+i2c_master_top accel_i2c3(.wb_clk_i(clk_i), .arst_i(1'b1), .wb_rst_i(rst_i), .wb_we_i(we_i),
+		.wb_stb_i(state == S_I2C3), .wb_cyc_i(state == S_I2C3), .wb_dat_i(dat_i[7:0]), .wb_ack_o(i2c_ack[3]),
+		.wb_adr_i(adr_i[2:0]), .wb_dat_o(i2c_out[3]), .sda_padoen_o(i2c_dataout[3]), .sda_pad_i(i2c_datain[3]), .scl_padoen_o(i2c_scl[3]), .scl_pad_i(i2c_clkin[3]));
+	
 spi_master #(.clkfreq(clkfreq)) spi0(.clk_i(clk_i), .cyc_i(state == S_SPI), .rst_i(rst_i), .sel_i(sel_i), .we_i(we_i),
 		.stb_i(state == S_SPI), .dat_i(dat_i), .dat_o(spi_out), .ack_o(spi_ack),
 		.adr_i(adr_i[0]), .miso(miso), .mosi(mosi),
