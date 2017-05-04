@@ -1755,6 +1755,8 @@ set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_COUNTER_PIPELINE=
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ADVANCED_TRIGGER_ENTITY=basic,1," -section_id cpu_20priv
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_LEVEL_PIPELINE=1" -section_id cpu_20priv
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_ENABLE_ADVANCED_TRIGGER=0" -section_id cpu_20priv
+set_global_assignment -name VERILOG_INCLUDE_FILE ../../fpgalib/bexkat1/exceptions.vh
+set_global_assignment -name VERILOG_INCLUDE_FILE ../../fpgalib/bexkat1/bexkat1.vh
 set_global_assignment -name VERILOG_FILE ../../fpgalib/mandelbrot/shift.v
 set_global_assignment -name QIP_FILE ../../fpgalib/mandelbrot/shift.qip
 set_global_assignment -name VERILOG_FILE ../../fpgalib/mandelbrot/mandunit.v
