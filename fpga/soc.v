@@ -1,4 +1,4 @@
-`include "cpu/exceptions.vh"
+`include "../../fpgalib/bexkat1/exceptions.vh"
 
 module soc(
   input raw_clock_50,
@@ -263,7 +263,7 @@ assign cpu_ack = (chipselect == 4'h1 ? vect_ack[1] : 1'h0) |
 
 assign vect_read = (chipselect == 4'h1 && cpu_cyc && ~cpu_write);
 
-bexkat2 bexkat0(.clk_i(sysclock), .rst_i(rst_i), .adr_o(cpu_address), .cyc_o(cpu_cyc), .dat_i(cpu_readdata),
+bexkat1 bexkat0(.clk_i(sysclock), .rst_i(rst_i), .adr_o(cpu_address), .cyc_o(cpu_cyc), .dat_i(cpu_readdata),
   .we_o(cpu_write), .dat_o(cpu_writedata), .sel_o(cpu_be), .ack_i(cpu_ack), .halt(cpu_halt), .supervisor(supervisor),
   .inter(cpu_interrupt[2:0]), .exception(exception), .int_en(int_en));
 
