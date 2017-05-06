@@ -39,6 +39,14 @@ struct bexkat_softc {
   struct resource *bar0res;
   bus_space_tag_t bar0_bt;
   bus_space_handle_t bar0_bh;
+  int bar1id;
+  struct resource *bar1res;
+  bus_space_tag_t bar1_bt;
+  bus_space_handle_t bar1_bh;
+  int bar2id;
+  struct resource *bar2res;
+  bus_space_tag_t bar2_bt;
+  bus_space_handle_t bar2_bh;
 };
 
 static struct cdevsw bexkat_cdevsw = {
@@ -75,10 +83,12 @@ bexkat_read(struct cdev *dev, struct uio *uio, int ioflag __unused)
   int error;
   struct bexkat_softc *sc = dev->si_drv1;
   device_printf(sc->bexkat_dev, "Asked to read %ld bytes\n", uio->uio_resid);
-  res = bus_space_read_4(sc->bar0_bt, sc->bar0_bh, 0x20);
-  device_printf(sc->bexkat_dev, "Read %08x\n", res);
-  if ((error = uiomove("h", 1, uio)) != 0)
-    device_printf(sc->bexkat_dev, "read failed\n");
+  for (int i=0; i < uio->uio_resid; i += 1) {
+    res = bus_space_read_1(sc->bar2_bt, sc->bar2_bh, i);
+    device_printf(sc->bexkat_dev, "Read %08x\n", res);
+    if ((error = uiomove("*", 1, uio)) != 0)
+      device_printf(sc->bexkat_dev, "read failed\n");
+  }
  
   return (error);
 }
@@ -88,13 +98,17 @@ bexkat_write(struct cdev *dev, struct uio *uio, int ioflag __unused)
 {
   struct bexkat_softc *sc = dev->si_drv1;
   int error;
-  char x;
-  error = uiomove(&x, 1, uio);
-  bus_space_write_1(sc->bar0_bt, sc->bar0_bh, 0x80000, x);
+  unsigned int x;
   device_printf(sc->bexkat_dev, "Asked to write %ld bytes\n", uio->uio_resid);
-  if (error != 0)
-    device_printf(sc->bexkat_dev, "write failure\n");
-  return (error);
+  for (int i=0; i < uio->uio_resid; i += 1) {
+    error = uiomove(&x, 1, uio);
+    if (error != 0) {
+      device_printf(sc->bexkat_dev, "write failure\n");
+      return (error);
+    }
+    bus_space_write_1(sc->bar2_bt, sc->bar2_bh, i, x);
+  }
+  return 0;
 }
 
 static int
@@ -120,6 +134,20 @@ bexkat_attach(device_t dev)
   sc = device_get_softc(dev);
   sc->bexkat_dev = dev;
 
+  sc->bar2id = PCIR_BAR(2);
+  sc->bar2res = bus_alloc_resource_any(dev, SYS_RES_MEMORY, &sc->bar2id, RF_ACTIVE);
+  if (sc->bar2res == NULL) {
+    printf("Member alloc of PCI reg2 failed\n");
+    return (ENXIO);
+  }
+
+  sc->bar1id = PCIR_BAR(1);
+  sc->bar1res = bus_alloc_resource_any(dev, SYS_RES_MEMORY, &sc->bar1id, RF_ACTIVE);
+  if (sc->bar1res == NULL) {
+    printf("Member alloc of PCI reg1 failed\n");
+    return (ENXIO);
+  }
+
   sc->bar0id = PCIR_BAR(0);
   sc->bar0res = bus_alloc_resource_any(dev, SYS_RES_MEMORY, &sc->bar0id, RF_ACTIVE);
   if (sc->bar0res == NULL) {
@@ -129,7 +157,10 @@ bexkat_attach(device_t dev)
 
   sc->bar0_bt = rman_get_bustag(sc->bar0res);
   sc->bar0_bh = rman_get_bushandle(sc->bar0res);
-  bus_space_write_1(sc->bar0_bt, sc->bar0_bh, 0x80000, 0x00);
+  sc->bar1_bt = rman_get_bustag(sc->bar1res);
+  sc->bar1_bh = rman_get_bushandle(sc->bar1res);
+  sc->bar2_bt = rman_get_bustag(sc->bar2res);
+  sc->bar2_bh = rman_get_bushandle(sc->bar2res);
 
   sc->bexkat_cdev = make_dev(&bexkat_cdevsw, device_get_unit(dev),
     UID_ROOT, GID_WHEEL, 0666, "bexkat%u", device_get_unit(dev));
