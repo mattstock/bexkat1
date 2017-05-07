@@ -96,10 +96,6 @@ void bitbang(unsigned short value) {
   led_latch();
 }
 
-ISR(TIMER1_COMPA_vect) {
-  spistate = 0;
-}
-
 ISR(TIMER0_COMPA_vect) {
   digit = (digit+1)%16;
   
@@ -166,10 +162,6 @@ int main(void) {
   TCCR0A = 0b1011;
   OCR0A = 0x80;
   TIMSK0 = 0x2; // enable ICIE0A interrupt
-  // timer 1 - watchdog to reset SPI state
-  TCCR1B = 0b00001101; // CTC, 1024 prescaler
-  OCR1A = 0x300; // 0.2s timeout?
-  TIMSK1 = 0x2; // enable OCIE1A interrupt
   sei();
 
   // HELLO
@@ -180,14 +172,19 @@ int main(void) {
   values[2] = 0b0001110000000000;
   values[3] = 0b0001110000000000;
   values[4] = num2seg(0);
-  // 1.0
+  // 1.4
   values[8] = num2seg(1) | 0x100;
-  values[9] = num2seg(1);
+  values[9] = num2seg(4);
 	 
   _delay_ms(1500);
   
   for (i=0; i < 16; i++)
     values[i] = 0;
 
-  while (1);
+  // if we see that the slave select is released, we make sure we reset the state machine.
+  // this implies that we need to have a whole message within a single transmission.
+  while (1) {
+    if (PINB & 0x4)
+      spistate = 0;
+  }
 }
