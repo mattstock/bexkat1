@@ -177,9 +177,9 @@ assign cpu_ack =  (chipselect == 4'h1 ? vect_ack[1] : 1'h0) |
 assign rom_read = (chipselect == 4'h2 && cpu_cyc && ~cpu_write);
 assign vect_read = (chipselect == 4'h1 && cpu_cyc && ~cpu_write);
 
-bexkat2 bexkat0(.clk_i(sysclock), .rst_i(rst_i), .adr_o(cpu_address), .cyc_o(cpu_cyc), .dat_i(cpu_readdata),
+bexkat1 bexkat0(.clk_i(sysclock), .rst_i(rst_i), .adr_o(cpu_address), .cyc_o(cpu_cyc), .dat_i(cpu_readdata),
   .we_o(cpu_write), .dat_o(cpu_writedata), .sel_o(cpu_be), .ack_i(cpu_ack), .halt(cpu_halt),
-  .interrupt(cpu_interrupt), .exception(exception), .int_en(int_en));
+  .inter(cpu_interrupt), .exception(exception), .int_en(int_en));
 
 mmu mmu0(.adr_i(cpu_address), .cyc_i(cpu_cyc), .chipselect(chipselect), .fault(mmu_fault), .cache_enable(cache_enable));
 
