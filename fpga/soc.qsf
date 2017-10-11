@@ -1770,7 +1770,6 @@ set_global_assignment -name QIP_FILE ../../fpgalib/mandelbrot/mand_add.qip
 set_global_assignment -name QIP_FILE ../../fpgalib/vga/vga_pallette.qip
 set_global_assignment -name VERILOG_FILE ../../fpgalib/vga/vga_master.v
 set_global_assignment -name VERILOG_FILE ../../fpgalib/vga/vga_controller.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/vga/textlinebuf.v
 set_global_assignment -name QIP_FILE ../../fpgalib/vga/textlinebuf.qip
 set_global_assignment -name VERILOG_FILE ../../fpgalib/vga/textdrv.v
 set_global_assignment -name VERILOG_FILE ../../fpgalib/vga/graphicsdrv.v
@@ -1778,7 +1777,6 @@ set_global_assignment -name QIP_FILE ../../fpgalib/vga/fontmem.qip
 set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/registerfile.v
 set_global_assignment -name QIP_FILE ../../fpgalib/bexkat1/intumult.qip
 set_global_assignment -name QIP_FILE ../../fpgalib/bexkat1/intudiv.qip
-set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/intsmult.v
 set_global_assignment -name QIP_FILE ../../fpgalib/bexkat1/intsmult.qip
 set_global_assignment -name QIP_FILE ../../fpgalib/bexkat1/intsdiv.qip
 set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/intcalc.v
@@ -1802,7 +1800,6 @@ set_global_assignment -name QIP_FILE sdram/cachemem.qip
 set_global_assignment -name QIP_FILE sdram/cachefifo.qip
 set_global_assignment -name VERILOG_FILE sdram/cache.v
 set_global_assignment -name QIP_FILE io/matrixpll.qip
-set_global_assignment -name VERILOG_FILE io/matrixmem.v
 set_global_assignment -name QIP_FILE io/matrixmem.qip
 set_global_assignment -name VERILOG_FILE io/led_matrix.v
 set_global_assignment -name VERILOG_FILE io/timescale.v
