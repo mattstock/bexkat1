@@ -295,11 +295,20 @@ assign mandelbrot_readdata = 32'h0;
 bios bios0(.clk_i(sysclock), .rst_i(rst_i), .cyc_i(cpu_cyc), .dat_o(rom_readdata), .stb_i(chipselect == 4'h2), .select(SW[17]), .ack_o(rom_ack), .adr_i(cpu_address[16:2]));
 vectors vecram0(.clock(sysclock), .q(vect_readdata), .rden(vect_read), .address(cpu_address[6:2]));
 
-vga_module video0(.clk_i(sysclock), .rst_i(rst_i), .cyc_i(cpu_cyc), .ack_o(vga_ack), .we_i(cpu_write), .sel_i(cpu_be),
-  .adr_i(cpu_address), .dat_i(cpu_writedata), .dat_o(vga_readdata), .stb_i(chipselect == 4'h6), 
+logic [21:0] vga_mem_addr;
+logic vga_mem_cyc, vga_mem_we, vga_mem_stb;
+logic [31:0] vga_mem_dat_i, vga_mem_dat_o;
+logic [3:0] vga_mem_sel;
+
+ssram_controller ram1(.clk_i(sysclock), .rst_i(rst_i), .cyc_i(vga_mem_cyc), .we_i(vga_mem_we), .stb_i(vga_mem_stb),
+  .dat_i(vga_mem_dat_o), .dat_o(vga_mem_dat_i), .sel_i(vga_mem_sel), .adr_i(vga_mem_addr),
+  .databus_in(fs_databus), .databus_out(ssram_dataout), .address_out(ssram_addrout), .gw_n(ssram_gw_n), .adv_n(ssram_adv_n), .adsp_n(ssram_adsp_n),
+  .adsc_n(ssram_adsc_n), .be_out(ssram_be), .oe_n(ssram_oe_n), .we_n(ssram_we_n), .ce0_n(ssram0_ce_n), .ce1_n(ssram1_ce_n), .bus_clock(ssram_clk));
+  
+vga_master video0(.clk_i(sysclock), .rst_i(rst_i), .slave_cyc_i(cpu_cyc), .slave_ack_o(vga_ack), .slave_we_i(cpu_write), .slave_sel_i(cpu_be),
+  .slave_adr_i(cpu_address), .slave_dat_i(cpu_writedata), .slave_dat_o(vga_readdata), .slave_stb_i(chipselect == 4'h6), 
   .vs(vga_vs), .hs(vga_hs), .r(vga_r), .g(vga_g), .b(vga_b), .blank_n(vga_blank_n), .vga_clock(vga_clock), .sync_n(vga_sync_n),
-  .databus_in(fs_databus), .databus_out(ssram_dataout),
-  .address_out(ssram_addrout), .bus_clock(ssram_clk), .gw_n(ssram_gw_n), .adv_n(ssram_adv_n), .adsp_n(ssram_adsp_n),
-  .adsc_n(ssram_adsc_n), .be_out(ssram_be), .oe_n(ssram_oe_n), .we_n(ssram_we_n), .ce0_n(ssram0_ce_n), .ce1_n(ssram1_ce_n));
+  .master_adr_o(vga_mem_addr), .master_cyc_o(vga_mem_cyc), .master_we_o(vga_mem_we), .master_stb_o(vga_mem_stb), .master_sel_o(vga_mem_sel),
+  .master_dat_o(vga_mem_dat_o), .master_dat_i(vga_mem_dat_i));
 
 endmodule
