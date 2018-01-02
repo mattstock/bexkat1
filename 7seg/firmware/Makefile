@@ -1,7 +1,7 @@
 CC=avr-gcc
 OBJCOPY=avr-objcopy
 CFLAGS=-mmcu=attiny88 -Os
-PROGFLAGS=-B1 -p t88 -c $(ISP) -e
+PROGFLAGS=-B100 -p t88 -c $(ISP) -e
 #ISP=avrisp2
 ISP=jtag3isp
 
