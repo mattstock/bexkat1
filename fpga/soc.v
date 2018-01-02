@@ -129,7 +129,7 @@ wire sysclock, rst_i, locked;
 assign reset_n = KEY[1];
 assign rst_i = ~locked;
 
-parameter clkfreq = 100000000;
+parameter clkfreq = 50000000;
 
 sysclock pll0(.inclk0(raw_clock_50), .c0(sysclock), .areset(~KEY[0]), .c1(vga_clock), .c2(enet_gtx_clk), .locked(locked));
 codec_pll pll1(.inclk0(raw_clock_50), .areset(~KEY[0]), .c0(codec_mclk));

@@ -22,4 +22,4 @@ kernel: kernel.o font.o mmc.o ff.o vectors.o gettime.o setint.o
 
 
 install: kernel
-	cp kernel /media/mstock/A5BC-530B/
+	cp kernel /media/mstock/6874-28D3/
