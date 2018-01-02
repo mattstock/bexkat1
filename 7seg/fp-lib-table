@@ -1,4 +1,2 @@
 (fp_lib_table
-  (lib (name mstock)(type KiCad)(uri /home/mstock/projects/soc/kicad/mstock.pretty)(options "")(descr ""))
-  (lib (name mstock-old)(type Legacy)(uri /home/mstock/projects/soc/kicad/mstock.mod)(options "")(descr ""))
 )
