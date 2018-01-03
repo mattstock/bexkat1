@@ -1757,18 +1757,22 @@ set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[1] -t
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[5] -to cpu_20priv|vcc -section_id cpu_20priv
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[7] -to cpu_20priv|gnd -section_id cpu_20priv
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[8] -to cpu_20priv|gnd -section_id cpu_20priv
+set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/memwb.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/mem.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/registerfile.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/intcalc.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/ifetch.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/idecode.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/hazard.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/arbiter.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/bexkat1p.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/buscontrol.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/execute.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/fifo.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/alu_comb.v
 set_global_assignment -name VERILOG_INCLUDE_FILE ../../fpgalib/bexkat1/exceptions.vh
 set_global_assignment -name VERILOG_INCLUDE_FILE ../../fpgalib/bexkat1/bexkat1.vh
 set_global_assignment -name QIP_FILE ../../fpgalib/mandelbrot/shift.qip
-set_global_assignment -name QIP_FILE ../../fpgalib/mandelbrot/mandmem.qip
-set_global_assignment -name VERILOG_FILE ../../fpgalib/mandelbrot/mandelbrot.v
-set_global_assignment -name QIP_FILE ../../fpgalib/mandelbrot/mand_sub.qip
-set_global_assignment -name QIP_FILE ../../fpgalib/mandelbrot/mand_mult.qip
-set_global_assignment -name QIP_FILE ../../fpgalib/mandelbrot/mand_fifo_out.qip
-set_global_assignment -name QIP_FILE ../../fpgalib/mandelbrot/mand_fifo_in.qip
-set_global_assignment -name QIP_FILE ../../fpgalib/mandelbrot/mand_fifo.qip
-set_global_assignment -name QIP_FILE ../../fpgalib/mandelbrot/mand_comp.qip
-set_global_assignment -name QIP_FILE ../../fpgalib/mandelbrot/mand_add.qip
 set_global_assignment -name QIP_FILE ../../fpgalib/vga/vga_pallette.qip
 set_global_assignment -name VERILOG_FILE ../../fpgalib/vga/vga_master.v
 set_global_assignment -name VERILOG_FILE ../../fpgalib/vga/vga_controller.v
@@ -1776,21 +1780,6 @@ set_global_assignment -name QIP_FILE ../../fpgalib/vga/textlinebuf.qip
 set_global_assignment -name VERILOG_FILE ../../fpgalib/vga/textdrv.v
 set_global_assignment -name VERILOG_FILE ../../fpgalib/vga/graphicsdrv.v
 set_global_assignment -name QIP_FILE ../../fpgalib/vga/fontmem.qip
-set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/registerfile.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/intcalc.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/fpu.v
-set_global_assignment -name QIP_FILE ../../fpgalib/bexkat1/fp_sqrt.qip
-set_global_assignment -name QIP_FILE ../../fpgalib/bexkat1/fp_mult.qip
-set_global_assignment -name QIP_FILE ../../fpgalib/bexkat1/fp_div.qip
-set_global_assignment -name QIP_FILE ../../fpgalib/bexkat1/fp_cvtsi.qip
-set_global_assignment -name QIP_FILE ../../fpgalib/bexkat1/fp_cvtis.qip
-set_global_assignment -name QIP_FILE ../../fpgalib/bexkat1/fp_cmp.qip
-set_global_assignment -name QIP_FILE ../../fpgalib/bexkat1/fp_addsub.qip
-set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/floatingpoint.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/control.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/businterface.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/bexkat1.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/alu.v
 set_global_assignment -name HEX_FILE vectors.hex
 set_global_assignment -name VERILOG_FILE sdram/sdram_controller_cache.v
 set_global_assignment -name VERILOG_FILE sdram/sdram_controller.v
@@ -1831,7 +1820,6 @@ set_global_assignment -name QIP_FILE vectors.qip
 set_global_assignment -name QIP_FILE io/uart_fifo.qip
 set_global_assignment -name VERILOG_FILE ssram_controller.v
 set_global_assignment -name VERILOG_FILE flash_controller.v
-set_global_assignment -name VERILOG_FILE arbiter.v
 set_global_assignment -name QIP_FILE io/ps2_kbd_fifo.qip
 set_global_assignment -name VERILOG_FILE io/segdigits.v
 set_global_assignment -name QIP_FILE testrom.qip

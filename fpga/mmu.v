@@ -1,55 +1,80 @@
-module mmu(
-  input [31:0] adr_i,
-  output [31:0] adr_o,
-  input cyc_i,
-  input we_i,
-  input supervisor,
-  output cache_enable,
-  output fault,
-  output [3:0] chipselect);
+`include "../../fpgalib/bexkat1/bexkat1.vh"
 
-logic [3:0] cs;
-logic c, f;
+module mmu(if_wb.slave  cpubus,
+	   if_wb.master iobus,
+	   if_wb.master rambus,
+	   if_wb.master rombus,
+	   if_wb.master vectbus,
+	   input 	supervisor,
+	   output 	fault);
+   
+   logic 		f;
+   
+   assign fault = (cpubus.cyc ? f : 1'b0);
 
-assign cache_enable = (cyc_i ? c : 1'b1);
-assign fault = (cyc_i ? f : 1'b0);
-assign chipselect = (cyc_i ? cs : 4'h0);
-assign adr_o = adr_i;
-
-always_comb
-begin
-  f = 1'b0;
-  c = 1'b1;
-  
-  case (adr_i[31:28])
-    4'h0: cs = 4'h7; // 128MB (32M x 32) SDRAM
-    4'h3: begin
-      cs = 4'h4; // IO
-      c = 1'b0;
-    end
-	  4'h4: cs = 4'h7; // cache controller
-    4'h7: begin // monitor
-      if (we_i) begin
-        cs = 4'h0;
-        f = 1'h1;
-      end else
-        cs = 4'h2;
-    end
-    4'h8: cs = 4'h6; // VGA controller / 4MB (1M x 32) SSRAM
-    4'hc: cs = 4'h6; // VGA controller / 4MB (1M x 32) SSRAM
-    4'hd: cs = 4'h3; // mandelbrot
-    4'hf: begin // vectors
-      if (we_i) begin
-        cs = 4'h0;
-        f = 1'h1;
-      end else
-        cs = 4'h1;
-    end
-    default: begin
-      cs = 4'h0;
-      f = 1'h1;
-    end
-  endcase
-end
-
+   always_comb
+     begin
+	f = 1'b0;
+	cpubus.dat_o = 32'h0;
+	cpubus.ack = 1'b0;
+	cpubus.stall = 1'b0;
+	iobus.cyc = cpubus.cyc;
+	iobus.dat_o = cpubus.dat_i;
+	iobus.stb = 1'b0;
+	iobus.sel = cpubus.sel;
+	iobus.we = cpubus.we;
+	iobus.adr = cpubus.adr;
+	rombus.cyc = cpubus.cyc;
+	rombus.stb = 1'b0;
+	rombus.dat_o = cpubus.dat_i;
+	rombus.we = cpubus.we;
+	rombus.sel = cpubus.sel;
+	rombus.adr = cpubus.adr;
+	rambus.we = cpubus.we;
+	rambus.cyc = cpubus.cyc;
+	rambus.stb = 1'b0;
+	rambus.dat_o = cpubus.dat_i;
+	rambus.sel = cpubus.sel;
+	rambus.adr = cpubus.adr;
+	vectbus.we = cpubus.we;
+	vectbus.cyc = cpubus.cyc;
+	vectbus.stb = 1'b0;
+	vectbus.dat_o = cpubus.dat_i;
+	vectbus.sel = cpubus.sel;
+	vectbus.adr = cpubus.adr;
+	
+	case (cpubus.adr[31:28])
+	  4'h0: // 128MB (32M x 32) SDRAM
+	    begin
+	       rambus.stb = cpubus.stb;
+	       cpubus.dat_o = rambus.dat_i;
+	       cpubus.ack = rambus.ack;
+	       cpubus.stall = rambus.stall;
+	    end
+	  4'h3: // IO
+	    begin
+	       iobus.stb = cpubus.stb;
+	       cpubus.dat_o = iobus.dat_i;
+	       cpubus.ack = iobus.ack;
+	       cpubus.stall = iobus.stall;
+	    end
+	  4'h7: // BIOS
+	    begin
+	       rombus.stb = cpubus.stb;
+	       cpubus.dat_o = rombus.dat_i;
+	       cpubus.ack = rombus.ack;
+	       cpubus.stall = rombus.stall;
+	    end
+	  4'hf: // vectors
+	    begin
+	       rombus.stb = cpubus.stb;
+	       cpubus.dat_o = vectbus.dat_i;
+	       cpubus.ack = vectbus.ack;
+	       cpubus.stall = vectbus.stall;
+	    end
+	  default:
+	    f = 1'h1;
+	endcase
+     end
+   
 endmodule

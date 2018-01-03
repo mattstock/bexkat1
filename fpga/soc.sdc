@@ -1,4 +1,4 @@
-create_clock -name raw_clock_50 -period 20ns [get_ports {raw_clock_50} ] -waveform {0 10}
+create_clock -name raw_clock_50 -period 1000ns [get_ports {raw_clock_50} ] -waveform {0 500}
 
 derive_pll_clocks
 derive_clock_uncertainty
@@ -14,7 +14,7 @@ create_generated_clock -name ext_sclk_pin -source [get_registers {iocontroller:i
 create_generated_clock -name ssram_clk_pin -source pll0|altpll_component|auto_generated|pll1|clk[0] -add [get_ports ssram_clk]
 create_generated_clock -name sdram_clk_pin -source pll0|altpll_component|auto_generated|pll1|clk[0] -invert -add [get_ports sdram_clk]
 
-# 0 - 100MHz
+# 0 - 100MHz (1MHz for now)
 # 1 - 25MHz
 
 set_clock_groups -asynchronous -group { \
