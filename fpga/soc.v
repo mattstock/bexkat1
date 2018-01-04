@@ -46,22 +46,6 @@ module soc(input 	 raw_clock_50,
 	   output 	 lcd_on,
 	   output 	 lcd_rw,
 	   inout [7:0] 	 lcd_data,
-	   output [3:0]  enet_tx_data,
-	   input [3:0] 	 enet_rx_data,
-	   output 	 enet_gtx_clk,
-	   output 	 enet_tx_en,
-	   output 	 enet_tx_er,
-	   inout 	 enet_mdio,
-	   output 	 enet_mdc,
-	   output 	 enet_rst_n,
-	   input 	 enet_int_n,
-	   input 	 enet_link100,
-	   input 	 enet_rx_clk,
-	   input 	 enet_rx_col,
-	   input 	 enet_rx_crs,
-	   input 	 enet_rx_dv,
-	   input 	 enet_rx_er,
-	   input 	 enet_tx_clk,
 	   input 	 sd_miso,
 	   output 	 sd_mosi,
 	   output 	 sd_ss,
@@ -71,14 +55,6 @@ module soc(input 	 raw_clock_50,
 	   output 	 ext_sclk,
 	   output 	 rtc_ss,
 	   output 	 led_ss,
-	   output 	 codec_pbdat,
-	   input 	 codec_reclrc,
-	   input 	 codec_pblrc,
-	   input 	 codec_recdat,
-	   inout 	 codec_sdin,
-	   inout 	 codec_sclk,
-	   input 	 codec_bclk,
-	   output 	 codec_mclk,
 	   input 	 sd_wp_n,
 	   output 	 fan_ctrl, 
 	   output [2:0]  matrix0,
@@ -109,15 +85,7 @@ module soc(input 	 raw_clock_50,
 	   output [7:0]  vga_b,
 	   input 	 ps2kbd_clk,
 	   input 	 ps2kbd_data,
-	   input 	 irda_rxd,
-	   input [7:0] 	 td_data,
-	   input 	 td_hs,
-	   input 	 td_vs,
-	   input 	 td_clk27,
-	   output 	 td_reset_n,
 	   output 	 reset_n,
-	   inout 	 td_sclk,
-	   inout 	 td_sdat,
 	   input 	 accel_int1,
 	   inout 	 accel_sclk,
 	   inout 	 accel_sdat);
@@ -136,8 +104,7 @@ module soc(input 	 raw_clock_50,
 
    parameter clkfreq = 1000000;
 
-   sysclock pll0(.inclk0(raw_clock_50), .c0(sysclock), .areset(~KEY[0]), .c1(vga_clock), .c2(enet_gtx_clk), .locked(locked));
-   codec_pll pll1(.inclk0(raw_clock_50), .areset(~KEY[0]), .c0(codec_mclk));
+   sysclock pll0(.inclk0(raw_clock_50), .c0(sysclock), .areset(~KEY[0]), .c1(vga_clock), .locked(locked));
 
    // SPI wiring
    wire [7:0] 		 spi_selects;
@@ -157,29 +124,6 @@ module soc(input 	 raw_clock_50,
    assign sd_sclk = sclk;
    assign ext_sclk = sclk;
    
-   // codec/external I2C
-   assign codec_sdin = (~i2c_tx ? 1'b0 : 1'bz);
-   assign codec_sclk = (~i2c_clock ? 1'b0 : 1'bz);
-   
-   // accelerometer I2C
-   assign accel_sdat = (~accel_tx ? 1'b0 : 1'bz);
-   assign accel_sclk = (~accel_clock ? 1'b0 : 1'bz);
-   
-   // eth I2C
-   assign enet_mdio = (~enet_i2c_tx ? 1'b0 : 1'bz);
-   assign enet_mdc = (~enet_i2c_clock ? 1'b0 : 1'bz);
-   assign enet_rst_n = ~rst_i;
-   
-   // TD Decoder
-   assign td_sdat = (~td_tx ? 1'b0 : 1'bz);
-   assign td_sclk = (~td_clock ? 1'b0 : 1'bz);
-   assign td_reset_n = ~rst_i;
-   
-   // ethernet stubs TODO
-   assign enet_tx_data = 4'hz;
-   assign enet_tx_en = 1'b0;
-   assign enet_tx_er = 1'b0;
-   
    // LCD wiring
    assign lcd_data = (lcd_rw ? 8'hzz : lcd_dataout);
    
@@ -194,8 +138,8 @@ module soc(input 	 raw_clock_50,
    assign fs_databus = (~ssram_we_n ? ssram_dataout : 32'hzzzzzzzz);
    
    // System Blinknlights
-   assign LEDR = { SW[17], enet_rx_crs, io_interrupts, miso, mosi, sclk, i2c_clock, i2c_tx, td_sdat, ~sd_ss, cpu_halt, mmu_fault, cpubus.cyc };
-   assign LEDG = { ~irda_rxd, enet_rx_dv, enet_rx_data, supervisor, cache_hitmiss };
+   assign LEDR = { SW[17], io_interrupts, miso, mosi, sclk, ~sd_ss, cpu_halt, mmu_fault, cpubus.cyc };
+   assign LEDG = { supervisor, cache_hitmiss };
 
    // Internal bus wiring
    logic [26:0] 	 ssram_addrout;
@@ -210,10 +154,6 @@ module soc(input 	 raw_clock_50,
    logic [3:0] 		 sdram_den_n;
    logic 		 int_en, mmu_fault;
    logic [1:0] 		 cache_hitmiss;
-   logic 		 i2c_tx, i2c_clock;
-   logic 		 enet_i2c_tx, enet_i2c_clock;
-   logic 		 td_tx, td_clock;
-   logic 		 accel_tx, accel_clock;
    logic 		 sdram_dir;
    
    // interrupt priority encoder
@@ -276,7 +216,6 @@ module soc(input 	 raw_clock_50,
 			      .sclk(sclk),
 			      .spi_selects(spi_selects),
 			      .sd_wp(sd_wp_n),
-			      .fan(fan_ctrl),
 			      .lcd_e(lcd_e),
 			      .lcd_data(lcd_dataout),
 			      .lcd_rs(lcd_rs),
@@ -303,15 +242,6 @@ module soc(input 	 raw_clock_50,
 			      .hex2(HEX2),
 			      .hex1(HEX1),
 			      .hex0(HEX0),
-			      .codec_pbdat(codec_pbdat),
-			      .codec_recdat(codec_recdat),
-			      .codec_reclrc(codec_reclrc),
-			      .codec_pblrc(codec_pblrc),
-			      .i2c_dataout({accel_tx, td_tx, i2c_tx, enet_i2c_tx}), 
-			      .i2c_datain({accel_sdat, td_sdat, codec_sdin, enet_mdio}),
-			      .i2c_scl({accel_clock, td_clock, i2c_clock, enet_i2c_clock}),
-			      .i2c_clkin({accel_sclk, td_sclk, codec_sclk, enet_mdc}),
-			      .irda(irda_rxd),
 			      .matrix_a(matrix_a),
 			      .matrix_b(matrix_b),
 			      .matrix_c(matrix_c),

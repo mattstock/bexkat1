@@ -1,4 +1,4 @@
-`include "../../fpgalib/bexkat1/bexkat1.vh"
+`include "../wb.vh"
 
 module bios(input 	clk_i,
 	    input       rst_i,
