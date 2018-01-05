@@ -13,24 +13,6 @@ module soc(input 	 raw_clock_50,
 	   output [6:0]  HEX5,
 	   output [6:0]  HEX6,
 	   output [6:0]  HEX7,
-	   output [26:0] fs_addrbus,
-	   inout [31:0]  fs_databus,
-	   output [3:0]  ssram_be,
-	   output 	 ssram_oe_n,
-	   output 	 ssram0_ce_n,
-	   output 	 ssram1_ce_n,
-	   output 	 ssram_we_n,
-	   output 	 ssram_adv_n,
-	   output 	 ssram_adsp_n,
-	   output 	 ssram_gw_n,
-	   output 	 ssram_adsc_n,
-	   output 	 ssram_clk,
-	   output 	 fl_oe_n,
-	   output 	 fl_ce_n,
-	   output 	 fl_we_n,
-	   input 	 fl_ry,
-	   output 	 fl_rst_n,
-	   output 	 fl_wp_n,
 	   output [12:0] sdram_addrbus,
 	   inout [31:0]  sdram_databus,
 	   output [1:0]  sdram_ba,
@@ -85,179 +67,167 @@ module soc(input 	 raw_clock_50,
 	   output [7:0]  vga_b,
 	   input 	 ps2kbd_clk,
 	   input 	 ps2kbd_data,
-	   output 	 reset_n,
-	   input 	 accel_int1,
-	   inout 	 accel_sclk,
-	   inout 	 accel_sdat);
+	   output 	 reset_n);
 
-   // System clock
-   logic 		 sysclock, rst_i, locked;
+  // System clock
+  logic 		 sysclock, rst_i, locked;
+  
+  if_wb cpubus();
+  if_wb iobus();
+  if_wb rambus();
+  if_wb rombus();
+  if_wb vectbus();
+  
+  assign reset_n = KEY[1];
+  assign rst_i = ~locked;
+  
+  parameter clkfreq = 1000000;
+  
+  sysclock pll0(.inclk0(raw_clock_50), .c0(sysclock), .areset(~KEY[0]), .c1(vga_clock), .locked(locked));
+  
+  // SPI wiring
+  logic [7:0] 		 spi_selects;
+  logic 		 miso, mosi, sclk;
+  
+  assign rtc_ss = spi_selects[4];
+  assign led_ss = spi_selects[1];
+  assign sd_ss = spi_selects[0];
+  assign sd_mosi = mosi;
+  assign ext_mosi = mosi;
+  assign miso = (~spi_selects[0] ? sd_miso : 1'b0) |
+		(~spi_selects[1] ? ext_miso : 1'b0) |
+		(~spi_selects[2] ? ext_miso : 1'b0) |
+		(~spi_selects[3] ? ext_miso : 1'b0) |
+		(~spi_selects[4] ? ext_miso : 1'b0) |
+		(~spi_selects[5] ? ext_miso : 1'b0);
+  assign sd_sclk = sclk;
+  assign ext_sclk = sclk;
+  
+  // LCD wiring
+  assign lcd_data = (lcd_rw ? 8'hzz : lcd_dataout);
+  
+  // External SDRAM, SSRAM & flash bus wiring
+  assign sdram_databus = (sdram_dir ? sdram_dataout : 32'hzzzzzzzz);
+   
+  // System Blinknlights
+  assign LEDR = { SW[17], io_interrupts, miso, mosi, sclk, ~sd_ss, cpu_halt, mmu_fault, cpubus.cyc };
+  assign LEDG = { supervisor, cache_hitmiss };
 
-   if_wb cpubus();
-   if_wb iobus();
-   if_wb rambus();
-   if_wb rombus();
-   if_wb vectbus();
-
-   assign reset_n = KEY[1];
-   assign rst_i = ~locked;
-
-   parameter clkfreq = 1000000;
-
-   sysclock pll0(.inclk0(raw_clock_50), .c0(sysclock), .areset(~KEY[0]), .c1(vga_clock), .locked(locked));
-
-   // SPI wiring
-   wire [7:0] 		 spi_selects;
-   wire 		 miso, mosi, sclk;
-
-   assign rtc_ss = spi_selects[4];
-   assign led_ss = spi_selects[1];
-   assign sd_ss = spi_selects[0];
-   assign sd_mosi = mosi;
-   assign ext_mosi = mosi;
-   assign miso = (~spi_selects[0] ? sd_miso : 1'b0) |
-		 (~spi_selects[1] ? ext_miso : 1'b0) |
-		 (~spi_selects[2] ? ext_miso : 1'b0) |
-		 (~spi_selects[3] ? ext_miso : 1'b0) |
-		 (~spi_selects[4] ? ext_miso : 1'b0) |
-		 (~spi_selects[5] ? ext_miso : 1'b0);
-   assign sd_sclk = sclk;
-   assign ext_sclk = sclk;
+  // Internal bus wiring
+  logic [31:0] 		 sdram_dataout;
+  logic [3:0] 		 exception;
+  logic [5:0] 		 io_interrupts;
+  logic [3:0] 		 cpu_interrupt;
+  logic [7:0] 		 lcd_dataout;
+  logic 		 cpu_halt;
+  logic 		 supervisor;
+  logic [3:0] 		 sdram_den_n;
+  logic 		 int_en, mmu_fault;
+  logic [1:0] 		 cache_hitmiss;
+  logic 		 sdram_dir;
    
-   // LCD wiring
-   assign lcd_data = (lcd_rw ? 8'hzz : lcd_dataout);
-   
-   // External SDRAM, SSRAM & flash bus wiring
-   assign sdram_databus = (sdram_dir ? sdram_dataout : 32'hzzzzzzzz);
-   assign fl_rst_n = 1'b1;
-   assign fl_oe_n = 1'b1;
-   assign fl_we_n = 1'b1;
-   assign fl_ce_n = 1'b1;
-   assign fl_wp_n = 1'b1;
-   assign fs_addrbus = ssram_addrout;
-   assign fs_databus = (~ssram_we_n ? ssram_dataout : 32'hzzzzzzzz);
-   
-   // System Blinknlights
-   assign LEDR = { SW[17], io_interrupts, miso, mosi, sclk, ~sd_ss, cpu_halt, mmu_fault, cpubus.cyc };
-   assign LEDG = { supervisor, cache_hitmiss };
-
-   // Internal bus wiring
-   logic [26:0] 	 ssram_addrout;
-   logic [31:0] 	 sdram_dataout;
-   logic [31:0] 	 ssram_dataout;
-   logic [3:0] 		 exception;
-   logic [5:0] 		 io_interrupts;
-   logic [3:0] 		 cpu_interrupt;
-   logic [7:0] 		 lcd_dataout;
-   logic 		 cpu_halt;
-   logic 		 supervisor;
-   logic [3:0] 		 sdram_den_n;
-   logic 		 int_en, mmu_fault;
-   logic [1:0] 		 cache_hitmiss;
-   logic 		 sdram_dir;
-   
-   // interrupt priority encoder
-   always_comb
-     begin
-	cpu_interrupt = 4'h0;
-	if (int_en)
-	  casex ({ mmu_fault, io_interrupts })
-	    7'b1xxxxxx: cpu_interrupt = EXC_MMU;
-	    7'b01xxxxx: cpu_interrupt = EXC_TIMER3;
-	    7'b001xxxx: cpu_interrupt = EXC_TIMER2;
-	    7'b0001xxx: cpu_interrupt = EXC_TIMER1;
-	    7'b00001xx: cpu_interrupt = EXC_TIMER0;
-	    7'b000001x: cpu_interrupt = EXC_UART0_RX;
-	    7'b0000001: cpu_interrupt = EXC_UART0_TX;
-	    7'b0000000: cpu_interrupt = EXC_RESET;
-	  endcase
-     end
-   
-   bexkat1p bexkat0(.clk_i(sysclock), .rst_i(rst_i),
-		    .bus(cpubus.master),
-		    .halt(cpu_halt),
-		    .supervisor(supervisor),
-		    .inter(cpu_interrupt[2:0]),
-		    .exception(exception),
-		    .int_en(int_en));
-   
-   mmu mmu0(.cpubus(cpubus.slave),
-	    .iobus(iobus.master),
-	    .rombus(rombus.master),
-	    .rambus(rambus.master),
-	    .vectbus(vectbus.master),
-	    .supervisor(supervisor),
-	    .fault(mmu_fault));
-   
-   sdram_controller_cache sdram0(.clk_i(sysclock),
-				 .mem_clk_o(sdram_clk),
-				 .rst_i(rst_i),
-				 .bus(rambus.slave),
-				 .stats_stb_i(cpubus.adr[31:28] == 4'h4),
-				 .cache_status(cache_hitmiss),
-				 .we_n(sdram_we_n),
-				 .cs_n(sdram_cs_n),
-				 .cke(sdram_cke),
-				 .cas_n(sdram_cas_n),
-				 .ras_n(sdram_ras_n),
-				 .dqm(sdram_dqm),
-				 .ba(sdram_ba),
-				 .addrbus_out(sdram_addrbus),
-				 .databus_in(sdram_databus),
-				 .databus_out(sdram_dataout),
-				 .databus_dir(sdram_dir));
-   
-   iocontroller
-     #(.clkfreq(clkfreq)) io0(.clk_i(sysclock),
-			      .rst_i(rst_i),
-			      .bus(iobus.slave),
-			      .miso(miso),
-			      .mosi(mosi),
-			      .sclk(sclk),
-			      .spi_selects(spi_selects),
-			      .sd_wp(sd_wp_n),
-			      .lcd_e(lcd_e),
-			      .lcd_data(lcd_dataout),
-			      .lcd_rs(lcd_rs),
-			      .lcd_on(lcd_on),
-			      .lcd_rw(lcd_rw),
-			      .interrupts(io_interrupts),
-			      .rx0(serial0_rx),
-			      .tx0(serial0_tx),
-			      .rts0(serial0_rts), 
-			      .cts0(serial0_cts),
-			      .tx1(serial1_tx),
-			      .rx1(serial1_rx),
-			      .tx2(serial2_tx),
-			      .rx2(serial2_rx),
-			      .rts2(serial2_rts),
-			      .cts2(serial2_cts),
-			      .sw(SW[15:0]),
-			      .ps2kbd({ps2kbd_clk, ps2kbd_data}),
-			      .hex7(HEX7),
-			      .hex6(HEX6),
-			      .hex5(HEX5),
-			      .hex4(HEX4),
-			      .hex3(HEX3),
-			      .hex2(HEX2),
-			      .hex1(HEX1),
-			      .hex0(HEX0),
-			      .matrix_a(matrix_a),
-			      .matrix_b(matrix_b),
-			      .matrix_c(matrix_c),
-			      .matrix_stb(matrix_stb),
-			      .matrix_oe_n(matrix_oe_n),
-			      .matrix_clk(matrix_clk),
-			      .matrix0(matrix0),
-			      .matrix1(matrix1));
-   
-   bios bios0(.clk_i(sysclock),
-	      .rst_i(rst_i),
-	      .rombus(rombus.slave),
-	      .vectbus(vectbus.slave),
-	      .select(SW[17]));
-
-   /*
+  // interrupt priority encoder
+  always_comb
+    begin
+      cpu_interrupt = 4'h0;
+      if (int_en)
+	casex ({ mmu_fault, io_interrupts })
+	  7'b1xxxxxx: cpu_interrupt = EXC_MMU;
+	  7'b01xxxxx: cpu_interrupt = EXC_TIMER3;
+	  7'b001xxxx: cpu_interrupt = EXC_TIMER2;
+	  7'b0001xxx: cpu_interrupt = EXC_TIMER1;
+	  7'b00001xx: cpu_interrupt = EXC_TIMER0;
+	  7'b000001x: cpu_interrupt = EXC_UART0_RX;
+	  7'b0000001: cpu_interrupt = EXC_UART0_TX;
+	  7'b0000000: cpu_interrupt = EXC_RESET;
+	endcase
+    end
+  
+  bexkat1p bexkat0(.clk_i(sysclock), .rst_i(rst_i),
+		   .bus(cpubus.master),
+		   .halt(cpu_halt),
+		   .supervisor(supervisor),
+		   .inter(cpu_interrupt[2:0]),
+		   .exception(exception),
+		   .int_en(int_en));
+  
+  mmu mmu0(.cpubus(cpubus.slave),
+	   .iobus(iobus.master),
+	   .rombus(rombus.master),
+	   .rambus(rambus.master),
+	   .vectbus(vectbus.master),
+	   .supervisor(supervisor),
+	   .fault(mmu_fault));
+  
+  sdram_controller_cache sdram0(.clk_i(sysclock),
+				.mem_clk_o(sdram_clk),
+				.rst_i(rst_i),
+				.bus(rambus.slave),
+				.stats_stb_i(cpubus.adr[31:28] == 4'h4),
+				.cache_status(cache_hitmiss),
+				.we_n(sdram_we_n),
+				.cs_n(sdram_cs_n),
+				.cke(sdram_cke),
+				.cas_n(sdram_cas_n),
+				.ras_n(sdram_ras_n),
+				.dqm(sdram_dqm),
+				.ba(sdram_ba),
+				.addrbus_out(sdram_addrbus),
+				.databus_in(sdram_databus),
+				.databus_out(sdram_dataout),
+				.databus_dir(sdram_dir));
+  
+  iocontroller
+    #(.clkfreq(clkfreq)) io0(.clk_i(sysclock),
+			     .rst_i(rst_i),
+			     .bus(iobus.slave),
+			     .miso(miso),
+			     .mosi(mosi),
+			     .sclk(sclk),
+			     .spi_selects(spi_selects),
+			     .sd_wp(sd_wp_n),
+			     .lcd_e(lcd_e),
+			     .lcd_data(lcd_dataout),
+			     .lcd_rs(lcd_rs),
+			     .lcd_on(lcd_on),
+			     .lcd_rw(lcd_rw),
+			     .interrupts(io_interrupts),
+			     .rx0(serial0_rx),
+			     .tx0(serial0_tx),
+			     .rts0(serial0_rts), 
+			     .cts0(serial0_cts),
+			     .tx1(serial1_tx),
+			     .rx1(serial1_rx),
+			     .tx2(serial2_tx),
+			     .rx2(serial2_rx),
+			     .rts2(serial2_rts),
+			     .cts2(serial2_cts),
+			     .sw(SW[15:0]),
+			     .ps2kbd({ps2kbd_clk, ps2kbd_data}),
+			     .hex7(HEX7),
+			     .hex6(HEX6),
+			     .hex5(HEX5),
+			     .hex4(HEX4),
+			     .hex3(HEX3),
+			     .hex2(HEX2),
+			     .hex1(HEX1),
+			     .hex0(HEX0),
+			     .matrix_a(matrix_a),
+			     .matrix_b(matrix_b),
+			     .matrix_c(matrix_c),
+			     .matrix_stb(matrix_stb),
+			     .matrix_oe_n(matrix_oe_n),
+			     .matrix_clk(matrix_clk),
+			     .matrix0(matrix0),
+			     .matrix1(matrix1));
+  
+  bios bios0(.clk_i(sysclock),
+	     .rst_i(rst_i),
+	     .rombus(rombus.slave),
+	     .vectbus(vectbus.slave),
+	     .select(SW[17]));
+  
+  /*
    logic [21:0] vga_mem_addr;
    logic 	vga_mem_cyc, vga_mem_we, vga_mem_stb;
    logic [31:0] vga_mem_dat_i, vga_mem_dat_o;
