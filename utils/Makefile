@@ -7,5 +7,5 @@ default: $(TOOLS)
 	convert -size 128x64 -depth 8 gray:raw.bmp font88.bmp
 
 clean:
-	rm -f *.o $(TOOLS) *.bmp
+	rm -f *.o $(TOOLS) *.bmp *.mif
 

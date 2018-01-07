@@ -67,7 +67,7 @@ module mmu(if_wb.slave  cpubus,
 	    end
 	  4'hf: // vectors
 	    begin
-	       rombus.stb = cpubus.stb;
+	       vectbus.stb = cpubus.stb;
 	       cpubus.dat_o = vectbus.dat_i;
 	       cpubus.ack = vectbus.ack;
 	       cpubus.stall = vectbus.stall;

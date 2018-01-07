@@ -41,6 +41,6 @@ module bios(input 	clk_i,
   vectors vecram0(.clock(clk_i),
 		  .q(vectbus.dat_o),
 		  .rden(vectbus.cyc & vectbus.stb),
-		  .address(vectbus.adr[6:2]));
+		  .address(vectbus.adr[2]));
   
 endmodule
