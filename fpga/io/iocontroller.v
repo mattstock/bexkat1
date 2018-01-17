@@ -301,7 +301,7 @@ timerint timerint0(.clk_i(clk_i), .rst_i(rst_i),
 		   .adr_i(bus.adr[3:0]),
 		   .interrupt(timer_interrupts));
 
-  segdigits segdigits0(.in(segreg), 
+  segdigits segdigits0(.in((sw[10] ? segreg : bus.adr)), 
 		       .out0(hex0),
 		       .out1(hex1),
 		       .out2(hex2),

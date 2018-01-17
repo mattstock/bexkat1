@@ -151,7 +151,8 @@ module soc(input 	 raw_clock_50,
 		   .exception(exception),
 		   .int_en(int_en));
   
-  mmu mmu0(.cpubus(cpubus.slave),
+  mmu mmu0(.clk_i(sysclock), .rst_i(rst_i),
+	   .cpubus(cpubus.slave),
 	   .iobus(iobus.master),
 	   .rombus(rombus.master),
 	   .rambus(rambus.master),
