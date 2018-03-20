@@ -45,18 +45,18 @@ module iocontroller
    output 	      matrix_b,
    output 	      matrix_c);
 
-  typedef enum 	      bit [4:0] { S_IDLE,
-				  S_DONE,
-				  S_SWLED,
-				  S_UART0,
-				  S_UART1,
-				  S_PS2,
-				  S_LCD,
-				  S_SPI,
-				  S_TIMER,
-				  S_MATRIX,
-				  S_SEGFAN, 
-				  S_UART2
+  typedef enum 	      bit [4:0] { S_IDLE=5'h00,
+				  S_DONE=5'h01,
+				  S_SEGFAN=5'h10,
+				  S_SWLED=5'h11,
+				  S_UART0=5'h12,
+				  S_UART1=5'h13,
+				  S_PS2=5'h14,
+				  S_LCD=5'h16,
+				  S_SPI=5'h17,
+				  S_TIMER=5'h18,
+				  S_MATRIX=5'h1c,
+				  S_UART2=5'h1e
 				  } state_t;
   
   // various programmable registers
@@ -105,16 +105,16 @@ module iocontroller
       case (state)
 	S_IDLE:
 	  if (bus.cyc && bus.stb)
-            state_next = state_t'({ 1'b0, bus.adr[13:10]}); // the state numbers are driven by the address map
+            state_next = state_t'({ 1'b1, bus.adr[15:12]}); // the state numbers are driven by the address map
 	S_SEGFAN: // LED and fan in place
 	  begin
 	    if (bus.we)
 	      begin
-		if (bus.adr[0] == 1'b0)
+		if (bus.adr[2] == 1'b0)
 		  segreg_next = bus.dat_i;
 	      end
 	    else
-              result_next = (bus.adr[0] ? 32'h0 : segreg); 
+              result_next = (bus.adr[2] ? 32'h0 : segreg); 
 	    state_next = S_DONE;
 	  end
 	S_SWLED: // switches and leds
@@ -183,7 +183,8 @@ module iocontroller
 	  end
 	S_DONE:
 	  state_next = S_IDLE;
-	default: 
+	default:
+	  // if we get an invalid address, just ack it immediately
 	  state_next = S_DONE;
       endcase  
     end
@@ -196,7 +197,7 @@ module iocontroller
 				  .dat_i(bus.dat_i),
 				  .dat_o(uart0_out),
 				  .cyc_i(bus.cyc),
-				  .adr_i(bus.adr[0]),
+				  .adr_i(bus.adr[2]),
 				  .ack_o(uart0_ack),
 				  .rx(rx0), 
 				  .tx(tx0),
@@ -211,7 +212,7 @@ module iocontroller
 				  .dat_i(bus.dat_i),
 				  .dat_o(uart1_out),
 				  .cyc_i(bus.cyc),
-				  .adr_i(bus.adr[0]),
+				  .adr_i(bus.adr[2]),
 				  .ack_o(uart1_ack),
 				  .rx(rx1),
 				  .tx(tx1));
@@ -224,7 +225,7 @@ module iocontroller
 				  .dat_i(bus.dat_i),
 				  .dat_o(uart2_out),
 				  .cyc_i(bus.cyc),
-				  .adr_i(bus.adr[0]),
+				  .adr_i(bus.adr[2]),
 				  .ack_o(uart2_ack),
 				  .rx(rx2),
 				  .tx(tx2),
@@ -234,7 +235,7 @@ module iocontroller
   led_matrix rgbmatrix0(.clk_i(clk_i), .rst_i(rst_i),
 			.dat_i(bus.dat_i),
 			.dat_o(matrix_out),
-			.adr_i(bus.adr[9:0]),
+			.adr_i(bus.adr[11:2]),
 			.sel_i(bus.sel),
 			.we_i(bus.we),
 			.stb_i(state == S_MATRIX),
@@ -254,7 +255,7 @@ module iocontroller
 		  .cyc_i(bus.cyc),
 		  .dat_i(bus.dat_i),
 		  .ack_o(lcd_ack),
-		  .adr_i(bus.adr[6:0]),
+		  .adr_i(bus.adr[8:2]),
 		  .dat_o(lcd_out),
 		  .e(lcd_e),
 		  .data_out(lcd_data),
@@ -271,7 +272,7 @@ module iocontroller
 				       .dat_i(bus.dat_i),
 				       .dat_o(spi_out),
 				       .ack_o(spi_ack),
-				       .adr_i(bus.adr[0]),
+				       .adr_i(bus.adr[2]),
 				       .miso(miso),
 				       .mosi(mosi),
 				       .sclk(sclk),
@@ -286,22 +287,22 @@ module iocontroller
 		  .dat_i(bus.dat_i),
 		  .dat_o(ps2kbd_out),
 		  .ack_o(ps2kbd_ack),
-		  .adr_i(bus.adr[0]),
+		  .adr_i(bus.adr[2]),
 		  .ps2_clock(ps2kbd[1]),
 		  .ps2_data(ps2kbd[0]));
 
-timerint timerint0(.clk_i(clk_i), .rst_i(rst_i),
-		   .cyc_i(bus.cyc),
-		   .sel_i(bus.sel),
-		   .we_i(bus.we),
-		   .stb_i(state == S_TIMER),
-		   .dat_i(bus.dat_i),
-		   .dat_o(timer_out),
-		   .ack_o(timer_ack),
-		   .adr_i(bus.adr[3:0]),
-		   .interrupt(timer_interrupts));
+  timerint timerint0(.clk_i(clk_i), .rst_i(rst_i),
+		     .cyc_i(bus.cyc),
+		     .sel_i(bus.sel),
+		     .we_i(bus.we),
+		     .stb_i(state == S_TIMER),
+		     .dat_i(bus.dat_i),
+		     .dat_o(timer_out),
+		     .ack_o(timer_ack),
+		     .adr_i(bus.adr[5:2]),
+		     .interrupt(timer_interrupts));
 
-  segdigits segdigits0(.in((sw[10] ? segreg : bus.adr)), 
+  segdigits segdigits0(.in((!sw[10] ? segreg : bus.adr)), 
 		       .out0(hex0),
 		       .out1(hex1),
 		       .out2(hex2),

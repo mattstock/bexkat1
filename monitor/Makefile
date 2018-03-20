@@ -59,8 +59,8 @@ librawsd.a: ff.o mmc.o gettime.o
 	$(RANLIB) $@
 
 
-tests: tests.o vectors.o
-	$(CC) -T profile-$(BOARD).ld -nostartfiles -o $@ $^ $(LDLIBS)
+tests: tests.o
+	$(CC) -nostartfiles -o $@ $^
 
 fileio: fileio.o
 	$(CC) $(LDFLAGS) -o $@ $^

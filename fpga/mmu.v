@@ -10,28 +10,7 @@ module mmu(input        clk_i,
 	   input        supervisor,
 	   output       fault);
 
-  typedef enum 		bit { S_ACTIVE, S_CHANGE } state_t;
-  
-  logic [3:0] 		active, active_next;
-  logic [3:0] 		count, count_next;
-  logic 		active_stall, active_ack, active_stb;
-  state_t               state, state_next;
-  
   assign fault = 1'b0;
-
-  always_ff @(posedge clk_i or posedge rst_i)
-    if (rst_i)
-      begin
-	active <= 4'h0;
-	count <= 4'h0;
-	state <= S_ACTIVE;
-      end
-    else
-      begin
-	active <= active_next;
-	count <= count_next;
-	state <= state_next;
-      end
 
   // fixed wiring
   always_comb
@@ -58,7 +37,38 @@ module mmu(input        clk_i,
       vectbus.adr = cpubus.adr;
     end // always_comb
 
-  // switching based on the active slave
+  logic state, state_next;
+  logic [3:0] active, active_next;
+  
+  always_ff @(posedge clk_i or posedge rst_i)
+    if (rst_i)
+      begin
+	active <= 4'hf;
+	state <= 1'b0;
+      end
+    else
+      begin
+	active <= active_next;
+	state <= state_next;
+      end
+
+  always_comb
+    begin
+      active_next = active;
+      state_next = state;
+      case (state)
+	1'b0:
+	  if (cpubus.cyc)
+	    begin
+	      active_next = cpubus.adr[31:28];
+	      state_next = 1'b1;
+	    end
+	1'b1:
+	  if (!cpubus.cyc)
+	    state_next = 1'b0;
+      endcase
+    end
+      
   always_comb
     begin
       rambus.stb = 1'b0;
@@ -67,93 +77,39 @@ module mmu(input        clk_i,
       vectbus.stb = 1'b0;
       cpubus.dat_o = 32'h0;
       cpubus.ack = 1'b0;
-      active_stall = 1'b0;
-      active_ack = 1'b0;
-      case (active)
+      cpubus.stall = 1'b0;
+      
+      case (state ? active : cpubus.adr[31:28])
 	4'h0: // 128MB (32M x 32) SDRAM
 	  begin
-	    rambus.stb = active_stb;
+	    rambus.stb = cpubus.stb;
 	    cpubus.dat_o = rambus.dat_i;
 	    cpubus.ack = rambus.ack;
-	    active_stall = rambus.stall;
-	    active_ack = rambus.ack;
+	    cpubus.stall = rambus.stall;
 	  end
 	4'h3: // IO
 	  begin	    
-	    iobus.stb = active_stb;
+	    iobus.stb = cpubus.stb;
 	    cpubus.dat_o = iobus.dat_i;
 	    cpubus.ack = iobus.ack;
-	    active_stall = iobus.stall;
-	    active_ack = iobus.ack;
+	    cpubus.stall = iobus.stall;
 	  end
 	4'h7: // BIOS
 	  begin
-	    rombus.stb = active_stb;
+	    rombus.stb = cpubus.stb;
 	    cpubus.dat_o = rombus.dat_i;
 	    cpubus.ack = rombus.ack;
-	    active_stall = rombus.stall;
-	    active_ack = rombus.ack;
+	    cpubus.stall = rombus.stall;
 	  end
 	4'hf: // vectors
 	  begin
-	    vectbus.stb = active_stb;
+	    vectbus.stb = cpubus.stb;
 	    cpubus.dat_o = vectbus.dat_i;
 	    cpubus.ack = vectbus.ack;
-	    active_stall = vectbus.stall;
-	    active_ack = vectbus.ack;
+	    cpubus.stall = vectbus.stall;
 	  end
 	default:
 	  begin end
       endcase // case (active)
-    end
-
-  // track the requests in flight to the active slave
-  always_comb
-    begin
-      count_next = count;
-      if (cpubus.cyc)
-	begin
-	  if (cpubus.stb && !active_stall && !cpubus.stall)
-	    begin
-	      if (!active_ack)
-		count_next = count + 4'h1;
-	    end
-	  else
-	    if (active_ack)
-	      count_next = count - 4'h1;
-	end // if (cpubus.cyc)
-      else
-	count_next = 4'h0;
-    end
-
-  // only change slaves where the in flight is zero
-  // stall the cpu until that time
-  always_comb
-    begin
-      state_next = state;
-      active_next = active;
-      cpubus.stall = active_stall;
-      active_stb = cpubus.stb;
-      case (state)
-	S_ACTIVE:
-	  if (cpubus.cyc && cpubus.stb)
-	    if (active != cpubus.adr[31:28])
-	      begin
-		cpubus.stall = 1'b1;
-		active_stb = 1'b0;
-		if (count == 4'b0)
-		  begin
-		    state_next = S_CHANGE;
-		    active_next = cpubus.adr[31:28];
-		  end
-	      end
-	S_CHANGE:
-	  begin
-	    active_stb = 1'b0;
-	    cpubus.stall = 1'b1;
-	    state_next = S_ACTIVE;
-	  end
-	endcase // case S_CHANGE
-      end // always_comb
-  
+    end // always_comb
 endmodule

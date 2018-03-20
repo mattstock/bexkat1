@@ -72,11 +72,14 @@ module soc(input 	 raw_clock_50,
   // System clock
   logic 		 sysclock, rst_i, locked;
   
-  if_wb cpubus();
+  if_wb ins_bus();
+  if_wb dat_bus();
   if_wb iobus();
   if_wb rambus();
-  if_wb rombus();
-  if_wb vectbus();
+  if_wb rombus0();
+  if_wb rombus1();
+  if_wb vectbus0();
+  if_wb vectbus1();
   
   assign reset_n = KEY[1];
   assign rst_i = ~locked;
@@ -110,8 +113,15 @@ module soc(input 	 raw_clock_50,
   assign sdram_databus = (sdram_dir ? sdram_dataout : 32'hzzzzzzzz);
    
   // System Blinknlights
-  assign LEDR = { SW[17], io_interrupts, miso, mosi, sclk, ~sd_ss, cpu_halt, mmu_fault, cpubus.cyc };
-  assign LEDG = { supervisor, cache_hitmiss };
+  assign LEDR[7] = rambus.stb;
+  assign LEDR[6] = rombus1.stb;
+  assign LEDR[5] = rombus0.stb;  
+  assign LEDR[4] = iobus.stb;
+  assign LEDR[3:0] = cpu_interrupt;
+  assign LEDG[8] = cpu_halt;
+  assign LEDG[7:5] = { dat_bus.cyc, dat_bus.stb, dat_bus.ack };
+  assign LEDG[4:2] = { ins_bus.cyc, ins_bus.stb, ins_bus.ack };
+  assign LEDG[1:0] = cache_hitmiss;
 
   // Internal bus wiring
   logic [31:0] 		 sdram_dataout;
@@ -122,10 +132,13 @@ module soc(input 	 raw_clock_50,
   logic 		 cpu_halt;
   logic 		 supervisor;
   logic [3:0] 		 sdram_den_n;
-  logic 		 int_en, mmu_fault;
+  logic 		 int_en;
+  logic 		 insmmu_fault, datmmu_fault, mmu_fault;
   logic [1:0] 		 cache_hitmiss;
   logic 		 sdram_dir;
-   
+
+  always mmu_fault = insmmu_fault | datmmu_fault;
+  
   // interrupt priority encoder
   always_comb
     begin
@@ -142,29 +155,36 @@ module soc(input 	 raw_clock_50,
 	  7'b0000000: cpu_interrupt = EXC_RESET;
 	endcase
     end
-  
-  bexkat1p bexkat0(.clk_i(sysclock), .rst_i(rst_i),
-		   .bus(cpubus.master),
-		   .halt(cpu_halt),
-		   .supervisor(supervisor),
-		   .inter(cpu_interrupt[2:0]),
-		   .exception(exception),
-		   .int_en(int_en));
-  
-  mmu mmu0(.clk_i(sysclock), .rst_i(rst_i),
-	   .cpubus(cpubus.slave),
-	   .iobus(iobus.master),
-	   .rombus(rombus.master),
-	   .rambus(rambus.master),
-	   .vectbus(vectbus.master),
-	   .supervisor(supervisor),
-	   .fault(mmu_fault));
+ 
+  bexkat1p cpu0(.clk_i(sysclock), .rst_i(rst_i),
+		.halt(cpu_halt),
+		.inter(cpu_interrupt[2:0]),
+		.exception(exception),
+		.supervisor(supervisor),
+		.int_en(int_en),
+		.ins_bus(ins_bus.master),
+		.dat_bus(dat_bus.master));
+ 
+  mmu ins_mmu0(.clk_i(sysclock), .rst_i(rst_i),
+	       .cpubus(ins_bus.slave),
+	       .rombus(rombus0.master),
+	       .vectbus(vectbus0.master),
+	       .supervisor(supervisor),
+	       .fault(insmmu_fault));
+  mmu dat_mmu0(.clk_i(sysclock), .rst_i(rst_i),
+	       .cpubus(dat_bus.slave),
+	       .iobus(iobus.master),
+	       .rombus(rombus1.master),
+	       .rambus(rambus.master),
+	       .vectbus(vectbus1.master),
+	       .supervisor(supervisor),
+	       .fault(datmmu_fault));
   
   sdram_controller_cache sdram0(.clk_i(sysclock),
 				.mem_clk_o(sdram_clk),
 				.rst_i(rst_i),
 				.bus(rambus.slave),
-				.stats_stb_i(cpubus.adr[31:28] == 4'h4),
+				.stats_stb_i(1'b0),
 				.cache_status(cache_hitmiss),
 				.we_n(sdram_we_n),
 				.cs_n(sdram_cs_n),
@@ -224,8 +244,10 @@ module soc(input 	 raw_clock_50,
   
   bios bios0(.clk_i(sysclock),
 	     .rst_i(rst_i),
-	     .rombus(rombus.slave),
-	     .vectbus(vectbus.slave),
+	     .rombus0(rombus0.slave),
+	     .rombus1(rombus1.slave),
+	     .vectbus0(vectbus0.slave),
+	     .vectbus1(vectbus1.slave),
 	     .select(SW[17]));
   
   /*
