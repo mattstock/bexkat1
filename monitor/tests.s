@@ -28,15 +28,34 @@
 
 .globl main
 main:
-	ldiu %0, 0x2000
-	ldiu %6, 'a'
-busy:	ldd.l %1, serial2_base
-	and %1, %1, %0
-	cmp %1, %0
-	bne busy
-	std.l %6, serial2_base
-done:	bra busy
+	ldiu %2, 0x8000
+	ldiu %3, 0
+	ldiu %4, 4
+busygc:	ldd.l %1, serial2_base
+	and %1, %1, %2
+	cmp %1, %2
+	bne busygc
+	ldd.l %0, serial2_base
+	st.b %0, (%3)
+	addi %3, %3, 1
+	cmp %3, %4
+	bne busygc
+	ldiu %3, 0
+wr:	ld.b %0, (%3)
+busypc:	ldd.l %1, serial2_base
+	ldiu %2, 0x2000
+	and %1, %1, %2
+	cmp %1, %2
+	bne busypc
+	std.l %0, serial2_base
+	addi %3, %3, 1
+	cmp %3, %4
+	bne wr
+done:	halt
 
 	.globl _exit
 _exit:
 	bra _exit
+
+	.globl putchar
+	rts

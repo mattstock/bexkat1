@@ -179,7 +179,9 @@ module soc(input 	 raw_clock_50,
 	       .vectbus(vectbus1.master),
 	       .supervisor(supervisor),
 	       .fault(datmmu_fault));
+
   
+/*  
   sdram_controller_cache sdram0(.clk_i(sysclock),
 				.mem_clk_o(sdram_clk),
 				.rst_i(rst_i),
@@ -197,7 +199,7 @@ module soc(input 	 raw_clock_50,
 				.databus_in(sdram_databus),
 				.databus_out(sdram_dataout),
 				.databus_dir(sdram_dir));
-  
+  */
   iocontroller
     #(.clkfreq(clkfreq)) io0(.clk_i(sysclock),
 			     .rst_i(rst_i),
