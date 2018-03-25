@@ -180,6 +180,8 @@ module soc(input 	 raw_clock_50,
 	       .supervisor(supervisor),
 	       .fault(datmmu_fault));
 
+wbmem wbram(.clk_i(sysclock), .rst_i(rst_i),
+	    .bus(rambus.slave));
   
 /*  
   sdram_controller_cache sdram0(.clk_i(sysclock),
