@@ -65,12 +65,10 @@ module max10(input [1:0]   raw_clock_50,
   wire 			   clk_i, locked, rst_i;
   wire 			   vga_clock, cpu_halt;
 
-  if_wb cpu_ibus();
-  if_wb cpu_dbus();
-  if_wb ram0_ibus();
-  if_wb ram0_dbus();
-  if_wb ram1_ibus();
-  if_wb ram1_dbus();
+  if_wb cpu_ibus(), cpu_dbus();
+  if_wb ram0_ibus(), ram0_dbus();
+  if_wb ram1_ibus(), ram1_dbus();
+  if_wb io_dbus(), io_seg(), io_uart();
   
   assign ledr[0] = cpu_ibus.cyc;
   assign ledr[1] = cpu_ibus.ack;
@@ -96,14 +94,15 @@ module max10(input [1:0]   raw_clock_50,
 
   mmu mmu_bus0(.clk_i(clk_i),
 	       .rst_i(rst_i),
-	       .cpubus(cpu_ibus.slave),
+	       .mbus(cpu_ibus.slave),
 	       .p0(ram0_ibus.master),
 	       .p7(ram1_ibus.master));
 
   mmu mmu_bus1(.clk_i(clk_i),
 	       .rst_i(rst_i),
-	       .cpubus(cpu_dbus.slave),
+	       .mbus(cpu_dbus.slave),
 	       .p0(ram0_dbus.master),
+	       .p3(io_dbus.master),
 	       .p7(ram1_dbus.master));
   
   wb16k ram0(.clk_i(clk_i),
@@ -115,5 +114,21 @@ module max10(input [1:0]   raw_clock_50,
 	    .rst_i(rst_i),
 	    .bus0(ram1_ibus.slave),
 	    .bus1(ram1_dbus.slave));
+
+  mmu #(.BASE(12)) mmu_bus2(.clk_i(clk_i),
+			    .rst_i(rst_i),
+			    .mbus(io_dbus.slave),
+			    .p0(io_seg.master),
+			    .p2(io_uart.master));
+  
+  segctrl #(.SEG(8)) io_seg0(.clk_i(clk_i),
+			     .rst_i(rst_i),
+			     .bus(io_seg.slave),
+			     .out0(hex0),
+			     .out1(hex1),
+			     .out2(hex2),
+			     .out3(hex3),
+			     .out4(hex4),
+			     .out5(hex5));
   
 endmodule
