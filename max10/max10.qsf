@@ -373,31 +373,6 @@ set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[16] -
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[12] -to basic|vcc -section_id basic
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[13] -to basic|vcc -section_id basic
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[19] -to basic|vcc -section_id basic
-set_global_assignment -name VERILOG_FILE ../../fpgalib/segctrl.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/hexdisp.v
-set_global_assignment -name VERILOG_FILE mmu.v
-set_global_assignment -name VERILOG_FILE wb4k.v
-set_global_assignment -name VERILOG_FILE wb16k.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/intcalc.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/fifo.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/registerfile.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/alu_comb.v
-set_global_assignment -name VERILOG_FILE mram.v
-set_global_assignment -name QIP_FILE mram.qip
-set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/bexkat1p.v
-set_global_assignment -name VERILOG_INCLUDE_FILE ../../fpgalib/wb.vh
-set_global_assignment -name QIP_FILE syspll.qip
-set_global_assignment -name SDC_FILE max10.sdc
-set_global_assignment -name VERILOG_FILE max10.v
-set_global_assignment -name SIGNALTAP_FILE stp1.stp
-set_global_assignment -name CDF_FILE output_files/max10.cdf
-set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/mem.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/memwb.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/execute.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/hazard.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/ifetch.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/idecode.v
-set_global_assignment -name QIP_FILE mram4k.qip
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[4] -to basic|gnd -section_id basic
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[11] -to basic|gnd -section_id basic
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[31] -to basic|vcc -section_id basic
@@ -1394,5 +1369,30 @@ set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_TRIGGER_BITS=482"
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_STORAGE_QUALIFIER_BITS=482" -section_id basic
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK=0000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000000" -section_id basic
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_INVERSION_MASK_LENGTH=1471" -section_id basic
+set_global_assignment -name VERILOG_FILE ../../fpgalib/mmu.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/segctrl.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/hexdisp.v
+set_global_assignment -name VERILOG_FILE wb4k.v
+set_global_assignment -name VERILOG_FILE wb16k.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/intcalc.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/fifo.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/registerfile.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/alu_comb.v
+set_global_assignment -name VERILOG_FILE mram.v
+set_global_assignment -name QIP_FILE mram.qip
+set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/bexkat1p.v
+set_global_assignment -name VERILOG_INCLUDE_FILE ../../fpgalib/wb.vh
+set_global_assignment -name QIP_FILE syspll.qip
+set_global_assignment -name SDC_FILE max10.sdc
+set_global_assignment -name VERILOG_FILE max10.v
+set_global_assignment -name SIGNALTAP_FILE stp1.stp
+set_global_assignment -name CDF_FILE output_files/max10.cdf
+set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/mem.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/memwb.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/execute.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/hazard.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/ifetch.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/idecode.v
+set_global_assignment -name QIP_FILE mram4k.qip
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 set_global_assignment -name SLD_FILE db/stp1_auto_stripped.stp
