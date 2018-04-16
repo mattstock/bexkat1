@@ -34,19 +34,19 @@ module wb16k
       end
     else
       begin
-	delay0 <= { delay0[0], bus0.stb };
-	delay1 <= { delay1[0], bus1.stb };
+	delay0 <= { delay0[0], bus0.cyc & bus0.stb };
+	delay1 <= { delay1[0], bus1.cyc & bus1.stb };
       end
 
   mram ram0(.clock(clk_i),
 	    .data_a(dat0_i),
 	    .address_a(bus0.adr[13:2]),
-	    .wren_a(bus0.we),
+	    .wren_a(bus0.cyc & bus0.stb & bus0.we),
 	    .q_a(dat0_o),
 	    .byteena_a(bus0.sel),
 	    .data_b(dat1_i),
 	    .address_b(bus1.adr[13:2]),
-	    .wren_b(bus1.we),
+	    .wren_b(bus1.cyc & bus1.stb & bus1.we),
 	    .q_b(dat1_o),
 	    .byteena_b(bus1.sel));
 

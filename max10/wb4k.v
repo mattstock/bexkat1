@@ -3,6 +3,7 @@
 module wb4k
   (input       clk_i,
    input       rst_i,
+   input       wren,
    if_wb.slave bus0,
    if_wb.slave bus1);
 
@@ -34,19 +35,19 @@ module wb4k
       end
     else
       begin
-	delay0 <= { delay0[0], bus0.stb };
-	delay1 <= { delay1[0], bus1.stb };
+	delay0 <= { delay0[0], bus0.cyc & bus0.stb };
+	delay1 <= { delay1[0], bus1.cyc & bus1.stb };
       end
 
   mram4k ram1(.clock(clk_i),
 	    .data_a(dat0_i),
 	    .address_a(bus0.adr[13:2]),
-	    .wren_a(bus0.we),
+	    .wren_a(bus0.we & bus0.cyc & bus0.stb),
 	    .q_a(dat0_o),
 	    .byteena_a(bus0.sel),
 	    .data_b(dat1_i),
 	    .address_b(bus1.adr[13:2]),
-	    .wren_b(bus1.we),
+	    .wren_b((wren ? bus1.we & bus1.cyc & bus1.stb : 1'b0)),
 	    .q_b(dat1_o),
 	    .byteena_b(bus1.sel));
 

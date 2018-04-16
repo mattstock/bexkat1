@@ -70,10 +70,11 @@ module max10(input [1:0]   raw_clock_50,
   if_wb ram1_ibus(), ram1_dbus();
   if_wb io_dbus(), io_seg(), io_uart();
   
-  assign ledr[0] = cpu_ibus.cyc;
-  assign ledr[1] = cpu_ibus.ack;
-  assign ledr[2] = cpu_dbus.cyc;
-  assign ledr[3] = cpu_dbus.ack;
+  assign ledr[9] = cpu_ibus.cyc;
+  assign ledr[8] = cpu_ibus.ack;
+  assign ledr[7] = cpu_dbus.cyc;
+  assign ledr[6] = cpu_dbus.ack;
+  assign ledr[0] = sw[0];
   
   assign reset_n = 1'h1;
   assign rst_i = ~locked;
@@ -112,6 +113,7 @@ module max10(input [1:0]   raw_clock_50,
 
   wb4k ram1(.clk_i(clk_i),
 	    .rst_i(rst_i),
+	    .wren(sw[0]),
 	    .bus0(ram1_ibus.slave),
 	    .bus1(ram1_dbus.slave));
 
