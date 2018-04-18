@@ -10,11 +10,11 @@ l:	std.l %0, seg_base
 	std.l %1, seg_base+4
 	lsri %1, %0, 8
 	std.l %1, seg_base+8
-	addi %1, %0, 12
+	lsri %1, %0, 12
 	std.l %1, seg_base+12
-	addi %1, %0, 16
+	lsri %1, %0, 16
 	std.l %1, seg_base+16
-	addi %1, %0, 20
+	lsri %1, %0, 20
 	std.l %1, seg_base+20
 	addi %0, %0, 1
 	bra l
