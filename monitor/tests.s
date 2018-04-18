@@ -4,8 +4,13 @@
 .globl main
 main:
 	ldi %15, 0x1000
-	ldiu %0, 1
-l:	std.l %0, seg_base
+	ldi %0, 0xdeadbeef
+	bsr printhex
+	halt
+	
+printhex:
+	push %1
+	std.l %0, seg_base
 	lsri %1, %0, 4
 	std.l %1, seg_base+4
 	lsri %1, %0, 8
@@ -16,6 +21,5 @@ l:	std.l %0, seg_base
 	std.l %1, seg_base+16
 	lsri %1, %0, 20
 	std.l %1, seg_base+20
-	addi %0, %0, 1
-	bra l
-	halt
+	pop %1
+	rts
