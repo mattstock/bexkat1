@@ -34,8 +34,16 @@ module wb16k
       end
     else
       begin
-	delay0 <= { delay0[0], bus0.cyc & bus0.stb };
-	delay1 <= { delay1[0], bus1.cyc & bus1.stb };
+	if (bus0.cyc)
+	  begin
+	    delay0 <= { delay0[0], bus0.cyc & bus0.stb };
+	    delay1 <= { delay1[0], bus1.cyc & bus1.stb };
+	  end
+	else
+	  begin
+	    delay0 <= 2'h0;
+	    delay1 <= 2'h0;
+	  end
       end
 
   mram ram0(.clock(clk_i),
