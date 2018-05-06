@@ -6,47 +6,29 @@ main:
 	# config timer0 interrupt
 	ldiu %0, 0
 	std.l %0, 0x0
-	ldi %0, 0x300
+	ldi %0, 0x63
 	ldi %1, timers_base
 	st.l %0, 16(%1)
 	ldi %0, 0x11
 	st.l %0, (%1)
-
-	ldiu %0, 0x7777
-	ldiu %1, 0x1111
-	ldiu %2, 0x2222
 	
+	# enable timer interrupt
 	sti
-l:	bsr doathing
-	push %0
+l:	ldiu %0, 0x1111
+	bsr doop
 	ldiu %0, 0x3333
-	pop %0
-	ldiu %3, 0x7777
-	cmp %0, %3
-	bne fail
-	ldiu %3, 0x1111
-	cmp %1, %3
-	bne fail
-	ldiu %3, 0x2222
-	cmp %2, %3
-	bne fail
-	bra l
+	ldiu %0, 0x4444
+	ldiu %0, 0x5555
+	ldiu %0, 0x6666
 	halt
 
-doathing:
-	push %0
-	mov.l %0, %4
-	bsr printhex
-	pop %0
-	ldiu %3, 0x7777
-	cmp %0, %3
-	bne fail
-	ldiu %3, 0x1111
-	cmp %1, %3
-	bne fail
-	ldiu %3, 0x2222
-	cmp %2, %3
-	bne fail
+doop:	ldiu %0, 0x2222
+	ldiu %1, 0x1111
+	ldiu %1, 0x2222
+	ldiu %1, 0x3333
+	ldiu %1, 0x4444
+	ldiu %1, 0x5555
+	ldiu %1, 0x6666
 	rts
 	
 .globl _vectors_start
@@ -74,15 +56,19 @@ timer0:
 	push %1
 	push %2
 
-	addi %4, %4, 1
+#	addi %4, %4, 1
+#	mov.l %0, %4
+#	bsr printhex
 
 	ldi %1, timers_base
-	ldi %0, 0x300
-	ld.l %2, 48(%1)
-	add %0, %0, %2
-	st.l %0, 16(%1)
-	ldiu %0, 0x01
-	st.l %0, 4(%1)
+	ldi %0, 0x0
+	st.l %0, (%1)
+#	ldi %0, 0x100
+#	ld.l %2, 48(%1)
+#	add %0, %0, %2
+#	st.l %0, 16(%1)
+#	ldiu %0, 0x01
+#	st.l %0, 4(%1)
 	
 	pop %2
 	pop %1
@@ -115,4 +101,30 @@ printhex:
 	pop %1
 	rts
 
-fail:	halt
+getchar:
+	push %1
+	push %2
+	push %3
+	ldi %2, 0x8000
+gc_l:	ldd.l %1, serial0_base
+	and %3, %1, %2
+	cmp %3, %2
+	bne gc_l
+	andi %0, %1, 0xff
+	pop %3
+	pop %2
+	pop %1
+	rts
+
+putchar:
+	push %1
+	push %2
+	ldiu %2, 0x2000
+pc_l:	ldd.l %1, serial0_base
+	and %1, %1, %2
+	cmp %1, %2
+	bne pc_l
+	std.l %0, serial0_base
+	pop %2
+	pop %1
+	rts

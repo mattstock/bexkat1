@@ -26,27 +26,9 @@ module max10(input [1:0]   raw_clock_50,
 	     output 	   sd_sclk,
 	     output 	   rtc_ss,
 	     output 	   eth_ss,
-	     output 	   codec_pbdat,
-	     input 	   codec_reclrc,
-	     input 	   codec_pblrc,
-	     input 	   codec_recdat,
-	     inout 	   codec_sdin,
-	     inout 	   codec_sclk,
-	     input 	   codec_bclk,
-	     output 	   codec_mclk,
 	     input 	   rtc_miso,
 	     output 	   rtc_mosi,
 	     output 	   rtc_sclk,
-	     output [2:0]  matrix0,
-	     output [2:0]  matrix1,
-	     output 	   matrix_clk,
-	     output 	   matrix_oe_n,
-	     output 	   matrix_a, 
-	     output 	   matrix_b,
-	     output 	   matrix_c,
-	     output 	   matrix_stb,
-	     output 	   serial1_tx,
-	     input 	   serial1_rx,
 	     input 	   serial0_rx,
 	     input 	   serial0_cts,
 	     output 	   serial0_tx,
@@ -62,24 +44,30 @@ module max10(input [1:0]   raw_clock_50,
 	     input 	   ps2kbd_data);
 
   // System signals
-  wire 			   clk_i, locked, rst_i;
-  wire 			   vga_clock, cpu_halt;
-
+  logic 		   clk_i, locked, rst_i;
+  logic			   vga_clock, cpu_halt;
+  logic [1:0] 		   serial0_interrupts;
+  logic [3:0] 		   timer_interrupts;
+  logic 		   cpu_inter_en;
+  logic [3:0] 		   cpu_exception;
+  
   if_wb cpu_ibus(), cpu_dbus();
   if_wb ram0_ibus(), ram0_dbus();
   if_wb ram1_ibus(), ram1_dbus();
-  if_wb io_dbus(), io_seg(), io_uart();
+  if_wb io_dbus(), io_seg(), io_uart(), io_timer();
   
   assign ledr[9] = cpu_ibus.cyc;
   assign ledr[8] = cpu_ibus.ack;
   assign ledr[7] = cpu_dbus.cyc;
   assign ledr[6] = cpu_dbus.ack;
-  assign ledr[0] = sw[0];
+  assign ledr[5] = cpu_halt;
+  assign ledr[4] = cpu_inter_en;
+  assign ledr[3:0] = cpu_exception;
   
   assign reset_n = 1'h1;
   assign rst_i = ~locked;
   
-  parameter clkfreq = 1000000;
+  parameter clkfreq = 10000000;
   syspll pll0(.inclk0(raw_clock_50[0]),
 	      .areset(~ard_reset_n), 
 	      .locked(locked),
@@ -91,8 +79,16 @@ module max10(input [1:0]   raw_clock_50,
 		.ins_bus(cpu_ibus.master),
 		.dat_bus(cpu_dbus.master),
 		.halt(cpu_halt),
-		.inter(3'h0));
+		.int_en(cpu_inter_en),
+		.inter(cpu_exception));
 
+  interrupt_encoder intenc0(.clk_i(clk_i),
+			    .rst_i(rst_i),
+			    .timer_in(timer_interrupts),
+			    .serial0_in(serial0_interrupts),
+			    .enabled(cpu_inter_en),
+			    .cpu_exception(cpu_exception));
+  
   mmu mmu_bus0(.clk_i(clk_i),
 	       .rst_i(rst_i),
 	       .mbus(cpu_ibus.slave),
@@ -113,7 +109,7 @@ module max10(input [1:0]   raw_clock_50,
 
   wb4k ram1(.clk_i(clk_i),
 	    .rst_i(rst_i),
-	    .wren(sw[0]),
+	    .wren(1'b0),
 	    .bus0(ram1_ibus.slave),
 	    .bus1(ram1_dbus.slave));
 
@@ -121,16 +117,33 @@ module max10(input [1:0]   raw_clock_50,
 			    .rst_i(rst_i),
 			    .mbus(io_dbus.slave),
 			    .p0(io_seg.master),
-			    .p2(io_uart.master));
+			    .p2(io_uart.master),
+			    .p8(io_timer.master));
   
   segctrl #(.SEG(8)) io_seg0(.clk_i(clk_i),
 			     .rst_i(rst_i),
 			     .bus(io_seg.slave),
+			     .sw(sw),
 			     .out0(hex0),
 			     .out1(hex1),
 			     .out2(hex2),
 			     .out3(hex3),
 			     .out4(hex4),
 			     .out5(hex5));
+
+  uart #(.CLKFREQ(clkfreq),
+	 .BAUD(115200)) uart0(.clk_i(clk_i),
+			      .rst_i(rst_i),
+			      .bus(io_uart.slave),
+			      .tx(serial0_tx),
+			      .rx(serial0_rx),
+			      .cts(serial0_cts),
+			      .rts(serial0_rts),
+			      .interrupt(serial0_interrupts));
+
+  timerint timerint0(.clk_i(clk_i),
+		     .rst_i(rst_i),
+		     .bus(io_timer.slave),
+		     .interrupt(timer_interrupts));
   
 endmodule
