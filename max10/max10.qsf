@@ -42,7 +42,7 @@ set_global_assignment -name DEVICE 10M50DAF484C7G
 set_global_assignment -name TOP_LEVEL_ENTITY max10
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 16.1.0
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "13:46:59  DECEMBER 03, 2016"
-set_global_assignment -name LAST_QUARTUS_VERSION "17.1.1 Lite Edition"
+set_global_assignment -name LAST_QUARTUS_VERSION "18.0.0 Lite Edition"
 set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
 set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
 set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
@@ -336,7 +336,7 @@ set_global_assignment -name ENABLE_SIGNALTAP ON
 set_global_assignment -name USE_SIGNALTAP_FILE stp1.stp
 set_global_assignment -name SEARCH_PATH ../fpga/io
 set_global_assignment -name SEARCH_PATH ../fpga/cpu
-set_global_assignment -name TIMEQUEST_MULTICORNER_ANALYSIS ON
+set_global_assignment -name TIMING_ANALYZER_MULTICORNER_ANALYSIS ON
 set_global_assignment -name READ_OR_WRITE_IN_BYTE_ADDRESS ON
 set_location_assignment PIN_Y19 -to sd_miso
 set_location_assignment PIN_AA19 -to sd_mosi
@@ -371,39 +371,6 @@ set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[14] -
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[20] -to basic|vcc -section_id basic
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SEGMENT_SIZE=1024" -section_id basic
 set_global_assignment -name SLD_NODE_PARAMETER_ASSIGNMENT "SLD_SAMPLE_DEPTH=1024" -section_id basic
-set_global_assignment -name VERILOG_FILE ../../fpgalib/interrupt_encoder.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/timerint.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/uart/baudgen.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/uart/uart_tx.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/uart/uart_rx.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/uart/uart_fifo.v
-set_global_assignment -name QIP_FILE ../../fpgalib/uart/uart_fifo.qip
-set_global_assignment -name VERILOG_FILE ../../fpgalib/uart/uart.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/mmu.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/segctrl.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/hexdisp.v
-set_global_assignment -name VERILOG_FILE wb4k.v
-set_global_assignment -name VERILOG_FILE wb16k.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/intcalc.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/fifo.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/registerfile.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/alu_comb.v
-set_global_assignment -name VERILOG_FILE mram.v
-set_global_assignment -name QIP_FILE mram.qip
-set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/bexkat1p.v
-set_global_assignment -name VERILOG_INCLUDE_FILE ../../fpgalib/wb.vh
-set_global_assignment -name QIP_FILE syspll.qip
-set_global_assignment -name SDC_FILE max10.sdc
-set_global_assignment -name VERILOG_FILE max10.v
-set_global_assignment -name SIGNALTAP_FILE stp1.stp
-set_global_assignment -name CDF_FILE output_files/max10.cdf
-set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/mem.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/memwb.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/execute.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/hazard.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/ifetch.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/idecode.v
-set_global_assignment -name QIP_FILE mram4k.qip
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[5] -to basic|gnd -section_id basic
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[18] -to basic|vcc -section_id basic
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[23] -to basic|gnd -section_id basic
@@ -1888,5 +1855,36 @@ set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[26] -
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[27] -to basic|vcc -section_id basic
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[29] -to basic|vcc -section_id basic
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[31] -to basic|vcc -section_id basic
+set_global_assignment -name VERILOG_FILE ../../fpgalib/interrupt_encoder.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/timerint.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/uart/baudgen.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/uart/uart_tx.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/uart/uart_rx.v
+set_global_assignment -name QIP_FILE ../../fpgalib/uart/uart_fifo.qip
+set_global_assignment -name VERILOG_FILE ../../fpgalib/uart/uart.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/mmu.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/segctrl.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/hexdisp.v
+set_global_assignment -name VERILOG_FILE wb4k.v
+set_global_assignment -name VERILOG_FILE wb16k.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/intcalc.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/fifo.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/registerfile.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/alu_comb.v
+set_global_assignment -name QIP_FILE mram.qip
+set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/bexkat1p.v
+set_global_assignment -name VERILOG_INCLUDE_FILE ../../fpgalib/wb.vh
+set_global_assignment -name QIP_FILE syspll.qip
+set_global_assignment -name SDC_FILE max10.sdc
+set_global_assignment -name VERILOG_FILE max10.v
+set_global_assignment -name SIGNALTAP_FILE stp1.stp
+set_global_assignment -name CDF_FILE output_files/max10.cdf
+set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/mem.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/memwb.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/execute.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/hazard.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/ifetch.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/bexkat1/idecode.v
+set_global_assignment -name QIP_FILE mram4k.qip
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 set_global_assignment -name SLD_FILE db/stp1_auto_stripped.stp
