@@ -4,31 +4,51 @@
 .globl main
 main:
 	# config timer0 interrupt
-	ldiu %0, 0
-	std.l %0, 0x0
-	ldi %0, 0x63
+	ldi %0, 0x70
 	ldi %1, timers_base
 	st.l %0, 16(%1)
 	ldi %0, 0x11
 	st.l %0, (%1)
+
+	# Set up for stack tests
+	ldiu %0, 0x0
+	mov.l %14, %15
+	subi %13, %14, 4
+	subi %12, %13, 4
+	subi %11, %12, 4
+	subi %10, %11, 4
+	subi %9, %10, 4
+	subi %8, %9, 4
 	
 	# enable timer interrupt
 	sti
-l:	ldiu %0, 0x1111
-	bsr doop
-	ldiu %0, 0x3333
-	ldiu %0, 0x4444
-	ldiu %0, 0x5555
-	ldiu %0, 0x6666
+	
+l:	bsr doop
+	addi %0, %0, 1
+	# should be at the top of the stack
+	cmp %15, %14
+	bne fail
+	push %1
+	# one more deep
+	cmp %15, %13
+	bne fail
+	bsr printhex
+	# one more deep
+	cmp %15, %13
+	bne fail
+	pop %1
+	# should be at the top of the stack
+	cmp %15, %14
+	bne fail
+
+	bra l
 	halt
 
-doop:	ldiu %0, 0x2222
-	ldiu %1, 0x1111
-	ldiu %1, 0x2222
-	ldiu %1, 0x3333
-	ldiu %1, 0x4444
-	ldiu %1, 0x5555
-	ldiu %1, 0x6666
+fail:	halt
+	
+doop:	# we should be one deep in the stack
+	cmp %15, %13
+	bne fail
 	rts
 	
 .globl _vectors_start
@@ -52,33 +72,23 @@ _vectors_start:
 
 .globl timer0
 timer0:
-	push %0
-	push %1
-	push %2
-
-#	addi %4, %4, 1
-#	mov.l %0, %4
-#	bsr printhex
-
-	ldi %1, timers_base
-	ldi %0, 0x0
-	st.l %0, (%1)
-#	ldi %0, 0x100
-#	ld.l %2, 48(%1)
-#	add %0, %0, %2
-#	st.l %0, 16(%1)
-#	ldiu %0, 0x01
-#	st.l %0, 4(%1)
-	
-	pop %2
-	pop %1
-	pop %0
+	ldi %6, timers_base
+	ldi %5, 0x70
+	ld.l %4, 48(%6)
+	add %5, %5, %4
+	st.l %5, 16(%6)
+	ldiu %5, 0x01
+	st.l %5, 4(%6)
 	rti
 
 .globl printhex
 printhex:
+	cmp %15, %12
+	bne fail
 	push %1
 	push %2
+	cmp %15, %10
+	bne fail
 	ldi %2, seg_base
 	andi %1, %0, 0xf
 	st.l %1, (%2)
@@ -99,6 +109,8 @@ printhex:
 	st.l %1, 20(%2)
 	pop %2
 	pop %1
+	cmp %15, %12
+	bne fail
 	rts
 
 getchar:
