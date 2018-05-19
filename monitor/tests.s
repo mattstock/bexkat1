@@ -53,22 +53,22 @@ doop:	# we should be one deep in the stack
 	
 .globl _vectors_start
 _vectors_start:
-	jmpd _start # RESET
-	jmpd _start # MMU
+	jmpd fail # RESET
+	jmpd fail # MMU
 	jmpd timer0 # TIMER0
-	jmpd _start # TIMER1
-	jmpd _start # TIMER2
-	jmpd _start # TIMER3
-	jmpd _start # UART0_RX
-	jmpd _start # UART0_TX
-	jmpd _start # ILLOP
-	jmpd _start # CPU1
-	jmpd _start # CPU2
-	jmpd _start # CPU3
-	jmpd _start # TRAP0
-	jmpd _start # TRAP1
-	jmpd _start # TRAP2
-	jmpd _start # TRAP3
+	jmpd fail # TIMER1
+	jmpd fail # TIMER2
+	jmpd fail # TIMER3
+	jmpd fail # UART0_RX
+	jmpd fail # UART0_TX
+	jmpd fail # ILLOP
+	jmpd fail # CPU1
+	jmpd fail # CPU2
+	jmpd fail # CPU3
+	jmpd fail # TRAP0
+	jmpd fail # TRAP1
+	jmpd fail # TRAP2
+	jmpd fail # TRAP3
 
 .globl timer0
 timer0:
@@ -80,6 +80,9 @@ timer0:
 	ldiu %5, 0x01
 	st.l %5, 4(%6)
 	rti
+	halt
+	halt
+	halt
 
 .globl printhex
 printhex:
@@ -113,6 +116,10 @@ printhex:
 	bne fail
 	rts
 
+	halt
+	halt
+	halt
+	
 getchar:
 	push %1
 	push %2
@@ -128,6 +135,8 @@ gc_l:	ldd.l %1, serial0_base
 	pop %1
 	rts
 
+	halt
+	halt
 putchar:
 	push %1
 	push %2
@@ -140,3 +149,7 @@ pc_l:	ldd.l %1, serial0_base
 	pop %2
 	pop %1
 	rts
+
+	halt
+	halt
+	

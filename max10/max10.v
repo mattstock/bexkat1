@@ -82,8 +82,11 @@ module max10(input [1:0]   raw_clock_50,
 		.int_en(cpu_inter_en),
 		.inter(cpu_exception));
 
+  assign bus0_error = (cpu_ibus.cyc & cpu_ibus.stb & !ram1_ibus.stb);
+
   interrupt_encoder intenc0(.clk_i(clk_i),
 			    .rst_i(rst_i),
+			    .mmu(bus0_error),
 			    .timer_in(timer_interrupts),
 			    .serial0_in(serial0_interrupts),
 			    .enabled(cpu_inter_en),
@@ -94,7 +97,7 @@ module max10(input [1:0]   raw_clock_50,
 	       .mbus(cpu_ibus.slave),
 	       .p0(ram0_ibus.master),
 	       .p7(ram1_ibus.master));
-
+  
   mmu mmu_bus1(.clk_i(clk_i),
 	       .rst_i(rst_i),
 	       .mbus(cpu_dbus.slave),
