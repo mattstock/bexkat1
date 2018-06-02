@@ -4,7 +4,7 @@
 .globl main
 main:
 	# config timer0 interrupt
-	ldi %0, 0x800
+	ldi %0, 0x8000
 	ldi %1, timers_base
 	st.l %0, 16(%1)
 	ldi %0, 0x11
@@ -73,12 +73,16 @@ _vectors_start:
 .globl timer0
 timer0:
 	ldi %6, timers_base
-	ldi %5, 0x800
+	ldi %5, 0x8000
 	ld.l %4, 48(%6)
 	add %5, %5, %4
 	st.l %5, 16(%6)
 	ldiu %5, 0x01
 	st.l %5, 4(%6)
+	push %0
+	ldiu %0, 'a'
+	bsr putchar
+	pop %0
 	rti
 	halt
 	halt

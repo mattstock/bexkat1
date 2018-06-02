@@ -6,6 +6,7 @@ module max10(input [1:0]   raw_clock_50,
 	     input [1:0]   sw,
 	     input [1:0]   key,
 	     output [7:0]  ledr,
+`ifdef DDR3_EN
 	     output [14:0] ddr3_a,
 	     inout [15:0]  ddr3_dq,
 	     output [2:0]  ddr3_ba,
@@ -19,6 +20,21 @@ module max10(input [1:0]   raw_clock_50,
 	     output 	   ddr3_odt,
 	     output 	   ddr3_we_n,
 	     output 	   ddr3_cs_n,
+`endif
+`ifdef HDMI_EN
+	     output [23:0] hdmi_tx_d,
+	     output 	   hdmi_tx_clk,
+	     output 	   hdmi_tx_hs,
+	     output 	   hdmi_tx_vs,
+	     output 	   hdmi_tx_de,
+	     input 	   hdmi_tx_int,
+	     output 	   hdmi_i2c_scl,
+	     inout 	   hdmi_i2c_sda,
+	     output [3:0]  hdmi_i2s,
+	     output 	   hdmi_mclk,
+	     output 	   hdmi_lrclk,
+	     output 	   hdmi_sclk,
+`endif
 	     inout [43:0]  gpio0,
 	     inout [22:0]  gpio1);
   
@@ -35,19 +51,18 @@ module max10(input [1:0]   raw_clock_50,
   if_wb ram0_ibus(), ram0_dbus();
   if_wb ram1_ibus(), ram1_dbus();
   if_wb io_dbus(), io_seg(), io_uart(), io_timer();
+
+  assign gpio0[0] = 'bz;
+  assign gpio0[1] = serial0_rts;
+  assign gpio0[6:2] = 'bz;
+  assign gpio0[7] = serial0_tx;
+  assign gpio0[43:8] = 'bz;
+  assign gpio1[22:0] = 'bz;
+
+  assign serial0_cts = gpio0[9];
+  assign serial0_rx = gpio0[5];
   
-  assign gpio0[0] = serial0_tx;
-  assign gpio0[1] = 1'bz;
-  assign gpio0[2] = serial0_cts;
-  assign gpio0[43:3] = 40'bz;
-  assign gpio1[22:0] = 23'bz;
-  
-  assign serial0_rx = gpio0[1];
-  assign serial0_rts = gpio0[3];
-  assign ledr[7] = ~cpu_ibus.cyc;
-  assign ledr[6] = ~cpu_ibus.stb;
-  assign ledr[5] = ~cpu_ibus.ack;
-  assign ledr[4] = ~cpu_dbus.cyc;
+  assign ledr[7:4] = ~cpu_exception;
   assign ledr[3] = ~cpu_dbus.stb;
   assign ledr[2] = ~cpu_dbus.ack;
   assign ledr[1] = ~cpu_inter_en;
