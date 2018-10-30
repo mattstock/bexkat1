@@ -47,6 +47,7 @@ module max10(input [1:0]   raw_clock_50,
   if_wb cpu_ibus(), cpu_dbus();
   if_wb ram0_ibus(), ram0_dbus();
   if_wb ram1_ibus(), ram1_dbus();
+  if_wb cache0_dbus();
   if_wb io_dbus(), io_seg(), io_uart(), io_timer();
   
   assign ledr[9] = cpu_ibus.cyc;
@@ -93,10 +94,16 @@ module max10(input [1:0]   raw_clock_50,
   mmu mmu_bus1(.clk_i(clk_i),
 	       .rst_i(rst_i),
 	       .mbus(cpu_dbus.slave),
-	       .p0(ram0_dbus.master),
+	       .p0(cache0_dbus.master),
 	       .p3(io_dbus.master),
 	       .p7(ram1_dbus.master));
-  
+
+  cache #(.AWIDTH(13),
+	  .TAGSIZE(7)) cache0(.clk_i(clk_i), .rst_i(rst_i),
+			      .inbus(cache0_dbus.slave),
+			      .outbus(ram0_dbus.master),
+			      .stats_stb_i(1'b0));
+
   wb16k ram0(.clk_i(clk_i),
 	     .rst_i(rst_i),
 	     .bus0(ram0_ibus.slave),
