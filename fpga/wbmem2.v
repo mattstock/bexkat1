@@ -7,7 +7,19 @@ module wbmem2
    if_wb.slave bus1);
 
   logic [1:0]  delay0, delay1;
-  
+  logic [31:0] dat0_i, dat1_i, dat0_o, dat1_o;
+
+`ifdef NO_MODPORT_EXPRESSIONS
+  assign dat0_i = bus0.dat_s;
+  assign bus0.dat_m = dat0_o;
+  assign dat1_i = bus1.dat_s;
+  assign bus1.dat_m = dat1_o;
+`else
+  assign dat0_i = bus0.dat_i;
+  assign bus0.dat_o = dat0_o;
+  assign dat1_i = bus1.dat_i;
+  assign bus1.dat_o = dat1_o;
+`endif  
 
   assign bus0.ack = delay0[1];
   assign bus0.stall = 1'b0;
@@ -27,15 +39,15 @@ module wbmem2
       end
 
   mram ram0(.clock(clk_i),
-	    .data_a(bus0.dat_m),
+	    .data_a(dat0_i),
 	    .address_a(bus0.adr[15:2]),
 	    .wren_a(bus0.we),
-	    .q_a(bus0.dat_s),
+	    .q_a(dat0_o),
 	    .byteena_a(bus0.sel),
-	    .data_b(bus1.dat_m),
+	    .data_b(dat1_i),
 	    .address_b(bus1.adr[15:2]),
 	    .wren_b(bus1.we),
-	    .q_b(bus1.dat_s),
+	    .q_b(dat1_o),
 	    .byteena_b(bus1.sel));
 
 endmodule
