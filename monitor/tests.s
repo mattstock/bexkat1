@@ -10,6 +10,9 @@ main:
 	ldi %0, 0x11
 	st.l %0, (%1)
 
+	ldiu %0, 'b'
+	bsr putchar
+
 	# Set up for stack tests
 	ldiu %0, 0x0
 	mov.l %14, %15
