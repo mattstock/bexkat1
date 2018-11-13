@@ -302,6 +302,8 @@ set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to sw[2]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to sw[1]
 set_instance_assignment -name IO_STANDARD "3.3-V LVTTL" -to sw[0]
 
+set_global_assignment -name FORCE_CONFIGURATION_VCCIO OFF
+set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 set_global_assignment -name SYSTEMVERILOG_FILE max10lite.sv
 set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/bexkat2/registerfile.sv
 set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/bexkat2/intcalc.sv
@@ -327,5 +329,3 @@ set_global_assignment -name SDC_FILE max10lite.sdc
 set_global_assignment -name SIGNALTAP_FILE stp1.stp
 set_global_assignment -name CDF_FILE output_files/max10lite.cdf
 set_global_assignment -name QIP_FILE mram4k.qip
-set_global_assignment -name FORCE_CONFIGURATION_VCCIO OFF
-set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
