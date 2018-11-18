@@ -11,6 +11,11 @@ module max10lite(input [1:0]  raw_clock_50,
 		 output [7:0] hex3,
 		 output [7:0] hex4,
 		 output [7:0] hex5,
+		 output       ard_tx,
+		 input 	      ard_rx,
+		 output       ard_rts,
+		 input 	      ard_cts,
+		 input 	      ard_rst,
 		 inout [35:0] gpio);
   
   // System signals
@@ -27,26 +32,25 @@ module max10lite(input [1:0]  raw_clock_50,
   if_wb ram1_ibus(), ram1_dbus();
   if_wb io_dbus(), io_seg(), io_uart(), io_timer();
 
-  assign gpio[0] = 1'bz;
-  assign gpio[1] = serial0_rts;
-  assign gpio[2] = 1'bz;
-  assign gpio[3] = serial0_tx;
-  assign gpio[35:4] = 'bz;
-  assign serial0_rx = gpio[5];
-  assign serial0_cts = gpio[9];
+  assign gpio[35:0] = 'bz;
+
+  assign serial0_rx = ard_rx;
+  assign ard_tx = serial0_tx;
+  assign ard_rts = serial0_rts;
+  assign serial0_cts = ard_cts;
   
-  assign ledr[9:8] = 2'h3;
-  assign ledr[7:4] = ~cpu_exception;
-  assign ledr[3] = ~cpu_dbus.stb;
-  assign ledr[2] = ~cpu_dbus.ack;
-  assign ledr[1] = ~cpu_inter_en;
-  assign ledr[0] = ~cpu_halt;
+  assign ledr[9:8] = 2'h0;
+  assign ledr[7:4] = cpu_exception;
+  assign ledr[3] = cpu_dbus.stb;
+  assign ledr[2] = cpu_dbus.ack;
+  assign ledr[1] = cpu_inter_en;
+  assign ledr[0] = cpu_halt;
   
   assign rst_i = ~locked;
   
   parameter clkfreq = 10000000;
   syspll pll0(.inclk0(raw_clock_50[0]),
-	      .areset(~key[0]), 
+	      .areset(~(key[0]&ard_rst)), 
 	      .locked(locked),
 	      .c0(clk_i));
 
