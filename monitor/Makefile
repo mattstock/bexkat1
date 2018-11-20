@@ -16,7 +16,7 @@ APPS = pretty fmand bootstrap memtests rtc tests ps2 fib clock fly setjmp hwmand
 
 .PHONY: all clean gcctests kernel install
 
-all: boot-$(BOARD).o tests.mif
+all: boot-$(BOARD).o tests.mif bootmin.mif
 
 install: $(APPS)
 	cp $(APPS) /media/mstock/6874-28D3/

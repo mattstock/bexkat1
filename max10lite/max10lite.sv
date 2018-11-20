@@ -1,22 +1,32 @@
 `include "../../fpgalib/wb.vh"
 
-module max10lite(input [1:0]  raw_clock_50,
-		 input 	      adc_clk_10,
-		 input [9:0]  sw,
-		 input [1:0]  key,
-		 output [9:0] ledr,
-		 output [7:0] hex0,
-		 output [7:0] hex1,
-		 output [7:0] hex2,
-		 output [7:0] hex3,
-		 output [7:0] hex4,
-		 output [7:0] hex5,
-		 output       ard_tx,
-		 input 	      ard_rx,
-		 output       ard_rts,
-		 input 	      ard_cts,
-		 input 	      ard_rst,
-		 inout [35:0] gpio);
+module max10lite(input [1:0]   raw_clock_50,
+		 input 	       adc_clk_10,
+		 input [9:0]   sw,
+		 input [1:0]   key,
+		 output [9:0]  ledr,
+		 output [7:0]  hex0,
+		 output [7:0]  hex1,
+		 output [7:0]  hex2,
+		 output [7:0]  hex3,
+		 output [7:0]  hex4,
+		 output [7:0]  hex5,
+		 output        ard_tx,
+		 input 	       ard_rx,
+		 output        ard_rts,
+		 input 	       ard_cts,
+		 input 	       ard_rst_n,
+		 output [12:0] sdram_addr,
+		 inout [15:0]  sdram_data,
+		 output [1:0]  sdram_ba,
+		 output [1:0]  sdram_dqm,
+		 output        sdram_ras_n,
+		 output        sdram_cas_n,
+		 output        sdram_we_n,
+		 output        sdram_cke,
+		 output        sdram_cs_n,
+		 output        sdram_clk,
+		 inout [35:0]  gpio);
   
   // System signals
   logic 		      clk_i, locked, rst_i;
@@ -25,14 +35,19 @@ module max10lite(input [1:0]  raw_clock_50,
   logic [3:0] 		      timer_interrupts;
   logic 		      cpu_inter_en;
   logic [3:0] 		      cpu_exception;
+  logic [15:0] 		      sdram_dataout;
+  logic 		      sdram_dir;
   logic 		      serial0_rx, serial0_tx, serial0_rts, serial0_cts;
 
   if_wb cpu_ibus(), cpu_dbus();
   if_wb ram0_ibus(), ram0_dbus();
   if_wb ram1_ibus(), ram1_dbus();
+  if_wb sdram0_dbus();
   if_wb io_dbus(), io_seg(), io_uart(), io_timer();
 
   assign gpio[35:0] = 'bz;
+
+  assign sdram_data = (sdram_dir ? sdram_dataout :  16'hzzzz);
 
   assign serial0_rx = ard_rx;
   assign ard_tx = serial0_tx;
@@ -50,7 +65,7 @@ module max10lite(input [1:0]  raw_clock_50,
   
   parameter clkfreq = 10000000;
   syspll pll0(.inclk0(raw_clock_50[0]),
-	      .areset(~(key[0]&ard_rst)), 
+	      .areset(~(key[0] & ard_rst_n)), 
 	      .locked(locked),
 	      .c0(clk_i));
 
@@ -82,6 +97,7 @@ module max10lite(input [1:0]  raw_clock_50,
 	       .rst_i(rst_i),
 	       .mbus(cpu_dbus.slave),
 	       .p0(ram0_dbus.master),
+	       .p1(sdram0_dbus.master),
 	       .p3(io_dbus.master),
 	       .p7(ram1_dbus.master));
   
@@ -96,6 +112,22 @@ module max10lite(input [1:0]  raw_clock_50,
 	    .bus0(ram1_ibus.slave),
 	    .bus1(ram1_dbus.slave));
 
+  sdram16_controller_cache sdc0(.clk_i(clk_i),
+				.rst_i(rst_i),
+				.bus(sdram0_dbus.slave),
+				.mem_clk_o(sdram_clk),
+				.we_n(sdram_we_n),
+				.cs_n(sdram_cs_n),
+				.cke(sdram_cke),
+				.cas_n(sdram_cas_n),
+				.ras_n(sdram_ras_n),
+				.dqm(sdram_dqm),
+				.ba(sdram_ba),
+				.addrbus_out(sdram_addr),
+				.databus_dir(sdram_dir),
+				.databus_in(sdram_data),
+				.databus_out(sdram_dataout));
+  
   mmu #(.BASE(12)) mmu_bus2(.clk_i(clk_i),
 			    .rst_i(rst_i),
 			    .mbus(io_dbus.slave),
