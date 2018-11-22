@@ -54,8 +54,9 @@ module max10lite(input [1:0]   raw_clock_50,
   assign ard_rts = serial0_rts;
   assign serial0_cts = ard_cts;
   
-  assign ledr[9:8] = 2'h0;
-  assign ledr[7:4] = cpu_exception;
+  assign ledr[9:6] = cpu_exception;
+  assign ledr[5] = cpu_ibus.stb;
+  assign ledr[4] = cpu_ibus.ack;
   assign ledr[3] = cpu_dbus.stb;
   assign ledr[2] = cpu_dbus.ack;
   assign ledr[1] = cpu_inter_en;
@@ -97,22 +98,22 @@ module max10lite(input [1:0]   raw_clock_50,
 	       .rst_i(rst_i),
 	       .mbus(cpu_dbus.slave),
 	       .p0(ram0_dbus.master),
-	       .p1(sdram0_dbus.master),
 	       .p3(io_dbus.master),
 	       .p7(ram1_dbus.master));
   
   wb16k ram0(.clk_i(clk_i),
 	     .rst_i(rst_i),
+	     .wren(1'b1),
 	     .bus0(ram0_ibus.slave),
 	     .bus1(ram0_dbus.slave));
 
-  wb4k ram1(.clk_i(clk_i),
+  wb32k ram1(.clk_i(clk_i),
 	    .rst_i(rst_i),
 	    .wren(1'b0),
 	    .bus0(ram1_ibus.slave),
 	    .bus1(ram1_dbus.slave));
 
-  sdram16_controller_cache sdc0(.clk_i(clk_i),
+/*  sdram16_controller_cache sdc0(.clk_i(clk_i),
 				.rst_i(rst_i),
 				.bus(sdram0_dbus.slave),
 				.mem_clk_o(sdram_clk),
@@ -127,7 +128,7 @@ module max10lite(input [1:0]   raw_clock_50,
 				.databus_dir(sdram_dir),
 				.databus_in(sdram_data),
 				.databus_out(sdram_dataout));
-  
+  */
   mmu #(.BASE(12)) mmu_bus2(.clk_i(clk_i),
 			    .rst_i(rst_i),
 			    .mbus(io_dbus.slave),

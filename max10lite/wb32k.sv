@@ -1,6 +1,6 @@
 `include "../../fpgalib/wb.vh"
 
-module wb16k
+module wb32k
   (input       clk_i,
    input       rst_i,
    input       wren,
@@ -45,16 +45,16 @@ module wb16k
 	  delay1 <= 2'h0;
       end
 
-  mram ram0(.clock(clk_i),
-	    .data_a(dat0_i),
-	    .address_a(bus0.adr[13:2]),
-	    .wren_a(bus0.cyc & bus0.stb & bus0.we),
-	    .q_a(dat0_o),
-	    .byteena_a(bus0.sel),
-	    .data_b(dat1_i),
-	    .address_b(bus1.adr[13:2]),
-	    .wren_b((wren ? bus1.cyc & bus1.stb & bus1.we : 1'b0)),
-	    .q_b(dat1_o),
-	    .byteena_b(bus1.sel));
+  mram32k ram0(.clock(clk_i),
+	       .data_a(dat0_i),
+	       .address_a(bus0.adr[14:2]),
+	       .wren_a(bus0.cyc & bus0.stb & bus0.we),
+	       .q_a(dat0_o),
+	       .byteena_a(bus0.sel),
+	       .data_b(dat1_i),
+	       .address_b(bus1.adr[14:2]),
+	       .wren_b((wren ? bus1.cyc & bus1.stb & bus1.we : 1'b0)),
+	       .q_b(dat1_o),
+	       .byteena_b(bus1.sel));
 
 endmodule
