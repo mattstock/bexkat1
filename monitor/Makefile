@@ -2,21 +2,22 @@ CC = bexkat1-elf-gcc
 #BOARD = de2
 BOARD = max10
 LDFLAGS = -specs=$(BOARD).specs
-LDLIBS = -lsupport -lm
+#LDLIBS = -lsupport -lm
 OBJCOPY = bexkat1-elf-objcopy
 OBJDUMP = bexkat1-elf-objdump
 AS = bexkat1-elf-as
 LD = bexkat1-elf-ld
 RANLIB = bexkat1-elf-ranlib
+CFLAGS = -Os
 
 TEMP := $(shell mktemp)
 
 OBJECTS = boot-$(BOARD).o bootstrap.o pretty.o fmand.o memtests.o rtc.o tests.o ps2.o fib.o clock.o fly.o setjmp.o hwmand.o 7seg.o serial.o basic.o bootmin.o
-APPS = pretty fmand bootstrap memtests rtc tests ps2 fib clock fly setjmp hwmand codec codec_w vga 7seg serial basic bootmin
+APPS = pretty fmand bootstrap memtests rtc tests ps2 fib clock fly setjmp hwmand codec codec_w vga 7seg serial basic bootmin boottest
 
 .PHONY: all clean gcctests kernel install
 
-all: boot-$(BOARD).o tests.mif bootmin.mif
+all: boot-$(BOARD).o tests.mif bootmin.mif bootstrap.mif boottest.mif
 
 install: $(APPS)
 	cp $(APPS) /media/mstock/6874-28D3/
@@ -66,7 +67,10 @@ fileio: fileio.o
 	$(CC) $(LDFLAGS) -o $@ $^
 
 bootstrap: librawsd.a bootstrap.o vectors.o
-	$(CC) -T profile-$(BOARD).ld -nostartfiles -o $@ $^ $(LDFLAGS) -L. $(LDLIBS) -lrawsd
+	$(CC) -T profile-$(BOARD).ld -nostartfiles -o $@ bootstrap.o vectors.o $(LDFLAGS) -L. $(LDLIBS) -lrawsd
 
 bootmin: librawsd.a bootmin.o vectors.o
-	$(CC) -T profile-$(BOARD).ld -nostartfiles -o $@ $^ $(LDFLAGS) -L. $(LDLIBS) -lrawsd
+	$(CC) -T profile-$(BOARD).ld -nostartfiles -o $@ bootmin.o vectors.o $(LDFLAGS) -L. $(LDLIBS) -lrawsd
+
+boottest: boottest.o vectors.o
+	$(CC) -T profile-$(BOARD).ld -nostartfiles -o $@ boottest.o vectors.o $(LDFLAGS) -L. $(LDLIBS)
