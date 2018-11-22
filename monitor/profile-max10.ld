@@ -7,7 +7,7 @@ ENTRY(_start)
 
 MEMORY
 {
-  rom : ORIGIN = 0x70000000, LENGTH = 16K
+  rom : ORIGIN = 0x70000000, LENGTH = 128K
   ram : ORIGIN = 0x00000000, LENGTH = 64K
 }
 
@@ -15,6 +15,7 @@ SECTIONS
 {
   .text :
     { 
+      boot-max10.o
       *(.text.unlikely .text.*_unlikely .text.unlikely.*)
       *(.text.exit .text.exit.*)
       *(.text.startup .text.startup.*)
