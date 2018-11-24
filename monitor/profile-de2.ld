@@ -8,13 +8,14 @@ ENTRY(_start)
 MEMORY
 {
   rom : ORIGIN = 0x70000000, LENGTH = 128K
-  ram : ORIGIN = 0x07ff0000, LENGTH = 64K
+  ram : ORIGIN = 0x00000000, LENGTH = 64K
 }
 
 SECTIONS
 {
   .text :
     { 
+      boot-de2.o
       *(.text.unlikely .text.*_unlikely .text.unlikely.*)
       *(.text.exit .text.exit.*)
       *(.text.startup .text.startup.*)

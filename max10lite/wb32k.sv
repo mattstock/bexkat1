@@ -47,12 +47,12 @@ module wb32k
 
   mram32k ram0(.clock(clk_i),
 	       .data_a(dat0_i),
-	       .address_a(bus0.adr[14:2]),
+	       .address_a(bus0.adr[16:2]),
 	       .wren_a(bus0.cyc & bus0.stb & bus0.we),
 	       .q_a(dat0_o),
 	       .byteena_a(bus0.sel),
 	       .data_b(dat1_i),
-	       .address_b(bus1.adr[14:2]),
+	       .address_b(bus1.adr[16:2]),
 	       .wren_b((wren ? bus1.cyc & bus1.stb & bus1.we : 1'b0)),
 	       .q_b(dat1_o),
 	       .byteena_b(bus1.sel));

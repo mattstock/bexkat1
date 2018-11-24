@@ -7,7 +7,7 @@ ENTRY(_start)
 
 MEMORY
 {
-  rom : ORIGIN = 0x70000000, LENGTH = 128K
+  rom : ORIGIN = 0x70000000, LENGTH = 64K
   ram : ORIGIN = 0x00000000, LENGTH = 64K
 }
 

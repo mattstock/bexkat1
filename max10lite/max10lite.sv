@@ -106,12 +106,12 @@ module max10lite(input [1:0]   raw_clock_50,
 	     .wren(1'b1),
 	     .bus0(ram0_ibus.slave),
 	     .bus1(ram0_dbus.slave));
-
-  wb32k ram1(.clk_i(clk_i),
-	    .rst_i(rst_i),
-	    .wren(1'b0),
-	    .bus0(ram1_ibus.slave),
-	    .bus1(ram1_dbus.slave));
+  
+  wb16k ram1(.clk_i(clk_i),
+	     .rst_i(rst_i),
+	     .wren(1'b0),
+	     .bus0(ram1_ibus.slave),
+	     .bus1(ram1_dbus.slave));
 
 /*  sdram16_controller_cache sdc0(.clk_i(clk_i),
 				.rst_i(rst_i),
