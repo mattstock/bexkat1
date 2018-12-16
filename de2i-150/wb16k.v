@@ -1,6 +1,7 @@
 `include "../../fpgalib/wb.vh"
 
 module wb16k
+  #(INIT_FILE="NONE")
   (input       clk_i,
    input       rst_i,
    input       wren,
@@ -45,16 +46,47 @@ module wb16k
 	  delay1 <= 2'h0;
       end
 
-  mram ram0(.clock(clk_i),
-	    .data_a(dat0_i),
-	    .address_a(bus0.adr[15:2]),
-	    .wren_a(bus0.cyc & bus0.stb & bus0.we),
-	    .q_a(dat0_o),
-	    .byteena_a(bus0.sel),
-	    .data_b(dat1_i),
-	    .address_b(bus1.adr[15:2]),
-	    .wren_b((wren ? bus1.cyc & bus1.stb & bus1.we : 1'b0)),
-	    .q_b(dat1_o),
-	    .byteena_b(bus1.sel));
+  altsyncram
+    #(.byte_size(8),
+      .address_reg_b("CLOCK0"),
+      .byteena_reg_b("CLOCK0"),
+      .indata_reg_b("CLOCK0"),
+      .outdata_reg_a("CLOCK0"),
+      .outdata_reg_b("CLOCK0"),
+      .clock_enable_input_a("BYPASS"),
+      .clock_enable_input_b("BYPASS"),
+      .clock_enable_output_a("BYPASS"),
+      .clock_enable_output_b("BYPASS"),
+      .wrcontrol_wraddress_reg_b("CLOCK0"),
+      .init_file(INIT_FILE),
+      .operation_mode("BIDIR_DUAL_PORT"),
+      .numwords_a(16384),
+      .numwords_b(16384),
+      .widthad_a(14),
+      .widthad_b(14),
+      .width_a(32),
+      .width_b(32),
+      .width_byteena_a(4),
+      .width_byteena_b(4))
+  ram0(.clock0(clk_i),
+       .clock1(1'b1),
+       .clocken0(1'b1),
+       .clocken1(1'b1),
+       .clocken2(1'b1),
+       .clocken3(1'b1),
+       .rden_a(1'b1),
+       .rden_b(1'b1),
+       .aclr0(1'b0),
+       .aclr1(1'b0),
+       .data_a(dat0_i),
+       .address_a(bus0.adr[15:2]),
+       .wren_a(bus0.cyc & bus0.stb & bus0.we),
+       .q_a(dat0_o),
+       .byteena_a(bus0.sel),
+       .data_b(dat1_i),
+       .address_b(bus1.adr[15:2]),
+       .wren_b((wren ? bus1.cyc & bus1.stb & bus1.we : 1'b0)),
+       .q_b(dat1_o),
+       .byteena_b(bus1.sel));
 
 endmodule
