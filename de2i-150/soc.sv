@@ -79,24 +79,28 @@ module soc(input 	 raw_clock_50,
   logic [3:0] 		      cpu_exception;
   logic [31:0] 		      sdram_dataout;
   logic 		      sdram_dir;
-
+  logic [1:0] 		      cache_status;
+  
   if_wb cpu_ibus(), cpu_dbus();
   if_wb ram0_ibus(), ram0_dbus();
   if_wb ram1_ibus(), ram1_dbus();
-  if_wb sdram0_dbus();
+  if_wb sdram0_dbus(), stats0_dbus();
   if_wb io_dbus(), io_seg(), io_uart(), io_timer();
   if_wb io_matrix();
 
   assign sdram_databus = (sdram_dir ? sdram_dataout :  16'hzzzz);
 
-  assign LEDG = 9'h0;
+  assign LEDG[8] = 1'h0;
+  assign LEDG[7:6] = cache_status;
+  assign LEDG[5:2] = cpu_exception;
+  assign LEDG[1] = cpu_inter_en;
+  assign LEDG[0] = cpu_halt;
   assign LEDR[17:15] = { cpu_ibus.cyc, cpu_ibus.stb, cpu_ibus.ack };
   assign LEDR[14:12] = { cpu_dbus.cyc, cpu_dbus.stb, cpu_dbus.ack };
   assign LEDR[11:9] = { io_dbus.cyc, io_dbus.stb, io_dbus.ack };
-  assign LEDR[8:6] = { sdram0_dbus.cyc, sdram0_dbus.stb, sdram0_dbus.ack };
-  assign LEDR[5:2] = cpu_exception;
-  assign LEDR[1] = cpu_inter_en;
-  assign LEDR[0] = cpu_halt;
+  assign LEDR[8:6] = 3'h0;
+  assign LEDR[5:3] = { sdram0_dbus.cyc, sdram0_dbus.stb, sdram0_dbus.ack };
+  assign LEDR[2:0] = 3'h0;
   
   assign rst_i = ~locked;
   
@@ -137,6 +141,7 @@ module soc(input 	 raw_clock_50,
 	       .p0(ram0_dbus.master),
 	       .p3(io_dbus.master),
 	       .p4(sdram0_dbus.master),
+	       .p5(stats0_dbus.master),
 	       .p7(ram1_dbus.master));
   
   wb16k ram0(.clk_i(clk_i),
@@ -146,28 +151,30 @@ module soc(input 	 raw_clock_50,
 	     .bus1(ram0_dbus.slave));
   
   wb16k
-    #(.INIT_FILE("../monitor/boottest.mif"))
+    #(.INIT_FILE("../monitor/bootmin.mif"))
   ram1(.clk_i(clk_i),
        .rst_i(rst_i),
        .wren(1'b0),
        .bus0(ram1_ibus.slave),
        .bus1(ram1_dbus.slave));
   
-  sdram32_controller sdc0(.clk_i(clk_i),
-			  .rst_i(rst_i),
-			  .bus(sdram0_dbus.slave),
-			  .mem_clk_o(sdram_clk),
-			  .we_n(sdram_we_n),
-			  .cs_n(sdram_cs_n),
-			  .cke(sdram_cke),
-			  .cas_n(sdram_cas_n),
-			  .ras_n(sdram_ras_n),
-			  .dqm(sdram_dqm),
-			  .ba(sdram_ba),
-			  .addrbus_out(sdram_addrbus),
-			  .databus_dir(sdram_dir),
-			  .databus_in(sdram_databus),
-			  .databus_out(sdram_dataout));
+  sdram32_controller_cache sdc0(.clk_i(clk_i),
+				.rst_i(rst_i),
+				.bus(sdram0_dbus.slave),
+				.stats_bus(stats0_dbus.slave),
+				.mem_clk_o(sdram_clk),
+				.we_n(sdram_we_n),
+				.cs_n(sdram_cs_n),
+				.cke(sdram_cke),
+				.cas_n(sdram_cas_n),
+				.ras_n(sdram_ras_n),
+				.dqm(sdram_dqm),
+				.ba(sdram_ba),
+				.cache_status(cache_status),
+				.addrbus_out(sdram_addrbus),
+				.databus_dir(sdram_dir),
+				.databus_in(sdram_databus),
+				.databus_out(sdram_dataout));
   
   mmu #(.BASE(12)) mmu_bus2(.clk_i(clk_i),
 			    .rst_i(rst_i),

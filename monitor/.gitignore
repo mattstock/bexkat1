@@ -25,3 +25,5 @@ vga
 rtc
 kernel/kernel
 basic
+bootmin
+boottest
