@@ -80,13 +80,15 @@ module soc(input 	 raw_clock_50,
   logic [31:0] 		      sdram_dataout;
   logic 		      sdram_dir;
   logic [1:0] 		      cache_status;
+  logic [3:0] 		      spi_selects;
+  logic 		      miso, mosi, sclk;
   
   if_wb cpu_ibus(), cpu_dbus();
   if_wb ram0_ibus(), ram0_dbus();
   if_wb ram1_ibus(), ram1_dbus();
-  if_wb sdram0_dbus(), stats0_dbus();
+  if_wb sdram0_ibus(), sdram0_dbus(), stats0_dbus(), stats1_dbus();
   if_wb io_dbus(), io_seg(), io_uart(), io_timer();
-  if_wb io_matrix();
+  if_wb io_matrix(), io_spi();
 
   assign sdram_databus = (sdram_dir ? sdram_dataout :  16'hzzzz);
 
@@ -98,11 +100,17 @@ module soc(input 	 raw_clock_50,
   assign LEDR[17:15] = { cpu_ibus.cyc, cpu_ibus.stb, cpu_ibus.ack };
   assign LEDR[14:12] = { cpu_dbus.cyc, cpu_dbus.stb, cpu_dbus.ack };
   assign LEDR[11:9] = { io_dbus.cyc, io_dbus.stb, io_dbus.ack };
-  assign LEDR[8:6] = 3'h0;
-  assign LEDR[5:3] = { sdram0_dbus.cyc, sdram0_dbus.stb, sdram0_dbus.ack };
-  assign LEDR[2:0] = 3'h0;
+  assign LEDR[8:6] = { sdram0_dbus.cyc, sdram0_dbus.stb, sdram0_dbus.ack };
+  assign LEDR[5] = 1'h0;
+  assign LEDR[4:0] = { miso, mosi, sclk, ~spi_selects[1], ~spi_selects[0] };
   
   assign rst_i = ~locked;
+
+  assign rtc_ss = spi_selects[1];
+  assign sd_ss = spi_selects[0];
+  assign sd_mosi = mosi;
+  assign ext_mosi = mosi;
+  assign miso = (~spi_selects[0] ? sd_miso : ext_miso);
   
   parameter clkfreq = 10000000;
   syspll pll0(.inclk0(raw_clock_50),
@@ -132,16 +140,18 @@ module soc(input 	 raw_clock_50,
   mmu mmu_bus0(.clk_i(clk_i),
 	       .rst_i(rst_i),
 	       .mbus(cpu_ibus.slave),
-	       .p0(ram0_ibus.master),
+	       .p0(sdram0_ibus.master),
+	       .p4(ram0_ibus.master),
 	       .p7(ram1_ibus.master));
   
   mmu mmu_bus1(.clk_i(clk_i),
 	       .rst_i(rst_i),
 	       .mbus(cpu_dbus.slave),
-	       .p0(ram0_dbus.master),
+	       .p0(sdram0_dbus.master),
 	       .p3(io_dbus.master),
-	       .p4(sdram0_dbus.master),
+	       .p4(ram0_dbus.master),
 	       .p5(stats0_dbus.master),
+	       .p6(stats1_dbus.master),
 	       .p7(ram1_dbus.master));
   
   wb16k ram0(.clk_i(clk_i),
@@ -151,7 +161,7 @@ module soc(input 	 raw_clock_50,
 	     .bus1(ram0_dbus.slave));
   
   wb16k
-    #(.INIT_FILE("../monitor/bootmin.mif"))
+    #(.INIT_FILE("../monitor/boottest.mif"))
   ram1(.clk_i(clk_i),
        .rst_i(rst_i),
        .wren(1'b0),
@@ -160,8 +170,10 @@ module soc(input 	 raw_clock_50,
   
   sdram32_controller_cache sdc0(.clk_i(clk_i),
 				.rst_i(rst_i),
-				.bus(sdram0_dbus.slave),
-				.stats_bus(stats0_dbus.slave),
+				.bus0(sdram0_ibus.slave),
+				.bus1(sdram0_dbus.slave),
+				.stats0_bus(stats0_dbus.slave),
+				.stats1_bus(stats1_dbus.slave),
 				.mem_clk_o(sdram_clk),
 				.we_n(sdram_we_n),
 				.cs_n(sdram_cs_n),
@@ -181,6 +193,7 @@ module soc(input 	 raw_clock_50,
 			    .mbus(io_dbus.slave),
 			    .p0(io_seg.master),
 			    .p2(io_uart.master),
+			    .p7(io_spi.master),
 			    .p8(io_timer.master),
 			    .pc(io_matrix.master));
   
@@ -227,4 +240,13 @@ module soc(input 	 raw_clock_50,
 		 .matrix_oe_n(matrix_oe_n),
 		 .demux({matrix_a, matrix_b, matrix_c}));
 
+  spi_master #(.CLKFREQ(clkfreq)) spi0(.clk_i(clk_i),
+				       .rst_i(rst_i),
+				       .bus(io_spi.slave),
+				       .miso(miso),
+				       .mosi(mosi),
+				       .sclk(sclk),
+				       .selects(spi_selects),
+				       .wp(sd_wp_n));
+  
 endmodule
