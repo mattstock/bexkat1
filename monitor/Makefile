@@ -12,12 +12,11 @@ CFLAGS = -Os
 
 TEMP := $(shell mktemp)
 
-OBJECTS = boot-$(BOARD).o bootstrap.o pretty.o fmand.o memtests.o rtc.o tests.o ps2.o fib.o clock.o fly.o setjmp.o hwmand.o 7seg.o serial.o basic.o bootmin.o
-APPS = pretty fmand bootstrap memtests rtc tests ps2 fib clock fly setjmp hwmand codec codec_w vga 7seg serial basic bootmin boottest
+APPS = pretty fmand memtests rtc ps2 fib fly setjmp hwmand codec codec_w vga 7seg serial basic
 
 .PHONY: all clean gcctests kernel install
 
-all: boot-$(BOARD).o tests.mif bootmin.mif bootstrap.mif boottest.mif
+all: rom-bootmin.mif rom-bootstrap.mif rom-boottest.mif
 
 install: $(APPS)
 	cp $(APPS) /media/mstock/6874-28D3/
@@ -59,18 +58,11 @@ librawsd.a: ff.o mmc.o gettime.o
 	$(AR) rcs -o $@ $^
 	$(RANLIB) $@
 
-
-tests: tests.s
-	$(CC) -T profile-$(BOARD).ld -nostartfiles -o $@ $^ $(LDFLAGS)
+rom-tests: tests.s
+	$(CC) -T profile-$(BOARD).ld -nostartfiles -o $@ $< $(LDFLAGS)
 
 fileio: fileio.o
 	$(CC) $(LDFLAGS) -o $@ $^
 
-bootstrap: librawsd.a bootstrap.o vectors.o
-	$(CC) -T profile-$(BOARD).ld -nostartfiles -o $@ bootstrap.o vectors.o $(LDFLAGS) -L. $(LDLIBS) -lrawsd
-
-bootmin: librawsd.a bootmin.o vectors.o
-	$(CC) -T profile-$(BOARD).ld -nostartfiles -o $@ bootmin.o vectors.o $(LDFLAGS) -L. $(LDLIBS) -lrawsd
-
-boottest: boottest.o vectors.o
-	$(CC) -T profile-$(BOARD).ld -nostartfiles -o $@ boottest.o vectors.o $(LDFLAGS) -L. $(LDLIBS)
+rom-%: %.o vectors.o boot-$(BOARD).o
+	$(CC) -T profile-$(BOARD).ld -nostartfiles -o $@ $< vectors.o $(LDFLAGS) -L. $(LDLIBS) -lrawsd
