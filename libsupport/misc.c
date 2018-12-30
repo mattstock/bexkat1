@@ -1,7 +1,6 @@
 #include "misc.h"
 
-volatile unsigned int * const sysctrl = (unsigned int *)SEGFAN_BASE;
-volatile unsigned int * const sysio = (unsigned int *)SWLED_BASE;
+volatile unsigned int * const sysio = (unsigned int *)SEGSW_BASE;
 
 char nibble2hex(char n) {
   char x = (n & 0xf);
