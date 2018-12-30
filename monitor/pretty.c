@@ -40,11 +40,12 @@ void main(void) {
   srand(39854);
   while (1) {
     tick++;
-    if (sysio[0] & 0x4)
+    sysio[0] = tick;
+    if (sysio[1] & 0x4)
       matrix_fade();
     else 
       delay(1000);
-    if (sysio[0] & 0x2) {
+    if (sysio[1] & 0x2) {
       switch (rand() % 4) {
       case 0:
         if (x < 31)
