@@ -2,6 +2,7 @@
 #include "serial.h"
 #include "kernel/include/vectors.h"
 #include "kernel/include/ff.h"
+#include "spi.h"
 #include "timers.h"
 #include "elf32.h"
 #include <string.h>

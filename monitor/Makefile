@@ -16,7 +16,11 @@ APPS = pretty fmand memtests rtc ps2 fib fly setjmp hwmand codec codec_w vga 7se
 
 .PHONY: all clean gcctests kernel install
 
-all: rom-bootmin.mif rom-bootstrap.mif rom-boottest.mif
+all: boot-bootmin
+
+boot-%: rom-%.mif
+	rm -f $(BOARD)rom.mif
+	cp $< $(BOARD)rom.mif
 
 install: $(APPS)
 	cp $(APPS) /media/mstock/6874-28D3/
@@ -25,7 +29,7 @@ install: $(APPS)
 clean:
 	cd gcctests; make clean
 	cd kernel; make clean
-	rm -f *.o *.hex *.bin *.mif *.gkd *.expand $(APPS)
+	rm -f *.o *.hex *.bin *.mif *.gkd *.expand $(APPS) rom-*
 
 gcctests:
 	cd gcctests; make
