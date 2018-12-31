@@ -48,20 +48,16 @@ void main(void) {
     if (sysio[1] & 0x2) {
       switch (rand() % 4) {
       case 0:
-        if (x < 31)
-  	  x++;
+        x = (x < 31 ? x+1 : 0);
         break;
       case 1:
-        if (x > 0)
-	  x--;
+	x = (x > 0 ? x-1 : 31);
         break;
       case 2:
-        if (y < 15)
-	  y++;
+	y = (y < 15 ? y+1 : 0);
         break;
       case 3:
-        if (y > 0)
-	  y--;
+	y = (y > 0 ? y-1 : 15);
         break;
       }
     } else {
