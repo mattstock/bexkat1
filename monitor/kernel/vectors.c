@@ -1,11 +1,13 @@
 #include "vectors.h"
 
+extern void *_start(void);
+
 static void dummy(void) {
   asm("halt");
 }
 
 vector_t _vectors_start[16] = {
-  JMPD, (void *)0x70000000, /* reset */
+  JMPD, (void *)_start, /* reset */
   JMPD, dummy, /* mmu fault */
   JMPD, dummy, /* timer0 */
   JMPD, dummy, /* timer1 */
