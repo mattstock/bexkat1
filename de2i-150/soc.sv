@@ -89,7 +89,7 @@ module soc(input 	 raw_clock_50,
   if_wb ram0_ibus(), ram0_dbus();
   if_wb ram1_ibus(), ram1_dbus();
 `ifdef SDRAM
-  if_wb stats0_dbus(), stats1_dbus();
+  if_wb stats_dbus();
 `endif
   if_wb io_dbus(), io_seg(), io_uart(), io_timer();
   if_wb io_matrix(), io_spi();
@@ -155,8 +155,7 @@ module soc(input 	 raw_clock_50,
 	       .p0(ram0_dbus.master),
 	       .p3(io_dbus.master),
 `ifdef SDRAM
-	       .p5(stats0_dbus.master),
-	       .p6(stats1_dbus.master),
+	       .p5(stats_dbus.master),
 `endif
 	       .p7(ram1_dbus.master));
   
@@ -173,8 +172,7 @@ module soc(input 	 raw_clock_50,
 				.rst_i(rst_i),
 				.bus0(ram0_ibus.slave),
 				.bus1(ram0_dbus.slave),
-				.stats0_bus(stats0_dbus.slave),
-				.stats1_bus(stats1_dbus.slave),
+				.stats_bus(stats_dbus.slave),
 				.mem_clk_o(sdram_clk),
 				.we_n(sdram_we_n),
 				.cs_n(sdram_cs_n),
