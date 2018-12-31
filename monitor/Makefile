@@ -12,7 +12,7 @@ CFLAGS = -Os
 
 TEMP := $(shell mktemp)
 
-APPS = pretty fmand memtests rtc ps2 fib fly setjmp hwmand codec codec_w vga 7seg serial basic
+APPS = pretty memtests rtc ps2 fib fly setjmp hwmand codec codec_w vga serial basic
 
 .PHONY: all clean gcctests kernel install
 
