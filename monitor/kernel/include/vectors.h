@@ -9,6 +9,12 @@ typedef int (*esr)(void);
 #define sti() asm("sti")
 #define cli() asm("cli")
 
+#define JMPD (0xc0000001)
+typedef struct {
+  unsigned int jmp;
+  isr vect;
+} vector_t;
+
 typedef enum {
   intr_reset,
   intr_mmu,
