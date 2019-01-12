@@ -91,6 +91,7 @@ module soc(input 	 raw_clock_50,
 `ifdef SDRAM
   if_wb stats_dbus();
 `endif
+  if_wb vga_dbus(), vga_fb();
   if_wb io_dbus(), io_seg(), io_uart(), io_timer();
   if_wb io_matrix(), io_spi();
 
@@ -117,6 +118,9 @@ module soc(input 	 raw_clock_50,
   assign sd_sclk = sclk;
   assign ext_sclk = sclk;
   assign miso = (~spi_selects[0] ? sd_miso : ext_miso);
+
+  // need 25MHz
+  assign vga_clock = led_clk;
   
   parameter clkfreq = 10000000;
   syspll pll0(.inclk0(raw_clock_50),
@@ -157,7 +161,8 @@ module soc(input 	 raw_clock_50,
 `ifdef SDRAM
 	       .p5(stats_dbus.master),
 `endif
-	       .p7(ram1_dbus.master));
+	       .p7(ram1_dbus.master),
+	       .p8(vga_dbus.master));
   
   wb16k
     #(.INIT_FILE("../monitor/de2rom.mif"))
@@ -264,5 +269,22 @@ module soc(input 	 raw_clock_50,
 				       .sclk(sclk),
 				       .selects(spi_selects),
 				       .wp(sd_wp_n));
+
+  dualram vgamem0(.clk_i(clk_i),
+		  .rst_i(rst_i),
+		  .bus1(vga_fb.slave));
+  
+  vga_master vga0(.clk_i(clk_i),
+		  .rst_i(rst_i),
+		  .inbus(vga_dbus.slave),
+		  .outbus(vga_fb.master),
+		  .vs(vga_vs),
+		  .hs(vga_hs),
+		  .r(vga_r),
+		  .g(vga_g),
+		  .b(vga_b),
+		  .blank_n(vga_blank_n),
+		  .sync_n(vga_sync_n),
+		  .vga_clock(vga_clock));
   
 endmodule
