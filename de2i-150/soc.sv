@@ -165,13 +165,12 @@ module soc(input 	 raw_clock_50,
 	       .p8(vga_dbus.master),
 	       .pc(vga_fb0.master));
   
-  wb16k
-    #(.INIT_FILE("../monitor/de2rom.mif"))
-  ram1(.clk_i(clk_i),
-       .rst_i(rst_i),
-       .wren(1'b0),
-       .bus0(ram1_ibus.slave),
-       .bus1(ram1_dbus.slave));
+  dualram #(.AWIDTH(14),
+	    .INIT_FILE("../monitor/de2rom.mif")) ram1(.clk_i(clk_i),
+						      .rst_i(rst_i),
+						      .wren(1'b0),
+						      .bus0(ram1_ibus.slave),
+						      .bus1(ram1_dbus.slave));
 
 `ifdef SDRAM  
   sdram32_controller_cache sdc0(.clk_i(clk_i),
@@ -193,11 +192,11 @@ module soc(input 	 raw_clock_50,
 				.databus_in(sdram_databus),
 				.databus_out(sdram_dataout));
 `else
-  wb16k ram0(.clk_i(clk_i),
-	     .rst_i(rst_i),
-	     .wren(1'b1),
-	     .bus0(ram0_ibus.slave),
-	     .bus1(ram0_dbus.slave));
+  dualram #(.AWIDTH(14)) ram0(.clk_i(clk_i),
+			      .rst_i(rst_i),
+			      .wren(1'b1),
+			      .bus0(ram0_ibus.slave),
+			      .bus1(ram0_dbus.slave));
   assign sdram_dataout = 32'h0;
   assign sdram_addrbus = 'h0;
   assign sdram_ras_n = 1'h1;
