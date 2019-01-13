@@ -21,8 +21,8 @@
 #define VGA_MODE_NORMAL 0x00
 #define VGA_MODE_DOUBLE 0x01
 #define VGA_MODE_TEXT 0x02
-#define VGA_MODE_BLINK 0x12
-#define VGA_MODE_SOLID 0x22
+#define VGA_MODE_BLINK 0x03
+#define VGA_MODE_SOLID 0x04
 
 #define VGA_TEXT_RED1 (0x400000)
 #define VGA_TEXT_RED2 (0x800000)
@@ -47,8 +47,8 @@ extern volatile unsigned char * const vga_fb;
 
 extern void vga_palette(int pnum, unsigned char idx, unsigned int color);
 extern void vga_point(int x, int y, unsigned char val);
-extern unsigned char vga_mode(void);
-extern void vga_set_mode(unsigned char m);
+extern unsigned int vga_mode(void);
+extern void vga_set_mode(unsigned int m);
 extern unsigned char vga_color233(unsigned int color);
 extern void vga_text_clear();
 extern void vga_putchar(unsigned short color233, unsigned char c);

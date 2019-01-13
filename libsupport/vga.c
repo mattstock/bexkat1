@@ -24,12 +24,12 @@ void vga_point(int x, int y, unsigned char val) {
   vga_fb[y*VGA_MAX_X+x] = val;
 }
 
-unsigned char vga_mode(void) {
-  return (unsigned char)(vga_control[1] & 0xff);
+unsigned int vga_mode(void) {
+  return vga_control[1];
 }
 
-void vga_set_mode(unsigned char m) {
-  vga_control[1] = (vga_control[1] & 0xffffff00) | m;
+void vga_set_mode(unsigned int m) {
+  vga_control[1] = m;
 }
 
 void vga_text_clear() {
