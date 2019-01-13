@@ -1,9 +1,0 @@
-ldis %0, 0xffff
-std %0, 0xff400062
-ldis %0, 0xfffe
-std %0, 0xff400062
-ldis %0, 0x0061
-std %0, 0xff400060
-ldd %0, 0xff400060
-foo:
-jmpd foo

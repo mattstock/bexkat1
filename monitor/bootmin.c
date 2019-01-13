@@ -143,15 +143,17 @@ void main(void) {
 
   spi_fast();
 
+  vga_set_mode(0x42114000|VGA_MODE_BLINK);
+  vga_printf(VGA_TEXT_GREEN, "This is a test of text.");
+  vga_set_cursor(10,20);
+  vga_putchar(vga_color233(VGA_TEXT_GREEN), 'a');
+  
   // for filesystem code
   timers[7] = timers[12] + 1000000; // 100Hz
   set_interrupt_handler(intr_timer3, timer3);
   timers[0] |= 0x88; // enable timer and interrupt
   sti();
 
-  vga_set_mode(VGA_MODE_TEXT);
-  vga_putchar(vga_color233(VGA_TEXT_RED), 'X');
-  
   serial_printf(0, "BexOS v0.5\nCopyright 2018 Matt Stock\n");
   rts_set();
   

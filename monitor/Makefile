@@ -12,7 +12,7 @@ CFLAGS = -Os
 
 TEMP := $(shell mktemp)
 
-APPS = pretty memtests rtc ps2 fib fly setjmp hwmand codec codec_w vga serial basic
+APPS = pretty vga timertest rtc 
 
 .PHONY: all clean gcctests kernel install
 
@@ -57,6 +57,9 @@ vectors.o: kernel/vectors.c
 
 gettime.o: kernel/gettime.c
 	$(CC) $(CFLAGS) -Ikernel/include -c -o $@ $^
+
+timertest: timertest.o vectors.o
+	$(CC) $(LDFLAGS) -o $@ $^
 
 librawsd.a: ff.o mmc.o gettime.o
 	$(AR) rcs -o $@ $^
