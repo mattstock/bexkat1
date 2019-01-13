@@ -91,7 +91,7 @@ module soc(input 	 raw_clock_50,
 `ifdef SDRAM
   if_wb stats_dbus();
 `endif
-  if_wb vga_dbus(), vga_fb();
+  if_wb vga_dbus(), vga_fb0(), vga_fb1();
   if_wb io_dbus(), io_seg(), io_uart(), io_timer();
   if_wb io_matrix(), io_spi();
 
@@ -162,7 +162,8 @@ module soc(input 	 raw_clock_50,
 	       .p5(stats_dbus.master),
 `endif
 	       .p7(ram1_dbus.master),
-	       .p8(vga_dbus.master));
+	       .p8(vga_dbus.master),
+	       .pc(vga_fb0.master));
   
   wb16k
     #(.INIT_FILE("../monitor/de2rom.mif"))
@@ -270,14 +271,17 @@ module soc(input 	 raw_clock_50,
 				       .selects(spi_selects),
 				       .wp(sd_wp_n));
 
-  dualram vgamem0(.clk_i(clk_i),
-		  .rst_i(rst_i),
-		  .bus1(vga_fb.slave));
+  dualram 
+    #(.AWIDTH(12)) vgamem0(.clk_i(clk_i),
+			   .rst_i(rst_i),
+			   .wren(1'b1),
+			   .bus0(vga_fb0.slave),
+			   .bus1(vga_fb1.slave));
   
   vga_master vga0(.clk_i(clk_i),
 		  .rst_i(rst_i),
 		  .inbus(vga_dbus.slave),
-		  .outbus(vga_fb.master),
+		  .outbus(vga_fb1.master),
 		  .vs(vga_vs),
 		  .hs(vga_hs),
 		  .r(vga_r),

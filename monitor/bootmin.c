@@ -10,6 +10,7 @@
 #include <sys/types.h>
 #include <stdarg.h>
 #include <stdlib.h>
+#include "vga.h"
 
 void rts_set();
 
@@ -148,6 +149,9 @@ void main(void) {
   timers[0] |= 0x88; // enable timer and interrupt
   sti();
 
+  vga_set_mode(VGA_MODE_TEXT);
+  vga_putchar(vga_color233(VGA_TEXT_RED), 'X');
+  
   serial_printf(0, "BexOS v0.5\nCopyright 2018 Matt Stock\n");
   rts_set();
   
