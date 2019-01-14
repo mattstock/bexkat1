@@ -1,6 +1,12 @@
 `include "../../fpgalib/wb.vh"
 
 `define SDRAM
+`define VGA_GRAPHICS // text and graphics
+//`define VGA // only text
+
+`ifdef VGA_GRAPHICS
+`define VGA
+`endif
 
 module soc(input 	 raw_clock_50,
 	   input [17:0]  SW,
@@ -88,12 +94,14 @@ module soc(input 	 raw_clock_50,
   if_wb cpu_ibus(), cpu_dbus();
   if_wb ram0_ibus(), ram0_dbus();
   if_wb ram1_ibus(), ram1_dbus();
+  if_wb io_dbus(), io_seg(), io_uart(), io_timer();
+  if_wb io_matrix(), io_spi();
 `ifdef SDRAM
   if_wb stats_dbus();
 `endif
+`ifdef VGA
   if_wb vga_dbus(), vga_fb0(), vga_fb1();
-  if_wb io_dbus(), io_seg(), io_uart(), io_timer();
-  if_wb io_matrix(), io_spi();
+`endif
 
   assign sdram_databus = (sdram_dir ? sdram_dataout :  16'hzzzz);
 
@@ -119,9 +127,16 @@ module soc(input 	 raw_clock_50,
   assign ext_sclk = sclk;
   assign miso = (~spi_selects[0] ? sd_miso : ext_miso);
 
-  // need 25MHz
-  assign vga_clock = led_clk;
+  // need 28.322MHz and 25.175MHz
+`ifdef VGA
+  logic 		      vga_clock28, vga_clock25;
   
+  vgaclock vgapll0(.inclk0(raw_clock_50),
+		   .areset(~KEY[0]),
+		   .c0(vga_clock28),
+		   .c1(vga_clock25));
+`endif
+
   parameter clkfreq = 10000000;
   syspll pll0(.inclk0(raw_clock_50),
 	      .areset(~KEY[0]), 
@@ -161,9 +176,12 @@ module soc(input 	 raw_clock_50,
 `ifdef SDRAM
 	       .p5(stats_dbus.master),
 `endif
-	       .p7(ram1_dbus.master),
+`ifdef VGA	       
 	       .p8(vga_dbus.master),
-	       .pc(vga_fb0.master));
+	       .pc(vga_fb0.master),
+`endif
+	       .p7(ram1_dbus.master));
+  
   
   dualram #(.AWIDTH(14),
 	    .INIT_FILE("../monitor/de2rom.mif")) ram1(.clk_i(clk_i),
@@ -270,15 +288,28 @@ module soc(input 	 raw_clock_50,
 				       .selects(spi_selects),
 				       .wp(sd_wp_n));
 
+`ifdef VGA
+
+`ifdef VGA_GRAPHICS  
+  dualram 
+    #(.AWIDTH(16)) vgamem0(.clk_i(clk_i),
+			   .rst_i(rst_i),
+			   .wren(1'b1),
+			   .bus0(vga_fb0.slave),
+			   .bus1(vga_fb1.slave));
+`else
   dualram 
     #(.AWIDTH(12)) vgamem0(.clk_i(clk_i),
 			   .rst_i(rst_i),
 			   .wren(1'b1),
 			   .bus0(vga_fb0.slave),
 			   .bus1(vga_fb1.slave));
+`endif
   
   vga_master vga0(.clk_i(clk_i),
 		  .rst_i(rst_i),
+		  .vga_clock25(vga_clock25),
+		  .vga_clock28(vga_clock28),
 		  .inbus(vga_dbus.slave),
 		  .outbus(vga_fb1.master),
 		  .vs(vga_vs),
@@ -289,5 +320,17 @@ module soc(input 	 raw_clock_50,
 		  .blank_n(vga_blank_n),
 		  .sync_n(vga_sync_n),
 		  .vga_clock(vga_clock));
+  
+`else // !`ifdef VGA
+  
+  assign vga_r = 1'h0;
+  assign vga_g = 1'h0;
+  assign vga_b = 1'h0;
+  assign vga_hs = 1'h1;
+  assign vga_vs = 1'h1;
+  assign vga_blank_n = 1'h0;
+  assign vga_sync_n = 1'h0;
+
+`endif //  `ifdef VGA
   
 endmodule
