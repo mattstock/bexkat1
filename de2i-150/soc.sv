@@ -2,7 +2,7 @@
 
 `define SDRAM
 `define VGA_GRAPHICS // text and graphics
-//`define VGA // only text
+`define VGA // only text
 
 `ifdef VGA_GRAPHICS
 `define VGA
@@ -291,15 +291,17 @@ module soc(input 	 raw_clock_50,
 `ifdef VGA
 
 `ifdef VGA_GRAPHICS  
-  dualram 
-    #(.AWIDTH(16)) vgamem0(.clk_i(clk_i),
+  dualram2clock 
+    #(.AWIDTH(16)) vgamem0(.clk0(clk_i),
+			   .clk1(vga_clock),
 			   .rst_i(rst_i),
 			   .wren(1'b1),
 			   .bus0(vga_fb0.slave),
 			   .bus1(vga_fb1.slave));
 `else
-  dualram 
-    #(.AWIDTH(12)) vgamem0(.clk_i(clk_i),
+  dualram2clock 
+    #(.AWIDTH(12)) vgamem0(.clk0(clk_i),
+			   .clk1(vga_clock),
 			   .rst_i(rst_i),
 			   .wren(1'b1),
 			   .bus0(vga_fb0.slave),

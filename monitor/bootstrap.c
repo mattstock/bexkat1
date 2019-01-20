@@ -164,16 +164,10 @@ void main(void) {
   unsigned int sp;
 
   matrix_init();
-  serial_print(1, katherine);
   spi_fast();
   addr = 0xc0000000;
-  lcd_init();
   vga_text_clear();
   vga_set_mode(VGA_MODE_BLINK);
-  lcd_print("Bexkat 1000");
-  lcd_pos(0,1);
-  lcd_print("v2.7");
-  serial_print(1, rebecca);
 
   // for filesystem code
   timers[7] = timers[12] + 1000000; // 100Hz
@@ -181,18 +175,12 @@ void main(void) {
   timers[0] |= 0x88; // enable timer and interrupt
   sti();
 
-  if ((sysio[0] & 0x1) == 0x1) {
-    sdcard_exec(1, "/kernel");
-    console_printf(CONSOLE_RED, "\nautoboot failed\n");
-  }
-
   console_printf(CONSOLE_WHITE, "\n");
-  console_printf(CONSOLE_WHITE, "BexOS v0.4\nCopyright 2017 Matt Stock\n");
+  console_printf(CONSOLE_WHITE, "BexOS v0.5\nCopyright 2019 Matt Stock\n");
   rts_set();
 
   while (1) {
     console_printf(CONSOLE_WHITE, "\nBexkat1 [%08x] > ", addr);
-    sysctrl[0] = addr;
     msg = buf;
     console_getline(CONSOLE_WHITE, msg, &size);
     

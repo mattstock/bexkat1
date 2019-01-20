@@ -15,6 +15,7 @@
 void rts_set();
 
 extern void disk_timerproc (void);
+extern volatile unsigned int * const vga_control;
 
 void (*execptr)(void);
 
@@ -143,11 +144,9 @@ void main(void) {
 
   spi_fast();
 
-  vga_set_mode(0x42114000|VGA_MODE_BLINK);
-  vga_printf(VGA_TEXT_GREEN, "This is a test of text.");
-  vga_set_cursor(10,20);
-  vga_putchar(vga_color233(VGA_TEXT_GREEN), 'a');
-  
+  vga_control[1] = 0x22;
+  vga_control[3] = 0xffffff;
+
   // for filesystem code
   timers[7] = timers[12] + 1000000; // 100Hz
   set_interrupt_handler(intr_timer3, timer3);

@@ -16,7 +16,7 @@ APPS = pretty vga timertest rtc
 
 .PHONY: all clean gcctests kernel install
 
-all: boot-bootmin
+all: boot-bootstrap
 
 boot-%: rom-%.mif
 	rm -f $(BOARD)rom.mif
