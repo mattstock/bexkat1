@@ -10,19 +10,25 @@
 #define VGA_F0_BASE  (VGA_CF_BASE+0x800)
 #define VGA_CTL_BASE (VGA_CF_BASE+0xc00)
 
-#define VGA_TEXT_FONT_X 8
-#define VGA_TEXT_FONT_Y 8
 #define VGA_MAX_X 640
 #define VGA_MAX_Y 480
 
-#define VGA_TEXT_MAX_Y VGA_MAX_Y/VGA_TEXT_FONT_Y
-#define VGA_TEXT_MAX_X VGA_MAX_X/VGA_TEXT_FONT_X
+#define VGA_TEXT_FONT_X 8
+#define VGA_TEXT_FONT_Y 8
 
+#define VGA_TEXT_MAX_X 80
+#define VGA_TEXT_MAX_Y 25
+
+// 640x480x4 @ 60Hz (16 fixed colors)
 #define VGA_MODE_NORMAL 0x00
+// 320x200x8 @ 70Hz (palette lookup)
 #define VGA_MODE_DOUBLE 0x01
-#define VGA_MODE_TEXT 0x02
-#define VGA_MODE_BLINK 0x03
-#define VGA_MODE_SOLID 0x04
+// 720x400x4 @ 70Hz, 9x16 font, 80x25 text mode
+#define VGA_MODE_TEXT   0x02
+
+// Hardware cursor modes
+#define VGA_MODE_BLINK  0x30
+#define VGA_MODE_SOLID  0x50
 
 #define VGA_TEXT_RED1 (0x400000)
 #define VGA_TEXT_RED2 (0x800000)
