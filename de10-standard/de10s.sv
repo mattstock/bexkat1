@@ -43,11 +43,16 @@ module de10s(input         CLOCK_50,
 	     input 	   PS2_DAT,
 	     input 	   PS2_CLK2,
 	     input 	   PS2_DAT2,
+	     inout [35:0]  HSMC_J3_GPIO,
+	     inout [35:0]  HSMC_J2_GPIO,
 	     output [9:0]  LEDR);
  
   // System signals
   logic 		  clk_i, locked, rst_i;
 
+  assign HSMC_J3_GPIO = 36'hz;
+  assign HSMC_J2_GPIO = 36'hz;
+  
   if_wb cpu_ibus(), cpu_dbus();
   if_wb ram0_ibus(), ram0_dbus();
   if_wb ram1_ibus(), ram1_dbus();
@@ -77,7 +82,18 @@ module de10s(input         CLOCK_50,
 		.int_en(cpu_inter_en),
 		.inter(cpu_exception));
 
-  assign LEDR[0] = clk_i;
-  assign LEDR[1] = led_clk;
+  always_comb
+    begin
+      case (~KEY[1:0])
+	3'h0: LEDR = HSMC_J3_GPIO[9:0];
+	3'h1: LEDR = HSMC_J3_GPIO[19:10];
+	3'h2: LEDR = HSMC_J3_GPIO[29:20];
+	3'h3: LEDR = { 5'h0, HSMC_J3_GPIO[35:30]};
+	3'h4: LEDR = HSMC_J2_GPIO[9:0];
+	3'h5: LEDR = HSMC_J2_GPIO[19:10];
+	3'h6: LEDR = HSMC_J2_GPIO[29:20];
+	3'h7: LEDR = { 5'h0, HSMC_J2_GPIO[35:30]};
+      endcase // case (KEY[1:0])
+    end // always_comb
 
 endmodule // de10s
