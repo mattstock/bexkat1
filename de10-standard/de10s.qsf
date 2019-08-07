@@ -961,6 +961,28 @@ set_location_assignment PIN_C15 -to HPS_USB_STP
 
 set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 200 LFPM AIRFLOW"
 set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
+set_global_assignment -name VERILOG_INPUT_VERSION SYSTEMVERILOG_2005
+set_global_assignment -name VERILOG_SHOW_LMF_MAPPING_MESSAGES OFF
+set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/fifo.sv
+set_global_assignment -name VERILOG_FILE ../../fpgalib/interrupt_encoder.v
+set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/sdram/sdram32_controller_cache.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/sdram/sdram32_controller.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/sdram/sdram16_controller_cache.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/sdram/sdram16.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/dualrom.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/dualram.sv
+set_global_assignment -name VERILOG_FILE ../../fpgalib/mmu.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/timerint.v
+set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/dualram2clock.sv
+set_global_assignment -name QIP_FILE ../../fpgalib/vga/vga_pallette.qip
+set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/vga/vga_master.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/vga/vga_controller28.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/vga/vga_controller25.sv
+set_global_assignment -name VERILOG_FILE ../../fpgalib/vga/textlinebuf.v
+set_global_assignment -name QIP_FILE ../../fpgalib/vga/textlinebuf.qip
+set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/vga/textdrv.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/vga/graphicsdrv.sv
+set_global_assignment -name VERILOG_FILE ../../fpgalib/vga/vga_pallette.v
 set_global_assignment -name SYSTEMVERILOG_FILE de10s.sv
 set_global_assignment -name VERILOG_FILE ../../fpgalib/hexdisp.v
 set_global_assignment -name VERILOG_FILE ../../fpgalib/segctrl.v
@@ -973,6 +995,6 @@ set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/bexkat2/alu.sv
 set_global_assignment -name CDF_FILE de10s.cdf
 set_global_assignment -name QIP_FILE syspll.qip
 set_global_assignment -name SIP_FILE syspll.sip
-set_global_assignment -name VERILOG_INPUT_VERSION SYSTEMVERILOG_2005
-set_global_assignment -name VERILOG_SHOW_LMF_MAPPING_MESSAGES OFF
+set_global_assignment -name QIP_FILE vgaclock.qip
+set_global_assignment -name SIP_FILE vgaclock.sip
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
