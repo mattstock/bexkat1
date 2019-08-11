@@ -42,8 +42,18 @@ module de10s(input         CLOCK_50,
 	     input 	   PS2_DAT,
 	     input 	   PS2_CLK2,
 	     input 	   PS2_DAT2,
-	     inout [35:0]  HSMC_J3_GPIO,
-	     inout [35:0]  HSMC_J2_GPIO,
+	     output [2:0]  matrix0,
+	     output [2:0]  matrix1,
+	     output 	   matrix_clk,
+	     output 	   matrix_oe_n,
+	     output 	   matrix_a, 
+	     output 	   matrix_b,
+	     output 	   matrix_c,
+	     output 	   matrix_stb,
+	     input 	   serial0_rx,
+	     output 	   serial0_tx,
+	     input 	   serial0_cts,
+	     output 	   serial0_rts,
 	     output [9:0]  LEDR);
  
   // System signals
@@ -54,20 +64,23 @@ module de10s(input         CLOCK_50,
   logic [3:0] 		   timer_interrupts;
   logic 		   cpu_inter_en;
   logic [3:0] 		   cpu_exception;
+  logic [3:0] 		   spi_selects;
+  logic 		   miso, mosi, sclk;
   logic [15:0] 		   sdram_dataout;
   logic 		   sdram_dir;
   logic [1:0] 		   cache_status;
-  logic [3:0] 		   spi_selects;
-  logic 		   miso, mosi, sclk;
-
+  
   if_wb cpu_ibus(), cpu_dbus();
   if_wb ram0_ibus(), ram0_dbus();
   if_wb ram1_ibus(), ram1_dbus();
   if_wb io_dbus(), io_seg(), io_uart(), io_timer();
   if_wb io_matrix(), io_spi();
+
 `ifdef SDRAM
+
   if_wb stats_dbus();
 `endif
+
 `ifdef VGA
   if_wb vga_dbus(), vga_fb0(), vga_fb1();
 `endif
@@ -80,7 +93,7 @@ module de10s(input         CLOCK_50,
 		  cpu_halt };
   
   assign rst_i = ~locked;
- 
+
 `ifdef VGA
   logic 		   vga_clock28, vga_clock25;
 
@@ -137,11 +150,11 @@ module de10s(input         CLOCK_50,
   
   
   dualram #(.AWIDTH(14),
-	    .INIT_FILE("../monitor/de10rom.mif")) ram1(.clk_i(clk_i),
-						       .rst_i(rst_i),
-						       .wren(1'b0),
-						       .bus0(ram1_ibus.slave),
-						       .bus1(ram1_dbus.slave));
+	    .INIT_FILE("../monitor/max10rom.mif")) ram1(.clk_i(clk_i),
+							.rst_i(rst_i),
+							.wren(1'b0),
+							.bus0(ram1_ibus.slave),
+							.bus1(ram1_dbus.slave));
 
 `ifdef SDRAM
   sdram16_controller_cache sdc0(.clk_i(clk_i),
@@ -168,7 +181,6 @@ module de10s(input         CLOCK_50,
 			      .wren(1'b1),
 			      .bus0(ram0_ibus.slave),
 			      .bus1(ram0_dbus.slave));
-  assign DRAM_DQ = 16'h0;
   assign DRAM_ADDR = 'h0;
   assign DRAM_RAS_N = 1'h1;
   assign DRAM_CAS_N = 1'h1;
@@ -177,10 +189,13 @@ module de10s(input         CLOCK_50,
   assign DRAM_LDQM = 1'h0;
   assign DRAM_UDQM = 1'h0;
   assign DRAM_CLK = 1'h0;
-  assign cache_status = 2'h0;
+  assign DRAM_BA = 2'h0;
+  assign DRAM_CKE = 1'h0;
+  assign sdram_dataout = 16'h0;
+  assign sdram_dir = 1'h0;
+  
 `endif
-  
-  
+    
   mmu #(.BASE(12)) mmu_bus2(.clk_i(clk_i),
 			    .rst_i(rst_i),
 			    .mbus(io_dbus.slave),
@@ -190,6 +205,17 @@ module de10s(input         CLOCK_50,
 			    .p8(io_timer.master),
 			    .pc(io_matrix.master));
   
+  led_matrix mx0(.clk_i(clk_i),
+		 .rst_i(rst_i),
+		 .bus(io_matrix.slave),
+		 .led_clk(led_clk),
+		 .matrix0(matrix0),
+		 .matrix1(matrix1),
+		 .matrix_clk(matrix_clk),
+		 .matrix_stb(matrix_stb),
+		 .matrix_oe_n(matrix_oe_n),
+		 .demux({matrix_a, matrix_b, matrix_c}));
+
   segctrl io_seg0(.clk_i(clk_i),
 		  .rst_i(rst_i),
 		  .bus(io_seg.slave),
@@ -201,6 +227,16 @@ module de10s(input         CLOCK_50,
 		  .out4(HEX4),
 		  .out5(HEX5));
 
+  uart #(.CLKFREQ(clkfreq),
+	 .BAUD(115200)) uart0(.clk_i(clk_i),
+			      .rst_i(rst_i),
+			      .bus(io_uart.slave),
+			      .tx(serial0_tx),
+			      .rx(serial0_rx),
+			      .cts(serial0_cts),
+			      .rts(serial0_rts),
+			      .interrupt(serial0_interrupts));
+  
   timerint timerint0(.clk_i(clk_i),
 		     .rst_i(rst_i),
 		     .bus(io_timer.slave),
