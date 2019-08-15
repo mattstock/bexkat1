@@ -103,7 +103,7 @@ module soc(input 	 raw_clock_50,
   if_wb vga_dbus(), vga_fb0(), vga_fb1();
 `endif
 
-  assign sdram_databus = (sdram_dir ? sdram_dataout :  16'hzzzz);
+  assign sdram_databus = (sdram_dir ? sdram_dataout :  32'hzzzz);
 
   assign LEDG[8] = 1'h0;
   assign LEDG[7:6] = cache_status;
