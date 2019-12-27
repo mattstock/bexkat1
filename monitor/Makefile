@@ -1,4 +1,4 @@
-CC = bexkat1-elf-gcc
+CC = bexkat1-elf-gcc -fno-asynchronous-unwind-tables
 #BOARD = de2
 BOARD = max10
 LDFLAGS = -specs=$(BOARD).specs

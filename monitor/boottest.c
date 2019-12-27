@@ -7,7 +7,7 @@
 #include <stdlib.h>
 
 volatile uint32_t * const seg = (uint32_t *)0x30000000;
-volatile uint32_t * const mem = (uint32_t *)0x40000000;
+volatile uint32_t * const mem = (uint32_t *)0x00000000;
 
 #define BOTTOM (0*1024*1024)
 #define TOP (16*1024*1024+1)

@@ -7,22 +7,15 @@ ENTRY(_start)
 
 MEMORY
 {
-  rom : ORIGIN = 0x70000000, LENGTH = 64K
-  ram : ORIGIN = 0x00000000, LENGTH = 64K
+  rom (rx)  : ORIGIN = 0x70000000, LENGTH = 64K
+  ram (rwx) : ORIGIN = 0x00000000, LENGTH = 64K
 }
 
 SECTIONS
 {
   .text :
-    { 
-      boot-max10.o
-      *(.text.unlikely .text.*_unlikely .text.unlikely.*)
-      *(.text.exit .text.exit.*)
-      *(.text.startup .text.startup.*)
-      *(.text.hot .text.hot.*)
-      *(.text .stub .text.* .gnu.linkonce.t.*)
-      *(.gnu.warning)
-      . = ALIGN(0x4);
+    {
+      *(.text*)
     } > rom
   .init :
     {
