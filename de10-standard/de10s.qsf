@@ -42,7 +42,7 @@ set_global_assignment -name DEVICE 5CSXFC6D6F31C6
 set_global_assignment -name TOP_LEVEL_ENTITY de10s
 set_global_assignment -name ORIGINAL_QUARTUS_VERSION 18.1.1
 set_global_assignment -name PROJECT_CREATION_TIME_DATE "17:28:22  AUGUST 04, 2019"
-set_global_assignment -name LAST_QUARTUS_VERSION "18.1.1 Lite Edition"
+set_global_assignment -name LAST_QUARTUS_VERSION "19.1.0 Lite Edition"
 set_global_assignment -name PROJECT_OUTPUT_DIRECTORY output_files
 set_global_assignment -name MIN_CORE_JUNCTION_TEMP 0
 set_global_assignment -name MAX_CORE_JUNCTION_TEMP 85
@@ -963,50 +963,8 @@ set_global_assignment -name POWER_PRESET_COOLING_SOLUTION "23 MM HEAT SINK WITH 
 set_global_assignment -name POWER_BOARD_THERMAL_MODEL "NONE (CONSERVATIVE)"
 set_global_assignment -name VERILOG_INPUT_VERSION SYSTEMVERILOG_2005
 set_global_assignment -name VERILOG_SHOW_LMF_MAPPING_MESSAGES OFF
-set_global_assignment -name VERILOG_FILE ../../fpgalib/uart/uart_tx.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/uart/uart_rx.v
-set_global_assignment -name QIP_FILE ../../fpgalib/uart/uart_fifo.qip
-set_global_assignment -name VERILOG_FILE ../../fpgalib/uart/uart.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/uart/baudgen.v
-set_global_assignment -name QIP_FILE ../../fpgalib/matrixmem.qip
-set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/led_matrix.sv
-set_global_assignment -name VERILOG_FILE ../../fpgalib/matrixmem.v
-set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/fifo.sv
-set_global_assignment -name VERILOG_FILE ../../fpgalib/interrupt_encoder.v
-set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/sdram/sdram32_controller_cache.sv
-set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/sdram/sdram32_controller.sv
-set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/sdram/sdram16_controller_cache.sv
-set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/sdram/sdram16.sv
-set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/dualrom.sv
-set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/dualram.sv
-set_global_assignment -name VERILOG_FILE ../../fpgalib/mmu.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/timerint.v
-set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/dualram2clock.sv
-set_global_assignment -name QIP_FILE ../../fpgalib/vga/vga_pallette.qip
-set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/vga/vga_master.sv
-set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/vga/vga_controller28.sv
-set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/vga/vga_controller25.sv
-set_global_assignment -name VERILOG_FILE ../../fpgalib/vga/textlinebuf.v
-set_global_assignment -name QIP_FILE ../../fpgalib/vga/textlinebuf.qip
-set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/vga/textdrv.sv
-set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/vga/graphicsdrv.sv
-set_global_assignment -name SYSTEMVERILOG_FILE de10s.sv
-set_global_assignment -name VERILOG_FILE ../../fpgalib/hexdisp.v
-set_global_assignment -name VERILOG_FILE ../../fpgalib/segctrl.v
-set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/wb.vh
-set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/bexkat2/registerfile.sv
-set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/bexkat2/intcalc.sv
-set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/bexkat2/control.sv
-set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/bexkat2/bexkat2.sv
-set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/bexkat2/alu.sv
-set_global_assignment -name CDF_FILE de10s.cdf
-set_global_assignment -name QIP_FILE syspll.qip
-set_global_assignment -name SIP_FILE syspll.sip
-set_global_assignment -name QIP_FILE vgaclock.qip
-set_global_assignment -name SIP_FILE vgaclock.sip
 set_global_assignment -name ENABLE_SIGNALTAP ON
 set_global_assignment -name USE_SIGNALTAP_FILE de10s.stp
-set_global_assignment -name SIGNALTAP_FILE de10s.stp
 set_global_assignment -name SLD_NODE_CREATOR_ID 110 -section_id auto_signaltap_0
 set_global_assignment -name SLD_NODE_ENTITY_NAME sld_signaltap -section_id auto_signaltap_0
 set_instance_assignment -name CONNECT_TO_SLD_NODE_ENTITY_PORT acq_clk -to "segctrl:io_seg0|clk_i" -section_id auto_signaltap_0
@@ -1777,5 +1735,45 @@ set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[23] -
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[25] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[26] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[28] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
+set_global_assignment -name VERILOG_FILE ../../fpgalib/uart/uart_tx.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/uart/uart_rx.v
+set_global_assignment -name QIP_FILE ../../fpgalib/uart/uart_fifo.qip
+set_global_assignment -name VERILOG_FILE ../../fpgalib/uart/uart.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/uart/baudgen.v
+set_global_assignment -name QIP_FILE ../../fpgalib/matrixmem.qip
+set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/led_matrix.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/fifo.sv
+set_global_assignment -name VERILOG_FILE ../../fpgalib/interrupt_encoder.v
+set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/sdram/sdram32_controller_cache.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/sdram/sdram32_controller.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/sdram/sdram16_controller_cache.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/sdram/sdram16.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/dualrom.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/dualram.sv
+set_global_assignment -name VERILOG_FILE ../../fpgalib/mmu.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/timerint.v
+set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/dualram2clock.sv
+set_global_assignment -name QIP_FILE ../../fpgalib/vga/vga_pallette.qip
+set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/vga/vga_master.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/vga/vga_controller28.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/vga/vga_controller25.sv
+set_global_assignment -name QIP_FILE ../../fpgalib/vga/textlinebuf.qip
+set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/vga/textdrv.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/vga/graphicsdrv.sv
+set_global_assignment -name SYSTEMVERILOG_FILE de10s.sv
+set_global_assignment -name VERILOG_FILE ../../fpgalib/hexdisp.v
+set_global_assignment -name VERILOG_FILE ../../fpgalib/segctrl.v
+set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/wb.vh
+set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/bexkat2/registerfile.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/bexkat2/intcalc.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/bexkat2/control.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/bexkat2/bexkat2.sv
+set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/bexkat2/alu.sv
+set_global_assignment -name CDF_FILE de10s.cdf
+set_global_assignment -name QIP_FILE syspll.qip
+set_global_assignment -name SIP_FILE syspll.sip
+set_global_assignment -name QIP_FILE vgaclock.qip
+set_global_assignment -name SIP_FILE vgaclock.sip
+set_global_assignment -name SIGNALTAP_FILE de10s.stp
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 set_global_assignment -name SLD_FILE db/de10s_auto_stripped.stp
