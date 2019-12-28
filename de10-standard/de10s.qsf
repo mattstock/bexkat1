@@ -1737,10 +1737,10 @@ set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[26] -
 set_instance_assignment -name POST_FIT_CONNECT_TO_SLD_NODE_ENTITY_PORT crc[28] -to auto_signaltap_0|vcc -section_id auto_signaltap_0
 set_global_assignment -name VERILOG_FILE ../../fpgalib/uart/uart_tx.v
 set_global_assignment -name VERILOG_FILE ../../fpgalib/uart/uart_rx.v
-set_global_assignment -name QIP_FILE ../../fpgalib/uart/uart_fifo.qip
+set_global_assignment -name QIP_FILE uart_fifo.qip
 set_global_assignment -name VERILOG_FILE ../../fpgalib/uart/uart.v
 set_global_assignment -name VERILOG_FILE ../../fpgalib/uart/baudgen.v
-set_global_assignment -name QIP_FILE ../../fpgalib/matrixmem.qip
+set_global_assignment -name QIP_FILE matrixmem.qip
 set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/led_matrix.sv
 set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/fifo.sv
 set_global_assignment -name VERILOG_FILE ../../fpgalib/interrupt_encoder.v
@@ -1753,11 +1753,11 @@ set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/dualram.sv
 set_global_assignment -name VERILOG_FILE ../../fpgalib/mmu.v
 set_global_assignment -name VERILOG_FILE ../../fpgalib/timerint.v
 set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/dualram2clock.sv
-set_global_assignment -name QIP_FILE ../../fpgalib/vga/vga_pallette.qip
+set_global_assignment -name QIP_FILE vga_pallette.qip
 set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/vga/vga_master.sv
 set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/vga/vga_controller28.sv
 set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/vga/vga_controller25.sv
-set_global_assignment -name QIP_FILE ../../fpgalib/vga/textlinebuf.qip
+set_global_assignment -name QIP_FILE textlinebuf.qip
 set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/vga/textdrv.sv
 set_global_assignment -name SYSTEMVERILOG_FILE ../../fpgalib/vga/graphicsdrv.sv
 set_global_assignment -name SYSTEMVERILOG_FILE de10s.sv
@@ -1775,5 +1775,6 @@ set_global_assignment -name SIP_FILE syspll.sip
 set_global_assignment -name QIP_FILE vgaclock.qip
 set_global_assignment -name SIP_FILE vgaclock.sip
 set_global_assignment -name SIGNALTAP_FILE de10s.stp
+
 set_instance_assignment -name PARTITION_HIERARCHY root_partition -to | -section_id Top
 set_global_assignment -name SLD_FILE db/de10s_auto_stripped.stp

@@ -77,7 +77,6 @@ module de10s(input         CLOCK_50,
   if_wb io_matrix(), io_spi();
 
 `ifdef SDRAM
-
   if_wb stats_dbus();
 `endif
 

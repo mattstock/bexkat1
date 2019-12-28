@@ -1,5 +1,12 @@
 `include "../../fpgalib/wb.vh"
 
+`define VGA_GRAPHICS
+`define VGA
+
+`ifdef VGA_GRAPHICS
+ `define VGA
+`endif
+
 module max10lite(input [1:0]   raw_clock_50,
 		 input 	       adc_clk_10,
 		 input [9:0]   sw,
@@ -42,8 +49,11 @@ module max10lite(input [1:0]   raw_clock_50,
   if_wb cpu_ibus(), cpu_dbus();
   if_wb ram0_ibus(), ram0_dbus();
   if_wb ram1_ibus(), ram1_dbus();
-  if_wb sdram0_dbus();
   if_wb io_dbus(), io_seg(), io_uart(), io_timer();
+
+`ifdef SDRAM
+  if_wb stats_dbus();
+`endif  
 
   assign gpio[35:0] = 'bz;
 
@@ -99,23 +109,24 @@ module max10lite(input [1:0]   raw_clock_50,
 	       .mbus(cpu_dbus.slave),
 	       .p0(ram0_dbus.master),
 	       .p3(io_dbus.master),
+`ifdef SDRAM
+	       .p5(stats_dbus.master),
+`endif
 	       .p7(ram1_dbus.master));
   
-  wb16k ram0(.clk_i(clk_i),
-	     .rst_i(rst_i),
-	     .wren(1'b1),
-	     .bus0(ram0_ibus.slave),
-	     .bus1(ram0_dbus.slave));
-  
-  wb16k ram1(.clk_i(clk_i),
-	     .rst_i(rst_i),
-	     .wren(1'b0),
-	     .bus0(ram1_ibus.slave),
-	     .bus1(ram1_dbus.slave));
+  dualram #(.AWIDTH(14),
+	    .INIT_FILE("../monitor/max10rom.mif")) ram1(.clk_i(clk_i),
+							.rst_i(rst_i),
+							.wren(1'b0),
+							.bus0(ram1_ibus.slave),
+							.bus1(ram1_dbus.slave));
 
-/*  sdram16_controller_cache sdc0(.clk_i(clk_i),
+`ifdef SDRAM
+  sdram16_controller_cache sdc0(.clk_i(clk_i),
 				.rst_i(rst_i),
-				.bus(sdram0_dbus.slave),
+				.bus0(ram0_ibus.slave),
+				.bus1(ram0_dbus.slave),
+				.stats_bus(stats_dbus.slave),
 				.mem_clk_o(sdram_clk),
 				.we_n(sdram_we_n),
 				.cs_n(sdram_cs_n),
@@ -124,11 +135,32 @@ module max10lite(input [1:0]   raw_clock_50,
 				.ras_n(sdram_ras_n),
 				.dqm(sdram_dqm),
 				.ba(sdram_ba),
+				.cache_status(cache_status),
 				.addrbus_out(sdram_addr),
 				.databus_dir(sdram_dir),
 				.databus_in(sdram_data),
 				.databus_out(sdram_dataout));
-  */
+`else
+  dualram #(.AWIDTH(13)) ram0(.clk_i(clk_i),
+			      .rst_i(rst_i),
+			      .wren(1'b1),
+			      .bus0(ram0_ibus.slave),
+			      .bus1(ram0_dbus.slave));
+
+  assign sdram_addr = 'h0;
+  assign sdram_ras_n = 1'h1;
+  assign sdram_cas_n = 1'h1;
+  assign sdram_cs_n = 1'h1;
+  assign sdram_we_n = 1'h1;
+  assign sdram_dqm = 2'h0;
+  assign sdram_cke = 1'h0;
+  assign sdram_ba = 2'h0;
+  assign sdram_clk = 1'h0;
+  assign sdram_dataout = 16'h0;
+  assign sdram_dir = 1'h0;
+  
+`endif
+  
   mmu #(.BASE(12)) mmu_bus2(.clk_i(clk_i),
 			    .rst_i(rst_i),
 			    .mbus(io_dbus.slave),
@@ -162,4 +194,8 @@ module max10lite(input [1:0]   raw_clock_50,
 		     .bus(io_timer.slave),
 		     .interrupt(timer_interrupts));
 
+`ifdef VGA
+`else
+`endif
+  
 endmodule
