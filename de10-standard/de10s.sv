@@ -50,11 +50,22 @@ module de10s(input         CLOCK_50,
 	     output 	   matrix_b,
 	     output 	   matrix_c,
 	     output 	   matrix_stb,
+	     input 	   miso,
+	     output 	   mosi,
+	     output 	   sclk,
+	     output 	   rts_ss,
 	     input 	   serial0_rx,
 	     output 	   serial0_tx,
 	     input 	   serial0_cts,
 	     output 	   serial0_rts,
 	     output [9:0]  LEDR);
+
+  /*
+				       .miso(miso),
+				       .mosi(mosi),
+				       .sclk(sclk),
+				       .selects(spi_selects),
+				       .wp(sd_wp_n)); */
  
   // System signals
   logic 		   clk_i, locked, rst_i;
@@ -65,10 +76,11 @@ module de10s(input         CLOCK_50,
   logic 		   cpu_inter_en;
   logic [3:0] 		   cpu_exception;
   logic [3:0] 		   spi_selects;
-  logic 		   miso, mosi, sclk;
   logic [15:0] 		   sdram_dataout;
   logic 		   sdram_dir;
   logic [1:0] 		   cache_status;
+
+  assign rts_ss = spi_selects[1];
   
   if_wb cpu_ibus(), cpu_dbus();
   if_wb ram0_ibus(), ram0_dbus();
@@ -139,7 +151,7 @@ module de10s(input         CLOCK_50,
 	       .p0(ram0_dbus.master),
 	       .p3(io_dbus.master),
 `ifdef SDRAM
-	       .p5(stats_dbus.master),
+	       .p4(stats_dbus.master),
 `endif
 `ifdef VGA	       
 	       .p8(vga_dbus.master),
@@ -155,6 +167,11 @@ module de10s(input         CLOCK_50,
 							.bus0(ram1_ibus.slave),
 							.bus1(ram1_dbus.slave));
 
+  dualram #(.AWIDTH(14)) ram0(.clk_i(clk_i),
+			      .rst_i(rst_i),
+			      .wren(1'b1),
+			      .bus0(ram0_ibus.slave),
+			      .bus1(ram0_dbus.slave));
 `ifdef SDRAM
   sdram16_controller_cache sdc0(.clk_i(clk_i),
 				.rst_i(rst_i),
@@ -175,11 +192,6 @@ module de10s(input         CLOCK_50,
 				.databus_in(DRAM_DQ),
 				.databus_out(sdram_dataout));
 `else
-  dualram #(.AWIDTH(14)) ram0(.clk_i(clk_i),
-			      .rst_i(rst_i),
-			      .wren(1'b1),
-			      .bus0(ram0_ibus.slave),
-			      .bus1(ram0_dbus.slave));
   assign DRAM_ADDR = 'h0;
   assign DRAM_RAS_N = 1'h1;
   assign DRAM_CAS_N = 1'h1;
@@ -192,7 +204,6 @@ module de10s(input         CLOCK_50,
   assign DRAM_CKE = 1'h0;
   assign sdram_dataout = 16'h0;
   assign sdram_dir = 1'h0;
-  
 `endif
     
   mmu #(.BASE(12)) mmu_bus2(.clk_i(clk_i),
@@ -241,8 +252,16 @@ module de10s(input         CLOCK_50,
 		     .bus(io_timer.slave),
 		     .interrupt(timer_interrupts));
 
-`ifdef VGA
+  spi_master #(.CLKFREQ(clkfreq)) spi0(.clk_i(clk_i),
+				       .rst_i(rst_i),
+				       .bus(io_spi.slave),
+				       .miso(miso),
+				       .mosi(mosi),
+				       .sclk(sclk),
+				       .selects(spi_selects),
+				       .wp(1'h1));
 
+`ifdef VGA
   dualram2clock 
     #(.AWIDTH(16)) vgamem0(.clk0(clk_i),
 			   .clk1(VGA_CLK),
