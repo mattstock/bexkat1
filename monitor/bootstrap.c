@@ -167,7 +167,7 @@ void main(void) {
   spi_fast();
   addr = 0xc0000000;
   vga_text_clear();
-  vga_set_mode(VGA_MODE_BLINK);
+  vga_set_mode(VGA_MODE_BLINK|VGA_MODE_TEXT);
 
   // for filesystem code
   timers[7] = timers[12] + 1000000; // 100Hz
