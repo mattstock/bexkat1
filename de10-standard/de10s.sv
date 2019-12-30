@@ -53,7 +53,7 @@ module de10s(input         CLOCK_50,
 	     input 	   miso,
 	     output 	   mosi,
 	     output 	   sclk,
-	     output 	   rts_ss,
+	     output 	   rtc_ss,
 	     input 	   serial0_rx,
 	     output 	   serial0_tx,
 	     input 	   serial0_cts,
@@ -80,7 +80,7 @@ module de10s(input         CLOCK_50,
   logic 		   sdram_dir;
   logic [1:0] 		   cache_status;
 
-  assign rts_ss = spi_selects[1];
+  assign rtc_ss = spi_selects[1];
   
   if_wb cpu_ibus(), cpu_dbus();
   if_wb ram0_ibus(), ram0_dbus();
