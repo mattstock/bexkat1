@@ -50,23 +50,20 @@ module de10s(input         CLOCK_50,
 	     output 	   matrix_b,
 	     output 	   matrix_c,
 	     output 	   matrix_stb,
-	     input 	   miso,
-	     output 	   mosi,
-	     output 	   sclk,
+	     input 	   rtc_miso,
+	     output 	   rtc_mosi,
+	     output 	   rtc_sclk,
 	     output 	   rtc_ss,
+	     output 	   sd_ss,
+ 	     input 	   sd_miso,
+	     output 	   sd_mosi,
+	     output 	   sd_sclk,
 	     input 	   serial0_rx,
 	     output 	   serial0_tx,
 	     input 	   serial0_cts,
 	     output 	   serial0_rts,
 	     output [9:0]  LEDR);
 
-  /*
-				       .miso(miso),
-				       .mosi(mosi),
-				       .sclk(sclk),
-				       .selects(spi_selects),
-				       .wp(sd_wp_n)); */
- 
   // System signals
   logic 		   clk_i, locked, rst_i;
   logic 		   led_clk;
@@ -79,8 +76,17 @@ module de10s(input         CLOCK_50,
   logic [15:0] 		   sdram_dataout;
   logic 		   sdram_dir;
   logic [1:0] 		   cache_status;
+  logic 		   miso, mosi, sclk;
 
   assign rtc_ss = spi_selects[1];
+  assign sd_ss = spi_selects[0];
+  
+  assign sd_mosi = mosi;
+  assign rtc_mosi = mosi;
+  assign sd_sclk = sclk;
+  assign rtc_sclk = sclk;
+  assign miso = (~sd_ss ? sd_miso : 1'hz) |
+		(~rtc_ss ? rtc_miso : 1'hz);
   
   if_wb cpu_ibus(), cpu_dbus();
   if_wb ram0_ibus(), ram0_dbus();
