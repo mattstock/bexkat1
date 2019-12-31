@@ -8,7 +8,7 @@ OBJDUMP = bexkat1-elf-objdump
 AS = bexkat1-elf-as
 LD = bexkat1-elf-ld
 RANLIB = bexkat1-elf-ranlib
-CFLAGS = -Os
+CFLAGS = -Os -g
 
 TEMP := $(shell mktemp)
 
@@ -16,7 +16,7 @@ APPS = pretty vga timertest rtc
 
 .PHONY: all clean gcctests kernel install
 
-all: boot-bootstrap
+all: boot-bootstrap rom-bootstrap
 
 boot-%: rom-%.mif
 	rm -f $(BOARD)rom.mif
@@ -29,7 +29,7 @@ install: $(APPS)
 clean:
 	cd gcctests; make clean
 	cd kernel; make clean
-	rm -f *.o *.hex *.bin *.mif *.gkd *.expand $(APPS) rom-*
+	rm -f *.o *.hex *.bin *.mif *.gkd *.expand $(APPS) rom-* librawsd.a
 
 gcctests:
 	cd gcctests; make
@@ -71,5 +71,5 @@ rom-tests: tests.s
 fileio: fileio.o
 	$(CC) $(LDFLAGS) -o $@ $^
 
-rom-%: %.o vectors.o boot-$(BOARD).o
+rom-%: %.o vectors.o librawsd.a boot-$(BOARD).o
 	$(CC) -T profile-$(BOARD).ld -nostartfiles -o $@ $< vectors.o $(LDFLAGS) -L. $(LDLIBS) -lrawsd
