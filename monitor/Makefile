@@ -23,7 +23,7 @@ boot-%: rom-%.mif
 	cp $< $(BOARD)rom.mif
 
 install: $(APPS)
-	cp $(APPS) /media/mstock/6874-28D3/
+	cp $(APPS) /media/mstock/FOO/
 	cd kernel; make install
 
 clean:
