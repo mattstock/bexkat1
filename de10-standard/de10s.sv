@@ -7,6 +7,8 @@
  `define VGA
 `endif
 
+`define SDRAM
+
 module de10s(input         CLOCK_50,
 	     input 	   CLOCK2_50,
 	     input 	   CLOCK3_50,
@@ -95,7 +97,7 @@ module de10s(input         CLOCK_50,
   if_wb io_matrix(), io_spi();
 
 `ifdef SDRAM
-  if_wb stats_dbus();
+  if_wb stats_dbus(), sdr0_dbus(), sdr0_ibus();
 `endif
 
 `ifdef VGA
@@ -148,16 +150,23 @@ module de10s(input         CLOCK_50,
   mmu mmu_bus0(.clk_i(clk_i),
 	       .rst_i(rst_i),
 	       .mbus(cpu_ibus.slave),
-	       .p0(ram0_ibus.master),
+`ifdef SDRAM
+	       .p0(sdr0_ibus.master),
+	       .p5(ram0_ibus.master),
+`else
+	       .p5(ram0_ibus.master),
+`endif
 	       .p7(ram1_ibus.master));
   
   mmu mmu_bus1(.clk_i(clk_i),
 	       .rst_i(rst_i),
 	       .mbus(cpu_dbus.slave),
-	       .p0(ram0_dbus.master),
 	       .p3(io_dbus.master),
 `ifdef SDRAM
-	       .p4(stats_dbus.master),
+	       .p0(sdr0_dbus.master),
+	       .p5(ram0_dbus.master),
+`else
+	       .p5(ram0_dbus.master),
 `endif
 `ifdef VGA	       
 	       .p8(vga_dbus.master),
@@ -181,8 +190,8 @@ module de10s(input         CLOCK_50,
 `ifdef SDRAM
   sdram16_controller_cache sdc0(.clk_i(clk_i),
 				.rst_i(rst_i),
-				.bus0(ram0_ibus.slave),
-				.bus1(ram0_dbus.slave),
+				.bus0(sdr0_ibus.slave),
+				.bus1(sdr0_dbus.slave),
 				.stats_bus(stats_dbus.slave),
 				.mem_clk_o(DRAM_CLK),
 				.we_n(DRAM_WE_N),

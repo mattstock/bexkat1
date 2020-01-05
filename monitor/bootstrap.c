@@ -66,6 +66,7 @@ void sdcard_exec(int super, char *name) {
   }
   // iterate over program headers and do copies
   for (hidx=0; hidx < header.e_phnum; hidx++) {
+    console_printf(CONSOLE_WHITE, "header index %d\n", hidx);
     foo = f_lseek(&fp, header.e_phoff+hidx*header.e_phentsize);
     if (foo != FR_OK) {
       console_printf(CONSOLE_RED, "seek error\n");
@@ -84,6 +85,8 @@ void sdcard_exec(int super, char *name) {
 
     segidx = prog_header.p_filesz;
     memidx = prog_header.p_paddr;
+    console_printf(CONSOLE_WHITE, "filesize = %d, base address = %08x\n",
+		   segidx, memidx);
     while (segidx > 1024) {
       foo = f_read(&fp, &buffer, 1024, &count);
       if (foo != FR_OK) {
@@ -92,6 +95,7 @@ void sdcard_exec(int super, char *name) {
       if (count != 1024) {
 	console_printf(CONSOLE_RED, "partial read of 1k block?!\n");
       }
+      console_printf(CONSOLE_WHITE, "copy block to %08x\n", memidx);
       memcpy((unsigned int *)memidx, &buffer , 1024);
       segidx -= 1024;
       memidx += 1024;
@@ -110,6 +114,7 @@ void sdcard_exec(int super, char *name) {
   f_mount((void *)0, "", 0);
   // Shut off interrupts
   cli();
+  console_printf(CONSOLE_WHITE, "Jumping to %08x\n", header.e_entry);
   execptr = (void *)header.e_entry;
   if (!super) {
     asm("ldiu %1, 0\n");
