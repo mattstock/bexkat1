@@ -15,6 +15,7 @@ fileio
 fmand
 fib
 memtests
+timertest
 pretty
 ps2
 setjmp
@@ -23,6 +24,7 @@ codec_w
 clock
 vga
 rtc
+rom-*
 kernel/kernel
 basic
 bootmin
