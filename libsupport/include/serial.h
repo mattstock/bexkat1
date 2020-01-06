@@ -19,6 +19,7 @@ extern short serial_getline(unsigned port,
 		     unsigned short *len);
 extern void serial_ansi_sgr(unsigned port, console_color_t color);
 extern void serial_printhex(unsigned port, unsigned val);
+extern char serial_gc(unsigned port);
 extern char serial_getchar(unsigned port);
 extern void serial_print(unsigned port, const char *);
 extern void serial_printf(unsigned port, const char *fmt, ...);

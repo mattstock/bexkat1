@@ -17,7 +17,6 @@
 #include <console.h>
 
 unsigned int addr;
-unsigned short data;
 
 void rts_set();
 
@@ -30,12 +29,13 @@ void dumpmem(unsigned int addr, unsigned short len) {
   unsigned int i,j;
   unsigned *pos = (unsigned *)addr;
   
-  console_printf(CONSOLE_RED, "\nAddress :  3 2 1 0  7 6 5 4  b a 9 8  f e d c\n");
-  for (i=0; i < len; i += 4) {
-    console_printf(CONSOLE_BLUE, "%08x: ", addr+4*i);
-    for (j=0; j < 4; j++)
-      console_printf(CONSOLE_WHITE, "%08x ", pos[i+j]);
-    console_printf(CONSOLE_WHITE, "\n");
+  for (i=0; i < len; i += 8) {
+    console_printf(CONSOLE_WHITE, "|");
+    console_printf(CONSOLE_YELLOW, "   %08x   ", addr+8*i);
+    console_printf(CONSOLE_WHITE, "|");
+    for (j=0; j < 8; j++)
+      console_printf(CONSOLE_WHITE, "  %08x", pos[i+j]);
+    console_printf(CONSOLE_WHITE, "  |\n");
   }
 }
 
@@ -104,9 +104,6 @@ void sdcard_exec(int super, char *name) {
     if (foo != FR_OK) {
       console_printf(CONSOLE_RED, "read error\n");
     }
-    if (count != segidx) {
-      console_printf(CONSOLE_RED, "partial read of segidx block?!\n");
-    }
     memcpy((unsigned int *)memidx, &buffer , segidx);
   }
   // Cleanly unmount sdcard
@@ -163,6 +160,90 @@ static void timer3(void) {
   timers[7] += 100000; // reset timer3 interval
 }
 
+void utf8(uint32_t cp, char *val) {
+  if (cp < 0x80) {
+    val[1] = '\0';
+    val[0] = cp & 0x7f;
+    return;
+  }
+  if (cp < 0x800) {
+    val[2] = '\0';
+    val[1] = (cp & 0x3f) | 0x80;
+    cp >>= 6;
+    val[0] = (cp & 0x1f) | 0xc0;
+    return;
+  }
+  if (cp < 0x10000) {
+    val[3] = '\0';
+    val[2] = (cp & 0x3f) | 0x80;
+    cp >>= 6;
+    val[1] = (cp & 0x3f) | 0x80;
+    cp >>= 6;
+    val[0] = (cp & 0x0f) | 0xe0;
+    return;
+  }
+  val[4] = '\0';
+  val[3] = (cp & 0x3f) | 0x80;
+  cp >>= 6;
+  val[2] = (cp & 0x3f) | 0x80;
+  cp >>= 6;
+  val[1] = (cp & 0x3f) | 0x80;
+  cp >>= 6;
+  val[0] = (cp & 0x7) | 0xf0;
+}
+
+void hex_editor() {
+  serial_printf(0, "\x1b[2J");
+  serial_putchar(0, '+');
+  for (int i=0; i < 14; i++)
+    serial_putchar(0, '-');
+  serial_putchar(0, '+');
+  for (int i=0; i < 81; i++)
+    serial_putchar(0, '-');
+  serial_printf(0, "+\n|   ADDRESS    |%* |\n", 81);
+  serial_putchar(0, '+');
+  for (int i=0; i < 14; i++)
+    serial_putchar(0, '-');
+  serial_putchar(0, '+');
+  for (int i=0; i < 81; i++)
+    serial_putchar(0, '-');
+  serial_printf(0, "+\n");
+
+  // dump the memory to screen
+  dumpmem(addr, 128);
+
+  serial_putchar(0, '+');
+  for (int i=0; i < 12; i++)
+    serial_putchar(0, '-');
+  serial_putchar(0, '+');
+  for (int i=0; i < 81; i++)
+    serial_putchar(0, '-');
+  serial_printf(0, "+\n");
+  serial_printf(0, "\x1b[4;19H\x1b[48;5;2m");
+
+  int posy = 4;
+  int posx = 19;
+  while (1) {
+    char x = serial_getchar(0);
+    switch (x) {
+    case 'q':
+      return;
+    case 'a':
+      serial_printf(0, "\x1b[2D");
+      break;
+    case 'd':
+      serial_printf(0, "\x1b[2C");
+      break;
+    case 'w':
+      serial_printf(0, "\x1b[1A");
+      break;
+    case 's':
+      serial_printf(0, "\x1b[1B");
+      break;
+    }
+  }
+}
+
 void main(void) {
   unsigned int foo;
   unsigned short size=20;
@@ -195,42 +276,62 @@ void main(void) {
     console_getline(CONSOLE_WHITE, msg, &size);
     
     switch (msg[0]) {
-    case 'a':
+    case 'a': // change working address
       msg++;
+      addr = 0;
       while (*msg != '\0') {
-	addr = (addr << 4) + hextoi(*msg);
+	if (*msg != ' ') 
+	  addr = (addr << 4) + hextoi(*msg);
 	msg++;
       }
       break;
-    case 'b':
+    case 'h': // hex editor
+      hex_editor();
+      break;
+    case 'e': // exec file
       console_printf(CONSOLE_WHITE, "\n attempt to exec file....\n");
       msg += 2;
       sdcard_exec(0, msg);
       break;
-    case 'c':
+    case 'l': // display files from SD
       sdcard_ls();
       break;
-    case 'm':
+    case 'm': // clear led matrix
       matrix_init();
       break;
-    case 'r':
+    case 'r': // read memory block
       dumpmem(addr, 128);
+      break;
+    case 's': // Switch and segment tests
+      serial_printf(0, "%c[1;1H", 0x1b);
+      serial_printf(0, "%c[1m%c[38;5;2m", 0x1b, 0x1b);
+      serial_printf(0, "PORT STATUS\n");
+      serial_printf(0, "%c[38;5;11m%c[s", 0x1b, 0x1b);
+      while (1) {
+	serial_printf(0, "%c[u", 0x1b);
+	for (int i=0; i < 8; i++) {
+	  serial_printf(0, "%d: %08x\n", i, sysio[i]);
+	  delay(1000);
+	}
+      }
+      break;
+    case 'w':
+      msg++;
+      val = 0;
+      while (*msg != '\0') {
+	if (*msg != ' ') 
+	  val = (val << 4) + hextoi(*msg);
+	msg++;
+      }
+      ref = (int *)addr;
+      *ref = val;
+      console_printf(CONSOLE_WHITE, "\n");
       break;
     case '.':
       addr += 4;
       break;
     case ',':
       addr -= 4;
-      break;
-    case 'w':
-      msg++;
-      while (*msg != '\0') {
-	val = (val << 4) + hextoi(*msg);
-	msg++;
-      }
-      ref = (int *)addr;
-      *ref = val;
-      console_printf(CONSOLE_WHITE, "\n");
       break;
     default:
       console_printf(CONSOLE_WHITE, "\nunknown commmand: %s\n", msg);
