@@ -30,7 +30,7 @@ void console_printf(console_color_t color, char *fmt, ...) {
   unsigned sgr;
   
   va_start(argp, fmt);
-  if ((sysio[0] & 0x2) == 0x2)
+  if ((sysio[1] & 0x2) == 0x2)
     vga_vprintf(vga_console_color(color), fmt, argp);
   else {
     serial_ansi_sgr(0, color);
@@ -45,12 +45,12 @@ short console_getline(console_color_t color, char *str, unsigned short *len) {
   unsigned char c233 = vga_color233(vga_console_color(color));
 
   while (i < *len-1) {
-    if ((sysio[0] & 0x2) == 0x2)
+    if ((sysio[1] & 0x2) == 0x2)
       c = keyboard_getchar();
     else
       c = serial_getchar(0);
     if (c >= ' ' && c <= '~') {
-      if ((sysio[0] & 0x2) == 0x2)
+      if ((sysio[1] & 0x2) == 0x2)
 	vga_putchar(c233,c);
       else
 	serial_putchar(0, c);
@@ -65,7 +65,7 @@ short console_getline(console_color_t color, char *str, unsigned short *len) {
       return -1;
     }
     if ((c == 0x7f || c == 0x08) && i > 0) {
-      if ((sysio[0] & 0x2) == 0x2)
+      if ((sysio[1] & 0x2) == 0x2)
 	vga_putchar(c233, c);
       else
 	serial_putchar(0, c);
