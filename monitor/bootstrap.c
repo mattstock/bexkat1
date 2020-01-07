@@ -15,8 +15,7 @@
 #include <stdarg.h>
 #include <vga.h>
 #include <console.h>
-
-unsigned int addr;
+#include <malloc.h>
 
 void rts_set();
 
@@ -24,20 +23,6 @@ unsigned char katherine[] = { 194, 132, 190, 148, 129, 141, 0 };
 unsigned char rebecca[] = { 148, 131, 172, 131, 196, 131, 0 };
 
 extern void disk_timerproc (void);
-
-void dumpmem(unsigned int addr, unsigned short len) {
-  unsigned int i,j;
-  unsigned *pos = (unsigned *)addr;
-  
-  for (i=0; i < len; i += 8) {
-    console_printf(CONSOLE_WHITE, "|");
-    console_printf(CONSOLE_YELLOW, "   %08x   ", addr+8*i);
-    console_printf(CONSOLE_WHITE, "|");
-    for (j=0; j < 8; j++)
-      console_printf(CONSOLE_WHITE, "  %08x", pos[i+j]);
-    console_printf(CONSOLE_WHITE, "  |\n");
-  }
-}
 
 void sdcard_exec(int super, char *name) {
   FATFS f;
@@ -192,53 +177,257 @@ void utf8(uint32_t cp, char *val) {
   val[0] = (cp & 0x7) | 0xf0;
 }
 
-void hex_editor() {
-  serial_printf(0, "\x1b[2J");
-  serial_putchar(0, '+');
+void idx2pos(int idx) {
+  int col = (idx % 8);
+  int row = (idx / 8);
+
+  int posx = 19 + (col * 10);
+  int posy = 4 + row;
+  
+  serial_printf(0, "\x1b[%d;%dH", posy, posx);
+}
+
+void dumpmem(uint32_t addr, uint32_t *values) {
+  uint32_t *pos = (uint32_t *)addr;
+  
+  serial_printf(0, "\x1b[1;33;44m+");
   for (int i=0; i < 14; i++)
     serial_putchar(0, '-');
   serial_putchar(0, '+');
-  for (int i=0; i < 81; i++)
+  for (int i=0; i < 82; i++)
     serial_putchar(0, '-');
-  serial_printf(0, "+\n|   ADDRESS    |%* |\n", 81);
-  serial_putchar(0, '+');
+  serial_printf(0, "+\n|   ADDRESS    |");
+  for (int i=0; i < 8; i++)
+    serial_printf(0, "  %02x      ", i*4);
+  serial_printf(0, "  |\n+");
   for (int i=0; i < 14; i++)
     serial_putchar(0, '-');
   serial_putchar(0, '+');
-  for (int i=0; i < 81; i++)
+  for (int i=0; i < 82; i++)
     serial_putchar(0, '-');
   serial_printf(0, "+\n");
 
   // dump the memory to screen
-  dumpmem(addr, 128);
+  for (int i=0; i < 128; i += 8) {
+    serial_printf(0, "\x1b[1;33;44m|");
+    serial_printf(0, "\x1b[1;37m   %08x   ", addr+4*i);
+    serial_printf(0, "\x1b[1;33m|");
+    for (int j=0; j < 8; j++)
+      if (values[i+j] == pos[i+j]) {
+	serial_printf(0,"\x1b[1;37m  %08x", values[i+j]);
+      } else {
+	values[i+j] = pos[i+j];
+	serial_printf(0,"\x1b[1;31m  %08x\x1b[1;37m", values[i+j]);
+      }
+    serial_printf(0, "\x1b[1;33m  |\n");
+  }
 
   serial_putchar(0, '+');
-  for (int i=0; i < 12; i++)
+  for (int i=0; i < 14; i++)
     serial_putchar(0, '-');
   serial_putchar(0, '+');
-  for (int i=0; i < 81; i++)
+  for (int i=0; i < 82; i++)
     serial_putchar(0, '-');
   serial_printf(0, "+\n");
-  serial_printf(0, "\x1b[4;19H\x1b[48;5;2m");
+}
 
-  int posy = 4;
-  int posx = 19;
+uint32_t edit(uint32_t val, int idx) {
+  int n = 0;
+  char x, y;
+  uint32_t newval = val;
+  
+  // set an editing cursor
+  
   while (1) {
-    char x = serial_getchar(0);
+    x = serial_getchar(0);
+    if (x == '\x1b') { // escape code functions
+      if (serial_getchar(0) == '[') {
+	switch (serial_getchar(0)) {
+	case 'C':
+	  if (n < 7) {
+	    serial_printf(0, "\x1b[1C");
+	    n++;
+	  }
+	  break;
+	case 'D':
+	  if (n > 0) {
+	    serial_printf(0, "\x1b[1D");
+	    n--;
+	  }
+	  break;
+	}
+      }
+    }
+    if (x >= '0' && x <= '9') {
+      serial_printf(0, "\x1b[1;41;33m%c", x);
+      newval = (newval & ~(0xf << (7-n)*4)) | ((x-'0') << (7-n)*4);
+      if (n < 7)
+	n++;
+      else
+	serial_printf(0, "\x1b[1D");
+    }
+    if (x >= 'a' && x <= 'f') {
+      serial_printf(0, "\x1b[1;41;33m%c", x);
+      newval = (newval & ~(0xf << (7-n)*4)) | ((x-'a'+10) << (7-n)*4);
+      if (n < 7)
+	n++;
+      else
+	serial_printf(0, "\x1b[1D");
+    }
+    if (x == '\x0d')
+      return newval;
+  }
+}
+
+void hex_editor(uint32_t addr) {
+  uint32_t *values;
+  uint32_t *pos = (uint32_t *)addr;
+  uint16_t s, s2;
+  char msg[20];
+  int idx = 0;
+  char special[6];
+  char x;
+  
+  values = malloc(sizeof(uint32_t)*128);
+  for (int i=0; i < 128; i++)
+    values[i] = pos[i];
+
+  serial_printf(0, "\x1b[2J");
+  dumpmem(addr, values);
+
+  while (1) {
+    idx2pos(idx);
+    x = serial_getchar(0);
     switch (x) {
+    case '0':
+      addr = 0;
+      pos = (uint32_t *)addr;
+      for (int i=0; i < 128; i++)
+	values[i] = pos[i];
+      serial_printf(0, "\x1b[2J");
+      dumpmem(addr, values);
+      break;
+    case '2':
+      addr = 0xc0000000;
+      pos = (uint32_t *)addr;
+      for (int i=0; i < 128; i++)
+	values[i] = pos[i];
+      serial_printf(0, "\x1b[2J");
+      dumpmem(addr, values);
+      break;
+    case '3':
+      addr = 0x30000000;
+      pos = (uint32_t *)addr;
+      for (int i=0; i < 128; i++)
+	values[i] = pos[i];
+      serial_printf(0, "\x1b[2J");
+      dumpmem(addr, values);
+      break;
+    case '4':
+      addr = 0x40000000;
+      pos = (uint32_t *)addr;
+      for (int i=0; i < 128; i++)
+	values[i] = pos[i];
+      serial_printf(0, "\x1b[2J");
+      dumpmem(addr, values);
+      break;
+    case '5':
+      addr = 0x50000000;
+      pos = (uint32_t *)addr;
+      for (int i=0; i < 128; i++)
+	values[i] = pos[i];
+      serial_printf(0, "\x1b[2J");
+      dumpmem(addr, values);
+      break;
+    case '7':
+      addr = 0x70000000;
+      pos = (uint32_t *)addr;
+      for (int i=0; i < 128; i++)
+	values[i] = pos[i];
+      serial_printf(0, "\x1b[2J");
+      dumpmem(addr, values);
+      break;
+    case '8':
+      addr = 0x80000000;
+      pos = (uint32_t *)addr;
+      for (int i=0; i < 128; i++)
+	values[i] = pos[i];
+      serial_printf(0, "\x1b[2J");
+      dumpmem(addr, values);
+      break;
+    case '\x1b': // escape code functions
+      special[0] = serial_getchar(0);
+      special[1] = serial_getchar(0);
+      if (special[0] != '[') {
+	break;
+      }
+      switch (special[1]) {
+      case 'A':
+	if (idx/8 > 0)
+	  idx -= 8;
+	break;
+      case 'B':
+	if (idx/8 < 15)
+	  idx += 8;
+	break;
+      case 'C':
+	if (idx < 127)
+	  idx++;
+	break;
+      case 'D':
+	if (idx > 0)
+	  idx--;
+	break;
+      case 'U':
+	if (addr < 128)
+	  break;
+	addr -= 128;
+	pos = (uint32_t *)addr;
+	for (int i=0; i < 128; i++)
+	  values[i] = pos[i];
+	serial_printf(0, "\x1b[2J");
+	dumpmem(addr, values);
+	break;
+      case 'V':
+	if (addr > 0xffffff7f)
+	  break;
+	addr += 128;
+	pos = (uint32_t *)addr;
+	for (int i=0; i < 128; i++)
+	  values[i] = pos[i];
+	serial_printf(0, "\x1b[2J");
+	dumpmem(addr, values);
+	break;
+      }
+      break;
     case 'q':
+      serial_printf(0, "\x1b[1;1H\x1b[2J\x1b[0m");
+      free(values);
       return;
+    case 'e':
+      pos[idx] = values[idx] = edit(values[idx], idx);
+      break;
     case 'a':
-      serial_printf(0, "\x1b[2D");
+      serial_printf(0, "\x1b[0m\x1b[23;2H\x1b[KNew address: ");
+      s = 20;
+      console_getline(CONSOLE_WHITE, msg, &s);
+      addr = 0;
+      for (int i=0; msg[i] != '\0'; i++) {
+	addr = (addr << 4) + hextoi(msg[i]);
+      }
+      pos = (uint32_t *)addr;
+      for (int i=0; i < 128; i++)
+	values[i] = pos[i];
+      serial_printf(0, "\x1b[2J");
+      dumpmem(addr, values);
       break;
-    case 'd':
-      serial_printf(0, "\x1b[2C");
+    case 'r':
+      serial_printf(0, "\x1b[2J");
+      dumpmem(addr, values);
       break;
-    case 'w':
-      serial_printf(0, "\x1b[1A");
-      break;
-    case 's':
-      serial_printf(0, "\x1b[1B");
+    default:
+      serial_printf(0, "\x1b[25;2H\x1b[KUnknown character: %02x", x);
+      delay(2000000);
       break;
     }
   }
@@ -246,6 +435,7 @@ void hex_editor() {
 
 void main(void) {
   unsigned int foo;
+  uint32_t addr;
   unsigned short size=20;
   char buf[20];
   char *msg;
@@ -267,10 +457,11 @@ void main(void) {
   sti();
 
   console_printf(CONSOLE_WHITE, "\n");
-  console_printf(CONSOLE_WHITE, "BexOS v0.5\nCopyright 2019 Matt Stock\n");
+  console_printf(CONSOLE_WHITE, "BexOS v0.6\nCopyright 2019 Matt Stock\n");
   rts_set();
 
   while (1) {
+    serial_printf(0, "\x1b[0m");
     console_printf(CONSOLE_WHITE, "\nBexkat1 [%08x] > ", addr);
     msg = buf;
     console_getline(CONSOLE_WHITE, msg, &size);
@@ -286,7 +477,7 @@ void main(void) {
       }
       break;
     case 'h': // hex editor
-      hex_editor();
+      hex_editor(addr);
       break;
     case 'e': // exec file
       console_printf(CONSOLE_WHITE, "\n attempt to exec file....\n");
@@ -299,20 +490,22 @@ void main(void) {
     case 'm': // clear led matrix
       matrix_init();
       break;
-    case 'r': // read memory block
-      dumpmem(addr, 128);
-      break;
-    case 's': // Switch and segment tests
-      serial_printf(0, "%c[1;1H", 0x1b);
-      serial_printf(0, "%c[1m%c[38;5;2m", 0x1b, 0x1b);
-      serial_printf(0, "PORT STATUS\n");
-      serial_printf(0, "%c[38;5;11m%c[s", 0x1b, 0x1b);
+    case 'x':
+      serial_printf(0, "\nANSI test\n");
+      serial_printf(0, "\x1b[0mReset\n");
+      for (int i=1; i < 8; i++)
+	serial_printf(0, "\x1b[0;%dmReset, code %d\n", i, i);
+      for (int i=30; i < 38; i++)
+	serial_printf(0, "\x1b[0;%dmReset, code %d\n", i, i);
+      for (int i=40; i < 48; i++)
+	serial_printf(0, "\x1b[0;%dmReset, code %d\n", i, i);
+      serial_printf(0, "\x1b[0mReset\n");
+      serial_printf(0, "Input test, hit q to quit\n");
       while (1) {
-	serial_printf(0, "%c[u", 0x1b);
-	for (int i=0; i < 8; i++) {
-	  serial_printf(0, "%d: %08x\n", i, sysio[i]);
-	  delay(1000);
-	}
+	msg[1] = serial_getchar(0);
+	if (msg[1] == 'q')
+	  break;
+	serial_printf(0, "got %02x\n", msg[1]);
       }
       break;
     case 'w':
