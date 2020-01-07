@@ -8,6 +8,28 @@ volatile unsigned int * const serial0 = (unsigned int *)UART0_BASE;
 volatile unsigned int * const serial1 = (unsigned int *)UART1_BASE;
 volatile unsigned int * const serial2 = (unsigned int *)UART2_BASE;
 
+char serial_gc(unsigned port) {
+  unsigned result;
+  volatile unsigned *p;
+
+  switch (port) {
+  case 0:
+    p = serial0;
+    break;
+  case 1:
+    p = serial1;
+    break;
+  case 2:
+    p = serial2;
+    break;
+  default:
+    p = serial0;
+  }
+
+  result  = p[0];
+  return (result & 0x8000 ? result & 0xff : -1);
+}
+
 char serial_getchar(unsigned port) {
   unsigned result;
   volatile unsigned *p;
@@ -33,8 +55,32 @@ char serial_getchar(unsigned port) {
 }
 
 void serial_ansi_sgr(unsigned port, console_color_t color) {
+  uint8_t x;
+
+  switch (color) {
+  case CONSOLE_BLACK:
+  case CONSOLE_RED:
+  case CONSOLE_GREEN:
+  case CONSOLE_YELLOW:
+  case CONSOLE_BLUE:
+  case CONSOLE_MAGENTA:
+  case CONSOLE_CYAN:
+    x = 30 + color;
+    break;
+  case CONSOLE_WHITE:
+    x = 37;
+    break;
+  case CONSOLE_B_RED:
+  case CONSOLE_B_GREEN:
+  case CONSOLE_B_YELLOW:
+  case CONSOLE_B_BLUE:
+  case CONSOLE_B_MAGENTA:
+  case CONSOLE_B_CYAN:
+    x = 40 + color-8;
+    break;
+  }
   serial_putchar(port, 0x1b); // esc
-  serial_printf(port, "[%u;%um", 30+(color > 7 ? color-8 : color), (color > 7));
+  serial_printf(port, "[%um", x);
 }
 		     
 void serial_putchar(unsigned port, char c) {
