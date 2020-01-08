@@ -379,9 +379,9 @@ void hex_editor(uint32_t addr) {
 	  idx--;
 	break;
       case 'U':
-	if (addr < 128)
+	if (addr < 128*4)
 	  break;
-	addr -= 128;
+	addr -= 128*4;
 	pos = (uint32_t *)addr;
 	for (int i=0; i < 128; i++)
 	  values[i] = pos[i];
@@ -389,9 +389,9 @@ void hex_editor(uint32_t addr) {
 	dumpmem(addr, values);
 	break;
       case 'V':
-	if (addr > 0xffffff7f)
+	if (addr > 0xfffff10f)
 	  break;
-	addr += 128;
+	addr += 128*4;
 	pos = (uint32_t *)addr;
 	for (int i=0; i < 128; i++)
 	  values[i] = pos[i];
