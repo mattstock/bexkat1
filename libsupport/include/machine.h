@@ -9,6 +9,7 @@
 #define IO_BASE     (0x30000000)
 #define SEGSW_BASE  (IO_BASE)
 #define UART0_BASE  (IO_BASE+0x2000)
+#define PS2_BASE    (IO_BASE+0x4000)
 #define SPI_BASE    (IO_BASE+0x7000)
 #define TIMER_BASE  (IO_BASE+0x8000)
 #define MATRIX_BASE (IO_BASE+0xc000)
@@ -20,7 +21,6 @@
 // Saved so that we can build the support library.
 //#define SWLED_BASE  (IO_BASE+0x1000)
 #define UART1_BASE  (IO_BASE+0x3000)
-#define PS2_BASE    (IO_BASE+0x4000)
 #define CODEC_BASE  (IO_BASE+0x5000)
 #define LCD_BASE    (IO_BASE+0x6000)
 #define I2C0_BASE   (IO_BASE+0x9000)
