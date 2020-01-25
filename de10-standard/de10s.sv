@@ -93,7 +93,7 @@ module de10s(input         CLOCK_50,
   if_wb cpu_ibus(), cpu_dbus();
   if_wb ram0_ibus(), ram0_dbus();
   if_wb ram1_ibus(), ram1_dbus();
-  if_wb io_dbus(), io_seg(), io_uart(), io_timer();
+  if_wb io_dbus(), io_seg(), io_uart(), io_timer(), io_ps2();
   if_wb io_matrix(), io_spi();
 
 `ifdef SDRAM
@@ -127,7 +127,8 @@ module de10s(input         CLOCK_50,
 	      .rst(~KEY[0]), 
 	      .locked(locked),
 	      .outclk_0(clk_i),
-	      .outclk_1(led_clk));
+	      .outclk_1(led_clk),
+	      .outclk_2(sdram_clk));
 
   bexkat2 cpu0(.clk_i(clk_i),
 		.rst_i(rst_i),
@@ -164,6 +165,7 @@ module de10s(input         CLOCK_50,
 	       .p3(io_dbus.master),
 `ifdef SDRAM
 	       .p0(sdr0_dbus.master),
+	       .p4(stats_dbus.master),
 	       .p5(ram0_dbus.master),
 `else
 	       .p5(ram0_dbus.master),
@@ -175,14 +177,14 @@ module de10s(input         CLOCK_50,
 	       .p7(ram1_dbus.master));
   
   
-  dualram #(.AWIDTH(14),
+  dualram #(.AWIDTH(15),
 	    .INIT_FILE("../monitor/max10rom.mif")) ram1(.clk_i(clk_i),
 							.rst_i(rst_i),
 							.wren(1'b0),
 							.bus0(ram1_ibus.slave),
 							.bus1(ram1_dbus.slave));
 
-  dualram #(.AWIDTH(14)) ram0(.clk_i(clk_i),
+  dualram #(.AWIDTH(13)) ram0(.clk_i(clk_i),
 			      .rst_i(rst_i),
 			      .wren(1'b1),
 			      .bus0(ram0_ibus.slave),
@@ -192,6 +194,7 @@ module de10s(input         CLOCK_50,
 				.rst_i(rst_i),
 				.bus0(sdr0_ibus.slave),
 				.bus1(sdr0_dbus.slave),
+				.mem_clk_i(sdram_clk),
 				.stats_bus(stats_dbus.slave),
 				.mem_clk_o(DRAM_CLK),
 				.we_n(DRAM_WE_N),
@@ -226,6 +229,7 @@ module de10s(input         CLOCK_50,
 			    .mbus(io_dbus.slave),
 			    .p0(io_seg.master),
 			    .p2(io_uart.master),
+			    .p4(io_ps2.master),
 			    .p7(io_spi.master),
 			    .p8(io_timer.master),
 			    .pc(io_matrix.master));
@@ -267,6 +271,12 @@ module de10s(input         CLOCK_50,
 		     .bus(io_timer.slave),
 		     .interrupt(timer_interrupts));
 
+  ps2_kbd ps2(.clk_i(clk_i),
+	      .rst_i(rst_i),
+	      .bus(io_ps2.slave),
+	      .ps2_clock(PS2_CLK),
+	      .ps2_data(PS2_DAT));
+  
   spi_master #(.CLKFREQ(clkfreq)) spi0(.clk_i(clk_i),
 				       .rst_i(rst_i),
 				       .bus(io_spi.slave),
