@@ -19,9 +19,6 @@
 
 void rts_set();
 
-unsigned char katherine[] = { 194, 132, 190, 148, 129, 141, 0 }; 
-unsigned char rebecca[] = { 148, 131, 172, 131, 196, 131, 0 };
-
 extern void disk_timerproc (void);
 
 void sdcard_exec(int super, char *name) {
@@ -433,6 +430,54 @@ void hex_editor(uint32_t addr) {
   }
 }
 
+volatile uint32_t *pos = (uint32_t *)0;
+
+void memtest(void) {
+  serial_printf(0, "\nMemory test\n\n");
+  pos[0] = 0xdeadbeef; // sentinel on first position
+  for (int i=1; i < 64*1024*1024/4; i++) {
+    if (i % 0x800 == 0)
+      serial_printf(0, "Address: %08x\n", i);
+    pos[i] = 0x33332222;
+    if (pos[0] != 0xdeadbeef) {
+      serial_printf(0, "Whoops at %08x: %08x\n", i, pos[0]);
+      return;
+    }
+  }
+  serial_printf(0, "Tests successful\n");
+}
+
+void memtestsimple(void) {
+  serial_printf(0, "\nMemory test (simple)\n\n");
+  pos[0] = 0xdeadbeef; // sentinel on first position
+  if (pos[0] != 0xdeadbeef) {
+    serial_printf(0, "Whoops\n");
+    return;
+  }
+  serial_printf(0, "Tests successful\n");
+}
+
+void ansitest(void) {
+  char x;
+  
+  serial_printf(0, "\nANSI test\n");
+  serial_printf(0, "\x1b[0mReset\n");
+  for (int i=1; i < 8; i++)
+    serial_printf(0, "\x1b[0;%dmReset, code %d\n", i, i);
+  for (int i=30; i < 38; i++)
+    serial_printf(0, "\x1b[0;%dmReset, code %d\n", i, i);
+  for (int i=40; i < 48; i++)
+    serial_printf(0, "\x1b[0;%dmReset, code %d\n", i, i);
+  serial_printf(0, "\x1b[0mReset\n");
+  serial_printf(0, "Input test, hit q to quit\n");
+  while (1) {
+    x = serial_getchar(0);
+    if (x == 'q')
+      break;
+    serial_printf(0, "got %02x\n", x);
+  }
+}
+
 void main(void) {
   unsigned int foo;
   uint32_t addr;
@@ -482,7 +527,7 @@ void main(void) {
     case 'e': // exec file
       console_printf(CONSOLE_WHITE, "\n attempt to exec file....\n");
       msg += 2;
-      sdcard_exec(0, msg);
+      sdcard_exec(1, msg);
       break;
     case 'l': // display files from SD
       sdcard_ls();
@@ -490,22 +535,24 @@ void main(void) {
     case 'm': // clear led matrix
       matrix_init();
       break;
-    case 'x':
-      serial_printf(0, "\nANSI test\n");
-      serial_printf(0, "\x1b[0mReset\n");
-      for (int i=1; i < 8; i++)
-	serial_printf(0, "\x1b[0;%dmReset, code %d\n", i, i);
-      for (int i=30; i < 38; i++)
-	serial_printf(0, "\x1b[0;%dmReset, code %d\n", i, i);
-      for (int i=40; i < 48; i++)
-	serial_printf(0, "\x1b[0;%dmReset, code %d\n", i, i);
-      serial_printf(0, "\x1b[0mReset\n");
-      serial_printf(0, "Input test, hit q to quit\n");
-      while (1) {
-	msg[1] = serial_getchar(0);
-	if (msg[1] == 'q')
-	  break;
-	serial_printf(0, "got %02x\n", msg[1]);
+    case 't': // memory test
+      msg++;
+      while (*msg == ' ') {
+	msg++;
+      }
+      switch (*msg) {
+      case '?':
+	serial_printf(0, "\nTests\n0: memory corruption check\n1: ANSI tests\n2: memory cache tests (simple)\n");
+	break;
+      case '0':
+	memtest();
+	break;
+      case '1':
+	ansitest();
+	break;
+      case '2':
+	memtestsimple();
+	break;
       }
       break;
     case 'w':
