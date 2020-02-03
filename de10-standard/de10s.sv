@@ -77,6 +77,7 @@ module de10s(input         CLOCK_50,
   logic [3:0] 		   spi_selects;
   logic [15:0] 		   sdram_dataout;
   logic 		   sdram_dir;
+  logic 		   sdram_clk;
   logic [1:0] 		   cache_status;
   logic 		   miso, mosi, sclk;
 
